@@ -1,0 +1,13 @@
+# Planned comparisons; not a runnable experiment launcher.
+schema_version: 1
+status: planned
+shared_input: same_clips_frames_and_resolution
+evaluation_mask: common_protocol_independent_of_fusion_rejection
+experiments:
+  E0: {base: da_v2_metric, fusion: none}
+  E1: {base: da_v2_metric, fusion: ema, flow: false}
+  E2: {base: da_v2_metric, fusion: fixed_weight, flow: true, occlusion_rejection: false}
+  E3: {base: da_v2_metric, fusion: fixed_weight, flow: true, occlusion_rejection: true}
+  E4: {base: da_v2_metric, fusion: adaptive_weight, flow: true, occlusion_rejection: true}
+  E5: {base: video_depth_anything, fusion: none}
+parameters: null  # Tune on development clips; freeze before held-out evaluation.

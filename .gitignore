@@ -1,0 +1,48 @@
+# Machine-specific configuration and credentials
+/configs/paths.local.yaml
+/configs/*.local.yaml
+.env
+.env.*
+!.env.example
+
+# Large local inputs, generated artifacts and upstream checkouts
+/data/*
+!/data/README.md
+/checkpoints/*
+!/checkpoints/README.md
+/outputs/*
+!/outputs/README.md
+/third_party/*
+!/third_party/README.md
+
+# Python environments and build/cache files
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+/build/
+/dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.coverage
+htmlcov/
+
+# Local editor and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.log
+
+# Generated LaTeX intermediates
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.out
+*.synctex.gz
+*.toc

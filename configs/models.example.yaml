@@ -1,0 +1,36 @@
+# Planning template only: not executable until model adapters are implemented.
+schema_version: 1
+status: planned
+models:
+  stereo_sgbm:
+    owner: A
+    checkpoint: null
+    parameters: null  # Fill after the single-pair calibration check.
+  da_v2_relative:
+    owner: B
+    source: depth_anything_v2
+    variant: small
+    checkpoint: null
+    prediction_type: null  # Verify relative_depth vs inverse_depth_like.
+  da_v2_metric:
+    owner: B
+    source: depth_anything_v2
+    variant: small_indoor_metric
+    checkpoint: null
+    prediction_type: metric_depth
+    unit: m
+  unidepth_v2:
+    owner: A
+    source: unidepth
+    variant: vit_small
+    checkpoint: null
+    prediction_type: metric_depth
+    unit: m
+  video_depth_anything:
+    owner: B
+    source: video_depth_anything
+    variant: small_metric
+    checkpoint: null
+    prediction_type: metric_depth
+    unit: m
+    inference_mode: null  # Record offline or streaming after validation.
