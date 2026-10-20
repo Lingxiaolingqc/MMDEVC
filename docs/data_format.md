@@ -1,12 +1,12 @@
 # 数据与预测格式 v0.1
 
-本协议是第一周共同使用的接口约定；保存/读取实现尚未编写。A/B 接入时发现问题，应通过 PR 修改本文并说明兼容性。
+本协议是第一周共同使用的接口约定；Middlebury 数据读取已实现，模型预测的通用保存/读取接口尚未编写。A/B 接入时发现问题，应通过 PR 修改本文并说明兼容性。
 
 ## 数据清单
 
 `manifests/` 中 CSV 使用 UTF-8，路径统一用 `/`，相对于 `paths.local.yaml` 的对应 `data_roots`。不提交本机绝对路径。
 
-- `middlebury.csv`：每行一组左右图、左 GT disparity 与标定；`split` 使用 `dev` 或 `evaluation`，标记调参场景。完整 15 对汇总不能全部称为独立测试。
+- `middlebury.csv`：每行一组左右图、左 GT disparity 与标定；数据准备阶段 `split` 可为 `unassigned`，正式调参前改为 `dev` 或 `evaluation`。`mask0nocc.png` 约定与 `disp0GT.pfm` 同目录；两包可分开解压。完整 15 对汇总不能全部称为独立测试。参见 [Middlebury 读取说明](middlebury_data.md)。
 - `nyuv2.csv`：RGB/GT 一一对应；记录标准划分文件的来源和版本。正式划分保持原始语义，开发样本从允许的训练侧选择。
 - `videos.csv`：每行一个片段；`split` 使用 `dev` 或 `test`；同一场景的关联片段使用相同 `scene_group`，整个 group 只属于一侧。
 - `frames.example.csv`：抽帧后生成的逐帧索引表头；实际索引放在对应本地数据目录。

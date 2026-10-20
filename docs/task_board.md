@@ -5,7 +5,7 @@
 | ID | 主责 | 任务 | 完成标准 | 状态 |
 | --- | --- | --- | --- | --- |
 | C01 | A/B | 复核数据与预测格式 | 一份真实预测按协议交接成功 | 待开始 |
-| A01 | Qinchuan XIAO | Middlebury + NYUv2 清单与读取规范 | 一组 stereo 和一张 RGB/GT 对齐、单位和划分可核验 | 待开始 |
+| A01 | Qinchuan XIAO | Middlebury + NYUv2 清单与读取规范 | 一组 stereo 和一张 RGB/GT 对齐、单位和划分可核验 | 进行中：Middlebury 15 场景读取检查通过；开发划分和 NYUv2 待完成 |
 | A02 | Qinchuan XIAO | StereoSGBM 单样本 | 视差、米制深度、mask 和标定检查结果齐全 | 待开始 |
 | A03 | Qinchuan XIAO | 单图评测入口 | GT=prediction 正确性检查及 B 的真实预测复算 | 待开始 |
 | A04 | Qinchuan XIAO | UniDepthV2 ViT-S 试跑 | 一个样本预测、保存和评测全流程 | 待开始 |
@@ -16,3 +16,5 @@
 | C02 | A/B | 周末交叉复现 | 一页周总结、已验证结果、未完成项和下一步 | 待开始 |
 
 完整日程和额外工作见 [week1_plan.md](week1_plan.md)。先处理 C01/A01/B01 的依赖，再扩大运行范围。
+
+2026-10-20 数据准备记录见 [Middlebury 数据检查](middlebury_data.md)。GT 读取通过不代表 StereoSGBM、模型预测或精度评测已完成。

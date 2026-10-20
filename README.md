@@ -6,7 +6,7 @@ AIAA3201 Project 3 · **Spring 2027 项目说明**（课程版本已由组员确
 
 ## 当前状态
 
-仓库已建立项目结构、协作规则、数据格式与实验计划。**模型适配器、数据下载、深度评测、时序融合和 Demo 尚未实现或运行；当前没有实验结果。**
+仓库已建立项目结构、协作规则、数据格式与实验计划。Middlebury Quarter Resolution 的 15 组训练数据已完成读取检查，读取器、检查入口和样本清单可用；详情见 [Middlebury 数据准备](docs/middlebury_data.md)。**NYUv2 尚未准备，模型适配器、深度评测、时序融合和 Demo 尚未实现或运行；当前没有模型实验结果。**
 
 目标：Week 11 之前提交；Week 9 结束冻结方法，Week 10 完成报告、复现检查和提交，预留 2–3 天缓冲。Week 7–10 是倒排里程碑，具体日历日期尚未填写。
 
@@ -43,6 +43,17 @@ cp -n configs/paths.example.yaml configs/paths.local.yaml
 
 编辑 `configs/paths.local.yaml` 中的数据、权重、第三方代码与输出路径；相对路径约定相对于仓库根目录。该文件不会上传。基础 Python 包可选安装：`python -m pip install -e .`；当前不安装 PyTorch 或模型依赖。
 
+进行 Middlebury 数据读取时，安装数据处理依赖并运行：
+
+```sh
+python -m pip install -e ".[data]"
+python scripts/inspect_middlebury.py --sample Adirondack
+python scripts/inspect_middlebury.py --all --write-manifest
+python -m unittest discover -s tests -v
+```
+
+先按 [数据准备说明](docs/middlebury_data.md) 放置 Quarter Resolution 输入与 GT；`--write-manifest` 会更新相对路径并保留已有 split/notes。新样本暂记 `unassigned`，正式调参前需确定开发/评测划分。
+
 接下来依次阅读：
 
 1. [协作流程](CONTRIBUTING.md)：分支、PR、实验交接。
@@ -68,11 +79,11 @@ cp -n configs/paths.example.yaml configs/paths.local.yaml
 configs/       项目设置、本机路径示例、模型计划与 E0–E5 消融矩阵
 docs/          周计划、数据格式、评测协议、实验记录、待补充信息
 environments/  官方代码来源及后续验证过的环境记录
-manifests/     数据集与视频清单（当前只有表头）
-src/p3_depth/  后续的 data/models/temporal/evaluation/visualization 实现
-scripts/       当前可运行 check_setup.py；研究入口后续实现
+manifests/     Middlebury 15 场景清单；NYUv2/视频仍只有表头
+src/p3_depth/  Middlebury 读取器；模型/融合/评测模块后续实现
+scripts/       check_setup.py、inspect_middlebury.py；模型入口后续实现
 demo/          应用展示计划
-tests/         后续关键计算与接口检查
+tests/         Middlebury 字节序、方向、单位、mask 和文件配对回归检查
 results/       可提交的精选表格、图片与实验索引
 report/        报告提纲与写作分工
 data/          本地数据，仅跟踪 README
@@ -87,7 +98,7 @@ third_party/   官方仓库的本地 checkout，仅跟踪 README
 
 完整安排见 [每周计划](docs/weekly_plan.md)，第一批工作见 [任务清单](docs/task_board.md)。
 
-- A：先整理一组 Middlebury 样本、标定和 NYUv2 小样本清单。
+- A：完成 NYUv2 小样本清单与读取规范；确定 Middlebury 开发划分，随后运行 StereoSGBM 单样本。
 - B：先跑通 DA V2 Small 单图原始预测，准备短视频。
 - 共同：A 的评测能够读取 B 的预测，并由另一人独立复算。
 
