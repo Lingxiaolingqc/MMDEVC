@@ -1,6 +1,6 @@
 # 环境与官方实现
 
-基础包目前没有第三方运行依赖；`scripts/check_setup.py` 可直接用 Python 3.10+ 执行。模型环境尚未配置或验证。
+基础包目前没有第三方运行依赖；`scripts/check_setup.py` 可直接用 Python 3.10+ 执行。StereoSGBM CPU 入口使用 `python -m pip install -e ".[data,stereo]"`；不需要 GPU 或 opencv-contrib。单目深度模型环境尚未配置或验证。
 
 Middlebury 读取与诊断使用可选依赖：`python -m pip install -e ".[data]"`（NumPy、Pillow、PyYAML、Matplotlib）。2026-10-20 本机数据检查通过的版本记录在 [数据检查说明](../docs/middlebury_data.md)；该记录不代表模型环境兼容性。
 

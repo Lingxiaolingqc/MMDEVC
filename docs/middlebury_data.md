@@ -6,7 +6,7 @@
 
 15/15 组 trainingQ 场景的左右图、标定、左 GT 视差与 mask 均读取成功，尺寸一致，PFM 有效位置与 mask 对应。已生成 [样本清单](../manifests/middlebury.csv) 和 [GT 检查统计](../results/tables/middlebury_data_check.csv)。10 项回归测试通过；单样本派生数组的保存与读回通过。
 
-这是数据读取验证，不是 StereoSGBM 或任何深度模型的结果。NYUv2 尚未准备；所有 Middlebury 清单行暂为 `unassigned`，正式调参前需要确定开发/评测场景。相关变体（Motorcycle/MotorcycleE、Piano/PianoL、Playtable/PlaytableP）应作为同一场景组考虑，避免场景泄漏。
+这是数据读取验证，不是 StereoSGBM 或任何深度模型的结果。NYUv2 尚未准备。初次数据检查时所有场景均为 `unassigned`；后续 [StereoSGBM 单样本工作](stereo_baseline.md) 已将 Adirondack 标为 `dev`，其余 14 场景仍待划分。相关变体（Motorcycle/MotorcycleE、Piano/PianoL、Playtable/PlaytableP）应作为同一场景组考虑，避免场景泄漏。
 
 ## 解压位置
 
@@ -65,4 +65,4 @@ PFM 处理核对了 [SDK 1.6](https://vision.middlebury.edu/stereo/submit3/zip/M
 
 预览是静态 GT 数据诊断，色标按场景范围显示并有单位；不能当作后续视频固定色标对比。原始数据、派生数组和预览均留在被忽略的本地目录，仓库只保存代码、清单与小体积统计。
 
-下一步：确定场景划分，继续 NYUv2 读取规范，并以此读取器为输入实现 A02 单样本 StereoSGBM。
+后续进展：A02 单样本 StereoSGBM 已使用本读取器跑通，见 [基线说明](stereo_baseline.md)。接下来继续其余场景划分与 NYUv2 读取规范。
