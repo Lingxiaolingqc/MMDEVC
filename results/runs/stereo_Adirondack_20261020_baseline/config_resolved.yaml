@@ -1,0 +1,16 @@
+block_size: 5
+uniqueness_ratio: 10
+speckle_window_size: 100
+speckle_range: 2
+pre_filter_cap: 31
+lr_max_diff_px: 1.0
+min_disparity: 0
+num_disparities: 80
+right_min_disparity: -79
+p1: 200
+p2: 800
+mode: SGBM_3WAY
+input: RGB uint8 -> grayscale uint8
+disp12_max_diff: 1
+search_source: ceil(calibration.ndisp / 16) * 16
+lr_sampling: 'nearest x: floor(x - d_left + 0.5); signed d_right'

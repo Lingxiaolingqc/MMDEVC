@@ -63,6 +63,8 @@ python scripts/run_stereo_baseline.py --sample Adirondack
 
 Adirondack 已标为 `dev`，其余 14 场景的划分待确认。完整输出保存在自动创建的 `outputs/stereo_Adirondack_<时间>/`，参数、有效区域与指标口径见 [基线说明](docs/stereo_baseline.md)。
 
+已验证的首次输出见 [Adirondack 结果记录](results/stereo_adirondack_20261020.md)：全 GT 区域覆盖率 73.28%，有效预测内深度 RMSE 0.1015 m。报告包含无效惩罚指标与固定色标对比图。
+
 接下来依次阅读：
 
 1. [协作流程](CONTRIBUTING.md)：分支、PR、实验交接。

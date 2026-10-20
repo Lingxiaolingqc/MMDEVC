@@ -2,6 +2,8 @@
 
 主责：A / Qinchuan XIAO。第一张开发样本为 Middlebury v3 `trainingQ/Adirondack`，原始尺寸 718 × 496。它已在 manifest 标为 `dev`；其余 14 场景暂为 `unassigned`。本次用于验证端到端计算与输出接口，不代表 15 场景最终精度或正式独立测试。
 
+首次运行已完成，数值、预览图、代码 SHA 和环境见 [2026-10-20 结果记录](../results/stereo_adirondack_20261020.md)。
+
 ## 运行
 
 在仓库根目录执行（无需 GPU、PyTorch、模型权重或 opencv-contrib）：
