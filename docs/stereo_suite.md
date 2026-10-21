@@ -13,4 +13,4 @@ python scripts/run_stereo_suite.py --phase verify --output-dir outputs/stereo_al
 
 每场景保留与 [单样本基线](stereo_baseline.md) 相同的原始预测、mask、视差、指标、图和元数据。`per_scene.csv` 含 15×2 行；`summary.csv/json` 分别汇总 dev、evaluation、包含开发场景的全部 15 对。深度误差按场景取宏平均，覆盖率与 Bad 同时报告宏平均或明确标记的像素加权结果；零覆盖场景数单列，不把空结果当零误差。
 
-`verify` 从保存数组重新计算全部指标，核验数据和产物哈希、合并表及汇总。完整原始输出留在 `outputs/`，精选表格与失败案例后续加入 `results/`。完整 15 对汇总不得称为全部独立测试。
+`verify` 从保存数组重新计算全部指标，核验数据和产物哈希、合并表及汇总。完整原始输出留在 `outputs/`，已验证的精选表格与三个失败案例见 [Week 1 结果](../results/stereo_week1.md)。完整 15 对汇总不得称为全部独立测试。

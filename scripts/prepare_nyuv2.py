@@ -87,6 +87,7 @@ def main():
     fig.savefig(output / "development_samples.png", dpi=120)
     plt.close(fig)
     metadata = {"kind": "nyuv2_data_validation", "code_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+                "working_tree_status": subprocess.check_output(["git", "status", "--porcelain"], cwd=ROOT, text=True).strip(),
                 "counts": {"train": 795, "test": 654}, "development_ids": [r["sample_id"] for r in dev],
                 "development_selection": "first three distinct scenes in ascending MATLAB index, training side only",
                 "labeled_source": "https://horatio.cs.nyu.edu/mit/silberman/nyu_depth_v2/nyu_depth_v2_labeled.mat",

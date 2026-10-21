@@ -1,0 +1,111 @@
+{
+  "method": "UniDepthV2 ViT-S",
+  "sample_id": "nyuv2_0003",
+  "split": "train_development",
+  "code_commit": "7b2150b4c61be2faaedd1fa820b03de2a0a4ab01",
+  "working_tree_status": "",
+  "upstream_commit": "8d8cfe4c7ee15297099983607febf0d4f32eb3d6",
+  "checkpoint_repository": "lpiccinelli/unidepth-v2-vits14",
+  "checkpoint_revision": "038c238f06c87b6c2f5b3749fd51fbf442b1f218",
+  "weight_sha256": "93705cb3295dd7476b44911b8a55f5215bf74e8d5eccd27cecdb1b338270a648",
+  "config_sha256": "ecc1f898690debe387d10329cca5d9d66a0a447ce83c3a2a7ae3673c7ce43cfe",
+  "manifest_sha256": "6be58f7a99199e7e3077ee7204e428d43e4a5725dff2d6b71ac2affe60ea6f33",
+  "input_rgb_sha256": "92847dc1869b2df70ce662eff695d0ef934c4bf62adb3ee08538e244414ca035",
+  "gt_sha256": "6df85427f96c5d3eb521edbcd24ffba37690a75da9dc416b0f8cdb9b406b54cf",
+  "prediction_sha256": "1acc09616ae5a84a85c9f9e16f68dba4ca4013382a42179cebdc0611f9ae4441",
+  "mask_sha256": "15efbd5f694743a841bc590eedf495de2c83d5383a0daede36fb5609dc551813",
+  "environment": {
+    "python": "3.13.5",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "torch": "2.13.0",
+      "torchvision": "0.28.0",
+      "numpy": "2.1.3",
+      "Pillow": "11.0.0",
+      "h5py": "3.12.1",
+      "scipy": "1.14.1",
+      "matplotlib": "3.9.2",
+      "opencv-python": "4.13.0.92",
+      "timm": "1.0.22",
+      "einops": "0.8.1",
+      "wandb": "0.22.3",
+      "safetensors": "0.6.2",
+      "huggingface-hub": "1.29.0"
+    }
+  },
+  "device": "cpu",
+  "device_name": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+  "precision": "float32; CUDA autocast disabled by PyTorch",
+  "threads": 8,
+  "parameters": 34184323,
+  "input_shape_hwc": [
+    480,
+    640,
+    3
+  ],
+  "encoder_input_shapes_nchw": [
+    [
+      1,
+      3,
+      434,
+      574
+    ],
+    [
+      1,
+      3,
+      434,
+      574
+    ]
+  ],
+  "output_shape_hw": [
+    480,
+    640
+  ],
+  "resolution_level": 0,
+  "camera_input": "none; intrinsics predicted by the model",
+  "predicted_intrinsics": [
+    [
+      [
+        578.8012084960938,
+        0.0,
+        325.2711181640625
+      ],
+      [
+        0.0,
+        579.2944946289062,
+        246.93370056152344
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  ],
+  "prediction_type": "metric_depth",
+  "unit": "m",
+  "depth_convention": "camera Z, not radial distance",
+  "alignment": "none",
+  "gt_used_by_model": false,
+  "invalid_policy": "nonpositive/nonfinite -> NaN; separate bool mask",
+  "preprocessing": "official infer: ImageNet normalization, aspect padding, bilinear resize; official postprocess restores original shape",
+  "warmup_calls": 1,
+  "timed_calls": 1,
+  "seconds_official_infer": 1.1207029000215698,
+  "timing_scope": "wall time of official infer including internal preprocessing and device transfer; excludes model load, file IO and evaluation",
+  "peak_cuda_allocated_bytes": null,
+  "peak_cuda_reserved_bytes": null,
+  "reproduce": "python scripts/run_unidepth_sample.py --sample nyuv2_0003 --device cpu --resolution-level 0 --threads 8 --output-dir outputs/unidepth_reproduce_NEW",
+  "display_ranges_m": {
+    "gt_and_prediction": [
+      0,
+      10
+    ],
+    "absolute_error": [
+      0,
+      1
+    ]
+  },
+  "raw_output_location": "local:outputs/unidepth_nyuv2_0003_week1_20261021",
+  "verification": "Original prediction reloaded through evaluate_depth CLI: exact metric match; actual NYUv2 GT=prediction: exact zero errors and unit deltas; B independent verification pending"
+}

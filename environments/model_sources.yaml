@@ -2,16 +2,21 @@ schema_version: 1
 sources:
   depth_anything_v2:
     repository: https://github.com/DepthAnything/Depth-Anything-V2
-    commit: null
+    commit: a561b849ebae10a6f5ef49e26c83cbbcd36c71bf
     checkpoint_sources: []
     verified_environment: null
-    status: not_run
+    status: metric_reference_inspected_model_not_run
   unidepth:
     repository: https://github.com/lpiccinelli-eth/UniDepth
-    commit: null
-    checkpoint_sources: []
-    verified_environment: null
-    status: not_run
+    commit: 8d8cfe4c7ee15297099983607febf0d4f32eb3d6
+    checkpoint_sources:
+      - repository: https://huggingface.co/lpiccinelli/unidepth-v2-vits14
+        revision: 038c238f06c87b6c2f5b3749fd51fbf442b1f218
+        file: model.safetensors
+        sha256: 93705cb3295dd7476b44911b8a55f5215bf74e8d5eccd27cecdb1b338270a648
+        config_sha256: ecc1f898690debe387d10329cca5d9d66a0a447ce83c3a2a7ae3673c7ce43cfe
+    verified_environment: environments/unidepth.md
+    status: nyuv2_train_sample_cpu_verified
   video_depth_anything:
     repository: https://github.com/DepthAnything/Video-Depth-Anything
     commit: null

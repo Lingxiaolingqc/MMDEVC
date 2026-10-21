@@ -46,7 +46,7 @@
 
 ```sh
 # Direct metric，例如 UniDepthV2 的原始相机 Z 深度
-python scripts/evaluate_depth.py --dataset nyuv2 --sample nyuv2_0003 --prediction outputs/unidepth_week1/depth_m.npy --prediction-type metric_depth --unit m --alignment none --output-dir outputs/eval_metric
+python scripts/evaluate_depth.py --dataset nyuv2 --sample nyuv2_0003 --prediction outputs/unidepth_week1/predictions/nyuv2_0003.npy --prediction-type metric_depth --unit m --alignment none --output-dir outputs/eval_metric
 
 # B 的 inverse-depth-like 原始输出；需事先确认表示与同一原图尺寸
 python scripts/evaluate_depth.py --dataset nyuv2 --sample nyuv2_0003 --prediction outputs/dav2/nyuv2_0003.npy --prediction-type inverse_depth_like --unit arbitrary --alignment inverse_scale_shift --output-dir outputs/eval_dav2

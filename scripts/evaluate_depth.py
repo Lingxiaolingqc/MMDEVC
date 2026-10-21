@@ -54,6 +54,7 @@ def evaluate_saved(args):
         for name, score in scores.items()])
     metadata = {"dataset": args.dataset, "sample_id": args.sample, "split": row["split"],
                 "code_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+                "working_tree_status": subprocess.check_output(["git", "status", "--porcelain"], cwd=ROOT, text=True).strip(),
                 "arguments": vars(args), "transformation": transform, "shape_hw": list(depth.shape),
                 "resizing": "none; input must match original GT shape", "prediction_clipping": "none",
                 "invalid_policy": "fixed GT denominator; conditional errors plus coverage and full-GT delta with invalids as failures",
