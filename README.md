@@ -9,7 +9,7 @@ AIAA3201 Project 3 · **Spring 2027 项目说明**（课程版本已由组员确
 Week 1 A 的单图链路已实现并实际运行：
 
 - Middlebury 15 对：两个 dev 场景比较三组参数后冻结 StereoSGBM 配置；全量预测、覆盖率、逐场景与汇总指标复算通过，见 [结果与失败案例](results/stereo_week1.md)。
-- NYUv2：标准 795/654 split、原始索引清单、米制读取器和三个 train 开发样本检查，见 [数据说明](docs/nyuv2_data.md)。
+- NYUv2：完整 labeled 文件校验通过，1449 对已提取，保持标准 795/654 split；三个 train 开发样本的方向、单位和 mask 已检查，见 [数据说明](docs/nyuv2_data.md)。
 - 统一单图评测：七个深度指标、固定 GT 分母和显式 relative alignment，见 [协议与 B 的调用命令](docs/evaluation_protocol.md)。
 - UniDepthV2 ViT-S：`nyuv2_0003` 已完成 CPU 真实推理、原始 Z 深度保存与独立复算，见 [结果](results/unidepth_week1.md) 与 [环境](environments/unidepth.md)。
 

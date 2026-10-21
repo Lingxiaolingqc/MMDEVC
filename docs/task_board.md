@@ -5,7 +5,7 @@
 | ID | 主责 | 任务 | 完成标准 | 状态 |
 | --- | --- | --- | --- | --- |
 | C01 | A/B | 复核数据与预测格式 | 一份真实预测按协议交接成功 | A 的命令与格式可用；待 B 提供真实预测 |
-| A01 | Qinchuan XIAO | Middlebury + NYUv2 清单与读取规范 | 一组 stereo 和一张 RGB/GT 对齐、单位和划分可核验 | Middlebury 15 场景；NYUv2 标准划分与 3 个 train 开发样本检查通过；完整 MAT 哈希已核验，全量提取/逐值复核进行中 |
+| A01 | Qinchuan XIAO | Middlebury + NYUv2 清单与读取规范 | 一组 stereo 和一张 RGB/GT 对齐、单位和划分可核验 | 已完成：Middlebury 15 场景；NYUv2 完整 MAT 校验、1449 对提取、795/654 split、3 个 dev 样本与完整源文件逐值复核通过 |
 | A02 | Qinchuan XIAO | StereoSGBM 单样本 | 视差、米制深度、mask 和标定检查结果齐全 | 已跑通 Adirondack；[运行说明](stereo_baseline.md)；B 交叉复现待完成 |
 | A03 | Qinchuan XIAO | 单图评测入口 | GT=prediction 正确性检查及 B 的真实预测复算 | 七指标/单位/mask/对齐检查及真实 GT=prediction、保存结果复算通过；待 B 的真实预测 |
 | A04 | Qinchuan XIAO | UniDepthV2 ViT-S 试跑 | 一个样本预测、保存和评测全流程 | 已完成 nyuv2_0003 CPU 真实推理；[结果与来源](../results/unidepth_week1.md)；B 独立复现待完成 |

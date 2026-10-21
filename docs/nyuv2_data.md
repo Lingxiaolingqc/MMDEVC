@@ -28,4 +28,8 @@ HDF5 中 `images=(1449,3,640,480)`，索引一张后转置为 HWC；`depths=(144
 
 已从官方 MAT 的真实 HTTP ranges 读取并核验三个 dev 样本、原始数据结构和全部场景名称；三个 RGB/GT 已保存于 `processed/`，尺寸、方向、单位及 train 归属检查通过，0003 已连接 UniDepthV2。原始范围读取复用了 `NYUv2Labeled.load`；不是生成或替代的数据。
 
-完整 MAT 已下载并核验大小及 MD5；SHA256 为 `2d724b0c0ab358aa1ce5df855e5bd14a2279ab7202efe22f32a30d612dcb86aa`。全量提取以及与已缓存三个样本的逐值复核正在进行；正式 654 张测试前必须完成上述提取命令。
+完整 MAT 已下载并核验大小及 MD5；SHA256 为 `2d724b0c0ab358aa1ce5df855e5bd14a2279ab7202efe22f32a30d612dcb86aa`。全部 1449 对已从完整源文件读取、检查和提取，清单内所有路径均存在；先前缓存的三个样本与完整文件解码数组逐值一致，RGB/GT 文件哈希未改变。模型试跑的输入因而也已追溯到完整源文件。
+
+完整统计在本地 `outputs/nyuv2_check_week1_20261021/summary.csv`，代码和数据来源见 [核验元数据](../results/nyuv2_week1_provenance.json)。三个样本的图像方向、RGB/GT 对应和固定 mask 已检查；全量模型测试仍未开展。
+
+![NYUv2 development data check](../results/figures/nyuv2_week1_samples.png)

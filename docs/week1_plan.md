@@ -273,7 +273,7 @@ Z = f * baseline / (d + doffs)
 
 ### 建议交付文件名
 
-初始化已确定以下位置；清单当前只有表头，文档为约定或模板，实验脚本与结果尚未实现。修改接口时需共同更新说明。
+初始化确定了以下位置；当前实现与实际运行状态以 [任务清单](task_board.md) 和 [实验索引](../results/run_index.csv) 为准。修改接口时需共同更新说明。
 
 - `manifests/middlebury.csv`、`manifests/nyuv2.csv`：公共数据和划分清单，A 维护。
 - `manifests/videos.csv`：视频与开发/测试清单，B 维护。

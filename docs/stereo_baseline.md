@@ -1,6 +1,6 @@
 # StereoSGBM 单样本基线
 
-主责：A / Qinchuan XIAO。第一张开发样本为 Middlebury v3 `trainingQ/Adirondack`，原始尺寸 718 × 496。它已在 manifest 标为 `dev`；其余 14 场景暂为 `unassigned`。本次用于验证端到端计算与输出接口，不代表 15 场景最终精度或正式独立测试。
+主责：A / Qinchuan XIAO。本文记录首次单样本验证：Middlebury v3 `trainingQ/Adirondack`，原始尺寸宽 718 × 高 496，标为 `dev`。当前已进一步完成两个 dev/13 个 evaluation 的划分与 15 对固定配置运行，见 [批量基线](stereo_suite.md)；本文保留首次端到端计算与输出接口说明，不替代后续全量结果。
 
 首次运行已完成，数值、预览图、代码 SHA 和环境见 [2026-10-20 结果记录](../results/stereo_adirondack_20261020.md)。
 
