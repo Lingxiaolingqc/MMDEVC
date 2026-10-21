@@ -2,6 +2,8 @@
 
 import numpy as np
 
+from p3_depth.evaluation.depth import depth_values_metrics
+
 
 def evaluate_region(prediction_depth: np.ndarray, prediction_disparity: np.ndarray,
                     prediction_valid: np.ndarray, gt_depth: np.ndarray,
@@ -39,19 +41,5 @@ def evaluate_region(prediction_depth: np.ndarray, prediction_disparity: np.ndarr
         "bad1_fraction_invalid_as_bad": (int((disparity_error > 1).sum()) + invalid_count) / count,
         "bad2_fraction_invalid_as_bad": (int((disparity_error > 2).sum()) + invalid_count) / count,
     }
-    names = ["abs_rel", "sq_rel_m", "rmse_m", "rmse_log", "delta1", "delta2", "delta3"]
-    if predicted_count == 0:
-        result["depth_on_valid_predictions"] = dict.fromkeys(names)
-        return result
-    pred = prediction_depth[selected].astype(np.float64)
-    gt = gt_depth[selected].astype(np.float64)
-    error = pred - gt
-    ratio = np.maximum(pred / gt, gt / pred)
-    result["depth_on_valid_predictions"] = {
-        "abs_rel": float(np.mean(np.abs(error) / gt)),
-        "sq_rel_m": float(np.mean(error ** 2 / gt)),
-        "rmse_m": float(np.sqrt(np.mean(error ** 2))),
-        "rmse_log": float(np.sqrt(np.mean((np.log(pred) - np.log(gt)) ** 2))),
-        **{f"delta{i}": float(np.mean(ratio < 1.25 ** i)) for i in (1, 2, 3)},
-    }
+    result["depth_on_valid_predictions"] = depth_values_metrics(prediction_depth[selected], gt_depth[selected])
     return result
