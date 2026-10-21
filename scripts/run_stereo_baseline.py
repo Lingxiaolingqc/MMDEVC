@@ -199,7 +199,10 @@ def run(args):
         "implementation_sha256": {path.relative_to(ROOT).as_posix(): checksum(path) for path in implementations},
         "artifacts_sha256": {path.relative_to(output).as_posix(): checksum(path) for path in sorted(output.rglob("*")) if path.is_file()},
         "arguments": vars(args),
-        "reproduce": ["python", "scripts/run_stereo_baseline.py", *sys.argv[1:]],
+        "reproduce": ["python", "scripts/run_stereo_baseline.py", "--sample", args.sample,
+                      "--config", args.config, "--manifest", args.manifest,
+                      "--paths-config", args.paths_config,
+                      *(["--data-root", args.data_root] if args.data_root else [])],
     }
     write_json(output / "metadata.json", metadata)
     print(log, end="")
