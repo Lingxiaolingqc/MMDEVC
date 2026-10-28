@@ -13,7 +13,9 @@ Week 1 A 的单图链路已实现并实际运行：
 - 统一单图评测：七个深度指标、固定 GT 分母和显式 relative alignment，见 [协议与 B 的调用命令](docs/evaluation_protocol.md)。
 - UniDepthV2 ViT-S：`nyuv2_0003` 已完成 CPU 真实推理、原始 Z 深度保存与独立复算，见 [结果](results/unidepth_week1.md) 与 [环境](environments/unidepth.md)。
 
-**B 的真实预测交接与独立复现仍待完成。654 张 NYUv2 测试集的模型评测、视频、时序融合、Demo 和完整报告不属于此次已完成范围。**
+2026-10-28 已补齐 DA V2 Small relative / metric 的三个 NYUv2 dev 样本推理及保存预测复算；DA/VDA metric 已完成同一公开视频 24 帧的推理、保存与固定色标渲染。见 [模型入口与命令](environments/depth_models.md)、[检查证据](results/depth_models_smoke.md) 和 [自录视频采集说明](docs/video_capture.md)。
+
+**654 张正式评测、自录视频实验、时序融合、Demo 和完整报告仍待完成。** 原 A/B 模块主责保留，目前由助手实现和运行；两位组员的独立复现尚未完成。完整状态见 [项目进度](docs/project_progress.md)。
 
 目标：Week 11 之前提交；Week 9 结束冻结方法，Week 10 完成报告、复现检查和提交，预留 2–3 天缓冲。Week 7–10 是倒排里程碑，具体日历日期尚未填写。
 
@@ -123,8 +125,8 @@ third_party/   官方仓库的本地 checkout，仅跟踪 README
 
 完整安排见 [每周计划](docs/weekly_plan.md)，第一批工作见 [任务清单](docs/task_board.md)。
 
-- A：把样本清单、协议、命令和结果交给 B；收到真实 DA V2 预测后复算并核对接口。
-- B：先跑通 DA V2 Small 单图原始预测，准备短视频。
-- 共同：A 的评测能够读取 B 的预测，并由另一人独立复算。
+- A：使用批量入口完成标准测试与边界评测，继续实现光流引导融合。
+- B：按采集清单准备独立 dev/test 视频，继续时序实验与展示。
+- 共同：人工检查真实模型结果，并由成员独立复现。
 
 [待补充信息](docs/open_questions.md)包括运行系统/GPU、数据共享位置、实际截止日期和协作者访问状态。代码许可待两位作者决定；第三方代码、模型与数据遵循各自的许可。

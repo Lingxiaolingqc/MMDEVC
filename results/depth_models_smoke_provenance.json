@@ -1,0 +1,544 @@
+{
+  "date": "2026-10-28",
+  "operator": "assistant implementation and runtime; human cross-verification pending",
+  "nyuv2": {
+    "dav2_relative": {
+      "run": "outputs/dav2_relative_dev_20261028_final",
+      "scope": "dev_smoke_3",
+      "model": {
+        "model": "dav2_relative",
+        "asset": {
+          "source_directory": "Depth-Anything-V2",
+          "source_repository": "https://github.com/DepthAnything/Depth-Anything-V2",
+          "source_commit": "a561b849ebae10a6f5ef49e26c83cbbcd36c71bf",
+          "repository": "depth-anything/Depth-Anything-V2-Small",
+          "revision": "03876f8651c73a60fe4c2c48294e09fcb6838fcf",
+          "filename": "depth_anything_v2_vits.pth",
+          "bytes": 99218434,
+          "sha256": "715fade13be8f229f8a70cc02066f656f2423a59effd0579197bbf57860e1378",
+          "prediction_type": "inverse_depth_like",
+          "unit": "arbitrary",
+          "alignment": "inverse_scale_shift"
+        },
+        "device": "cpu",
+        "requested_precision": "fp32",
+        "parameters": 24785089,
+        "weight_bytes": 99218434,
+        "gt_used_by_model": false,
+        "camera_input": "none",
+        "torch_version": "2.13.0+cpu",
+        "cuda_version": null,
+        "device_name": "CPU",
+        "input_size": 434,
+        "threads": 8,
+        "actual_precision": "fp32",
+        "encoder_shapes_nchw": [
+          [
+            1,
+            3,
+            434,
+            574
+          ]
+        ]
+      },
+      "identity": {
+        "config": {
+          "model": "dav2_relative",
+          "subset": "dev",
+          "limit": null,
+          "device": "cpu",
+          "precision": "fp32",
+          "input_size": 434,
+          "threads": 8,
+          "paths_config": "configs/paths.local.yaml"
+        },
+        "manifest_sha256": "6be58f7a99199e7e3077ee7204e428d43e4a5725dff2d6b71ac2affe60ea6f33",
+        "sample_ids": [
+          "nyuv2_0003",
+          "nyuv2_0005",
+          "nyuv2_0010"
+        ],
+        "implementation_sha256": {
+          "scripts/run_nyuv2.py": "67eec04f655c1f4bc2dcd5f8d851d5532c49382e62fe8a24e51174bc8ad709fb",
+          "scripts/run_stereo_baseline.py": "2a1c368de07a60f0ba5901a0dee6992c2f65d4dc6c578ef334a639c71b738e17",
+          "src/p3_depth/models/runtime.py": "2d93b6074a2b524e5c3a96cb0034d7fd5cd26599d7b9d1b2d34860381325eb99",
+          "src/p3_depth/evaluation/benchmark.py": "6a70108566f7cca9eb3e86d51b341bc0f927c1d19e2e4feb64118806b867adfd",
+          "src/p3_depth/evaluation/depth.py": "7ff73d84dc9da3d3b74cf7e572f28ceba5bd62f985988fd71cc1e3b3b3696b9e",
+          "src/p3_depth/data/nyuv2.py": "712d14614738689ca3333d297894c620e27fb779e32f98ab282b228fac83f8c6",
+          "environments/model_assets.json": "ca31726d9aeec5fdf1fdb5d9c2cc758f090fff58bcfa3513c1eed73769784ea7"
+        },
+        "packages": {
+          "torch": "2.13.0",
+          "torchvision": "0.28.0",
+          "numpy": "2.1.3",
+          "Pillow": "11.0.0",
+          "opencv-python": "4.13.0.92"
+        },
+        "python": "3.13.5"
+      },
+      "summary": {
+        "images": 3,
+        "image_macro_metrics_on_valid": {
+          "abs_rel": 0.07219110541037055,
+          "sq_rel_m": 0.03361906642715761,
+          "rmse_m": 0.2722388395035645,
+          "rmse_log": 0.10460813718642126,
+          "delta1": 0.9252570981444221,
+          "delta2": 0.990203722334004,
+          "delta3": 0.9997778336686788
+        },
+        "contributing_images": {
+          "abs_rel": 3,
+          "sq_rel_m": 3,
+          "rmse_m": 3,
+          "rmse_log": 3,
+          "delta1": 3,
+          "delta2": 3,
+          "delta3": 3
+        },
+        "zero_coverage_images": 0,
+        "pixel_pooled_coverage": 1.0,
+        "gt_pixels": 715680,
+        "valid_prediction_pixels": 715680,
+        "image_macro_full_gt_delta": {
+          "delta1": 0.9252570981444221,
+          "delta2": 0.990203722334004,
+          "delta3": 0.9997778336686788
+        },
+        "mean_infer_seconds": 0.5081764333299361,
+        "throughput_fps_excluding_io": 1.9678204938534507,
+        "aggregation": "unweighted mean of per-image metrics; undefined errors excluded with counts, never converted to zero"
+      },
+      "code_commit_at_run": "c6c831426b7f869a0c3170569cf05219abde6237",
+      "source_state": "uncommitted implementation at run; exact files are identified by implementation SHA256"
+    },
+    "dav2_metric": {
+      "run": "outputs/dav2_metric_dev_20261028_final",
+      "scope": "dev_smoke_3",
+      "model": {
+        "model": "dav2_metric",
+        "asset": {
+          "source_directory": "Depth-Anything-V2",
+          "source_repository": "https://github.com/DepthAnything/Depth-Anything-V2",
+          "source_commit": "a561b849ebae10a6f5ef49e26c83cbbcd36c71bf",
+          "repository": "depth-anything/Depth-Anything-V2-Metric-Hypersim-Small",
+          "revision": "3bc65d4e14a6786a61acec16453c50e12bf5f338",
+          "filename": "depth_anything_v2_metric_hypersim_vits.pth",
+          "bytes": 99222290,
+          "sha256": "b782898d8a3e8be1f639de33837ed85e9b4b73e40f8f5e5cd99067588d722545",
+          "max_depth_m": 20,
+          "prediction_type": "metric_depth",
+          "unit": "m",
+          "alignment": "none"
+        },
+        "device": "cpu",
+        "requested_precision": "fp32",
+        "parameters": 24785089,
+        "weight_bytes": 99222290,
+        "gt_used_by_model": false,
+        "camera_input": "none",
+        "torch_version": "2.13.0+cpu",
+        "cuda_version": null,
+        "device_name": "CPU",
+        "input_size": 434,
+        "threads": 8,
+        "actual_precision": "fp32",
+        "encoder_shapes_nchw": [
+          [
+            1,
+            3,
+            434,
+            574
+          ]
+        ]
+      },
+      "identity": {
+        "config": {
+          "model": "dav2_metric",
+          "subset": "dev",
+          "limit": null,
+          "device": "cpu",
+          "precision": "fp32",
+          "input_size": 434,
+          "threads": 8,
+          "paths_config": "configs/paths.local.yaml"
+        },
+        "manifest_sha256": "6be58f7a99199e7e3077ee7204e428d43e4a5725dff2d6b71ac2affe60ea6f33",
+        "sample_ids": [
+          "nyuv2_0003",
+          "nyuv2_0005",
+          "nyuv2_0010"
+        ],
+        "implementation_sha256": {
+          "scripts/run_nyuv2.py": "67eec04f655c1f4bc2dcd5f8d851d5532c49382e62fe8a24e51174bc8ad709fb",
+          "scripts/run_stereo_baseline.py": "2a1c368de07a60f0ba5901a0dee6992c2f65d4dc6c578ef334a639c71b738e17",
+          "src/p3_depth/models/runtime.py": "2d93b6074a2b524e5c3a96cb0034d7fd5cd26599d7b9d1b2d34860381325eb99",
+          "src/p3_depth/evaluation/benchmark.py": "6a70108566f7cca9eb3e86d51b341bc0f927c1d19e2e4feb64118806b867adfd",
+          "src/p3_depth/evaluation/depth.py": "7ff73d84dc9da3d3b74cf7e572f28ceba5bd62f985988fd71cc1e3b3b3696b9e",
+          "src/p3_depth/data/nyuv2.py": "712d14614738689ca3333d297894c620e27fb779e32f98ab282b228fac83f8c6",
+          "environments/model_assets.json": "ca31726d9aeec5fdf1fdb5d9c2cc758f090fff58bcfa3513c1eed73769784ea7"
+        },
+        "packages": {
+          "torch": "2.13.0",
+          "torchvision": "0.28.0",
+          "numpy": "2.1.3",
+          "Pillow": "11.0.0",
+          "opencv-python": "4.13.0.92"
+        },
+        "python": "3.13.5"
+      },
+      "summary": {
+        "images": 3,
+        "image_macro_metrics_on_valid": {
+          "abs_rel": 0.29062600297133057,
+          "sq_rel_m": 0.33190258276322276,
+          "rmse_m": 0.9138198293947939,
+          "rmse_log": 0.2753920214338666,
+          "delta1": 0.46301279901632014,
+          "delta2": 0.8902638050525374,
+          "delta3": 0.9959367315001119
+        },
+        "contributing_images": {
+          "abs_rel": 3,
+          "sq_rel_m": 3,
+          "rmse_m": 3,
+          "rmse_log": 3,
+          "delta1": 3,
+          "delta2": 3,
+          "delta3": 3
+        },
+        "zero_coverage_images": 0,
+        "pixel_pooled_coverage": 1.0,
+        "gt_pixels": 715680,
+        "valid_prediction_pixels": 715680,
+        "image_macro_full_gt_delta": {
+          "delta1": 0.46301279901632014,
+          "delta2": 0.8902638050525374,
+          "delta3": 0.9959367315001119
+        },
+        "mean_infer_seconds": 0.5594021000045662,
+        "throughput_fps_excluding_io": 1.7876228923556727,
+        "aggregation": "unweighted mean of per-image metrics; undefined errors excluded with counts, never converted to zero"
+      },
+      "code_commit_at_run": "c6c831426b7f869a0c3170569cf05219abde6237",
+      "source_state": "uncommitted implementation at run; exact files are identified by implementation SHA256"
+    },
+    "unidepth_adapter": {
+      "run": "outputs/unidepth_adapter_dev_20261028",
+      "scope": "dev_smoke_1",
+      "model": {
+        "model": "unidepth",
+        "asset": {
+          "source_commit": "8d8cfe4c7ee15297099983607febf0d4f32eb3d6",
+          "filename": "model.safetensors",
+          "sha256": "93705cb3295dd7476b44911b8a55f5215bf74e8d5eccd27cecdb1b338270a648",
+          "prediction_type": "metric_depth",
+          "unit": "m",
+          "alignment": "none",
+          "config_sha256": "ecc1f898690debe387d10329cca5d9d66a0a447ce83c3a2a7ae3673c7ce43cfe",
+          "resolution_level": 0
+        },
+        "device": "cpu",
+        "requested_precision": "fp32",
+        "parameters": 34184323,
+        "weight_bytes": 136777580,
+        "gt_used_by_model": false,
+        "camera_input": "predicted intrinsics",
+        "torch_version": "2.13.0+cpu",
+        "cuda_version": null,
+        "device_name": "CPU",
+        "input_size": "official resolution_level=0",
+        "threads": 8,
+        "actual_precision": "FP32",
+        "encoder_shapes_nchw": [
+          [
+            1,
+            3,
+            434,
+            574
+          ]
+        ]
+      },
+      "identity": {
+        "config": {
+          "model": "unidepth",
+          "subset": "dev",
+          "limit": 1,
+          "device": "cpu",
+          "precision": "fp32",
+          "input_size": 434,
+          "threads": 8,
+          "paths_config": "configs/paths.local.yaml"
+        },
+        "manifest_sha256": "6be58f7a99199e7e3077ee7204e428d43e4a5725dff2d6b71ac2affe60ea6f33",
+        "sample_ids": [
+          "nyuv2_0003"
+        ],
+        "implementation_sha256": {
+          "scripts/run_nyuv2.py": "261c7c7962a0606112c55563c313d4763b900120de9170bc8753b77aa2b43432",
+          "scripts/run_stereo_baseline.py": "2a1c368de07a60f0ba5901a0dee6992c2f65d4dc6c578ef334a639c71b738e17",
+          "src/p3_depth/models/runtime.py": "db5673596de256b8386f94f730437c2c531e2aa6691e79d66a8b37316cc2a13f",
+          "src/p3_depth/evaluation/benchmark.py": "6a70108566f7cca9eb3e86d51b341bc0f927c1d19e2e4feb64118806b867adfd",
+          "src/p3_depth/evaluation/depth.py": "7ff73d84dc9da3d3b74cf7e572f28ceba5bd62f985988fd71cc1e3b3b3696b9e",
+          "src/p3_depth/data/nyuv2.py": "712d14614738689ca3333d297894c620e27fb779e32f98ab282b228fac83f8c6",
+          "environments/model_assets.json": "ca31726d9aeec5fdf1fdb5d9c2cc758f090fff58bcfa3513c1eed73769784ea7"
+        }
+      },
+      "summary": {
+        "images": 1,
+        "image_macro_metrics_on_valid": {
+          "abs_rel": 0.16318831682954693,
+          "sq_rel_m": 0.0553419087096747,
+          "rmse_m": 0.2988495998353366,
+          "rmse_log": 0.16823245504324918,
+          "delta1": 0.8652162977867203,
+          "delta2": 0.9958836351441985,
+          "delta3": 0.9999622736418511
+        },
+        "contributing_images": {
+          "abs_rel": 1,
+          "sq_rel_m": 1,
+          "rmse_m": 1,
+          "rmse_log": 1,
+          "delta1": 1,
+          "delta2": 1,
+          "delta3": 1
+        },
+        "zero_coverage_images": 0,
+        "pixel_pooled_coverage": 1.0,
+        "gt_pixels": 238560,
+        "valid_prediction_pixels": 238560,
+        "image_macro_full_gt_delta": {
+          "delta1": 0.8652162977867203,
+          "delta2": 0.9958836351441985,
+          "delta3": 0.9999622736418511
+        },
+        "mean_infer_seconds": 0.7730661000241525,
+        "throughput_fps_excluding_io": 1.293550447974316,
+        "aggregation": "unweighted mean of per-image metrics; undefined errors excluded with counts, never converted to zero"
+      },
+      "code_commit_at_run": "c6c831426b7f869a0c3170569cf05219abde6237",
+      "source_state": "uncommitted implementation at run; exact files are identified by implementation SHA256"
+    }
+  },
+  "video": {
+    "dav2_relative": {
+      "model": {
+        "model": "dav2_relative",
+        "asset": {
+          "source_directory": "Depth-Anything-V2",
+          "source_repository": "https://github.com/DepthAnything/Depth-Anything-V2",
+          "source_commit": "a561b849ebae10a6f5ef49e26c83cbbcd36c71bf",
+          "repository": "depth-anything/Depth-Anything-V2-Small",
+          "revision": "03876f8651c73a60fe4c2c48294e09fcb6838fcf",
+          "filename": "depth_anything_v2_vits.pth",
+          "bytes": 99218434,
+          "sha256": "715fade13be8f229f8a70cc02066f656f2423a59effd0579197bbf57860e1378",
+          "prediction_type": "inverse_depth_like",
+          "unit": "arbitrary",
+          "alignment": "inverse_scale_shift"
+        },
+        "device": "cpu",
+        "requested_precision": "fp32",
+        "parameters": 24785089,
+        "weight_bytes": 99218434,
+        "gt_used_by_model": false,
+        "camera_input": "none",
+        "torch_version": "2.13.0+cpu",
+        "cuda_version": null,
+        "device_name": "CPU",
+        "input_size": 140,
+        "threads": 8,
+        "actual_precision": "fp32",
+        "encoder_shapes_nchw": [
+          [
+            1,
+            3,
+            140,
+            252
+          ]
+        ]
+      },
+      "frames": 24,
+      "prediction_type": "inverse_depth_like",
+      "unit": "arbitrary",
+      "alignment": "none",
+      "gt_used": false,
+      "depths_sha256": "1e9e926a3edfe3c5e717263cbc933c4120ce03d69d4bff2455547d1b3cfc4e17",
+      "valid_sha256": "7a27a742508bf02803f5464ba3c08afb3abf2e8a6794f348734dceb5e9a3092f",
+      "inference_seconds": 1.2167564000119455,
+      "mean_seconds_per_frame": 0.05069818333383106,
+      "fps": 19.72457264228434,
+      "implementation_sha256": {
+        "scripts/run_video_models.py": "5db20e1abc1e6fe7e770378d44ca541d53ef6d7723ca52e16fe3b3b84895d963",
+        "src/p3_depth/models/video.py": "7ca70fbeb973d0bdb9fed780f3430ffa62a3fd47f1750614471b4093d81440f8",
+        "src/p3_depth/models/runtime.py": "2d93b6074a2b524e5c3a96cb0034d7fd5cd26599d7b9d1b2d34860381325eb99"
+      },
+      "code_commit": "c6c831426b7f869a0c3170569cf05219abde6237",
+      "run": "outputs/video_smoke_20261028/dav2_relative",
+      "cache_frames_sha256": "6e41592661b83b960b903284a5b5642bcf9e623a770e5f5f3a02915586a6cc6b",
+      "cache_index_sha256": "c619deddd4e80cdde5aac56ffafee39704eb21fa33e1923b046d76c3eada62ad",
+      "scope": "pipeline_check_not_final_evaluation"
+    },
+    "dav2_metric": {
+      "model": {
+        "model": "dav2_metric",
+        "asset": {
+          "source_directory": "Depth-Anything-V2",
+          "source_repository": "https://github.com/DepthAnything/Depth-Anything-V2",
+          "source_commit": "a561b849ebae10a6f5ef49e26c83cbbcd36c71bf",
+          "repository": "depth-anything/Depth-Anything-V2-Metric-Hypersim-Small",
+          "revision": "3bc65d4e14a6786a61acec16453c50e12bf5f338",
+          "filename": "depth_anything_v2_metric_hypersim_vits.pth",
+          "bytes": 99222290,
+          "sha256": "b782898d8a3e8be1f639de33837ed85e9b4b73e40f8f5e5cd99067588d722545",
+          "max_depth_m": 20,
+          "prediction_type": "metric_depth",
+          "unit": "m",
+          "alignment": "none"
+        },
+        "device": "cpu",
+        "requested_precision": "fp32",
+        "parameters": 24785089,
+        "weight_bytes": 99222290,
+        "gt_used_by_model": false,
+        "camera_input": "none",
+        "torch_version": "2.13.0+cpu",
+        "cuda_version": null,
+        "device_name": "CPU",
+        "input_size": 140,
+        "threads": 8,
+        "actual_precision": "fp32",
+        "encoder_shapes_nchw": [
+          [
+            1,
+            3,
+            140,
+            252
+          ]
+        ]
+      },
+      "frames": 24,
+      "prediction_type": "metric_depth",
+      "unit": "m",
+      "alignment": "none",
+      "gt_used": false,
+      "depths_sha256": "dbb7df94bd94da54f145c18613f88769ec5b3ac3c7a3a8fd7cf7b963bfff10c2",
+      "valid_sha256": "7a27a742508bf02803f5464ba3c08afb3abf2e8a6794f348734dceb5e9a3092f",
+      "inference_seconds": 1.9004422000143677,
+      "mean_seconds_per_frame": 0.07918509166726533,
+      "fps": 12.628639797526363,
+      "implementation_sha256": {
+        "scripts/run_video_models.py": "5db20e1abc1e6fe7e770378d44ca541d53ef6d7723ca52e16fe3b3b84895d963",
+        "src/p3_depth/models/video.py": "7ca70fbeb973d0bdb9fed780f3430ffa62a3fd47f1750614471b4093d81440f8",
+        "src/p3_depth/models/runtime.py": "2d93b6074a2b524e5c3a96cb0034d7fd5cd26599d7b9d1b2d34860381325eb99"
+      },
+      "code_commit": "c6c831426b7f869a0c3170569cf05219abde6237",
+      "run": "outputs/video_smoke_20261028/dav2_metric",
+      "cache_frames_sha256": "6e41592661b83b960b903284a5b5642bcf9e623a770e5f5f3a02915586a6cc6b",
+      "cache_index_sha256": "c619deddd4e80cdde5aac56ffafee39704eb21fa33e1923b046d76c3eada62ad",
+      "scope": "pipeline_check_not_final_evaluation"
+    },
+    "vda_metric": {
+      "model": {
+        "model": "vda_metric",
+        "asset": {
+          "source_directory": "Video-Depth-Anything",
+          "source_repository": "https://github.com/DepthAnything/Video-Depth-Anything",
+          "source_commit": "4f5ae23172ba60fd7bc11ef671cca678842c7072",
+          "repository": "depth-anything/Metric-Video-Depth-Anything-Small",
+          "revision": "273d090f2ce17df50c2872d82c8322c45da5b4dd",
+          "filename": "metric_video_depth_anything_vits.pth",
+          "bytes": 116444063,
+          "sha256": "3c28432b4e1f0d7bb31cad5151b6313b49457db5aa58d82e85bfb0f8b1311b33",
+          "prediction_type": "metric_depth",
+          "unit": "m",
+          "alignment": "none"
+        },
+        "mode": "official_offline",
+        "device": "cpu",
+        "precision": "fp32",
+        "input_size": 140,
+        "threads": 8,
+        "parameters": 29035137,
+        "weight_bytes": 116444063,
+        "gt_used_by_model": false,
+        "torch_version": "2.13.0+cpu",
+        "cuda_version": null,
+        "device_name": "CPU",
+        "temporal_windows": "official INFER_LEN=32, OVERLAP=10, padding/keyframes/interpolation unchanged",
+        "alignment": "official metric mode: scale=1 shift=0 between windows; no GT",
+        "encoder_shapes_nchw": [
+          [
+            32,
+            3,
+            140,
+            252
+          ]
+        ]
+      },
+      "frames": 24,
+      "prediction_type": "metric_depth",
+      "unit": "m",
+      "alignment": "none",
+      "gt_used": false,
+      "depths_sha256": "0e4d358e06fd6a612c27d1970f4b0b8890b0ec0833c8c2c33468eb109b873578",
+      "valid_sha256": "7a27a742508bf02803f5464ba3c08afb3abf2e8a6794f348734dceb5e9a3092f",
+      "inference_seconds": 3.169037899991963,
+      "mean_seconds_per_frame": 0.13204324583299845,
+      "fps": 7.573276419338773,
+      "implementation_sha256": {
+        "scripts/run_video_models.py": "5db20e1abc1e6fe7e770378d44ca541d53ef6d7723ca52e16fe3b3b84895d963",
+        "src/p3_depth/models/video.py": "44bd0de8a46be09d58b1fafba565670861877687e63ab436bd946e45804290e0",
+        "src/p3_depth/models/runtime.py": "2d93b6074a2b524e5c3a96cb0034d7fd5cd26599d7b9d1b2d34860381325eb99"
+      },
+      "code_commit": "c6c831426b7f869a0c3170569cf05219abde6237",
+      "run": "outputs/video_smoke_20261028/vda_metric_verified",
+      "cache_frames_sha256": "6e41592661b83b960b903284a5b5642bcf9e623a770e5f5f3a02915586a6cc6b",
+      "cache_index_sha256": "c619deddd4e80cdde5aac56ffafee39704eb21fa33e1923b046d76c3eada62ad",
+      "scope": "pipeline_check_not_final_evaluation"
+    }
+  },
+  "render": {
+    "status": "complete",
+    "scope": "pipeline_check_not_final_evaluation",
+    "frames": 24,
+    "cache_frames_sha256": "6e41592661b83b960b903284a5b5642bcf9e623a770e5f5f3a02915586a6cc6b",
+    "cache_index_sha256": "c619deddd4e80cdde5aac56ffafee39704eb21fa33e1923b046d76c3eada62ad",
+    "inputs": [
+      {
+        "run": "outputs/video_smoke_20261028/dav2_relative",
+        "model": "dav2_relative",
+        "low": 0.2744003400206566,
+        "high": 3.069111344814301,
+        "unit": "arbitrary inverse",
+        "scale_rule": "whole-clip 1st/99th percentiles",
+        "metadata_sha256": "d44e0072617048d3960e09237a08a0862fdc43047f5e2eac14b77b6172008ab7"
+      },
+      {
+        "run": "outputs/video_smoke_20261028/dav2_metric",
+        "model": "dav2_metric",
+        "low": 0.0,
+        "high": 10.0,
+        "unit": "m",
+        "scale_rule": "fixed user metric range",
+        "metadata_sha256": "eb69bf8561bf642214b59b55036efa17df1823bd4df85f8274379643a31f3fae"
+      },
+      {
+        "run": "outputs/video_smoke_20261028/vda_metric_verified",
+        "model": "vda_metric",
+        "low": 0.0,
+        "high": 10.0,
+        "unit": "m",
+        "scale_rule": "fixed user metric range",
+        "metadata_sha256": "3496d7ac47e8e78aef780c1ed36febfbfc9b0e98b2854432cf59384f62402dce"
+      }
+    ],
+    "raw_predictions_modified": false,
+    "timing": "original selected timestamps retained; verified by decoding rendered MP4",
+    "video_sha256": "67e608a037a1f0b6878002c1ab9fb4d70ce710d45ab0fe2d7f4cffb377da105f",
+    "preview_sha256": "1a16489d0774bd9bee862f3ce6399cab7e598434efe77444827b085234a1ae13",
+    "renderer_sha256": "1e2b2ef5be1cf89d06b3d7a21aff0cd490f01be29927cfa49e69819454b9c933"
+  },
+  "validation": "36 unit tests; saved NYU arrays recomputed; rendered MP4 decoded to verify original timestamps"
+}
