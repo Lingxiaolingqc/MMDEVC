@@ -13,9 +13,9 @@ Week 1 A 的单图链路已实现并实际运行：
 - 统一单图评测：七个深度指标、固定 GT 分母和显式 relative alignment，见 [协议与 B 的调用命令](docs/evaluation_protocol.md)。
 - UniDepthV2 ViT-S：`nyuv2_0003` 已完成 CPU 真实推理、原始 Z 深度保存与独立复算，见 [结果](results/unidepth_week1.md) 与 [环境](environments/unidepth.md)。
 
-2026-10-28 已补齐 DA V2 Small relative / metric 的三个 NYUv2 dev 样本推理及保存预测复算；DA/VDA metric 已完成同一公开视频 24 帧的推理、保存与固定色标渲染。见 [模型入口与命令](environments/depth_models.md)、[检查证据](results/depth_models_smoke.md) 和 [自录视频采集说明](docs/video_capture.md)。
+2026-10-28：UniDepthV2、DA V2 metric 与 relative 均完成 NYUv2 标准 654 张评测、保存预测复算和边界评测，见 [正式单图结果](results/nyuv2_standard_test.md)。E0–E5 融合、公共时序评测区域和固定色标视频已在示例短片验证，见 [时序协议与命令](docs/temporal_protocol.md)。GPU 环境见 [CUDA 说明](environments/cuda.md)。
 
-**654 张正式评测、自录视频实验、时序融合、Demo 和完整报告仍待完成。** 原 A/B 模块主责保留，目前由助手实现和运行；两位组员的独立复现尚未完成。完整状态见 [项目进度](docs/project_progress.md)。
+**自录视频的 dev/test 实验、最终融合参数、Demo 和完整报告仍待完成。** 原 A/B 模块主责保留，由助手实现和运行；两位组员的独立复现尚未完成。素材要求见 [采集说明](docs/video_capture.md)，完整状态见 [项目进度](docs/project_progress.md)。
 
 目标：Week 11 之前提交；Week 9 结束冻结方法，Week 10 完成报告、复现检查和提交，预留 2–3 天缓冲。Week 7–10 是倒排里程碑，具体日历日期尚未填写。
 
@@ -86,7 +86,7 @@ python scripts/evaluate_depth.py --dataset nyuv2 --sample nyuv2_0003 --predictio
 1. [协作流程](CONTRIBUTING.md)：分支、PR、实验交接。
 2. [第一周详细计划](docs/week1_plan.md)：按 A/B 分工开始任务。
 3. [数据与预测格式](docs/data_format.md)：先统一接口。
-4. [单图评测协议](docs/evaluation_protocol.md)：direct metric 与 relative/aligned 分开；视频规则仍待后续确定。
+4. [单图评测协议](docs/evaluation_protocol.md)与[时序协议](docs/temporal_protocol.md)：分清 direct metric、GT-aligned relative 与无 GT 视频指标。
 5. [环境与官方模型](environments/README.md)：按模型单独配置环境。
 
 ## 研究路线
@@ -105,10 +105,10 @@ python scripts/evaluate_depth.py --dataset nyuv2 --sample nyuv2_0003 --predictio
 ```text
 configs/       项目设置、本机路径示例、模型计划与 E0–E5 消融矩阵
 docs/          周计划、数据格式、评测协议、实验记录、待补充信息
-environments/  官方代码来源及后续验证过的环境记录
-manifests/     Middlebury 15 场景、NYUv2 标准 split 与 dev 清单；视频待 B 整理
-src/p3_depth/  Middlebury/NYUv2 读取器、StereoSGBM、单图评测与可视化
-scripts/       数据检查、Stereo 批量运行/复算、统一单图评测、UniDepthV2 试跑
+environments/  固定官方源码/权重、CPU 与 CUDA 环境及锁定依赖
+manifests/     Middlebury/NYUv2 固定划分；视频清单等待自录素材
+src/p3_depth/  数据读取、模型适配、单图/时序评测、光流融合与可视化
+scripts/       数据检查、批量推理、融合、保存结果复算与图表导出
 demo/          应用展示计划
 tests/         数据方向/划分、SGBM 匹配与坐标、单位、七指标、mask 和显式对齐
 results/       可提交的精选表格、图片与实验索引
@@ -125,8 +125,8 @@ third_party/   官方仓库的本地 checkout，仅跟踪 README
 
 完整安排见 [每周计划](docs/weekly_plan.md)，第一批工作见 [任务清单](docs/task_board.md)。
 
-- A：使用批量入口完成标准测试与边界评测，继续实现光流引导融合。
-- B：按采集清单准备独立 dev/test 视频，继续时序实验与展示。
+- A：在自录 dev 视频检查融合的边缘和运动响应，再冻结参数。
+- B：按采集清单准备独立 dev/test 视频，完成正式时序实验与展示。
 - 共同：人工检查真实模型结果，并由成员独立复现。
 
 [待补充信息](docs/open_questions.md)包括运行系统/GPU、数据共享位置、实际截止日期和协作者访问状态。代码许可待两位作者决定；第三方代码、模型与数据遵循各自的许可。

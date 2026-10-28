@@ -1,6 +1,6 @@
 # UniDepthV2 ViT-S 单样本复现
 
-已验证 Windows 11、Python 3.13.5、CPU float32、8 threads、batch=1。使用官方代码和完整 ViT-S 权重，strict load 成功，34,184,323 个参数；没有训练、GT 尺度对齐或替代模型。CPU PyTorch 为 `2.13.0+cpu`，torchvision 为 `0.28.0+cpu`。本机 RTX 4060 Laptop 8 GiB 的 CUDA 路径未验证；不要把本次 CPU 耗时当 GPU 性能。
+已验证 Windows 11、Python 3.13.5、CPU float32、8 threads、batch=1。使用官方代码和完整 ViT-S 权重，strict load 成功，34,184,323 个参数；没有训练、GT 尺度对齐或替代模型。CPU PyTorch 为 `2.13.0+cpu`，torchvision 为 `0.28.0+cpu`。本页保留 CPU 单样本记录；新增 RTX 4060 Laptop 的 CUDA 654 张评测见 [CUDA 环境](cuda.md)和[标准测试结果](../results/nyuv2_standard_test.md)。
 
 源代码/权重完整 SHA 见 [model_sources.yaml](model_sources.yaml)，实际包版本与输入尺寸见 [运行元数据](../results/unidepth_week1_provenance.json)。本机 `.venv` 设置 `include-system-site-packages=true`，复用了已有 NumPy/PyTorch 等依赖，只在项目环境补充 timm/einops/wandb/safetensors；未重装验证一个全新独立环境。
 

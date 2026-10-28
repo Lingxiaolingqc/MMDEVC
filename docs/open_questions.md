@@ -6,7 +6,7 @@
 - A：Qinchuan XIAO，GitHub `Lingxiaolingqc`。
 - B：Jun Yu Eugene YIP，GitHub `Geney-gy-29`。
 - 目标 Week 11 前提交；Week 9 结束冻结方法，Week 10 整理和复现，留 2–3 天缓冲。
-- 2026-10-21 本次执行电脑：Windows 11，检测到 RTX 4060 Laptop GPU 8188 MiB、驱动 580.88；实际 Week 1 Stereo/UniDepthV2 运行均使用 CPU，CUDA 尚未验证。本机路径配置已填写且不提交。
+- 2026-10-21 本次执行电脑：Windows 11，检测到 RTX 4060 Laptop GPU 8188 MiB、驱动 580.88；Week 1 运行使用 CPU；2026-10-28 新增 CUDA 真实推理与标准测试已验证。本机路径配置已填写且不提交。
 
 ## 可后补，不阻塞仓库初始化
 

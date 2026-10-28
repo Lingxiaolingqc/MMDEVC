@@ -1,6 +1,6 @@
-# 单图评测协议 v1
+# 单图与边界评测协议 v2
 
-主维护：A / Qinchuan XIAO；B / Jun Yu Eugene YIP 的真实预测交接与独立复核待完成。适用于 Spring 2027 Week 1 单图实验；视频、边界与正式多方法比较尚未冻结。
+主维护：A / Qinchuan XIAO。2026-10-28：已由助手运行 UniDepth、DA metric/relative 的标准测试与复算；成员独立复核待完成。v2 保留 v1 的数据、单位与七指标定义，增加相对对齐失败的批量统计及边界定义。视频规则见 [时序协议](temporal_protocol.md)。
 
 ## 数据、范围与尺寸
 
@@ -28,7 +28,7 @@
 
 另外报告以整个 G 为分母、无效预测算失败的 `delta*_full_gt`。空 V 时条件误差为 null，coverage=0、full-GT δ=0；空 G 直接报错。Stereo 还报告全 G 上 Bad>1/2 px，将无效预测计为错误。深度 RMSE 不能脱离 coverage 单独比较。
 
-批量 Stereo 深度指标采用逐场景宏平均；覆盖率和 Bad 的像素加权汇总明确以 `pooled_` 命名。dev、13 场景 evaluation、包含 dev 的 15 场景描述性汇总分别报告。未实现的 NYUv2 全测试集比较不冒充已完成。
+批量 Stereo 深度指标采用逐场景宏平均；覆盖率和 Bad 的像素加权汇总明确以 `pooled_` 命名。dev、13 场景 evaluation、包含 dev 的 15 场景描述性汇总分别报告。NYUv2 采用逐图指标宏平均并报告有效贡献图数；coverage 按固定 GT 像素汇总。标准 654 张结果见 [正式记录](../results/nyuv2_standard_test.md)。
 
 ## Direct metric 与 Relative + Alignment
 
@@ -39,6 +39,8 @@
 | `inverse_depth_like` | `arbitrary` / `inverse_scale_shift` | 在 G∩有效预测上最小二乘拟合 a×raw+b≈1/g，再取倒数；a 必须正；非正逆深度输出为无效；`relative_aligned` |
 
 对齐只用于有 GT 的逐图 benchmark 分析，会使用该图 GT；不能拿来证明直接米制能力，也不能直接用于没有 GT 的视频。拟合一次后复用相同转换，不为不同遮挡区域分别拟合。退化、常数或方向错误的逆深度拟合报错。B 需确认模型实际输出方向，并保留未经归一化的 float `.npy` 和模型配置。
+
+批量入口将这类明确的 `RelativeAlignmentError` 记录为对齐失败，保留该图、原始预测与固定 GT 分母，令有效对齐预测数为零。条件误差记为 null，full-GT δ 为零；汇总同时报告 `alignment_failures` 与 `contributing_images`。形状、单位等其他错误仍停止运行，不能统统吞掉异常。实际测试中 `nyuv2_0650` 的负拟合比例按此规则处理。
 
 ## B 可直接调用的入口
 
@@ -54,8 +56,16 @@ python scripts/evaluate_depth.py --dataset nyuv2 --sample nyuv2_0003 --predictio
 
 可选 `--mask path.npy` 必须为同尺寸 bool 数组；预测本身的 NaN/Inf/非正 metric depth 仍视为无效。输入 float32/float64、二维 H×W，不接收整数图或伪彩色图。入口保存转换后的副本、有效 mask、指标和变换参数，原始输入不改动。
 
-已检查：GT=prediction、mm→m、自然对数与 strict δ、空预测、NaN/Inf、单位/尺寸/方向错误、两种显式对齐；七指标与上述 DA V2 实现的随机正值对照一致。保存的 Stereo 预测已通过该入口复算。B 的真实预测与双方独立复现仍待交接。
+已检查：GT=prediction、mm→m、自然对数与 strict δ、空预测、NaN/Inf、单位/尺寸/方向错误、两种显式对齐；七指标与上述 DA V2 实现的随机正值对照一致。Stereo、UniDepth 和 DA 保存预测均已复算。成员独立复现仍待完成。
 
-## 后续边界
+## Depth-discontinuity 边界指标
 
-视频的 scene split、光流公共 mask、边界指标和时序公式留到后续任务。无 GT 视频不报告绝对深度准确率；相机移动引起的真实 Z 变化不能全部称为漂移。光流只建立像素对应，不把历史 Z 转为当前相机坐标系。融合拒绝历史信息的内部 mask 不用于挑选评测像素。
+固定 GT crop/range 向内腐蚀一个像素，避免区域外数据形成假边界。GT 与预测分别计算四邻居最大绝对 log-depth 差；差值严格大于 ln(1.1) 的像素作为边缘，边缘两端均保留。预测边缘还要求完整 3×3 有效预测邻域。
+
+匹配容差为欧氏距离 2 px，分别报告 prediction→GT precision 与 GT→prediction recall，再计算 F1。汇总按边缘像素数合并，另保留逐图指标。GT→prediction 的距离在 10 px 截断；缺少预测边缘时每个 GT 边缘计 10 px，不缩小 GT 边缘分母。无 GT 边缘的图不参与未定义的 recall/F1 宏平均，并明确计数。
+
+这是本项目明确规定的边界质量指标，用于同一协议下比较方法，不声称完全复现其他论文的 edge benchmark。参数在开发检查时固定，正式测试不按结果调节。入口为 `scripts/evaluate_nyuv2_boundaries.py`。
+
+## 视频解释边界
+
+无 GT 视频不报告绝对深度准确率；相机移动引起的真实 Z 变化不能全部称为漂移。光流只建立像素对应，不把历史 Z 转为当前相机坐标系。融合拒绝历史信息的内部 mask 不用于挑选评测像素。公式、公共区域和冻结要求见 [时序协议](temporal_protocol.md)。

@@ -1,10 +1,10 @@
 # DA V2、VDA 与 NYUv2 批量入口
 
-2026-10-28：DA V2 Small relative / Hypersim metric 已分别完成三个 NYUv2 train-side dev 样本；VDA Small metric 已完成官方公开视频的 24 帧 CPU 接口检查。三个视频模型用同一 RGB/时间缓存，保存原始浮点结果。验证记录见 [模型检查结果](../results/depth_models_smoke.md)。这些结果不代表正式测试集或自录视频实验。
+2026-10-28：UniDepth、DA relative / metric 的 654 张标准测试已经完成，见 [正式结果](../results/nyuv2_standard_test.md)。VDA 已完成 GPU 24 帧资源预检，见 [CUDA 环境](cuda.md)。本页提供输入准备、推理、保存与复算命令；历史 CPU 开发检查见 [模型检查记录](../results/depth_models_smoke.md)。自录视频实验仍待素材。
 
 ## 环境和固定资产
 
-已验证 CPU 环境为 Windows、Python 3.13.5、torch 2.13.0+cpu、torchvision 0.28.0+cpu、8 threads。依赖复用了已有 `.venv`，不是全新安装验证。CUDA 环境另建于 `.venv-cuda`，其状态以运行记录为准。
+CPU 历史环境为 Windows、Python 3.13.5、torch 2.13.0+cpu、torchvision 0.28.0+cpu、8 threads，复用了已有 `.venv`。全新隔离 `.venv-cuda` 使用 torch 2.10.0+cu128 / torchvision 0.25.0+cu128，安装和锁定依赖见 [CUDA 说明](cuda.md)。
 
 安装匹配的 PyTorch/torchvision 后，在仓库根目录执行：
 
@@ -54,7 +54,7 @@ python scripts/render_depth_video.py --cache outputs/videos/dev_static/cache --r
 
 登记会保存原文件、检查重复 clip/hash 和跨 split 的 scene group，并写入 `manifests/videos.csv`。默认最长边 640、目标 10 fps；保留实际 PTS，实际相邻帧间隔可能不同于 0.1 秒。两模型只使用同一缓存，不各自抽帧。视频模型参数接收目标帧率，不能据此假称输入时间间隔精确恒定。
 
-视频默认模型 short side 280；这是待实机预检的起始配置，不是已冻结的正式实验配置。VDA 保留官方 offline 32-frame window、10-frame overlap、padding、keyframe 与跨窗口插值。metric 模式不做尺度拟合。宽高比超过上游阈值时 VDA 会改输入尺寸，因此比较前必须检查元数据的实际 encoder H/W 是否与 DA 相同。VDA 是离线视频处理，吞吐率不能称为实时端到端延迟。
+视频默认模型 short side 364；这是经显存预检选择的起始配置，正式自录实验尚未冻结。VDA 保留官方 offline 32-frame window、10-frame overlap、padding、keyframe 与跨窗口插值。metric 模式不做尺度拟合。宽高比超过上游阈值时 VDA 会改输入尺寸，因此比较前必须检查元数据的实际 encoder H/W 是否与 DA 相同。VDA 是离线视频处理，吞吐率不能称为实时端到端延迟。
 
 输出 `depths.npy`、`valid.npy` 和 `metadata.json`。渲染保留选中帧的时间戳，并通过重新解码验证；米制固定显示 0–10 m，相对值固定使用整段 1%–99% 分位范围。显示裁剪不修改原始深度；相对值与米制颜色含义不同。`preview.png` 展示首、中、末帧。
 

@@ -7,7 +7,7 @@ from p3_depth.models.runtime import checked_source, file_hash
 
 
 class VideoModel:
-    def __init__(self, root, settings, device='cuda', precision='fp16', input_size=280, threads=8):
+    def __init__(self, root, settings, device='cuda', precision='fp16', input_size=364, threads=8):
         import torch
         if device == 'cuda' and not torch.cuda.is_available():
             raise RuntimeError('CUDA requested but unavailable')

@@ -1,0 +1,16 @@
+schema_version: 1
+algorithm: opencv_farneback
+threads: 8
+farneback:
+  pyr_scale: 0.5
+  levels: 3
+  winsize: 15
+  iterations: 3
+  poly_n: 5
+  poly_sigma: 1.2
+  flags: 0
+# RGB-only evaluator region; do not tune against a fusion variant's results.
+evaluation_mask:
+  fb_relative: 0.01
+  fb_absolute: 0.5  # pixels squared
+  photo_max: 0.2   # mean RGB absolute residual / 255

@@ -1,0 +1,247 @@
+{
+  "scope": "pipeline_check_not_final_evaluation",
+  "suite_path": "outputs/video_smoke_20261028/fusion_364",
+  "suite": {
+    "status": "complete",
+    "scope": "pipeline_check_not_final_evaluation",
+    "split": "smoke",
+    "clip_id": "upstream_tokyo_smoke",
+    "cache_metadata_sha256": "8b07b09c0246a0aaa0007f7ad89b96a3e47f611dad4fccddfa2b1a47933192a5",
+    "base_metadata_sha256": "6662a15ca1a3fc1759aad2b634718b1212b3667f9e36bedf90f18bfed10b306e",
+    "vda_metadata_sha256": "92a4a10e92476aad6a5831615334a58dfb4e63ae82e952b4aafe4f09c976e18f",
+    "flow_metadata_sha256": "fd64b6749a2001ed810552decfde4454c7059faf950efc22e3ece6d4563e00e5",
+    "config": {
+      "schema_version": 1,
+      "status": "provisional",
+      "selection_evidence": null,
+      "parameters": {
+        "history_weight": 0.7,
+        "fb_relative": 0.01,
+        "fb_absolute": 0.5,
+        "photo_max": 0.2,
+        "photo_sigma": 0.1,
+        "flow_sigma_px": 1.0,
+        "depth_log_sigma": 0.1,
+        "edge_log_sigma": 0.1
+      }
+    },
+    "config_sha256": "b2f9664e6c44a1940277c4d880520ae2ca779d8e70f7c61b4ea17badbe6b5ee5",
+    "comparison_sha256": "ab41df8f45c4c3de5b7aaa9dbc1090c9559c66acf577c71bf6fd580504627899",
+    "E5_predictions": "outputs/video_smoke_20261028/vda_gpu_364",
+    "efficiency": "estimated additive base inference + CPU flow + fusion; excludes decode/IO; not measured end-to-end FPS",
+    "implementation_sha256": {
+      "scripts/run_fusion_suite.py": "9392b5f3724962984f08d7c0ad4b90a266f10b97af87835ded170db50dad4a1e",
+      "src/p3_depth/temporal/fusion.py": "f73ddd5907405c1432419287c47b8eb3b80136e10a7fb907f2f54d1d7aa9d93c",
+      "src/p3_depth/temporal/flow.py": "b0e77104ae524031db548bf6c3bcc3a83c789a41713bc443a7433e4d501006cd",
+      "src/p3_depth/evaluation/temporal.py": "f10005bed6e323bab28048f186dd55f16e0b2abb07f77f926b0e9f72928bb915"
+    }
+  },
+  "flow": {
+    "status": "complete",
+    "cache_metadata": {
+      "source_fps_nominal": 15.0,
+      "source_size_hw": [
+        720,
+        1280
+      ],
+      "output_size_hw": [
+        180,
+        320
+      ],
+      "requested_fps": 10.0,
+      "effective_fps": 9.857142857142856,
+      "sampled_duration_s": 2.3333333333333335,
+      "max_frames": 24,
+      "timestamp_rule": "first decoded frame at or after each target interval; original PTS retained",
+      "spatial_resize": "aspect-preserving INTER_AREA, even dimensions, no upsampling",
+      "orientation": "decoded pixels; no implicit rotation correction",
+      "clip_id": "upstream_tokyo_smoke",
+      "scene_group": "upstream_example",
+      "split": "smoke",
+      "scene_type": "walking",
+      "source_sha256": "097f16c33dd8c8d1d2a24d9ea31a90b76bd0ee324b958a47385183e3547a63a8",
+      "frames_sha256": "6e41592661b83b960b903284a5b5642bcf9e623a770e5f5f3a02915586a6cc6b",
+      "index_sha256": "c619deddd4e80cdde5aac56ffafee39704eb21fa33e1923b046d76c3eada62ad",
+      "frames": 24,
+      "color": "RGB uint8",
+      "self_recorded": false,
+      "scope": "pipeline_check_not_final_evaluation"
+    },
+    "config": {
+      "schema_version": 1,
+      "algorithm": "opencv_farneback",
+      "threads": 8,
+      "farneback": {
+        "pyr_scale": 0.5,
+        "levels": 3,
+        "winsize": 15,
+        "iterations": 3,
+        "poly_n": 5,
+        "poly_sigma": 1.2,
+        "flags": 0
+      },
+      "evaluation_mask": {
+        "fb_relative": 0.01,
+        "fb_absolute": 0.5,
+        "photo_max": 0.2
+      }
+    },
+    "config_sha256": "8885bbdc5a824657577b84abdb60aef3c0b3dba1aa58eaa92d0bf2829fc3b5ec",
+    "artifacts_sha256": {
+      "forward": "980f62a6e05464bf8b6c4c876aca64d34daf289203d1acb1cdaea61b17699bf0",
+      "backward": "7ce6d4c81ff02cc544d449d47c4c1a082cd19fe513d2893296f6551186b073cc",
+      "fb_residual": "7244df3a089841250412a0f33d5b9a3a11b2d5a36846548eec1cb69a7efe32bb",
+      "photo_residual": "b75effe042aa0c7bbb4507ccdac1f1a0c8dec5ca4f1f7a90040f9d92afa87a77",
+      "common_mask": "3c0b971a5bcb81b2f572f147d139fc4498e68bbe61ef9a9064ca82b07c58864f"
+    },
+    "pairs": 23,
+    "elapsed_seconds": 0.6005319000105374,
+    "seconds_per_pair": 0.026110082609153797,
+    "opencv": "4.13.0",
+    "unit": "pixels at cached RGB resolution",
+    "coordinates": "forward[t-1]: previous -> current on previous grid; backward[t-1]: current -> previous on current grid",
+    "evaluation_region": "current-frame pixels; RGB/flow only; independent of all depth predictions and fusion weights",
+    "implementation_sha256": {
+      "scripts/prepare_flow.py": "ba75e5d90fe2d23d0b9637dc9adafb5075154f349865023264ebf0de9afb0d12",
+      "src/p3_depth/temporal/flow.py": "b0e77104ae524031db548bf6c3bcc3a83c789a41713bc443a7433e4d501006cd"
+    }
+  },
+  "validation": "RGB flow and common masks, E0-E4 predictions/weights, E0-E5 scores recomputed; selected timestamps preserved by rendered MP4",
+  "model_memory_preflight": {
+    "280": {
+      "model": {
+        "model": "vda_metric",
+        "asset": {
+          "source_directory": "Video-Depth-Anything",
+          "source_repository": "https://github.com/DepthAnything/Video-Depth-Anything",
+          "source_commit": "4f5ae23172ba60fd7bc11ef671cca678842c7072",
+          "repository": "depth-anything/Metric-Video-Depth-Anything-Small",
+          "revision": "273d090f2ce17df50c2872d82c8322c45da5b4dd",
+          "filename": "metric_video_depth_anything_vits.pth",
+          "bytes": 116444063,
+          "sha256": "3c28432b4e1f0d7bb31cad5151b6313b49457db5aa58d82e85bfb0f8b1311b33",
+          "prediction_type": "metric_depth",
+          "unit": "m",
+          "alignment": "none"
+        },
+        "mode": "official_offline",
+        "device": "cuda",
+        "precision": "fp16",
+        "input_size": 280,
+        "threads": 8,
+        "parameters": 29035137,
+        "weight_bytes": 116444063,
+        "gt_used_by_model": false,
+        "torch_version": "2.10.0+cu128",
+        "cuda_version": "12.8",
+        "device_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "temporal_windows": "official INFER_LEN=32, OVERLAP=10, padding/keyframes/interpolation unchanged",
+        "alignment": "official metric mode: scale=1 shift=0 between windows; no GT",
+        "encoder_shapes_nchw": [
+          [
+            32,
+            3,
+            280,
+            504
+          ]
+        ]
+      },
+      "inference_seconds": 1.1869493999984115,
+      "fps": 20.219901539216515,
+      "peak_cuda_allocated_bytes": 1168958976,
+      "peak_cuda_reserved_bytes": 1400897536,
+      "depths_sha256": "f032833deef8e7bb9ad4c2f722cca7bf08e31df1ef1f97fbe9711d9cf7207191",
+      "valid_sha256": "7a27a742508bf02803f5464ba3c08afb3abf2e8a6794f348734dceb5e9a3092f"
+    },
+    "364": {
+      "model": {
+        "model": "vda_metric",
+        "asset": {
+          "source_directory": "Video-Depth-Anything",
+          "source_repository": "https://github.com/DepthAnything/Video-Depth-Anything",
+          "source_commit": "4f5ae23172ba60fd7bc11ef671cca678842c7072",
+          "repository": "depth-anything/Metric-Video-Depth-Anything-Small",
+          "revision": "273d090f2ce17df50c2872d82c8322c45da5b4dd",
+          "filename": "metric_video_depth_anything_vits.pth",
+          "bytes": 116444063,
+          "sha256": "3c28432b4e1f0d7bb31cad5151b6313b49457db5aa58d82e85bfb0f8b1311b33",
+          "prediction_type": "metric_depth",
+          "unit": "m",
+          "alignment": "none"
+        },
+        "mode": "official_offline",
+        "device": "cuda",
+        "precision": "fp16",
+        "input_size": 364,
+        "threads": 8,
+        "parameters": 29035137,
+        "weight_bytes": 116444063,
+        "gt_used_by_model": false,
+        "torch_version": "2.10.0+cu128",
+        "cuda_version": "12.8",
+        "device_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "temporal_windows": "official INFER_LEN=32, OVERLAP=10, padding/keyframes/interpolation unchanged",
+        "alignment": "official metric mode: scale=1 shift=0 between windows; no GT",
+        "encoder_shapes_nchw": [
+          [
+            32,
+            3,
+            364,
+            644
+          ]
+        ]
+      },
+      "inference_seconds": 2.6485828000004403,
+      "fps": 9.061449768531311,
+      "peak_cuda_allocated_bytes": 2479369728,
+      "peak_cuda_reserved_bytes": 3317694464,
+      "depths_sha256": "e1c6e5c96646e547cb5e0101ee9fd79c7c4e59161c4c60eab7dee92afa6eef62",
+      "valid_sha256": "7a27a742508bf02803f5464ba3c08afb3abf2e8a6794f348734dceb5e9a3092f"
+    },
+    "518": {
+      "model": {
+        "model": "vda_metric",
+        "asset": {
+          "source_directory": "Video-Depth-Anything",
+          "source_repository": "https://github.com/DepthAnything/Video-Depth-Anything",
+          "source_commit": "4f5ae23172ba60fd7bc11ef671cca678842c7072",
+          "repository": "depth-anything/Metric-Video-Depth-Anything-Small",
+          "revision": "273d090f2ce17df50c2872d82c8322c45da5b4dd",
+          "filename": "metric_video_depth_anything_vits.pth",
+          "bytes": 116444063,
+          "sha256": "3c28432b4e1f0d7bb31cad5151b6313b49457db5aa58d82e85bfb0f8b1311b33",
+          "prediction_type": "metric_depth",
+          "unit": "m",
+          "alignment": "none"
+        },
+        "mode": "official_offline",
+        "device": "cuda",
+        "precision": "fp16",
+        "input_size": 518,
+        "threads": 8,
+        "parameters": 29035137,
+        "weight_bytes": 116444063,
+        "gt_used_by_model": false,
+        "torch_version": "2.10.0+cu128",
+        "cuda_version": "12.8",
+        "device_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "temporal_windows": "official INFER_LEN=32, OVERLAP=10, padding/keyframes/interpolation unchanged",
+        "alignment": "official metric mode: scale=1 shift=0 between windows; no GT",
+        "encoder_shapes_nchw": [
+          [
+            32,
+            3,
+            518,
+            924
+          ]
+        ]
+      },
+      "inference_seconds": 26.084214199974667,
+      "fps": 0.9200967227152776,
+      "peak_cuda_allocated_bytes": 8382448128,
+      "peak_cuda_reserved_bytes": 12436111360,
+      "depths_sha256": "d283eefa74371422089cd06aa81fa35ac9aac41090b4728b6ee2fa4b8020f1b3",
+      "valid_sha256": "7a27a742508bf02803f5464ba3c08afb3abf2e8a6794f348734dceb5e9a3092f"
+    }
+  }
+}

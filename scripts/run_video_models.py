@@ -19,7 +19,7 @@ def main():
     p.add_argument('--paths-config',default='configs/paths.local.yaml')
     p.add_argument('--device',choices=['cpu','cuda'],default='cuda')
     p.add_argument('--precision',choices=['fp32','fp16'],default='fp16')
-    p.add_argument('--input-size',type=int,default=280)
+    p.add_argument('--input-size',type=int,default=364)
     p.add_argument('--threads',type=int,default=8)
     args=p.parse_args()
     import torch
