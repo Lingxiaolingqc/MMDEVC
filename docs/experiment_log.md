@@ -1,6 +1,12 @@
 # 实验记录
 
-目前没有已运行的模型实验。以下模板每次复制一份填写；不能把示例当结果。
+已验证记录索引见 [run_index.csv](../results/run_index.csv)。完整原始预测、配置和元数据仅保存在本地 `outputs/`。
+
+- `stereo_all_week1_20261021`：dev 两场景比较三组参数后冻结 block size 3；全部 15 对保存与复算通过。见 [结果与失败例子](../results/stereo_week1.md)。
+- `unidepth_nyuv2_0003_week1_20261021`：官方 ViT-S、CPU、train 开发样本、无 GT 对齐；原始保存结果指标复算一致，GT=prediction 检查通过。见 [单图结果](../results/unidepth_week1.md)。
+- 独立 B 复核、B 的 DA V2 真实预测交接、视频与融合实验均待完成。
+
+以下模板供后续每次运行填写；不能把示例当结果。
 
 ## <run_id>：<实验目的>
 

@@ -1,0 +1,80 @@
+{
+  "kind": "nyuv2_data_validation",
+  "code_commit": "5e0b5ceb30d71c50588f38df7b8322544d1fe471",
+  "working_tree_status": "",
+  "counts": {
+    "train": 795,
+    "test": 654
+  },
+  "development_ids": [
+    "nyuv2_0003",
+    "nyuv2_0005",
+    "nyuv2_0010"
+  ],
+  "development_selection": "first three distinct scenes in ascending MATLAB index, training side only",
+  "labeled_source": "https://horatio.cs.nyu.edu/mit/silberman/nyu_depth_v2/nyu_depth_v2_labeled.mat",
+  "labeled_sha256": "2d724b0c0ab358aa1ce5df855e5bd14a2279ab7202efe22f32a30d612dcb86aa",
+  "labeled_bytes": 2972037809,
+  "split_source": "https://github.com/ankurhanda/nyuv2-meta-data/blob/master/splits.mat",
+  "split_sha256": "6e081404491a8bfba2f066beaa9713ef6046f9007aa5f799f2a350506a580cee",
+  "matlab_indexing": "1-based; ID preserves original frame index",
+  "axis_policy": "images N,C,W,H -> H,W,C; depths N,W,H -> H,W; no rotation or mirroring",
+  "depth_field": "depths (inpainted); original float32 meters, no PNG quantization",
+  "crop_y0_y1_x0_x1": [
+    45,
+    471,
+    41,
+    601
+  ],
+  "gt_interval_m_inclusive": [
+    0.001,
+    10.0
+  ],
+  "manifest_sha256": "1f68150ef942dd0667d6d5214808a536e03875a1e986033371e4f7adf147d738",
+  "dev_manifest_sha256": "6be58f7a99199e7e3077ee7204e428d43e4a5725dff2d6b71ac2affe60ea6f33",
+  "evaluation_note": "DA V2 metric formulas; current upstream has no NYUv2 loader; crop supplemented from UniDepth official NYUv2 eval_mask",
+  "labeled_md5_verified": "520609c519fba3ba5ac58c8fefcc3530",
+  "raw_output_location": "local:outputs/nyuv2_check_week1_20261021",
+  "verification": "All 1449 original HDF5 RGB/depth pairs read, checked and extracted; three previously cached development samples matched original arrays exactly; standard split 795/654 verified",
+  "development_samples": [
+    {
+      "sample_id": "nyuv2_0003",
+      "split": "train",
+      "shape_hw": [
+        480,
+        640
+      ],
+      "gt_eval_pixels": 238560,
+      "gt_min_m": 1.0197848081588745,
+      "gt_max_m": 3.4440910816192627,
+      "rgb_sha256": "92847dc1869b2df70ce662eff695d0ef934c4bf62adb3ee08538e244414ca035",
+      "depth_sha256": "6df85427f96c5d3eb521edbcd24ffba37690a75da9dc416b0f8cdb9b406b54cf"
+    },
+    {
+      "sample_id": "nyuv2_0005",
+      "split": "train",
+      "shape_hw": [
+        480,
+        640
+      ],
+      "gt_eval_pixels": 238560,
+      "gt_min_m": 1.3520028591156006,
+      "gt_max_m": 5.201444149017334,
+      "rgb_sha256": "ceb76aa8f3ebd805e41a099dc395acffeb925a5dfceef650ebc6cfa0ff3eb9c5",
+      "depth_sha256": "74eb3a8f50b7438c4d50b46d8fe82fb220554aec52cc2a6d3a7490b5f5813b6d"
+    },
+    {
+      "sample_id": "nyuv2_0010",
+      "split": "train",
+      "shape_hw": [
+        480,
+        640
+      ],
+      "gt_eval_pixels": 238560,
+      "gt_min_m": 1.0381689071655273,
+      "gt_max_m": 5.55102014541626,
+      "rgb_sha256": "c42178d529d2c467e9a0ae3053364218a01456303b4cad0a413febecd8a33139",
+      "depth_sha256": "25ec277f5b53f4e29ad40dccb66f36bec1dc53fd666f0bd1b9b491c7f86e54a7"
+    }
+  ]
+}
