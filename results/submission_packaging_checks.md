@@ -4,6 +4,8 @@
 
 相对诊断和打包加入后，全仓库 65 项测试通过。完整日志在本地 `outputs/relative_packaging_tests_20261028.log`。
 
+结果 JSON 和报告源文件按保存时的字节进入 Git，避免换行转换改变来源哈希。已直接核对 Git 暂存对象与报告 provenance、相对诊断载荷的哈希；修复只保留原始换行，不改变数值、文本或已验证 PDF。
+
 - 本地包：`outputs/submission_smoke_20261028/depth_results_smoke.zip`。
 - 大小：2,814,799 bytes；21 个载荷文件，另有 README 与 manifest，共 23 个条目。
 - ZIP CRC、条目数量和全部载荷 SHA256 检查通过。
