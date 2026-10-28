@@ -18,7 +18,7 @@
 | 视频素材与统一帧输入 | B | 等待采集 | 真实文件、scene group、预先固定的 dev/test、时间戳 |
 | DA V2 metric / VDA metric | B | GPU 同一公开视频 24 帧检查通过；正式实验待自录素材 | 相同帧和分辨率，原始输出、固定色标、延迟/显存/模型大小 |
 | 边界与时序评测 | A/B | NYUv2 边界全量完成；公共时序 mask 和固定分母复算通过 | 真实视频指标与困难场景结论待素材 |
-| E0–E5 Improvement | A 实现/B 实验 | 原型、六版本比较、原始融合数组复算通过；参数 provisional | dev 调参记录、冻结配置、独立 test、消融及失败解释 |
+| E0–E5 Improvement | A 实现/B 实验 | 六版本和原始数组复算通过；开发选择/冻结入口已实现；参数仍 provisional | 真实 dev 观察与选择、冻结配置、独立 test、消融及失败解释；见 `docs/fusion_selection.md` |
 | 应用 Demo | B | 浏览器点选、切帧/方法、播放及 24 帧导出通过；正式素材待采集 | RGB、固定色标深度、点选 Z 深度和时间曲线；见 `results/demo_smoke.md` |
 | CVPR 报告与提交包 | A/B | 已有 CVPR LaTeX 工作草稿；自录结果与最终压缩包待补 | 6–8 页正文、必读引用、实际图表、可复现 README、depth_results.zip；见 `report/README.md` |
 | 个人验收 | 本人 | 待最终生成 | 本地中文操作指南，含预期结果、通过标准和未完成项；不进 Git |

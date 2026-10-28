@@ -63,6 +63,6 @@ python scripts/render_depth_video.py --cache outputs/videos/dev_static/cache --r
 
 成功输出应包含 E0–E5 六行 `comparison.csv`，六行 `reference_pixels` 完全一致。E0–E4 保存浮点深度、有效 mask 和历史权重；E5 复用原 VDA 文件。复算程序重算 RGB 光流、公共区域、融合数组和指标，不重新运行深度网络。
 
-开发时只在自录 dev 视频尝试少量候选参数，同时比较闪烁、边界、前后移动响应和遮挡拖影。选定后保存开发片段 ID、参数和证据文件哈希，再将配置设为 frozen。测试入口会拒绝 provisional 配置或缺少开发选择证据的配置。正式 test 应在冻结后统一运行一次；公开视频检查结果不能充当开发选择证据。
+开发时只在自录 dev 视频尝试少量候选参数，同时比较闪烁、边界、前后移动响应和遮挡拖影。按 [开发选择与冻结流程](fusion_selection.md) 比较三个候选，通过复算后记录观察，再由 `freeze_fusion_config.py` 生成参数与证据绑定的 frozen 配置。测试入口会核对登记的 dev/test 划分、原视频与缓存、全部开发结果及观察记录；仅手动改 `status` 不够。正式 test 应在冻结后统一运行一次；公开视频检查结果不能充当开发选择证据。
 
 效率表把模型推理、CPU 光流和融合开销分开。`estimated_pipeline_fps` 是三项耗时相加后的估计，排除解码/磁盘写入，不称为实测端到端 FPS。

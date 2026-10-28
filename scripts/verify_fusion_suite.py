@@ -5,8 +5,9 @@ import json
 import cv2
 import numpy as np
 
-from run_stereo_baseline import repo_path,checksum
+from run_stereo_baseline import ROOT,repo_path,checksum,write_json
 from run_fusion_suite import load_run
+from p3_depth.temporal.selection import suite_artifacts,relative
 from p3_depth.temporal.flow import estimate_pair
 from p3_depth.temporal.fusion import fuse_sequence
 from p3_depth.evaluation.temporal import evaluate_video
@@ -79,6 +80,12 @@ def main():
             actual=float(row[column]) if row[column] else None
             if actual!=scores[key]:
                 raise ValueError('Exported table differs from verified scores')
+    write_json(suite/'verification.json',{'schema_version':1,'status':'verified',
+        'suite_metadata_sha256':checksum(suite/'metadata.json'),
+        'artifacts_sha256':{name:checksum(suite/name) for name in suite_artifacts()},
+        'input_metadata_sha256':{relative(ROOT,path/'metadata.json'):checksum(path/'metadata.json') for path,_ in sources},
+        'verifier_sha256':checksum(ROOT/'scripts/verify_fusion_suite.py'),
+        'scope':sm['scope'],'statement':'Recomputed flow/masks, E0-E4 fusion/weights and E0-E5 metrics; not member acceptance'})
     print(f'PASS: {len(frames)-1} flow/mask pairs, E0-E4 raw fusion/weights, and E0-E5 metrics recomputed; scope={sm["scope"]}')
 
 

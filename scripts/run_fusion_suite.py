@@ -8,6 +8,7 @@ import numpy as np
 from run_stereo_baseline import ROOT,repo_path,read_yaml,write_json,write_csv,checksum
 from p3_depth.temporal.fusion import fuse_sequence
 from p3_depth.evaluation.temporal import evaluate_video
+from p3_depth.temporal.selection import validate_test_freeze
 
 
 def load_run(path,cache_meta):
@@ -21,18 +22,6 @@ def load_run(path,cache_meta):
         if checksum(path/name)!=meta[key]:
             raise ValueError('Prediction artifact hash mismatch')
     return meta,np.load(path/'depths.npy',mmap_mode='r',allow_pickle=False),np.load(path/'valid.npy',mmap_mode='r',allow_pickle=False)
-
-
-def validate_test_freeze(config):
-    evidence=config.get('selection_evidence')
-    if config['status']!='frozen' or not isinstance(evidence,dict):
-        raise ValueError('Test evaluation requires parameters frozen from development evidence')
-    path=repo_path(evidence['path'])
-    if checksum(path)!=evidence['sha256']:
-        raise ValueError('Development selection evidence hash mismatch')
-    proof=json.loads(path.read_text(encoding='utf-8'))
-    if proof['split']!='dev' or not proof['dev_clip_ids'] or proof['selected_parameters']!=config['parameters']:
-        raise ValueError('Selection evidence must name development clips and exactly these parameters')
 
 
 def main():
@@ -53,7 +42,7 @@ def main():
             raise ValueError('Video cache hash mismatch')
     config=read_yaml(repo_path(a.config))
     if cm['split']=='test':
-        validate_test_freeze(config)
+        validate_test_freeze(ROOT,config,cm)
     bm,base,valid=load_run(repo_path(a.baseline),cm)
     vm,vda,vda_valid=load_run(repo_path(a.reference_vda),cm)
     if bm['model']['model']!='dav2_metric' or vm['model']['model']!='vda_metric':

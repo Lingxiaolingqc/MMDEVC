@@ -6,16 +6,15 @@ import numpy as np
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'src'))
-sys.path.insert(0,str(ROOT/'scripts'))
 from p3_depth.evaluation.temporal import evaluate_video
 from p3_depth.evaluation.boundary import evaluate_boundary
-from run_fusion_suite import validate_test_freeze
+from p3_depth.temporal.selection import validate_test_freeze
 
 
 class VideoMetricTests(unittest.TestCase):
     def test_provisional_parameters_cannot_evaluate_final_video_test(self):
         with self.assertRaisesRegex(ValueError,'frozen'):
-            validate_test_freeze({'status':'provisional','selection_evidence':None})
+            validate_test_freeze(ROOT,{'status':'provisional','selection_evidence':None},{'split':'test'})
 
     def test_true_depth_change_and_timestamp_rate_are_not_aligned_away(self):
         d=np.stack([np.ones((4,6),np.float32),np.full((4,6),2,np.float32)])
