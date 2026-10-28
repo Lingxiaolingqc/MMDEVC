@@ -15,7 +15,9 @@ Week 1 A 的单图链路已实现并实际运行：
 
 2026-10-28：UniDepthV2、DA V2 metric 与 relative 均完成 NYUv2 标准 654 张评测、保存预测复算和边界评测，见 [正式单图结果](results/nyuv2_standard_test.md)。E0–E5 融合、公共时序评测区域和固定色标视频已在示例短片验证，见 [时序协议与命令](docs/temporal_protocol.md)。GPU 环境见 [CUDA 说明](environments/cuda.md)。
 
-**自录视频的 dev/test 实验、最终融合参数、Demo 和完整报告仍待完成。** 原 A/B 模块主责保留，由助手实现和运行；两位组员的独立复现尚未完成。素材要求见 [采集说明](docs/video_capture.md)，完整状态见 [项目进度](docs/project_progress.md)。
+点选 Z 深度、时间曲线和演示视频导出已实现，并在 24 帧示例素材上通过浏览器操作及原始数值核对，见 [Demo 启动与导出](demo/README.md)。
+
+**自录视频的 dev/test 实验、最终融合参数、正式演示素材和完整报告仍待完成。** 原 A/B 模块主责保留，由助手实现和运行；两位组员的独立复现尚未完成。素材要求见 [采集说明](docs/video_capture.md)，完整状态见 [项目进度](docs/project_progress.md)。
 
 目标：Week 11 之前提交；Week 9 结束冻结方法，Week 10 完成报告、复现检查和提交，预留 2–3 天缓冲。Week 7–10 是倒排里程碑，具体日历日期尚未填写。
 
@@ -109,7 +111,7 @@ environments/  固定官方源码/权重、CPU 与 CUDA 环境及锁定依赖
 manifests/     Middlebury/NYUv2 固定划分；视频清单等待自录素材
 src/p3_depth/  数据读取、模型适配、单图/时序评测、光流融合与可视化
 scripts/       数据检查、批量推理、融合、保存结果复算与图表导出
-demo/          应用展示计划
+demo/          本地交互深度查看器及演示视频导出说明
 tests/         数据方向/划分、SGBM 匹配与坐标、单位、七指标、mask 和显式对齐
 results/       可提交的精选表格、图片与实验索引
 report/        报告提纲与写作分工

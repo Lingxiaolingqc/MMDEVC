@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MMDEVC · 深度查看器</title><link rel="stylesheet" href="/style.css"></head>
+<body><main>
+  <header><div><p class="eyebrow">MMDEVC / APPLICATION DEMO</p><h1>点一下，查看深度如何变化</h1><p id="clip">正在读取片段…</p></div><span class="unit">Z DEPTH · m</span></header>
+  <p id="notice" class="notice" hidden></p>
+  <section class="toolbar"><button id="play" disabled>播放</button><label class="scrub">视频帧 <input id="frame" type="range" min="0" value="0" disabled aria-label="视频帧"></label><output id="time">—</output><label>深度方法 <select id="method" aria-label="深度方法"></select></label></section>
+  <section class="views">
+    <article><div class="panel-title"><h2>RGB 原画面</h2><span>点击选择位置</span></div><canvas id="rgb" aria-label="点击 RGB 画面读取深度" tabindex="0"></canvas></article>
+    <article><div class="panel-title"><h2 id="depth-title">预测深度</h2><span>灰色 = 无有效预测</span></div><canvas id="depth" aria-label="点击深度图读取数值" tabindex="0"></canvas><div class="scale"><span>0 m</span><div class="gradient"></div><span id="depth-max">10 m</span></div></article>
+  </section>
+  <section class="readouts"><div><span>选中的固定像素</span><strong id="point">—</strong></div><div><span>当前帧 Z 深度</span><strong id="value">—</strong></div><p>Z 是沿相机前方轴的深度，不是相机中心到该点的直线距离。读数来自原始预测，不受色标上限裁剪。</p></section>
+  <section class="plot-panel"><div class="panel-title"><h2>这个画面位置的时间曲线</h2><div id="legend"></div></div><canvas id="chart" aria-label="所选固定像素的深度随时间变化曲线"></canvas><p class="hint">同一个像素位置可能先后对应不同物体；这条曲线不进行物体跟踪。缺少有效预测的位置会断开。</p></section>
+  <p id="status" role="status">正在加载…</p>
+</main><script src="/app.js"></script></body></html>
