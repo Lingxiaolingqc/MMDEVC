@@ -4,7 +4,7 @@ import csv
 import numpy as np
 
 from p3_depth.data.nyuv2 import evaluation_mask
-from p3_depth.evaluation.depth import prepare_prediction, evaluate_depth
+from p3_depth.evaluation.depth import prepare_prediction, evaluate_depth, RelativeAlignmentError
 
 
 def select_nyu(root, subset, limit=None):
@@ -23,7 +23,15 @@ def select_nyu(root, subset, limit=None):
 
 def score_raw(raw, gt, valid, asset):
     region = evaluation_mask(gt)
-    depth, mask, transform = prepare_prediction(raw, gt, region, asset['prediction_type'], asset['unit'], asset['alignment'], valid)
+    try:
+        depth, mask, transform = prepare_prediction(raw, gt, region, asset['prediction_type'], asset['unit'], asset['alignment'], valid)
+    except RelativeAlignmentError as error:
+        # Keep the sample in the benchmark. Its raw prediction remains on disk;
+        # no valid aligned depth exists, so full-GT agreement is zero.
+        depth, mask = np.full(gt.shape,np.nan,dtype=np.float32),np.zeros(gt.shape,dtype=bool)
+        transform = {'prediction_type':asset['prediction_type'],'input_unit':asset['unit'],
+                     'alignment':asset['alignment'],'gt_used_for_alignment':True,
+                     'result_label':'relative_alignment_failed','alignment_status':'failed','failure':str(error)}
     return evaluate_depth(depth, gt, region, mask), transform
 
 
@@ -41,7 +49,9 @@ def summarize(records):
     total = sum(s['gt_pixels'] for s in scores)
     predicted = sum(s['valid_prediction_pixels'] for s in scores)
     times = [r['inference_seconds'] for r in records]
-    return {'images': len(records), 'image_macro_metrics_on_valid': means, 'contributing_images': counts,
+    failures = sum(r.get('transformation',{}).get('alignment_status')=='failed' for r in records)
+    return {**({'alignment_failures': failures} if failures else {}),
+            'images': len(records), 'image_macro_metrics_on_valid': means, 'contributing_images': counts,
             'zero_coverage_images': sum(s['valid_prediction_pixels'] == 0 for s in scores),
             'pixel_pooled_coverage': predicted / total, 'gt_pixels': total, 'valid_prediction_pixels': predicted,
             'image_macro_full_gt_delta': {k: float(np.mean([s['delta_full_gt_invalid_as_failure'][k] for s in scores])) for k in ('delta1','delta2','delta3')},

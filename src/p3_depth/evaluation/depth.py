@@ -3,6 +3,10 @@
 import numpy as np
 
 
+class RelativeAlignmentError(ValueError):
+    """A correctly declared relative prediction cannot be positively GT-aligned."""
+
+
 def depth_values_metrics(pred, gt):
     """Positive finite, already-selected 1D depths; natural log, strict delta thresholds."""
     names = ["abs_rel", "sq_rel_m", "rmse_m", "rmse_log", "delta1", "delta2", "delta3"]
@@ -56,7 +60,7 @@ def prepare_prediction(raw, gt, region, prediction_type, unit, alignment, valid=
         valid &= pred > 0
         fit = region & valid
         if not fit.any():
-            raise ValueError("No positive relative predictions available for alignment")
+            raise RelativeAlignmentError("No positive relative predictions available for alignment")
         scale = float(np.median(gt[fit]) / np.median(pred[fit]))
         pred *= scale
         parameters.update(scale=scale, shift=0., fit_pixels=int(fit.sum()), fit_domain="depth")
@@ -66,12 +70,12 @@ def prepare_prediction(raw, gt, region, prediction_type, unit, alignment, valid=
             raise ValueError("Inverse-like output requires arbitrary units and explicit inverse_scale_shift")
         fit = region & valid
         if fit.sum() < 2 or np.std(pred[fit]) < 1e-12:
-            raise ValueError("Degenerate inverse-depth alignment: insufficient variation")
+            raise RelativeAlignmentError("Degenerate inverse-depth alignment: insufficient variation")
         matrix = np.column_stack((pred[fit], np.ones(int(fit.sum()))))
         coefficients, _, rank, _ = np.linalg.lstsq(matrix, 1.0 / gt[fit], rcond=None)
         scale, shift = map(float, coefficients)
         if rank != 2 or not np.isfinite(coefficients).all() or scale <= 0:
-            raise ValueError("Inverse-depth fit has wrong direction or is degenerate")
+            raise RelativeAlignmentError("Inverse-depth fit has wrong direction or is degenerate")
         inverse = scale * pred + shift
         valid &= np.isfinite(inverse) & (inverse > 0)
         pred = np.divide(1., inverse, out=np.full_like(inverse, np.nan), where=valid)

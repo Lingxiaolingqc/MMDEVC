@@ -6,7 +6,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
-from p3_depth.evaluation.benchmark import select_nyu, summarize
+from p3_depth.evaluation.benchmark import select_nyu, summarize, score_raw
 from p3_depth.evaluation.depth import evaluate_depth
 
 
@@ -34,6 +34,19 @@ class BenchmarkTests(unittest.TestCase):
         for limit in (0, -1, 655):
             with self.subTest(limit=limit), self.assertRaises(ValueError):
                 select_nyu(ROOT, 'test', limit)
+
+    def test_wrong_direction_alignment_counts_as_failure_without_dropping_image(self):
+        gt=np.tile(np.linspace(1,4,640,dtype=np.float32),(480,1))
+        raw=2-1/gt
+        asset={'prediction_type':'inverse_depth_like','unit':'arbitrary','alignment':'inverse_scale_shift'}
+        scores,transform=score_raw(raw,gt,np.ones_like(gt,dtype=bool),asset)
+        self.assertEqual(transform['alignment_status'],'failed')
+        self.assertEqual(scores['coverage'],0)
+        self.assertIsNone(scores['depth_on_valid_predictions']['rmse_m'])
+        self.assertEqual(scores['delta_full_gt_invalid_as_failure']['delta1'],0)
+        summary=summarize([{'metrics':scores,'transformation':transform,'inference_seconds':1}])
+        self.assertEqual(summary['images'],1);self.assertEqual(summary['alignment_failures'],1)
+        self.assertEqual(summary['gt_pixels'],426*560)
 
 
 if __name__ == '__main__':
