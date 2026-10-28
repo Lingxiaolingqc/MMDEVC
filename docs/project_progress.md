@@ -14,13 +14,14 @@
 | 范围 | 主责 | 当前状态 | 完成需要的证据 |
 | --- | --- | --- | --- |
 | DA V2 Small relative 单图 | B | 已完成 dev 与 654 test；含 1 个明确对齐失败 | 官方权重/源码固定；真实原始预测及独立评测 |
+| Part 1 relative 视频诊断 | B | 推理、固定色标、原始相对单位的时序/中位数诊断已在示例上验证 | 自录静止与移动片段；见 `docs/relative_video.md`，不能将相对误差当米制成绩 |
 | NYUv2 全标准测试集 | A/B | 三模型各 654 张推理、保存结果复算及边界评测通过 | 见 `results/nyuv2_standard_test.md` 与完整逐图表 |
 | 视频素材与统一帧输入 | B | 等待采集 | 真实文件、scene group、预先固定的 dev/test、时间戳 |
 | DA V2 metric / VDA metric | B | GPU 同一公开视频 24 帧检查通过；正式实验待自录素材 | 相同帧和分辨率，原始输出、固定色标、延迟/显存/模型大小 |
 | 边界与时序评测 | A/B | NYUv2 边界全量完成；公共时序 mask 和固定分母复算通过 | 真实视频指标与困难场景结论待素材 |
 | E0–E5 Improvement | A 实现/B 实验 | 六版本和原始数组复算通过；开发选择/冻结入口已实现；参数仍 provisional | 真实 dev 观察与选择、冻结配置、独立 test、消融及失败解释；见 `docs/fusion_selection.md` |
 | 应用 Demo | B | 浏览器点选、切帧/方法、播放及 24 帧导出通过；正式素材待采集 | RGB、固定色标深度、点选 Z 深度和时间曲线；见 `results/demo_smoke.md` |
-| CVPR 报告与提交包 | A/B | 已有 CVPR LaTeX 工作草稿；自录结果与最终压缩包待补 | 6–8 页正文、必读引用、实际图表、可复现 README、depth_results.zip；见 `report/README.md` |
+| CVPR 报告与提交包 | A/B | 已有 CVPR 工作草稿；打包入口和示例 ZIP 回读验证通过 | 自录结果、最终报告和正式 depth_results.zip 待补；见 `report/README.md`、`docs/submission.md` |
 | 个人验收 | 本人 | 待最终生成 | 本地中文操作指南，含预期结果、通过标准和未完成项；不进 Git |
 
 2026-10-28：已对照课程 PDF 完整六页。必需的边界质量、光流对齐时序指标、逐帧中位数变化、效率、困难场景案例均保留。arXiv 与 Canvas 最终发布由成员确认执行，不自动代发。

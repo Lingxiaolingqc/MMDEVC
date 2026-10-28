@@ -58,6 +58,8 @@ python scripts/render_depth_video.py --cache outputs/videos/dev_static/cache --r
 
 输出 `depths.npy`、`valid.npy` 和 `metadata.json`。渲染保留选中帧的时间戳，并通过重新解码验证；米制固定显示 0–10 m，相对值固定使用整段 1%–99% 分位范围。显示裁剪不修改原始深度；相对值与米制颜色含义不同。`preview.png` 展示首、中、末帧。
 
+Part 1 还需对相同自录帧运行 `dav2_relative`，并按 [相对视频诊断](../docs/relative_video.md) 生成静止波动、光流误差和中位数曲线。该入口保留任意相对单位，与 E0–E5 的米制结果分开报告。
+
 ## 接口检查命令
 
 公开视频仅检查程序，不登记为自录素材，不参与调参或正式成绩：

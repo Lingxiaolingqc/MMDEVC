@@ -17,6 +17,8 @@ Week 1 A 的单图链路已实现并实际运行：
 
 点选 Z 深度、时间曲线和演示视频导出已实现，并在 24 帧示例素材上通过浏览器操作及原始数值核对，见 [Demo 启动与导出](demo/README.md)。
 
+Part 1 的[相对视频诊断](docs/relative_video.md)和[视频导出与打包](docs/submission.md)已在示例上验证；正式自录实验仍待素材。相对输出的变化量使用任意单位，与米制实验分开报告。
+
 [CVPR 报告工作草稿](report/README.md)已整理已验证的单图结果、融合方法和应用。自录视频实验尚未完成，草稿不能直接提交。
 
 **自录视频的 dev/test 实验、最终融合参数、正式演示素材和完整报告仍待完成。** 原 A/B 模块主责保留，由助手实现和运行；两位组员的独立复现尚未完成。素材要求见 [采集说明](docs/video_capture.md)，完整状态见 [项目进度](docs/project_progress.md)。
@@ -69,7 +71,7 @@ python scripts/inspect_middlebury.py --all --write-manifest
 运行已实现的 StereoSGBM 单样本基线（CPU，无需 GPU）：
 
 ```sh
-python -m pip install -e ".[data,stereo,nyu]"
+python -m pip install -e ".[data,stereo,nyu,video]"
 python -m unittest discover -s tests -v
 python scripts/run_stereo_baseline.py --sample Adirondack --config configs/stereo_sgbm_selected.yaml
 ```
