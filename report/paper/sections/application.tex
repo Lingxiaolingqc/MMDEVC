@@ -1,0 +1,7 @@
+\section{Application and Reproducibility}
+
+The application reads saved predictions, supports pixel selection and frame/method changes, and displays raw camera-axis Z. This is not Euclidean range or object tracking; a fixed pixel can correspond to different objects over time. Invalid predictions break the curve.
+
+Browser interactions were checked against saved arrays. At pixel $(114,48)$, E4 displays 16.952 m on frame 1 and 13.490 m on frame 13. Readings exceed the 10 m color limit without numerical clipping; they remain predictions, not verified physical distances. Re-decoding the 24-frame application export reproduced the original timestamps, and its CSV matched every raw point value. This program-rendered demonstration will be regenerated on final self-recorded results.
+
+The repository supplies preparation, inference, verification, and export commands. Compact evidence is versioned; full predictions and weights remain local. All 51 automated tests pass. Saved-output checks and automated tests do not establish either member's independent acceptance. The final video archive is pending.

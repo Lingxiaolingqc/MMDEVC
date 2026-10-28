@@ -1,0 +1,8 @@
+\section{Introduction}
+Dense depth supports scene interpretation, distance readouts, and depth-aware rendering. A single image does not geometrically determine absolute scale: a small nearby object and a larger distant object can produce similar projections. Learned priors and calibrated stereo offer different evidence, yet both can fail. Stereo correspondence disappears at occlusions and thin structures; monocular predictions may preserve shape while assigning an incorrect scale.
+
+Video adds a stability--response trade-off. Independent predictions can fluctuate, but suppressing every change also suppresses genuine motion. When a camera approaches an object, camera-axis depth should decrease even if optical flow establishes the correct correspondence. Temporal agreement therefore needs separate interpretation from physical accuracy.
+
+Our system links a calibrated StereoSGBM baseline, released Small depth models, and causal flow-guided fusion. Video Depth Anything remains an independent temporal reference. Figure~\ref{fig:pipeline} separates shared input, fusion, and evaluation. The engineering contribution is an auditable experiment: floating-point outputs, invalid regions, source/checkpoint hashes, and timings are preserved, and conditional errors are reported alongside missing-output penalties.
+
+This draft establishes geometry and single-image results, fusion mechanics, and application behavior. Whether fusion improves the practical stability--response trade-off remains a question for independent self-recorded clips. Public example footage validates implementation only.

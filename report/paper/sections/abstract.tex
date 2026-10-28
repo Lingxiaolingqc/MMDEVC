@@ -1,0 +1,9 @@
+\begin{abstract}
+A useful depth system must distinguish a visually plausible shape from a correct metric scale, and temporal agreement from accuracy. We build an auditable pipeline spanning calibrated stereo, pretrained monocular models, and lightweight flow-guided fusion. On the standard 654-image NYUv2 split, UniDepthV2 ViT-S achieves 0.1122 AbsRel and 0.4167 m RMSE, versus 0.2801 and 0.8151 m for Depth Anything V2 Small Hypersim under our matched input resolution. A separate GT-aligned relative-depth analysis has one alignment failure, retained in coverage and full-GT threshold scores. StereoSGBM on 13 held-out Middlebury training scenes reaches 0.1201 m conditional RMSE at only 61.26\% coverage, illustrating why missing predictions must remain visible. We implement six temporal variants, a common RGB-derived evaluation mask, and an interactive point-depth application. Their numerical and application pipelines pass saved-output checks, but self-recorded development and test videos are still pending; this draft makes no final temporal-improvement claim. Code: \url{https://github.com/Lingxiaolingqc/MMDEVC}.
+\end{abstract}
+\begin{center}
+\small\textbf{Working draft, 28 October 2026.}\\
+Verified image results; self-recorded video experiments pending.\\
+Not ready for course submission or public manuscript release.
+\end{center}
+
