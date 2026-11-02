@@ -1,6 +1,6 @@
 # 报告来源与完成边界
 
-核对日期：2026-10-28。`paper/` 是英文工作草稿，保留原两人署名；助手编写与运行不代表组员已经独立验收。第一页面向读者明确标注未完成自录视频实验，不是可直接提交或公开发布的最终稿。
+核对日期 2026-11-02。当前 paper/ 对应新版要求和真实实验，已编译为 8 页正文+1 页参考文献。名义作者与模块主责保留；助手实现与复算不代表成员独立验收。报告注明 70/100 帧差异、无视频 GT、单场景限制及计算代价。
 
 ## 模板
 
@@ -27,18 +27,16 @@
 
 补充引用：[NYUv2](https://cs.nyu.edu/~fergus/datasets/nyu_depth_v2.html)、[Middlebury v3](https://vision.middlebury.edu/stereo/submit3/)、[Middlebury 标定单位与转换](https://vision.middlebury.edu/stereo/data/scenes2014/)、[Farneback 作者机构页面](https://www.ida.liu.se/ext/WITAS-ev/Computer_Vision_Technologies/PaperInfo/farneback03.html)、[OpenCV StereoSGBM](https://docs.opencv.org/4.13.0/d2/d85/classcv_1_1StereoSGBM.html)。官方模型仓库链接随文献与环境说明保留。
 
-## 结果来源
+## 当前结果来源
 
-- Stereo 数字：`results/tables/stereo_week1_summary.csv`、`stereo_week1_per_scene.csv`；原始数组已复算。13 场景 evaluation 与包含 dev 的 15 场景统计明确分开。
-- NYUv2 主表、边界、效率：`results/nyuv2_test_20261028/summary.csv`；三模型各 654 个 test ID。relative 条件误差贡献 653 图，1 图对齐失败仍保留固定分母。
-- 图：复制已检查的 Jadeplant 与 NYUv2 比较图，不另行归一化或修改数据。Demo 预览保留在应用文档中，报告描述其数值与操作验证。
-- 视频示例数值：`results/fusion_smoke_20261028.csv` 与 provenance；只用于程序验证。自录 dev/test 尚未采集，不能据此宣布 Improvement 成功。
-- 应用：`results/demo_smoke.md`；数值/时间戳复算和浏览器操作检查已完成，成员验收待完成。
+- Stereo：results/tables/stereo_week1_summary.csv；新版正视差 GT 审计见 results/course_20261102/stereo/。
+- NYUv2：results/course_20261102/nyuv2/；复用 654 张原始 UniDepth 输出，采用新版 clipping。效率来自原始推理，不把复算时间当推理时间。
+- 视频：results/course_20261102/video/；独立开发选择见 selection/。E0–E4 共用原 DA 范围，E5 使用 VDA 自身范围。
+- 图片：scripts/build_course_figures.py 从保存数组生成，源/帧/裁剪见 results/course_20261102/figure_provenance.json。Jadeplant 图保留原始哈希。
+- 三个案例：results/course_20261102/failure_cases.csv；包含 1 个 dev 和 2 个 test 条件，不伪造独立测试场景。
+- ZIP：outputs/submission_20261102/depth_results.zip，80 payload，CRC/逐项 SHA256 回读检查。
+- PDF：outputs/submission_20261102/MMDEVC_Project3_Report.pdf；源码/结果/日志哈希和页数见 paper_provenance.json。
 
-## 最终稿前必须补齐
+## 待成员完成
 
-1. 真实自录 dev/test 清单、开发选择证据和冻结配置。
-2. E0–E5 正式时序与效率表、固定场景波动、相机运动响应、遮挡/细边缘拖影分析，以及困难条件的片段索引。
-3. 正式自录 Demo 与所有规定处理视频，生成并检查 `depth_results.zip`。
-4. 根据真实结果重写摘要、时序结果和结论，去除工作草稿声明后重新核对 6–8 页正文和参考文献。
-5. 完成成员验收。arXiv 和 Canvas 发布由成员确认执行；没有已生成的 arXiv ID。
+阅读并验收报告结论，复算或跨机复现，确认作者贡献及最终版本，合并 main 并提交课程材料。没有代替成员提交 Canvas 或发布 arXiv；arXiv 不是新版必做项。旧 2026-10-28 草稿与原始实验仍保留在历史输出目录。

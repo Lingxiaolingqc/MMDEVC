@@ -1,96 +1,116 @@
 \section{Results and Analysis}
-\subsection{Geometry: low error does not imply completeness}
+\subsection{Stereo correspondence and coverage}
+\begin{table}[t]
+\centering\small
+\begin{tabular}{lrr}
+\toprule
+Subset / GT region & MAE (px) & Valid fraction\\\midrule
+15 pairs / all & 1.3113 & 62.65\%\\
+15 pairs / nonoccluded & 1.0192 & 68.84\%\\
+13 held-out / all & 1.3369 & 61.26\%\\\bottomrule
+\end{tabular}
+\caption{StereoSGBM: scene-average disparity MAE on valid predictions, and pixel-pooled coverage over fixed GT. The 15-pair rows include the two development scenes.}
+\label{tab:stereo}
+\end{table}
+Table~\ref{tab:stereo} shows that moderate error on retained matches coexists with substantial missing output. Across all 15 pairs, only 2,873,146 of 4,586,010 GT pixels survive the prediction and consistency checks. Restricting to nonoccluded GT improves coverage, but does not eliminate missing matches. On the 13 held-out scenes, the supplementary mean conditional Z RMSE is 0.1201 m; it describes only surviving predictions and cannot replace the valid fraction.
+
+\begin{figure*}[t]
+\centering\includegraphics[width=\textwidth]{images/stereo_jadeplant.png}
+\caption{Jadeplant StereoSGBM diagnostics. Gray denotes unavailable values. Thin leaves, branches, and the foreground grid contain many rejected predictions. The mask-panel percentage divides by the entire image; evaluation coverage divides by valid GT. Display saturation does not clip saved predictions.}
+\label{fig:stereo}
+\end{figure*}
+Figure~\ref{fig:stereo} illustrates the limitation on Jadeplant: valid-GT coverage is 37.39\%, with 0.1291 m conditional Z RMSE. Small branches and grid boundaries are difficult for local matching. Occlusion, weak/repeated texture, and windows crossing depth boundaries are plausible mechanisms, not individually isolated causal findings. PianoL similarly retains only 39.42\% of GT pixels, with 0.3594 m conditional RMSE. A surviving left--right check is therefore not proof that the match is correct. Through Eq.~\ref{eq:stereo}, small disparity errors can also cause larger depth errors when the disparity denominator is small.
+
+\subsection{NYUv2 direct metric depth}
 \begin{table}[t]
 \centering\small
 \begin{tabular}{lrrr}
 \toprule
-Subset / region & Coverage & Bad$>1$ & RMSE (m)\\
-\midrule
-13 eval / all & 61.26\% & 46.38\% & 0.1201\\
-13 eval / nonocc. & 67.14\% & 39.87\% & 0.1016\\
-15 incl.\ dev / all & 62.65\% & 44.73\% & 0.1498\\
-\bottomrule
+Model & AbsRel & RMSE (m) & $\delta_1$\\\midrule
+UniDepthV2 ViT-S & .110776 & .392817 & .894781\\\bottomrule
 \end{tabular}
-\caption{StereoSGBM. Coverage and Bad$>1$ are pixel-pooled; Bad includes invalid output. RMSE is a scene-average conditional depth error. The 15-scene row includes development data.}
-\label{tab:stereo}
-\end{table}
-Table~\ref{tab:stereo} exposes the coverage cost of correspondence filtering. On the 13 evaluation scenes, 38.74\% of all-GT pixels have no valid prediction despite a conditional RMSE of 0.1201 m. Restricting to officially nonoccluded GT improves coverage to 67.14\%, but considerable failure remains. Thus occlusion alone cannot explain all missing output.
-
-\begin{figure*}[t]
-\centering\includegraphics[width=\textwidth]{images/stereo_jadeplant.png}
-\caption{Jadeplant StereoSGBM diagnostics. Gray means invalid/unavailable. Thin leaves, branches, and the foreground grid contain substantial missing predictions. The mask-panel percentage uses the entire image as denominator; metric coverage uses the fixed valid-GT region. Saturated colors are display limits, not prediction clipping.}
-\label{fig:stereo}
-\end{figure*}
-Figure~\ref{fig:stereo} shows Jadeplant, where all-GT coverage is 37.39\% and conditional RMSE is 0.1291 m. Gaps concentrate around leaves, thin branches, and the foreground structure. Correspondence ambiguity, occlusion, and windows crossing depth boundaries are plausible explanations, but were not isolated by causal ablation. PianoL has 39.42\% coverage and 0.3594 m RMSE, including incorrect surviving wall matches. A small left--right residual is therefore insufficient to prove correctness. Pipes, a development scene, reaches 0.5913 m RMSE; Eq.~\ref{eq:stereo} explains depth sensitivity to disparity errors, but visual saturation alone cannot measure the error.
-
-\subsection{NYUv2: direct metric and aligned relative depth}
-\begin{table*}[t]
-\centering\small
-\begin{tabular}{lrrrrrrrr}
-\toprule
-Model / evaluation & AbsRel & SqRel & RMSE & RMSE-log & $\delta_1$ & $\delta_2$ & $\delta_3$ & Coverage\\
-\midrule
-UniDepthV2 ViT-S / metric & .11224 & .08299 & .41666 & .14001 & .89311 & .97906 & .99265 & 100\%\\
-DA V2-S Hypersim / metric & .28011 & .29076 & .81515 & .26115 & .51993 & .91384 & .98476 & 100\%\\
-\midrule
-DA V2-S relative / GT aligned & .06210 & .04464 & .31135 & .09388 & .95525 & .98786 & .99595 & 99.8471\%\\
-\bottomrule
-\end{tabular}
-\caption{NYUv2 standard 654-image split. SqRel and RMSE use metres; RMSE-log uses natural logarithms. The seven metrics are conditional image averages. The relative row uses GT and has 653 contributing images, one alignment failure, and full-GT $\delta_{1/2/3}=.95379/.98635/.99442$. It is not ranked as a direct metric model. Both direct models contribute all 654 images.}
+\caption{Revised protocol, all 654 standard test images, equal image weighting. RGB-only inference; no GT scale alignment.}
 \label{tab:nyu}
-\end{table*}
-Table~\ref{tab:nyu} reports all required depth metrics. Under the recorded matched-resolution configuration, UniDepthV2 outperforms the DA Hypersim metric checkpoint in AbsRel, RMSE, and all three threshold scores. Both predict valid values over the complete GT region, so this difference does not arise from dropping more pixels. The comparison does not establish a ranking across other model sizes, training distributions, or resolutions.
-
-The relative model has lower conditional errors after fitting two parameters to every image's GT inverse depth. This measures aligned structure, not equally informed metric inference. Image \texttt{nyuv2\_0650} produces a fitted slope of approximately $-0.04944$, violating the declared inverse-depth direction. We retain this failure and its original array. Silently excluding it would change both the population and the meaning of the score.
-
-\begin{table}[t]
-\centering\small
-\begin{tabular}{lrrrr}
-\toprule
-Model & Precision & Recall & F1 & Dist.\ (px)\\
-\midrule
-UniDepthV2 & .7551 & .3999 & .5229 & 5.324\\
-DA metric & .6680 & .4068 & .5057 & 5.185\\
-DA rel.\ aligned & .6698 & .5045 & .5755 & 4.174\\
-\bottomrule
-\end{tabular}
-\caption{Depth-discontinuity results, with 2,295,868 GT edge pixels shared by all models. The relative row includes GT alignment and its failed case. Distance is GT-to-prediction, capped at 10 pixels.}
-\label{tab:edges}
 \end{table}
-Table~\ref{tab:edges} reveals a more nuanced boundary comparison. UniDepth has higher precision than DA metric, but slightly lower recall and larger capped GT-to-prediction distance. Its F1 advantage does not mean it recovers every boundary more completely. Absolute-scale error and discontinuity localization remain distinct measurements.
+All 654 predictions contribute to Table~\ref{tab:nyu}, covering 156,018,240 evaluated GT pixels. There are no nonfinite predictions in the evaluation region. Clipping affects 554,689 predictions above 10 m and none below 0.001 m. The aggregate improves relative to our historical unclipped score, but this is a protocol change, not a model improvement. We retain both versions and identify the current protocol explicitly.
 
 \begin{figure*}[t]
-\centering\includegraphics[width=\textwidth]{images/nyu_comparison.png}
-\caption{Deterministically selected NYUv2 cases: UniDepth median-RMSE image 0285, maximum-RMSE image 0090, and relative-alignment failure 0650. All depth panels use 0--10 m; gray denotes missing aligned output. The relative column uses GT, whereas direct metric columns do not.}
+\centering\includegraphics[width=.88\textwidth]{images/nyu_course.png}
+\caption{NYUv2 examples chosen by the revised per-image RMSE: lower-median image 0387 (0.3079 m) and maximum-error image 0088 (2.0119 m). RGB, filled GT, and clipped UniDepth use the original image grid; depth displays use 0--10 m. Scores use only the specified crop.}
 \label{fig:nyu}
 \end{figure*}
+The per-image distribution remains important. Figure~\ref{fig:nyu} uses a deterministic median/maximum selection rule rather than choosing only visually pleasing examples. The maximum-RMSE image has AbsRel 0.6198 and $\delta_1=0.2691$, despite much stronger aggregate scores. This shows a substantial individual failure under the same crop, clipping, and weighting. Filled GT is the supplied benchmark reference and may itself smooth missing sensor measurements; the experiment does not establish exact physical geometry at every visible boundary.
 
+\subsection{Development selection}
+\begin{table}[t]
+\centering\small
+\begin{tabular}{lrrr}
+\toprule
+History $\alpha$ & $T$ & Reduction vs.\ E0 & Departure\\\midrule
+0.50 & .003899 & 24.55\% & .001844\\
+0.70 (selected) & .003439 & 33.45\% & .002817\\
+0.85 & .003101 & 40.00\% & .003741\\\bottomrule
+\end{tabular}
+\caption{E4 on the independent 100-frame development clip. Departure is mean absolute change from current raw DA output, divided by DA's fixed whole-clip span. Lower departure is not an accuracy metric.}
+\label{tab:selection}
+\end{table}
+Raw DA's development $T$ is 0.005168. Increasing the history weight lowers the change proxy but increases departure from the current prediction (Table~\ref{tab:selection}). Contact sheets at frames 15, 45, 75, and 99 show that E4 remains close to the moving silhouette; differences among the three E4 candidates are visually small. We choose the intermediate 0.70 as a conservative balance, not a proven optimum. The review and all candidate recomputations precede test inference and fusion. No parameter is changed after inspecting the rollercoaster results.
 
-The examples in Figure~\ref{fig:nyu} follow recorded selection rules. UniDepth's maximum-error sample has RMSE 3.9283 m: a good dataset mean does not exclude large individual errors. The alignment-failure image contains a mirror. Reflection may disrupt the relation between apparent content and measured depth, but this image alone does not establish the cause. Final video analysis still needs independent glass, sky, blur, and thin-structure cases.
+\subsection{Frozen video comparison}
+\begin{table}[t]
+\centering\small
+\begin{tabular}{lrrr}
+\toprule
+Variant & Dev $T$ & Test $T$ & Test FPS$^\dagger$\\\midrule
+E0 raw DA & .005168 & .014708 & 13.22\\
+E1 EMA & .002950 & .015586 & 12.05\\
+E2 flow & .002647 & .004983 & 3.55\\
+E3 filtered & .002609 & .004653 & 3.28\\
+E4 adaptive & .003439 & .012364 & 3.10\\
+E5 VDA$^*$ & .002941 & .011590 & 7.80\\\bottomrule
+\end{tabular}
+\caption{Six saved-output comparisons at frozen $\alpha=0.70$. $T$ is Eq.~\ref{eq:temporal}, not accuracy. $^*$VDA uses its own normalization span. $^\dagger$Additive inference/flow/fusion estimate, excluding decode and export; E0 includes copying its output.}
+\label{tab:video}
+\end{table}
+All methods have 100\% pair coverage on the same 14,180,855 test reference pixels over 69 pairs; the development denominator is 22,391,812 over 99 pairs. Thus the reductions do not arise from dropping more evaluated pairs. They apply only within RGB/flow-supported regions, which omit unreliable correspondences and do not cover every image pixel.
 
-\subsection{Compute cost}
+E4 reduces test $T$ from 0.014708 to 0.012364, or 15.93\%, while preserving contours close to the raw current frame. The improvement is smaller than the development reduction. E2 and E3 produce much smaller changes, so E4 is not the numerical winner. Its conservative weighting trades stronger smoothing for fidelity to current predictions. We have no video depth GT or calibrated lag measurement to establish that this trade-off is globally optimal.
+
+\begin{figure*}[t]
+\centering\includegraphics[width=\textwidth]{images/video_comparison.png}
+\caption{Official test example, frames 35 and 69. DA and E4 share fixed limits approximately 0--2.35; VDA uses approximately 0--4.74. These are arbitrary inverse-depth-like values. E4 is unchanged on the first frame. All exported movies retain the 70 original timestamps.}
+\label{fig:video}
+\end{figure*}
+Same-pixel EMA is less reliable under motion: its test $T$ increases by about 6.0\%, and moving rails leave visible repeated outlines. This reverses its development score improvement and illustrates why one temporal statistic is insufficient. Figure~\ref{fig:video} shows broadly similar structure from raw DA, E4, and VDA. VDA's separately normalized score is descriptive; neither its score nor its smoother appearance proves higher physical accuracy.
+
+\subsection{Three observed difficult cases}
+\begin{figure*}[t]
+\centering\includegraphics[width=.92\textwidth]{images/difficult_cases.png}
+\caption{Three real input conditions, with exact crops recorded in figure provenance. Top: development person at 3.000 s. Middle: test riders/rails at 1.458 s. Bottom: test distant detail at 2.875 s. E1 and E4 use the same selected weight and DA color limits; VDA uses its own limits. Crops preserve their aspect ratios.}
+\label{fig:cases}
+\end{figure*}
+\paragraph{Moving foreground silhouette.}
+At development frame 45, EMA visibly spreads the person's outline and leg region into nearby background. Flow-aligned E4 preserves a contour closer to the current raw prediction. Neither E4 nor VDA establishes the correct depth of the reflected appearance on the wet road. This is development evidence and is not counted as an additional independent test scene.
+
+\paragraph{Riders crossing thin rails and supports.}
+At test frame 35, small riders and intersecting supports overlap within a narrow image area. EMA produces strong repeated contours, whereas E4 keeps the raw outline more closely. The relative maps still merge much of the riders/track into smooth regions and do not reliably resolve every separation visible in RGB. Motion alignment cannot reconstruct missing detail from a coarse source prediction; disocclusion also removes a valid history correspondence.
+
+\paragraph{Distant detail against sky.}
+At test frame 69, the flagpole, small tower, and tree occupy a narrow band of relative values close to sky. Fine leaf structure and parts of the thin flagpole are weak in the displayed depth. E4 retains much of this limitation; it does not create recovered fine geometry. Fixed normalization makes the limited contrast visible, but without GT we cannot distinguish every true long-distance similarity from an erroneous flattening. These three cases are observed in the selected inputs rather than assumed examples of absent conditions.
+
+\subsection{Measured computation cost}
 \begin{table*}[t]
 \centering\small
-\begin{tabular}{lrrrrrr}
+\begin{tabular}{lrrrrr}
 \toprule
-Model & Params (M) & Weight (MB) & Time (ms) & FPS & Alloc.\ (GiB) & Reserved (GiB)\\
-\midrule
-UniDepthV2 ViT-S & 34.184 & 136.778 & 43.68 & 22.89 & .393 & .445\\
-DA V2-S metric & 24.785 & 99.222 & 56.83 & 17.60 & .270 & .311\\
-DA V2-S relative & 24.785 & 99.218 & 58.53 & 17.08 & .270 & .311\\
-\bottomrule
+Model / input set & Encoder spatial size & ms/frame & Inference FPS & Alloc.\ GiB & Reserved GiB\\\midrule
+UniDepthV2 ViT-S / NYUv2 & $434\times574$ & 43.68 & 22.89 & .393 & .445\\
+DA V2-S relative / test video & $364\times644$ & 73.21 & 13.66 & .263 & .297\\
+VDA-S relative / test video & $364\times644$ & 128.26 & 7.80 & 2.330 & 3.090\\\bottomrule
 \end{tabular}
-\caption{One complete NYUv2 run per model, FP16 with actual encoder input $434\times574$ and output $480\times640$. MB is decimal; GiB is binary. Timing excludes I/O/evaluation. No repeated-run confidence interval is claimed.}
+\caption{Actual FP16 runs on the RTX 4060 Laptop. One complete run per setting; no repeated-run confidence interval. VDA uses temporal windows, while DA is frame-wise. Video output is $360\times640$; NYUv2 output is $480\times640$.}
 \label{tab:cost}
 \end{table*}
-Table~\ref{tab:cost} reports measured inference cost. Parameter count alone does not predict this pipeline's latency, which also includes model-specific preprocessing and restoration. The stated timing boundaries permit comparison without claiming an isolated kernel benchmark.
+For the test clip, DA inference takes 5.124 s, bidirectional CPU flow takes 13.229 s, and E4 fusion takes 4.225 s. Their sum yields approximately 3.10 fps, slower than both raw DA and offline VDA. The CPU correspondence stage is the main additional cost. E4 is therefore a simple interpretable postprocessor, not a demonstrated speed improvement over the temporal model.
 
-Before recording development footage, VDA resource tests on the same 24-frame public example used short sides 280, 364, and 518, producing actual inputs $280\times504$, $364\times644$, and $518\times924$. Peak allocated memory was 1.089, 2.309, and 7.807 GiB, with throughput 20.22, 9.06, and 0.92 fps. At 518, allocator-reserved memory reached 11.58 GiB; we cannot infer that all of it occupied dedicated VRAM or attribute the slowdown to a measured shared-memory mechanism. We selected 364 as a resource setting before self-recorded experiments. A padded 24-frame clip is not a long-video performance estimate.
-
-\subsection{Temporal implementation evidence}
-The example has 23 adjacent pairs and 1,293,996 shared reference pixels. Recomputing saved RGB flows, masks, E0--E4 arrays, fusion weights, and all E0--E5 scores reproduced the stored values. Conditional temporal L1 on this example is 0.2800 m for E0, 0.1088 for EMA, and 0.2026 for E4. These are program checks, not final test outcomes or parameter-selection evidence. EMA's lower value may reflect delayed response rather than better geometry. Cross-model absolute differences are also influenced by their different scales.
-
-Analytical tests cover known image translation, warp direction, invalid interpolation, consistency rejection, and true depth change. They verify that motion alignment avoids the same-pixel EMA ghost in the controlled translation case and that adaptive weights reduce history influence when depth changes. Such tests establish mechanics, not real-world effectiveness.
-
-Formal E0--E5 conclusions remain pending. Development will inspect static fluctuation, thin-boundary retention, approach/retreat response, and occlusion recovery alongside the fixed-denominator scores. After freezing a small configuration, the same analysis will run on independent test clips. If no candidate provides a useful trade-off, that negative result will be retained rather than replaced by the best example score.
-
+The 518-pixel VDA attempt failed during a padded warmup window with a requested allocation of about 4.27 GiB; this is retained as a resource failure, not excluded from the record. Successful 364-pixel inference peaks at 2.33 GiB allocated for both clips. These allocator measurements are useful for choosing hardware, but do not bound other programs' GPU use. Offline VDA throughput also cannot be equated with causal per-frame latency.

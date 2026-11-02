@@ -1,0 +1,42 @@
+{
+  "status": "complete",
+  "scope": "public_example_project",
+  "split": "dev",
+  "clip_id": "dev_tokyo_100",
+  "prediction_type": "inverse_depth_like",
+  "unit": "arbitrary",
+  "baseline_normalization_limits": [
+    0.0,
+    6.39385319709778
+  ],
+  "cache_metadata_sha256": "20532c11968bfa57d1c611fa74b7929c29ccd1d725e53aee6a8911e2982beef8",
+  "base_metadata_sha256": "6ed9ddab2eb649f91b2a5a5943b5d96d49901ac1657d3642ed2852acd43c6df7",
+  "vda_metadata_sha256": "824e5010b501ca17c8e6327951af561a18a1ece19f8d46b00613f563d803dea9",
+  "flow_metadata_sha256": "99c09731dffa9b5187a10af8b3e2763248fde63ec0033aef734cb7564be4342a",
+  "config": {
+    "schema_version": 1,
+    "status": "provisional",
+    "representation": "inverse_depth_like",
+    "selection_evidence": null,
+    "parameters": {
+      "history_weight": 0.7,
+      "fb_relative": 0.01,
+      "fb_absolute": 0.5,
+      "photo_max": 0.2,
+      "photo_sigma": 0.1,
+      "flow_sigma_px": 1.0,
+      "depth_span_sigma": 0.1,
+      "edge_span_sigma": 0.1
+    }
+  },
+  "config_sha256": "2ea1b4aafd8296869b0487d33ab5dc7a10805802757d019d029ef606511399d9",
+  "comparison_sha256": "d8693914752bb67ea0d8aeed0852985d2c944f65de243eb26f5f6815482f179d",
+  "E5_predictions": "outputs/course_video_20261102/dev_tokyo_100/vda_relative_364",
+  "efficiency": "estimated additive base inference + CPU flow + fusion; excludes decode/IO; not measured end-to-end FPS",
+  "implementation_sha256": {
+    "scripts/run_fusion_suite.py": "b5eeda0ff1e2471d65fbd4498ea5760020a61c4f58b17c36aae8e80438d26fe7",
+    "src/p3_depth/temporal/fusion.py": "f5240b6a4752b15f0cbe38117eafa9cccf3ee22de2111fb4124d85f3f205a78b",
+    "src/p3_depth/temporal/flow.py": "b0e77104ae524031db548bf6c3bcc3a83c789a41713bc443a7433e4d501006cd",
+    "src/p3_depth/evaluation/temporal.py": "10a1402d124a457173ae3ce62f2b66fc7c4c6042f056f636d7c54b87a53a27ee"
+  }
+}

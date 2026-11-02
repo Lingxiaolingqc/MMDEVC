@@ -19,7 +19,7 @@ def sha256(path):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--model', choices=['all', 'dav2_relative', 'dav2_metric', 'vda_metric'], default='all')
+    parser.add_argument('--model', choices=['all', 'dav2_relative', 'dav2_metric', 'vda_relative', 'vda_metric'], default='all')
     parser.add_argument('--checkpoint-root', type=Path, default=ROOT / 'checkpoints')
     args = parser.parse_args()
     assets = json.loads((ROOT / 'environments/model_assets.json').read_text(encoding='utf-8'))

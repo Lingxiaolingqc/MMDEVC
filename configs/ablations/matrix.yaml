@@ -1,14 +1,15 @@
-# Definitions; execute with scripts/run_fusion_suite.py.
+# Descriptive definitions; execute scripts/run_fusion_suite.py with the frozen proof.
 schema_version: 1
-status: implemented_provisional_parameters
+status: verified_relative_course_20261102
 shared_input: same_clips_frames_and_resolution
 evaluation_mask: common_protocol_independent_of_fusion_rejection
+representation: inverse_depth_like
 experiments:
-  E0: {base: dav2_metric, fusion: none}
-  E1: {base: dav2_metric, fusion: ema, flow: false}
-  E2: {base: dav2_metric, fusion: fixed_weight, flow: true, occlusion_rejection: false}
-  E3: {base: dav2_metric, fusion: fixed_weight, flow: true, occlusion_rejection: true}
-  E4: {base: dav2_metric, fusion: adaptive_weight, flow: true, occlusion_rejection: true}
-  E5: {base: vda_metric, fusion: none}
-provisional_config: configs/fusion_provisional.yaml
-parameters: null  # Tune on development clips; freeze before held-out evaluation.
+  E0: {base: dav2_relative, fusion: none}
+  E1: {base: dav2_relative, fusion: ema, flow: false}
+  E2: {base: dav2_relative, fusion: fixed_weight, flow: true, occlusion_rejection: false}
+  E3: {base: dav2_relative, fusion: fixed_weight, flow: true, occlusion_rejection: true}
+  E4: {base: dav2_relative, fusion: adaptive_weight, flow: true, occlusion_rejection: true}
+  E5: {base: vda_relative, fusion: none}
+frozen_config: outputs/course_video_20261102/selection/frozen/fusion_frozen.yaml
+tracked_evidence: results/course_20261102/selection/

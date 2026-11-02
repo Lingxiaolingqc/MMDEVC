@@ -1,4 +1,6 @@
-# 单图与边界评测协议 v2
+# 历史记录：单图与边界评测协议 v2
+
+> 2026-11-02：本文保留旧版计划或协议及已运行成果。当前必做范围、relative 视频、NYUv2 clipping 和冻结结果以 [新版协议](course_protocol_20261102.md) 为准；文中的自录视频或旧 pending 状态不再表示当前阻塞。
 
 主维护：A / Qinchuan XIAO。2026-10-28：已由助手运行 UniDepth、DA metric/relative 的标准测试与复算；成员独立复核待完成。v2 保留 v1 的数据、单位与七指标定义，增加相对对齐失败的批量统计及边界定义。视频规则见 [时序协议](temporal_protocol.md)。
 

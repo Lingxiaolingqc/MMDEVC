@@ -1,12 +1,17 @@
 # 命令入口
 
-当前可运行：
+当前课程的参数与执行顺序见 [新版复现说明](../docs/course_protocol_20261102.md)。所有命令从仓库根目录运行；新输出不得覆盖已有结果。
 
-- `python scripts/check_setup.py`：检查基础结构、CSV 表头与示例元数据。
-- `python scripts/inspect_middlebury.py --sample Adirondack`：检查一个场景并生成预览。
-- `python scripts/inspect_middlebury.py --all --write-manifest`：检查 15 组训练数据，更新清单并保留手工填写的 split/notes。
-- 添加 `--save-arrays` 可保存 GT 派生的米制深度及布尔 mask；`--no-preview` 可跳过画图。
+| 用途 | 入口 |
+| --- | --- |
+| 仓库结构检查 | check_setup.py |
+| Middlebury 读取 / SGBM 单样本 / 全量与复算 | inspect_middlebury.py / run_stereo_baseline.py / run_stereo_suite.py |
+| 新版 Stereo GT / MAE / coverage 审计 | audit_course_stereo.py |
+| NYUv2 提取 / 推理 / 新版评测 | prepare_nyuv2.py / run_nyuv2.py / evaluate_course_nyu.py |
+| 固定模型权重 | prepare_model_assets.py；UniDepth 见独立环境说明 |
+| 视频缓存 / relative 模型 / 公共光流 | prepare_video.py / run_video_models.py / prepare_flow.py |
+| E0–E5 / 原数组复算 / 开发冻结 | run_fusion_suite.py / verify_fusion_suite.py / freeze_fusion_config.py |
+| 固定范围比较 / 背景虚化 | render_depth_video.py / render_blur_demo.py |
+| 报告图 / 正式视频 ZIP | build_course_figures.py / package_depth_results.py |
 
-这两类检查**不代表模型环境或实验已通过**。Middlebury 依赖、路径约定与输出见 [数据说明](../docs/middlebury_data.md)。
-
-后续按任务实现 `prepare_data.py`、`run_inference.py`、`run_refinement.py`、`evaluate.py`、`run_ablations.py`、`summarize_results.py`。业务逻辑放在 `src/p3_depth/`，这里负责配置、调用和保存；入口未实现前不在 README 声称可运行。
+其他单图七指标、边界、相对对齐和米制点选 Demo 入口保留，用于历史实验与补充分析。它们的旧协议数字不能混入新版 NYUv2 主表。check_setup 只检查基础结构，不保证 GPU、数据或实验结果正确。

@@ -37,6 +37,13 @@ class VideoTests(unittest.TestCase):
             self.assertGreater(float(frames[:,:,:,0].mean()),245)
             self.assertLess(float(frames[:,:,:,2].mean()),5)
             self.assertAlmostEqual(info['effective_fps'],10)
+            original, all_index, original_info = decode_video(path, target_fps=None, max_long_edge=64, max_frames=4)
+            self.assertEqual([x['source_frame_index'] for x in all_index], [0,1,2,3])
+            np.testing.assert_allclose([x['timestamp_s'] for x in all_index], [0,1/30,.1,.2], atol=1e-6)
+            self.assertTrue(original_info['original_frame_rate'])
+            self.assertEqual(len(original), 4)
+            _, _, short_info = decode_video(path, target_fps=None, max_frames=100)
+            self.assertFalse(short_info['requested_frame_limit_reached'])
 
     def test_no_upscale_and_even_encoder_dimensions(self):
         self.assertEqual(output_size(1920,1080,640),(640,360))

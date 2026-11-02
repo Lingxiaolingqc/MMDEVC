@@ -156,7 +156,22 @@ class SelectionTests(unittest.TestCase):
         meta = json.loads(path.read_text())
         meta['scope'] = 'pipeline_check_not_final_evaluation'
         write_json(path, meta)
-        with self.assertRaisesRegex(ValueError, 'Only complete self-recorded'):
+        with self.assertRaisesRegex(ValueError, 'verified source scope'):
+            self.freeze()
+
+    def test_public_source_scope_requires_explicit_frame_count(self):
+        path=self.root/'cache/test_static/metadata.json'
+        meta=self.metas['test_static'].copy()
+        meta.update(source_kind='course_example',scope='course_example_project',self_recorded=False,
+                    source_url='https://example.org/course.mp4',original_frame_rate=True,
+                    frames=70,expected_frames=70,max_frames=100)
+        self.metas['test_static']=meta
+        write_json(path,meta)
+        config,_=self.freeze()
+        validate_test_freeze(self.root,config,meta)
+        meta['expected_frames']=100
+        write_json(path,meta)
+        with self.assertRaisesRegex(ValueError,'verified source scope'):
             self.freeze()
 
     def test_changed_result_review_and_manifest_rejected_after_freeze(self):

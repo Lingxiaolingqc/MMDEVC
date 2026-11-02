@@ -7,14 +7,15 @@ import numpy as np
 
 from run_stereo_baseline import ROOT,repo_path,read_yaml,write_json,write_csv,checksum
 from p3_depth.temporal.fusion import fuse_sequence
-from p3_depth.evaluation.temporal import evaluate_video
+from p3_depth.evaluation.temporal import evaluate_video, evaluate_relative_video
 from p3_depth.temporal.selection import validate_test_freeze
 
 
 def load_run(path,cache_meta):
     meta=json.loads((path/'metadata.json').read_text(encoding='utf-8'))
-    if meta['status']!='complete' or meta['prediction_type']!='metric_depth' or meta['unit']!='m' or meta['alignment']!='none':
-        raise ValueError('Fusion comparisons require completed unaligned metric Z predictions in m')
+    if (meta['status']!='complete' or meta['alignment']!='none'
+            or (meta['prediction_type'],meta['unit']) not in [('metric_depth','m'),('inverse_depth_like','arbitrary')]):
+        raise ValueError('Fusion comparisons require completed raw metric or relative predictions')
     for key in ('frames_sha256','index_sha256'):
         if meta['cache_metadata'][key]!=cache_meta[key]:
             raise ValueError('All methods must use the same RGB frames and timestamps')
@@ -22,6 +23,25 @@ def load_run(path,cache_meta):
         if checksum(path/name)!=meta[key]:
             raise ValueError('Prediction artifact hash mismatch')
     return meta,np.load(path/'depths.npy',mmap_mode='r',allow_pickle=False),np.load(path/'valid.npy',mmap_mode='r',allow_pickle=False)
+
+
+def score_columns(relative):
+    if relative:
+        return {'temporal_l1_relative':'temporal_l1_relative_on_valid',
+                'capped_normalized_l1_full_reference':'capped_normalized_l1_full_reference',
+                'median_absolute_change_relative':'median_absolute_change_relative',
+                'static_pixel_std_relative':'static_pixel_std_relative'}
+    return {'temporal_l1_m':'temporal_l1_m_on_valid',
+            'capped_l1_m_full_reference':'capped_l1_m_full_reference',
+            'agreement_5pct_full_reference':'agreement_5pct_full_reference',
+            'median_abs_log_change':'median_abs_log_change','static_pixel_std_m':'static_pixel_std_m'}
+
+
+def suite_scores(prediction,valid,fields,times,relative,static_scene,limits=None):
+    args=(prediction,valid,fields['backward'],fields['common_mask'],times)
+    if relative:
+        return evaluate_relative_video(*args,static_scene=static_scene,normalization_limits=limits)
+    return evaluate_video(*args,static_scene=static_scene)
 
 
 def main():
@@ -45,15 +65,18 @@ def main():
         validate_test_freeze(ROOT,config,cm)
     bm,base,valid=load_run(repo_path(a.baseline),cm)
     vm,vda,vda_valid=load_run(repo_path(a.reference_vda),cm)
-    if bm['model']['model']!='dav2_metric' or vm['model']['model']!='vda_metric':
-        raise ValueError('E0-E4 use DA metric; E5 is independent raw metric VDA')
+    representation=bm['prediction_type'];relative=representation=='inverse_depth_like'
+    suffix='relative' if relative else 'metric'
+    if (bm['model']['model']!='dav2_'+suffix or vm['model']['model']!='vda_'+suffix
+            or vm['prediction_type']!=representation or config.get('representation','metric_depth')!=representation):
+        raise ValueError('Model representations and fusion configuration must agree')
+    limits=list(map(float,np.quantile(base[valid],[.01,.99]))) if relative else None
     for key in ('device','device_name'):
         if bm['model'][key]!=vm['model'][key]:
             raise ValueError('Compare models on the same device')
     if bm['model']['requested_precision']!=vm['model']['precision']:
         raise ValueError('Compare models with the same inference precision')
-    if {tuple(s[-2:]) for s in bm['model']['encoder_shapes_nchw']}!={tuple(s[-2:]) for s in vm['model']['encoder_shapes_nchw']}:
-        raise ValueError('DA and VDA actual spatial encoder dimensions must match')
+    # Each official model preserves its own preprocessing; all outputs share the cache grid.
     fm=json.loads((flow_dir/'metadata.json').read_text(encoding='utf-8'))
     if fm['status']!='complete' or any(fm['cache_metadata'][k]!=cm[k] for k in ('frames_sha256','index_sha256')):
         raise ValueError('Flow cache must use the same frames and times')
@@ -76,31 +99,30 @@ def main():
             elapsed=0.;source=vm
         else:
             start=perf_counter()
-            prediction,weight=fuse_sequence(base,valid,variant,config['parameters'],fields)
+            prediction,weight=fuse_sequence(base,valid,variant,config['parameters'],fields,representation=representation)
             elapsed=perf_counter()-start
-            pred_valid=np.isfinite(prediction)&(prediction>0);source=bm
+            pred_valid=np.isfinite(prediction) & (True if relative else prediction>0);source=bm
             np.save(folder/'depths.npy',prediction);np.save(folder/'valid.npy',pred_valid)
             np.save(folder/'history_weight.npy',weight)
             write_json(folder/'metadata.json',{'status':'complete','model':{'model':variant},'cache_metadata':cm,
-                'prediction_type':'metric_depth','unit':'m','alignment':'none','gt_used':False,
+                'prediction_type':representation,'unit':bm['unit'],'alignment':'none','gt_used':False,
+                'normalization_reference':{'limits':limits,'source_metadata_sha256':checksum(repo_path(a.baseline)/'metadata.json')} if relative else None,
                 'depths_sha256':checksum(folder/'depths.npy'),'valid_sha256':checksum(folder/'valid.npy'),
                 'history_weight_sha256':checksum(folder/'history_weight.npy'),
                 'parameters':config['parameters'],'config_status':config['status'],'base_metadata_sha256':checksum(repo_path(a.baseline)/'metadata.json'),
                 'flow_metadata_sha256':checksum(flow_dir/'metadata.json'),'fusion_seconds':elapsed})
-        scores,rows=evaluate_video(prediction,pred_valid,fields['backward'],fields['common_mask'],times,static_scene=cm['scene_type']=='static')
+        scores,rows=suite_scores(prediction,pred_valid,fields,times,relative,cm['scene_type']=='static',limits if variant!='E5' else None)
         write_json(folder/'metrics.json',scores);write_csv(folder/'per_pair.csv',rows)
         flow_seconds=fm['elapsed_seconds'] if variant in ('E2','E3','E4') else 0.
         total=source['inference_seconds']+flow_seconds+elapsed
-        table.append({'variant':variant,'temporal_l1_m':scores['temporal_l1_m_on_valid'],
-            'capped_l1_m_full_reference':scores['capped_l1_m_full_reference'],
-            'agreement_5pct_full_reference':scores['agreement_5pct_full_reference'],
+        table.append({'variant':variant,**{column:scores[key] for column,key in score_columns(relative).items()},
             'pair_coverage':scores['pair_coverage'],'reference_pixels':scores['reference_pixels'],
-            'median_abs_log_change':scores['median_abs_log_change'],'static_pixel_std_m':scores['static_pixel_std_m'],
             'fusion_seconds':elapsed,'flow_seconds':flow_seconds,'estimated_pipeline_fps':len(base)/total})
     if len({r['reference_pixels'] for r in table})!=1:
         raise ValueError('Methods did not use identical reference denominators')
     write_csv(output/'comparison.csv',table)
     write_json(output/'metadata.json',{'status':'complete','scope':cm['scope'],'split':cm['split'],'clip_id':cm['clip_id'],
+        'prediction_type':representation,'unit':bm['unit'],'baseline_normalization_limits':limits,
         'cache_metadata_sha256':checksum(cache/'metadata.json'),'base_metadata_sha256':checksum(repo_path(a.baseline)/'metadata.json'),
         'vda_metadata_sha256':checksum(repo_path(a.reference_vda)/'metadata.json'),'flow_metadata_sha256':checksum(flow_dir/'metadata.json'),
         'config':config,'config_sha256':checksum(repo_path(a.config)),

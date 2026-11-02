@@ -55,7 +55,7 @@ def evaluate_video(depths,valid,backward,common_mask,timestamps,error_cap_m=1.,s
     return summary,rows
 
 
-def evaluate_relative_video(values, valid, backward, common_mask, timestamps, static_scene=False):
+def evaluate_relative_video(values, valid, backward, common_mask, timestamps, static_scene=False, normalization_limits=None):
     """Diagnose raw inverse-depth-like output; zero/negative finite values are not metres."""
     values, times = np.asarray(values), np.asarray(timestamps, dtype=np.float64)
     if (values.ndim != 3 or len(values) < 2 or valid.shape != values.shape or valid.dtype != np.bool_
@@ -68,6 +68,10 @@ def evaluate_relative_video(values, valid, backward, common_mask, timestamps, st
         raise ValueError('Relative valid mask includes nonfinite values')
     finite = values[valid].astype(np.float64)
     limits = list(map(float, np.quantile(finite, [.01, .99]))) if len(finite) else [None, None]
+    if normalization_limits is not None:
+        limits = list(map(float, normalization_limits))
+        if len(limits) != 2 or not np.isfinite(limits).all() or limits[1] < limits[0]:
+            raise ValueError('Invalid fixed reference normalization limits')
     span = limits[1] - limits[0] if len(finite) else None
     usable_span = span is not None and span > 0
     rows = []
@@ -99,7 +103,7 @@ def evaluate_relative_video(values, valid, backward, common_mask, timestamps, st
                'temporal_change_rate_relative_per_s_on_valid': pooled('temporal_change_rate_relative_per_s_on_valid', 'valid_pairs'),
                'capped_normalized_l1_full_reference': pooled('capped_normalized_l1_full_reference', 'reference_pixels'),
                'fixed_clip_percentile_limits': limits, 'normalization_span': span,
-               'normalization': 'One whole-clip 1%-99% span; no per-frame fit. Clip caps normalized error at 1; invalid pairs pay 1. Undefined when span is zero or unavailable.',
+               'normalization': 'One fixed reference span shared with the unchanged method when supplied, otherwise own whole-clip 1%-99% span; no per-frame fit. Capped at 1; invalid pairs pay 1. Undefined for zero/unavailable span.',
                'frame_median_relative': medians,
                'frame_prediction_coverage': [float(v.mean()) for v in valid],
                'median_absolute_change_relative': float(np.mean(jumps)) if jumps else None,

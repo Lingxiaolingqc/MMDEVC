@@ -3,79 +3,64 @@
 \centering
 \begin{tikzpicture}[font=\small,box/.style={draw=cvprblue,rounded corners,align=center,minimum height=0.85cm,text width=2.7cm},arr/.style={-{Latex[length=2mm]},thick}]
 \node[box] (rgb) {One RGB cache\\original timestamps};
-\node[box,right=0.7cm of rgb] (da) {DA V2 metric\\raw $D_t$ in metres};
+\node[box,right=0.7cm of rgb] (da) {DA V2 relative\\raw $r_t$};
 \node[box,right=0.7cm of da] (fusion) {E0--E4\\causal fusion};
-\node[box,right=0.7cm of fusion] (demo) {Fixed-scale depth\\point-depth application};
-\node[box,below=0.7cm of rgb] (flow) {RGB-only flow\\common reference $R_t$};
-\node[box,below=0.7cm of da] (vda) {VDA metric\\independent E5};
-\node[box,below=0.7cm of fusion] (eval) {Same evaluation\\masks and timestamps};
+\node[box,right=0.7cm of fusion] (demo) {Fixed relative colors\\background blur};
+\node[box,below=0.7cm of rgb] (flow) {RGB-only flow\\reference $R_t$};
+\node[box,below=0.7cm of da] (vda) {VDA relative\\independent E5};
+\node[box,below=0.7cm of fusion] (eval) {Shared evaluation\\masks and timestamps};
 \draw[arr] (rgb)--(da);\draw[arr] (da)--(fusion);\draw[arr] (fusion)--(demo);
 \draw[arr] (rgb)--(flow);\draw[arr] (rgb.south east)--(vda.north west);
 \draw[arr] (vda)--(eval);\draw[arr] (fusion)--(eval);
 \draw[arr] (flow.south) -- ++(0,-0.3) -| (eval.south);
-\draw[arr] (flow.north east) -- node[above,sloped,font=\scriptsize]{warp / consistency} (fusion.south west);
+\draw[arr] (flow.north east) -- node[above,sloped,font=\scriptsize]{warp / filter} (fusion.south west);
 \end{tikzpicture}
-\caption{Implemented video pipeline. Predictions and flow are cached separately. The evaluation reference is computed from RGB and flow before scoring depth, so a method cannot improve its score merely by rejecting difficult pixels internally. Stereo and NYUv2 provide separate GT-based accuracy experiments.}
+\caption{Video pipeline. Evaluation masks are derived from RGB/flow independently of depth. E0--E4 share the raw DA model's fixed whole-clip normalization; VDA uses its own fixed normalization. Stereo and NYUv2 provide separate GT-based experiments.}
 \label{fig:pipeline}
 \end{figure*}
 
-\subsection{Calibrated stereo}
-For rectified images, disparity is the horizontal correspondence displacement in pixels. The Middlebury calibration includes focal length $f_{\rm px}$, baseline $B_{\rm mm}$, and the principal-point offset $d_{\rm offs}$. We compute
+\subsection{Calibrated StereoSGBM}
+Disparity is horizontal correspondence displacement in pixels. Given focal length $f_{\rm px}$, baseline $B_{\rm mm}$, and principal-point offset $d_{\rm offs}$ from Middlebury calibration, we compute camera-axis depth as
 \begin{equation}
 Z_{\rm m}=\frac{f_{\rm px}B_{\rm mm}}{1000(d_{\rm px}+d_{\rm offs})}.
 \label{eq:stereo}
 \end{equation}
-The factor 1000 converts millimetres to metres. We use the calibration's conservative disparity search bound, not the tight GT-derived visualization range. OpenCV fixed-point disparities are divided by 16; invalid sentinels remain invalid.
+OpenCV returns fixed-point disparities, divided by 16 before conversion. Invalid sentinels are rejected. The search bound uses the calibration's conservative disparity range rather than a tight bound inferred from GT values.
 
-A separate right-to-left match provides a left--right check. At the corresponding right location, the signed disparities should sum to approximately zero. Out-of-bounds coordinates, unavailable right predictions, or residuals above 1 pixel are rejected. No holes are filled. With grayscale block size 3, the selected smoothness penalties are $P_1=72$ and $P_2=288$. This configuration was selected from block sizes 5, 3, and 7 using only two development scenes.
+A separate right-to-left match checks consistency. At corresponding coordinates, the signed left and right disparities should sum to approximately zero. Out-of-bounds coordinates, unavailable right predictions, or residuals above 1 pixel are rejected. The final mask also requires positive finite $Z$; holes are not filled. A zero disparity can remain geometrically valid when $d_{\rm offs}>0$. We select grayscale block size 3 and penalties $P_1=72$, $P_2=288$ on two development scenes from block sizes 5, 3, and 7. All 15 final pairs use this fixed configuration.
 
-Differentiating Eq.~\ref{eq:stereo} shows the depth sensitivity:
+\subsection{Pretrained models and output meaning}
+UniDepthV2 ViT-S receives only RGB through the released \texttt{infer(rgb)} interface. We use its camera-axis Z output in metres, with predicted camera parameters and no GT scale fitting. The actual encoder image is $434\times574$; the official pipeline restores the output to $480\times640$.
+
+For video, DA V2 Small and VDA Small both use their \emph{relative} checkpoints. Their values are inverse-depth-like: larger values generally indicate nearer content, but numerical magnitudes are arbitrary and the two models need not share a scale. Finite zero and negative values are not rejected merely for being nonpositive. No inverse conversion to metres or GT alignment is performed. VDA retains official offline window processing and relative window stitching. We do not train or fine-tune any model.
+
+\subsection{One improvement: flow-guided fusion}
+Let $r_t$ be current raw relative output and $\widehat r_{t-1}$ the previous fused map. Forward flow $f_t$ maps previous to current pixels; backward flow $b_t$ maps current to previous pixels. For current coordinate $p$,
 \begin{equation}
-\left|\frac{\partial Z}{\partial d}\right|
-=\frac{fB}{(d+d_{\rm offs})^2}.
+q=p+b_t(p),\qquad h_t(p)=\widehat r_{t-1}(q).
 \end{equation}
-Small disparity denominators amplify a fixed pixel error. Consequently, a distant region can exhibit a large depth error without a comparably large disparity error.
-
-\subsection{Released depth models and representations}
-We execute UniDepthV2 ViT-S and Depth Anything V2 Small relative and Hypersim metric checkpoints without training or fine-tuning. Direct metric predictions are restored to the original image size using the official model pipelines and are not rescaled with GT. The single-image experiment matches the actual encoder spatial dimensions at $434\times574$.
-
-For relative analysis only, let $r_i$ be inverse-depth-like output and $g_i$ valid GT. We fit
-\begin{equation}
-(a,b)=\arg\min_{a,b}\sum_i(ar_i+b-g_i^{-1})^2,
-\end{equation}
-require $a>0$, and invert positive fitted values. A negative slope is an alignment failure, not permission to reverse the declared output direction. The raw output is retained, the aligned coverage is zero for that image, and full-GT threshold scores count it as a failure. This per-image GT fit is unavailable to the video application.
-
-\subsection{Flow-guided temporal fusion}
-Let $D_t$ be current raw metric depth and $\widehat D_{t-1}$ the previous fused result. Forward flow $f_t$ maps previous pixels to the current image; backward flow $b_t$ maps current pixels to the previous image. For a current pixel $p$,
-\begin{equation}
-q=p+b_t(p),\qquad H_t(p)=\widehat D_{t-1}(q).
-\end{equation}
-We bilinearly sample the history. Out-of-bounds positions or invalid interpolation support cannot supply a history value.
-
-Forward--backward disagreement and normalized photometric residual are
+Bilinear interpolation requires finite supporting values and in-bounds coordinates. RGB Farneb\"ack flow is computed once and reused across variants. We form forward--backward and photometric residuals:
 \begin{align}
-e_{\rm fb}(p)&=\|b_t(p)+f_t(q)\|_2,\\
-e_{\rm photo}(p)&=\tfrac{1}{3\cdot255}\|I_t(p)-I_{t-1}(q)\|_1.
+e_f(p)&=\|b_t(p)+f_t(q)\|_2,\\
+e_p(p)&=\|I_t(p)-I_{t-1}(q)\|_1/(3\cdot255).
 \end{align}
-The common reference accepts finite, in-bounds samples satisfying
+Correspondences pass the consistency filter when
 \begin{align}
-e_{\rm fb}^2&\leq0.01(\|b_t\|_2^2+\|f_t(q)\|_2^2)+0.5,\\
-e_{\rm photo}&\leq0.2.
+e_f^2&\leq0.01\big(\|b_t\|_2^2+\|f_t(q)\|_2^2\big)+0.5,\\
+e_p&\leq0.2.
 \end{align}
-These checks estimate visibility and correspondence reliability; they are not ground-truth occlusion labels. The fixed evaluation reference is saved independently of the fusion rejection mask.
+These checks estimate correspondence reliability; they are not true occlusion labels. Disocclusions and reflections can violate their assumptions.
 
 The fusion update is
 \begin{equation}
-\widehat D_t=(1-w_t)D_t+w_tH_t.
+\widehat r_t=(1-w_t)r_t+w_th_t.
+\label{eq:fusion}
 \end{equation}
-For the adaptive variant, define $e_{\rm depth}=|\ln(H_t/D_t)|$ and $e_{\rm edge}$ as the maximum absolute log-depth difference to a four-connected neighbor in the current prediction. On eligible pixels,
+For E4, define a current-frame robust span $s_t=Q_{.99}(r_t)-Q_{.01}(r_t)$ over finite values. Let $e_d=|h_t-r_t|/s_t$, and let $e_e$ be the maximum absolute difference to a four-connected current neighbor, divided by $s_t$. On eligible pixels,
 \begin{equation}
-w_t=\alpha\exp\!\left[-\frac{e_{\rm photo}}{\sigma_p}
--\frac{e_{\rm fb}}{\sigma_f}
--\frac{e_{\rm depth}}{\sigma_d}
--\frac{e_{\rm edge}}{\sigma_e}\right].
+w_t=\alpha\exp\left[-e_p/0.1-e_f/1-e_d/0.1-e_e/0.1\right].
+\label{eq:weight}
 \end{equation}
-Elsewhere $w_t=0$. The provisional settings are $\alpha=0.7$, $(\sigma_p,\sigma_f,\sigma_d,\sigma_e)=(0.1,1,0.1,0.1)$, with $\sigma_f$ measured in pixels. They have not been selected on self-recorded development data. The first frame is unchanged; invalid current depth stays invalid rather than being filled with stale history.
+The flow scale is in pixels; the other terms are dimensionless. Elsewhere $w_t=0$. A near-zero span disables history. The first frame is unchanged, and invalid current predictions stay invalid. Importantly, $s_t$ only scales the confidence calculation: it does not normalize the output, align frames, or use future information. A common positive affine transform of the input sequence leaves these confidence terms unchanged apart from numerical precision.
 
-Optical flow transfers image coordinates, not 3D points between camera coordinate systems. In particular, $H_t$ is still a previous-camera Z value. The depth-change term reduces history influence when values disagree, but it does not geometrically compensate camera translation. Fast approach, moving objects, and disocclusion therefore remain necessary tests.
-
+We freeze $\alpha=0.70$ after comparing 0.50, 0.70, and 0.85 on the separate development clip. This heuristic balances history reuse with disagreement and boundary sensitivity. It cannot correct a wrong current prediction without suitable history, recover detail absent from every frame, or resolve per-frame affine ambiguity. Optical flow transfers image coordinates rather than reconstructing 3D motion; real scene changes can still be incorrectly smoothed.

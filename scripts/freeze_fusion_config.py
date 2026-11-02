@@ -30,6 +30,7 @@ def main():
     write_json(output / 'selection.json', proof)
     write_csv(output / 'development_comparison.csv', rows)
     config = {'schema_version': 1, 'status': 'frozen',
+              'representation': proof['selected_representation'],
               'selection_evidence': {'path': (output / 'selection.json').relative_to(ROOT).as_posix(),
                                      'sha256': checksum(output / 'selection.json')},
               'parameters': proof['selected_parameters']}

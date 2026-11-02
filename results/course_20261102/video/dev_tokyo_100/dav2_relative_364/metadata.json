@@ -1,0 +1,98 @@
+{
+  "status": "complete",
+  "model": {
+    "model": "dav2_relative",
+    "asset": {
+      "source_directory": "Depth-Anything-V2",
+      "source_repository": "https://github.com/DepthAnything/Depth-Anything-V2",
+      "source_commit": "a561b849ebae10a6f5ef49e26c83cbbcd36c71bf",
+      "repository": "depth-anything/Depth-Anything-V2-Small",
+      "revision": "03876f8651c73a60fe4c2c48294e09fcb6838fcf",
+      "filename": "depth_anything_v2_vits.pth",
+      "bytes": 99218434,
+      "sha256": "715fade13be8f229f8a70cc02066f656f2423a59effd0579197bbf57860e1378",
+      "prediction_type": "inverse_depth_like",
+      "unit": "arbitrary",
+      "alignment": "inverse_scale_shift"
+    },
+    "device": "cuda",
+    "requested_precision": "fp16",
+    "parameters": 24785089,
+    "weight_bytes": 99218434,
+    "gt_used_by_model": false,
+    "camera_input": "none",
+    "torch_version": "2.10.0+cu128",
+    "cuda_version": "12.8",
+    "device_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "input_size": 364,
+    "threads": 8,
+    "actual_precision": "fp16",
+    "encoder_shapes_nchw": [
+      [
+        1,
+        3,
+        364,
+        644
+      ]
+    ]
+  },
+  "cache_metadata": {
+    "source_fps_nominal": 15.0,
+    "source_duration_s": 13.0,
+    "source_size_hw": [
+      720,
+      1280
+    ],
+    "output_size_hw": [
+      360,
+      640
+    ],
+    "requested_fps": 15.0,
+    "original_frame_rate": true,
+    "display_rotation_degrees": 0,
+    "effective_fps": 15.0,
+    "sampled_duration_s": 6.6,
+    "max_frames": 100,
+    "requested_frame_limit_reached": true,
+    "timestamp_rule": "all consecutive decoded frames; original PTS retained",
+    "spatial_resize": "aspect-preserving INTER_AREA, even dimensions, no upsampling",
+    "orientation": "apply source display rotation before spatial resize",
+    "clip_id": "dev_tokyo_100",
+    "scene_group": "tokyo_walk",
+    "split": "dev",
+    "scene_type": "camera_motion",
+    "source_path": "D:\\Documents\\OneDrive\\OneDrive - HKUST (Guangzhou)\\桌面\\大三上\\AIAA3201(L01)Intro2CV\\Projects\\MMDEVC\\third_party\\Video-Depth-Anything\\assets\\example_videos\\Tokyo-Walk_rgb.mp4",
+    "source_sha256": "097f16c33dd8c8d1d2a24d9ea31a90b76bd0ee324b958a47385183e3547a63a8",
+    "frames_sha256": "0901a884008143f7de1849773e3d590aa2c4f13956c9d0f483cbc466532d6154",
+    "index_sha256": "2ad9749f3a19c9f9c4802c2fa6b090dece7e231879ffee1c96ab0ba791c5a141",
+    "frames": 100,
+    "color": "RGB uint8",
+    "self_recorded": false,
+    "source_kind": "public_example",
+    "source_url": "https://github.com/DepthAnything/Video-Depth-Anything/blob/4f5ae23172ba60fd7bc11ef671cca678842c7072/assets/example_videos/Tokyo-Walk_rgb.mp4",
+    "expected_frames": 100,
+    "scope": "public_example_project"
+  },
+  "cache_path": "D:\\Documents\\OneDrive\\OneDrive - HKUST (Guangzhou)\\桌面\\大三上\\AIAA3201(L01)Intro2CV\\Projects\\MMDEVC\\outputs\\course_video_20261102\\dev_tokyo_100\\cache",
+  "code_commit": "294d6615579f0dac2a43f77d36efce245167c97a",
+  "working_tree_status": "M environments/model_assets.json\n M manifests/videos.csv\n M results/stereo_week1.md\n M scripts/prepare_video.py\n M scripts/run_video_models.py\n M src/p3_depth/data/video.py\n M src/p3_depth/evaluation/temporal.py\n M src/p3_depth/models/video.py\n M src/p3_depth/temporal/fusion.py\n M tests/test_video.py\n?? results/course_input_audit_20261102.json\n?? results/video_resource_attempts_20261102.json\n?? scripts/evaluate_course_nyu.py\n?? src/p3_depth/evaluation/course.py\n?? tests/test_course_protocol.py",
+  "implementation_sha256": {
+    "scripts/run_video_models.py": "ca3ed5496d5ce4328cd4795403e6f7d189b8f487470519bd8b19757717ac8a9d",
+    "src/p3_depth/models/video.py": "bfa6cfe29c7ba591867d302e70f1325603f388edeb7c91c14f5d9e35f330f879",
+    "src/p3_depth/models/runtime.py": "2d93b6074a2b524e5c3a96cb0034d7fd5cd26599d7b9d1b2d34860381325eb99"
+  },
+  "frames": 100,
+  "prediction_type": "inverse_depth_like",
+  "unit": "arbitrary",
+  "alignment": "none",
+  "gt_used": false,
+  "depths_sha256": "c80dba5619b17601cbe6281efb7330f09c8266626d4c0c18e215376ecfc54ad2",
+  "valid_sha256": "1c841e055e5a824be42783986c3abd23a0cdb7216894c61ce6026987b008baed",
+  "inference_seconds": 7.313607099931687,
+  "mean_seconds_per_frame": 0.07313607099931688,
+  "fps": 13.673143584775568,
+  "timing_scope": "synchronized cache RGB to raw depth, official preprocessing and temporal stitching included; excludes load, decode and disk writes",
+  "warmup": "one original frame; VDA internally pads its official temporal window",
+  "peak_cuda_allocated_bytes": 282042880,
+  "peak_cuda_reserved_bytes": 318767104
+}

@@ -36,9 +36,15 @@ def registered_clips(root):
         notes = dict(part.strip().split('=', 1) for part in row['notes'].split(';'))
         cache = local_path(root, notes['cache'])
         meta = read_json(cache / 'metadata.json')
-        if (meta.get('self_recorded') is not True or meta.get('scope') != 'self_recorded_project'
-                or meta.get('max_frames') is not None):
-            raise ValueError('Only complete self-recorded clips may enter formal selection')
+        self_recorded=(meta.get('self_recorded') is True and meta.get('scope')=='self_recorded_project'
+                       and meta.get('max_frames') is None)
+        public=(meta.get('source_kind') in ('public_example','course_example')
+                and meta.get('scope')==meta.get('source_kind')+'_project'
+                and meta.get('self_recorded') is False and bool(meta.get('source_url'))
+                and meta.get('original_frame_rate') is True
+                and meta.get('expected_frames')==meta.get('frames') and meta.get('frames',0)>=2)
+        if not (self_recorded or public):
+            raise ValueError('Only registered original clips with verified source scope may enter formal selection')
         if any(meta[key] != row[key] for key in ('clip_id', 'scene_group', 'split', 'scene_type')):
             raise ValueError('Cache identity differs from the registered manifest')
         source = notes['source_sha256']
@@ -53,7 +59,7 @@ def registered_clips(root):
                 raise ValueError('Registered RGB/time cache changed')
         clips[clip_id] = {'row': row, 'cache': cache, 'metadata': meta}
     if not clips:
-        raise ValueError('Register self-recorded development and test clips first')
+        raise ValueError('Register development and independent evaluation clips first')
     return clips
 
 
@@ -72,9 +78,9 @@ def checked_suite(root, suite, clips):
     meta = read_json(suite / 'metadata.json')
     clip_id = meta['clip_id']
     if (meta['status'] != 'complete' or meta['split'] != 'dev'
-            or meta['scope'] != 'self_recorded_project' or clip_id not in clips
-            or clips[clip_id]['row']['split'] != 'dev'):
-        raise ValueError('Candidate suites must use registered self-recorded dev clips')
+            or clip_id not in clips or clips[clip_id]['row']['split'] != 'dev'
+            or meta['scope']!=clips[clip_id]['metadata']['scope']):
+        raise ValueError('Candidate suites must use registered development clips')
     if file_hash(clips[clip_id]['cache'] / 'metadata.json') != meta['cache_metadata_sha256']:
         raise ValueError('Candidate uses a different registered cache')
     verification = read_json(suite / 'verification.json')
@@ -122,7 +128,7 @@ def selection_evidence(root, candidates, selected, review_path):
             or not str(review.get('rationale', '')).strip()
             or set(review.get('candidate_observations', {})) != set(candidates)):
         raise ValueError('Complete the candidate review with an explicit selection and rationale')
-    records, tables, sources_by_clip, parameters = {}, [], {}, {}
+    records, tables, sources_by_clip, parameters, representations = {}, [], {}, {}, {}
     for name, suites in sorted(candidates.items()):
         observations = review['candidate_observations'][name]
         if set(observations) != dev_ids:
@@ -142,6 +148,10 @@ def selection_evidence(root, candidates, selected, review_path):
             if name in parameters and parameters[name] != p:
                 raise ValueError('A candidate must use the same parameters on every development clip')
             parameters[name] = p
+            representation=meta['config'].get('representation','metric_depth')
+            if representations and representation not in set(representations.values()):
+                raise ValueError('Candidates must use the same depth representation')
+            representations[name]=representation
             source = {k: meta[k] for k in ('cache_metadata_sha256', 'base_metadata_sha256',
                                           'vda_metadata_sha256', 'flow_metadata_sha256', 'implementation_sha256')}
             if clip_id in sources_by_clip and sources_by_clip[clip_id] != source:
@@ -154,6 +164,7 @@ def selection_evidence(root, candidates, selected, review_path):
     proof = {'schema_version': 1, 'split': 'dev', 'dev_clip_ids': sorted(dev_ids),
              'manifest_sha256': file_hash(root / 'manifests/videos.csv'),
              'selected_candidate': selected, 'selected_parameters': parameters[selected],
+             'selected_representation': representations[selected],
              'candidates': records, 'review_path': relative(root, review_path),
              'review_sha256': file_hash(review_path), 'reviewer_kind': review['reviewer_kind']}
     return proof, tables
@@ -171,7 +182,8 @@ def validate_test_freeze(root, config, cache_metadata):
         raise ValueError('Registered dev/test split changed after parameter selection')
     candidates = {name: [r['suite'] for r in records] for name, records in proof['candidates'].items()}
     current, _ = selection_evidence(root, candidates, proof['selected_candidate'], proof['review_path'])
-    if current != proof or proof['selected_parameters'] != config['parameters']:
+    if (current != proof or proof['selected_parameters'] != config['parameters']
+            or proof['selected_representation']!=config.get('representation','metric_depth')):
         raise ValueError('Frozen parameters or development evidence changed')
     clips = registered_clips(root)
     clip = clips.get(cache_metadata['clip_id'])

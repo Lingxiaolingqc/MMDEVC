@@ -80,6 +80,25 @@ class TemporalTests(unittest.TestCase):
         self.assertAlmostEqual(float(np.median(backward[15:-15,15:-15,0])),-3,delta=.15)
         self.assertGreater(fields['common_mask'][15:-15,15:-15].mean(),.95)
 
+    def test_relative_fusion_preserves_zero_negative_and_affine_units(self):
+        p={**self.p,'depth_span_sigma':.1,'edge_span_sigma':.1}
+        first=np.tile(np.linspace(-3,3,12,dtype=np.float32),(8,1))
+        second=first+.2
+        flow=np.zeros((*first.shape,2),np.float32)
+        fields=dict(forward=flow,backward=flow,photo_residual=np.zeros_like(first),fb_residual=np.zeros_like(first))
+        out,w=fuse_step(second,first,'E4',p,representation='inverse_depth_like',**fields)
+        shifted,sw=fuse_step(second*3-9,first*3-9,'E4',p,representation='inverse_depth_like',**fields)
+        self.assertTrue(np.isfinite(out).all())
+        np.testing.assert_allclose(shifted,out*3-9,rtol=1e-6,atol=2e-6)
+        np.testing.assert_allclose(sw,w,rtol=2e-5,atol=1e-6)
+        seq=np.stack([first,second]);valid=np.ones_like(seq,dtype=bool)
+        raw,_=fuse_sequence(seq,valid,'E0',p,representation='inverse_depth_like')
+        np.testing.assert_array_equal(raw,seq)
+        constant=np.zeros_like(first)
+        adaptive,weight=fuse_step(constant,first,'E4',p,representation='inverse_depth_like',**fields)
+        np.testing.assert_array_equal(adaptive,constant)
+        self.assertFalse(weight.any())
+
 
 if __name__=='__main__':
     unittest.main()

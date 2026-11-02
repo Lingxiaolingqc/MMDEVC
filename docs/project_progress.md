@@ -1,5 +1,23 @@
 # 项目执行与验收证据
 
+## 当前完成状态（2026-11-02）
+
+依据收到的新版说明执行，[完整协议和复现](course_protocol_20261102.md)。原 A/B 主责保留，助手完成双方技术实施；人工验收单列。
+
+- 官方 rollercoaster 完整 70 帧/24 fps，用户确认全段使用；与文字要求 100 帧的差异已写入报告及输入审计。
+- Middlebury 15 对的正有限视差 GT、原始预测 MAE/有效比例已复核；保存结果未改写。
+- UniDepth 654 张标准 test 已按新版 crop/GT range/pred clip 复算：AbsRel 0.1107756635、RMSE 0.3928173152 m、δ1 0.8947810718。
+- DA/VDA relative 在独立 Tokyo dev 100 帧和官方 test 70 帧均完成 FP16/364 推理；VDA 518 OOM 记录保留。
+- E0–E5 三组开发候选全部复算，α=0.70 在测试前冻结；最终 69 对 flow/mask、E0–E4 数组/权重与 E0–E5 分数复算通过。
+- 固定范围视频、70 帧背景虚化、三个实际困难案例完成；E4 test 变化指标降低 15.93%，加和估算约 3.10 fps，不宣称准确率或速度提升。
+- 74 项自动检查均通过：73 项沙箱通过；本地 HTTP 项因网络限制在沙箱外连同 Demo 其余两项通过。打包改动后 4 项打包回归也通过；真实数据负例拒绝错误帧数、缺失模型和改动色标。
+- CVPR PDF 为 8 页正文+1 页参考文献，9 页已渲染检查。depth_results.zip 为 80 payload/2 clips，SHA256 和 CRC 回读通过。
+- 中文个人验收指南仅本机 outputs/personal_acceptance/ 保存。仍需两位成员验收、决定 main 合并并执行课程提交；arXiv 可选。
+
+当前证据见 [结果索引](../results/course_20261102/README.md)、[报告](../report/README.md)、[打包](submission.md)。下方仅为旧版历史来源。
+
+## 旧版已完成成果及历史范围（2026-10-28）
+
 目标：依据 Spring 2027 Project 3 完成 Baseline、Reproduction、Improvement、应用及可提交材料。模块主责保留原 A/B 分工，由助手执行实现和实验；人工验收须由本人完成。代码分支 `feat/depth-video-pipeline`，起点 `c6c8314`。
 
 ## 已有可复用成果

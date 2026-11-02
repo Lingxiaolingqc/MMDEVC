@@ -1,0 +1,78 @@
+{
+  "status": "complete",
+  "cache_metadata": {
+    "source_fps_nominal": 15.0,
+    "source_duration_s": 13.0,
+    "source_size_hw": [
+      720,
+      1280
+    ],
+    "output_size_hw": [
+      360,
+      640
+    ],
+    "requested_fps": 15.0,
+    "original_frame_rate": true,
+    "display_rotation_degrees": 0,
+    "effective_fps": 15.0,
+    "sampled_duration_s": 6.6,
+    "max_frames": 100,
+    "requested_frame_limit_reached": true,
+    "timestamp_rule": "all consecutive decoded frames; original PTS retained",
+    "spatial_resize": "aspect-preserving INTER_AREA, even dimensions, no upsampling",
+    "orientation": "apply source display rotation before spatial resize",
+    "clip_id": "dev_tokyo_100",
+    "scene_group": "tokyo_walk",
+    "split": "dev",
+    "scene_type": "camera_motion",
+    "source_path": "D:\\Documents\\OneDrive\\OneDrive - HKUST (Guangzhou)\\桌面\\大三上\\AIAA3201(L01)Intro2CV\\Projects\\MMDEVC\\third_party\\Video-Depth-Anything\\assets\\example_videos\\Tokyo-Walk_rgb.mp4",
+    "source_sha256": "097f16c33dd8c8d1d2a24d9ea31a90b76bd0ee324b958a47385183e3547a63a8",
+    "frames_sha256": "0901a884008143f7de1849773e3d590aa2c4f13956c9d0f483cbc466532d6154",
+    "index_sha256": "2ad9749f3a19c9f9c4802c2fa6b090dece7e231879ffee1c96ab0ba791c5a141",
+    "frames": 100,
+    "color": "RGB uint8",
+    "self_recorded": false,
+    "source_kind": "public_example",
+    "source_url": "https://github.com/DepthAnything/Video-Depth-Anything/blob/4f5ae23172ba60fd7bc11ef671cca678842c7072/assets/example_videos/Tokyo-Walk_rgb.mp4",
+    "expected_frames": 100,
+    "scope": "public_example_project"
+  },
+  "config": {
+    "schema_version": 1,
+    "algorithm": "opencv_farneback",
+    "threads": 8,
+    "farneback": {
+      "pyr_scale": 0.5,
+      "levels": 3,
+      "winsize": 15,
+      "iterations": 3,
+      "poly_n": 5,
+      "poly_sigma": 1.2,
+      "flags": 0
+    },
+    "evaluation_mask": {
+      "fb_relative": 0.01,
+      "fb_absolute": 0.5,
+      "photo_max": 0.2
+    }
+  },
+  "config_sha256": "8885bbdc5a824657577b84abdb60aef3c0b3dba1aa58eaa92d0bf2829fc3b5ec",
+  "artifacts_sha256": {
+    "forward": "b339ab34e118e4abbfb31ad87f080436046f69a07a6a2e6af7f8605f963af2ad",
+    "backward": "c8a5b6258165728364e6aa19d88edb97863bc2a4bb27330e6aa112b8b8bd79f7",
+    "fb_residual": "be59f1975e9eeca874484f10265d4cf5c15fa2be1d99db65b19fa29d8f81a8b1",
+    "photo_residual": "672c7955750f3f651f243f9d86d8c6d99ebabf2787e77de648d6c5b73b90fa0e",
+    "common_mask": "c3a12cb34f680ab48f4b7c79472337f0a57c182030d6fb3103b2dfe4e4867fdf"
+  },
+  "pairs": 99,
+  "elapsed_seconds": 16.22033270006068,
+  "seconds_per_pair": 0.1638417444450574,
+  "opencv": "4.13.0",
+  "unit": "pixels at cached RGB resolution",
+  "coordinates": "forward[t-1]: previous -> current on previous grid; backward[t-1]: current -> previous on current grid",
+  "evaluation_region": "current-frame pixels; RGB/flow only; independent of all depth predictions and fusion weights",
+  "implementation_sha256": {
+    "scripts/prepare_flow.py": "ba75e5d90fe2d23d0b9637dc9adafb5075154f349865023264ebf0de9afb0d12",
+    "src/p3_depth/temporal/flow.py": "b0e77104ae524031db548bf6c3bcc3a83c789a41713bc443a7433e4d501006cd"
+  }
+}

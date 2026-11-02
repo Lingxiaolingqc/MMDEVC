@@ -6,7 +6,7 @@ import cv2
 import numpy as np
 
 from run_stereo_baseline import ROOT,repo_path,checksum,write_json
-from run_fusion_suite import load_run
+from run_fusion_suite import load_run,suite_scores,score_columns
 from p3_depth.temporal.selection import suite_artifacts,relative
 from p3_depth.temporal.flow import estimate_pair
 from p3_depth.temporal.fusion import fuse_sequence
@@ -45,8 +45,12 @@ def main():
         for key,array in {'forward':forward,'backward':backward,**{k:geometry[k] for k in ('fb_residual','photo_residual','common_mask')}}.items():
             if not np.allclose(array,fields[key][t-1],rtol=1e-5,atol=1e-5,equal_nan=True):
                 raise ValueError(f'Flow/mask recomputation differs: {t} {key}')
-    _,base,valid=load_run(repo_path(a.baseline),cm)
+    bm,base,valid=load_run(repo_path(a.baseline),cm)
     _,vda,vda_valid=load_run(repo_path(a.reference_vda),cm)
+    representation=bm['prediction_type'];relative_mode=representation=='inverse_depth_like'
+    limits=list(map(float,np.quantile(base[valid],[.01,.99]))) if relative_mode else None
+    if relative_mode and sm['baseline_normalization_limits']!=limits:
+        raise ValueError('Baseline display/evaluation reference changed')
     with (cache/'frames.csv').open(encoding='utf-8',newline='') as f:
         times=[float(r['timestamp_s']) for r in csv.DictReader(f)]
     if checksum(suite/'comparison.csv')!=sm['comparison_sha256']:
@@ -60,7 +64,7 @@ def main():
         if variant=='E5':
             pred,pred_valid=vda,vda_valid
         else:
-            expected,weights=fuse_sequence(base,valid,variant,sm['config']['parameters'],fields)
+            expected,weights=fuse_sequence(base,valid,variant,sm['config']['parameters'],fields,representation=representation)
             meta=json.loads((folder/'metadata.json').read_text(encoding='utf-8'))
             for name,key in [('depths.npy','depths_sha256'),('valid.npy','valid_sha256'),('history_weight.npy','history_weight_sha256')]:
                 if checksum(folder/name)!=meta[key]:
@@ -70,13 +74,16 @@ def main():
             saved_weights=np.load(folder/'history_weight.npy',allow_pickle=False)
             if not np.array_equal(expected,pred,equal_nan=True) or not np.array_equal(weights,saved_weights):
                 raise ValueError(f'{variant} fusion recomputation differs')
-            if not np.array_equal(pred_valid,np.isfinite(pred)&(pred>0)):
+            if not np.array_equal(pred_valid,np.isfinite(pred) & (True if relative_mode else pred>0)):
                 raise ValueError('Invalid prediction mask')
-        scores,_=evaluate_video(pred,pred_valid,fields['backward'],fields['common_mask'],times,static_scene=cm['scene_type']=='static')
+            if relative_mode and meta['normalization_reference']['limits']!=limits:
+                raise ValueError('Improvement must use unchanged baseline normalization')
+        scores,_=suite_scores(pred,pred_valid,fields,times,relative_mode,cm['scene_type']=='static',limits if variant!='E5' else None)
         if scores!=json.loads((folder/'metrics.json').read_text(encoding='utf-8')):
             raise ValueError(f'{variant} metric recomputation differs')
         row=next(r for r in table if r['variant']==variant)
-        for column,key in [('temporal_l1_m','temporal_l1_m_on_valid'),('capped_l1_m_full_reference','capped_l1_m_full_reference'),('reference_pixels','reference_pixels'),('pair_coverage','pair_coverage')]:
+        columns={**score_columns(relative_mode),'reference_pixels':'reference_pixels','pair_coverage':'pair_coverage'}
+        for column,key in columns.items():
             actual=float(row[column]) if row[column] else None
             if actual!=scores[key]:
                 raise ValueError('Exported table differs from verified scores')

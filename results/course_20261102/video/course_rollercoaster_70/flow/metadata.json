@@ -1,0 +1,78 @@
+{
+  "status": "complete",
+  "cache_metadata": {
+    "source_fps_nominal": 24.0,
+    "source_duration_s": 2.9166666666666665,
+    "source_size_hw": [
+      540,
+      960
+    ],
+    "output_size_hw": [
+      360,
+      640
+    ],
+    "requested_fps": 24.0,
+    "original_frame_rate": true,
+    "display_rotation_degrees": 0,
+    "effective_fps": 24.0,
+    "sampled_duration_s": 2.875,
+    "max_frames": 100,
+    "requested_frame_limit_reached": false,
+    "timestamp_rule": "all consecutive decoded frames; original PTS retained",
+    "spatial_resize": "aspect-preserving INTER_AREA, even dimensions, no upsampling",
+    "orientation": "apply source display rotation before spatial resize",
+    "clip_id": "course_rollercoaster_70",
+    "scene_group": "davis_rollercoaster",
+    "split": "test",
+    "scene_type": "camera_motion",
+    "source_path": "D:\\Documents\\OneDrive\\OneDrive - HKUST (Guangzhou)\\桌面\\大三上\\AIAA3201(L01)Intro2CV\\Projects\\MMDEVC\\third_party\\Video-Depth-Anything\\assets\\example_videos\\davis_rollercoaster.mp4",
+    "source_sha256": "7268cbecd9806a1e90a416de50dc02e50b4ae01428d5971837cf679dd0c87cb8",
+    "frames_sha256": "e51b3132c434971ce5cd21f34418efb5a23f28ac34381770d896abf584992c4a",
+    "index_sha256": "e06d7838ffbbb40fa26a632e4178d8c39cdb6d7786088f5d7b506ac00170825e",
+    "frames": 70,
+    "color": "RGB uint8",
+    "self_recorded": false,
+    "source_kind": "course_example",
+    "source_url": "https://github.com/DepthAnything/Video-Depth-Anything/blob/4f5ae23172ba60fd7bc11ef671cca678842c7072/assets/example_videos/davis_rollercoaster.mp4",
+    "expected_frames": 70,
+    "scope": "course_example_project"
+  },
+  "config": {
+    "schema_version": 1,
+    "algorithm": "opencv_farneback",
+    "threads": 8,
+    "farneback": {
+      "pyr_scale": 0.5,
+      "levels": 3,
+      "winsize": 15,
+      "iterations": 3,
+      "poly_n": 5,
+      "poly_sigma": 1.2,
+      "flags": 0
+    },
+    "evaluation_mask": {
+      "fb_relative": 0.01,
+      "fb_absolute": 0.5,
+      "photo_max": 0.2
+    }
+  },
+  "config_sha256": "8885bbdc5a824657577b84abdb60aef3c0b3dba1aa58eaa92d0bf2829fc3b5ec",
+  "artifacts_sha256": {
+    "forward": "11fdfaaf213e3f839471a8742e1ac4abb6d187a0aeda7502e193e9942931c089",
+    "backward": "9c52b34b75cddf7d46c711764a160aaae8702123ada2e122ada23aefd306f60c",
+    "fb_residual": "8871502b85e4746766d479d4093187d59fd11b517b5a00008dd1d972b7e36a03",
+    "photo_residual": "7515425f486e3a3adcbcf79447c689bf74e2bb6ff8239565373c6baf2d0ee3f1",
+    "common_mask": "176e732361aafe2dcd07902eaff4df29341e82c4d4d4975769cdbe6925047a19"
+  },
+  "pairs": 69,
+  "elapsed_seconds": 13.229384899954312,
+  "seconds_per_pair": 0.19173021594136683,
+  "opencv": "4.13.0",
+  "unit": "pixels at cached RGB resolution",
+  "coordinates": "forward[t-1]: previous -> current on previous grid; backward[t-1]: current -> previous on current grid",
+  "evaluation_region": "current-frame pixels; RGB/flow only; independent of all depth predictions and fusion weights",
+  "implementation_sha256": {
+    "scripts/prepare_flow.py": "ba75e5d90fe2d23d0b9637dc9adafb5075154f349865023264ebf0de9afb0d12",
+    "src/p3_depth/temporal/flow.py": "b0e77104ae524031db548bf6c3bcc3a83c789a41713bc443a7433e4d501006cd"
+  }
+}

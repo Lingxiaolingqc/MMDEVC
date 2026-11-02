@@ -15,8 +15,9 @@ from p3_depth.temporal.selection import local_path, read_json, registered_clips,
 
 def collect_exports(root, plan):
     scope = plan.get('scope')
-    formal = scope == 'self_recorded_project'
-    if plan.get('schema_version') != 1 or scope not in ('self_recorded_project', 'pipeline_check_not_final_evaluation'):
+    course = scope == 'course_project_20261031'
+    formal = course or scope == 'self_recorded_project'
+    if plan.get('schema_version') != 1 or scope not in ('course_project_20261031', 'self_recorded_project', 'pipeline_check_not_final_evaluation'):
         raise ValueError('Declare schema_version=1 and the actual export scope')
     clips = plan.get('clips', [])
     ids = [clip['clip_id'] for clip in clips]
@@ -50,12 +51,23 @@ def collect_exports(root, plan):
         add(proof_path, 'evidence/selection.json', config['selection_evidence']['sha256'])
         add(proof['review_path'], 'evidence/development_review.json', proof['review_sha256'])
         add(root/'manifests/videos.csv', 'evidence/videos.csv', proof['manifest_sha256'])
+        if course:
+            audit_path = local_path(root, plan['input_audit'])
+            audit = read_json(audit_path)
+            tests = [x['metadata'] for x in registry.values() if x['row']['split'] == 'test']
+            if (len(tests) != 1 or tests[0]['scope'] != 'course_example_project'
+                    or tests[0]['frames'] != audit['complete_decoded_frames']
+                    or tests[0]['source_sha256'] != audit['video_sha256']
+                    or audit.get('synthetic_frames') != 0 or not audit.get('user_decision')):
+                raise ValueError('Course video must match the documented complete official source')
+            add(audit_path, 'evidence/course_input_audit.json')
 
     for clip in clips:
         clip_id = clip['clip_id']
         cache = local_path(root, clip['cache'])
         cm = read_json(cache/'metadata.json')
-        if cm['clip_id'] != clip_id or cm['scope'] != scope:
+        allowed_scopes = ('public_example_project', 'course_example_project') if course else (scope,)
+        if cm['clip_id'] != clip_id or cm['scope'] not in allowed_scopes:
             raise ValueError('Export scope/clip ID differs from the cache')
         if formal and cm != registry[clip_id]['metadata']:
             raise ValueError('Formal export does not use the registered complete cache')
@@ -65,7 +77,7 @@ def collect_exports(root, plan):
         if formal:
             suite = local_path(root, clip['suite'])
             sm, receipt = read_json(suite/'metadata.json'), read_json(suite/'verification.json')
-            if (sm['status'] != 'complete' or sm['scope'] != scope or sm['clip_id'] != clip_id
+            if (sm['status'] != 'complete' or sm['scope'] != cm['scope'] or sm['clip_id'] != clip_id
                     or sm['cache_metadata_sha256'] != file_hash(cache/'metadata.json')
                     or sm['config']['parameters'] != config['parameters']
                     or (cm['split'] == 'test' and sm['config'] != config)
@@ -81,13 +93,17 @@ def collect_exports(root, plan):
             add(suite/'metadata.json', f'clips/{clip_id}/metrics/suite_metadata.json')
             add(suite/'verification.json', f'clips/{clip_id}/metrics/verification.json')
             expected_methods = {f'E{i}': file_hash(suite/f'E{i}'/'metadata.json') for i in range(5)}
-            expected_methods['vda_metric'] = file_hash(local_path(root, sm['E5_predictions'])/'metadata.json')
+            expected_methods['vda_relative' if course else 'vda_metric'] = file_hash(local_path(root, sm['E5_predictions'])/'metadata.json')
+            if course and (sm.get('prediction_type') != 'inverse_depth_like'
+                           or config.get('representation') != 'inverse_depth_like'):
+                raise ValueError('Updated course comparison requires relative video predictions')
+        relative_scales = {}
         for label, folder in clip['renders'].items():
             if not re.fullmatch(r'[A-Za-z0-9_-]+', label):
                 raise ValueError('Use simple render labels for archive folders')
             folder = local_path(root, folder)
             meta = read_json(folder/'metadata.json')
-            if (meta['status'] != 'complete' or meta['scope'] != scope or meta['frames'] != cm['frames']
+            if (meta['status'] != 'complete' or meta['scope'] != cm['scope'] or meta['frames'] != cm['frames']
                     or meta['cache_frames_sha256'] != cm['frames_sha256']
                     or meta['cache_index_sha256'] != cm['index_sha256'] or meta['raw_predictions_modified'] is not False):
                 raise ValueError('Rendered comparison must preserve the selected RGB/time cache and predictions')
@@ -103,6 +119,14 @@ def collect_exports(root, plan):
                         raise ValueError('Invalid model name')
                     add(source, f'clips/{clip_id}/models/{name}.json', item['metadata_sha256'])
                 seen[name] = item['metadata_sha256']
+                if course:
+                    if item['unit'] != 'arbitrary inverse':
+                        raise ValueError('Course video colors must represent relative values')
+                    expected_limits = (read_json(suite/'E5/metrics.json')['fixed_clip_percentile_limits']
+                                       if name == 'vda_relative' else sm['baseline_normalization_limits'])
+                    if [item['low'], item['high']] != expected_limits:
+                        raise ValueError('Every relative export must preserve its verified whole-clip scale')
+                    relative_scales[name] = (item['low'], item['high'])
                 if item['unit'] == 'm':
                     scales.add((item['low'], item['high']))
                 if name in expected_methods and item['metadata_sha256'] != expected_methods[name]:
@@ -112,12 +136,18 @@ def collect_exports(root, plan):
             for name, key in [('comparison.mp4', 'video_sha256'), ('preview.png', 'preview_sha256')]:
                 add(folder/name, f'clips/{clip_id}/{label}/{name}', meta[key])
             add(folder/'metadata.json', f'clips/{clip_id}/{label}/metadata.json')
-        if not seen or (formal and not ({'dav2_relative', 'E0', 'E1', 'E2', 'E3', 'E4', 'vda_metric'} <= set(seen))):
+        required = {'dav2_relative', 'E0', 'E1', 'E2', 'E3', 'E4', 'vda_relative' if course else 'vda_metric'}
+        if not seen or (formal and not (required <= set(seen))):
             raise ValueError('Formal videos must include relative baseline and all E0-E5 methods')
-        if formal or clip.get('relative_diagnostics'):
+        if course:
+            baseline_limits = tuple(sm['baseline_normalization_limits'])
+            if (seen['dav2_relative'] != sm['base_metadata_sha256']
+                    or any(relative_scales[name] != baseline_limits for name in required - {'vda_relative'})):
+                raise ValueError('Relative improvement must retain the verified baseline display scale')
+        if (formal and not course) or clip.get('relative_diagnostics'):
             folder = local_path(root, clip['relative_diagnostics'])
             meta = read_json(folder/'metadata.json')
-            if (meta['status'] != 'complete' or meta['scope'] != scope or meta['clip_id'] != clip_id
+            if (meta['status'] != 'complete' or meta['scope'] != cm['scope'] or meta['clip_id'] != clip_id
                     or meta['source_metadata_sha256']['cache'] != file_hash(cache/'metadata.json')
                     or meta['source_metadata_sha256']['run'] != seen.get('dav2_relative')):
                 raise ValueError('Relative diagnostics must match the rendered relative prediction')
@@ -127,15 +157,19 @@ def collect_exports(root, plan):
         if clip.get('demo'):
             folder = local_path(root, clip['demo'])
             meta = read_json(folder/'metadata.json')
-            if (meta['status'] != 'complete' or meta['scope'] != scope or meta['clip_id'] != clip_id
+            blur = meta.get('application') == 'relative_background_blur'
+            values_verified = meta['verification'].get('application_recomputed_from_raw' if blur else 'trace_matches_raw_predictions')
+            if (meta['status'] != 'complete' or meta['scope'] != cm['scope'] or meta['clip_id'] != clip_id
                     or meta['cache_metadata_sha256'] != file_hash(cache/'metadata.json')
                     or not meta['verification']['decoded_timestamps_match']
-                    or not meta['verification']['trace_matches_raw_predictions']
+                    or not values_verified
                     or any(seen.get(m['name']) != m['metadata_sha256'] for m in meta['methods'])):
                 raise ValueError('Application demo must match the exported methods and verified timestamps/values')
             if formal and (cm['split'] != 'test' or any(m['provisional'] for m in meta['methods'])):
                 raise ValueError('Formal application demo must use frozen independent test results')
-            for name in ('demo.mp4', 'preview.png', 'point_trace.csv'):
+            if course and (not blur or meta['parameters']['limits'] != list(baseline_limits)):
+                raise ValueError('Course blur application must preserve the comparison scale')
+            for name in ('demo.mp4', 'preview.png', 'blur_strength.csv' if blur else 'point_trace.csv'):
                 add(folder/name, f'application/{clip_id}/{name}', meta['files'][name])
             add(folder/'metadata.json', f'application/{clip_id}/metadata.json')
             demos.append(clip_id)
@@ -147,7 +181,9 @@ def collect_exports(root, plan):
         cases = local_path(root, plan['failure_cases'])
         with cases.open(encoding='utf-8', newline='') as handle:
             rows = list(csv.DictReader(handle))
-        if not {'mirror', 'glass', 'sky', 'motion_blur', 'thin_object'} <= {r['category'] for r in rows}:
+        if course and (len(rows) < 3 or len({r.get('case_id') for r in rows}) < 3 or any(not r.get('case_id') for r in rows)):
+            raise ValueError('Updated course report needs three actual distinct difficult cases')
+        if not course and not {'mirror', 'glass', 'sky', 'motion_blur', 'thin_object'} <= {r['category'] for r in rows}:
             raise ValueError('Index all five required qualitative conditions before final packaging')
         for row in rows:
             start, end = float(row['start_s']), float(row['end_s'])
@@ -163,7 +199,7 @@ def write_archive(files, manifest, output):
     output = Path(output)
     if output.exists() or output.with_suffix('.verification.json').exists():
         raise FileExistsError('Use a new archive output path')
-    formal = manifest['scope'] == 'self_recorded_project'
+    formal = manifest['scope'] in ('self_recorded_project', 'course_project_20261031')
     if not formal and output.name == 'depth_results.zip':
         raise ValueError('Use a clearly labelled smoke archive name for example footage')
     manifest = {**manifest, 'files': {name: {'sha256': item['sha256'], 'bytes': item['bytes']}
@@ -172,7 +208,7 @@ def write_archive(files, manifest, output):
               ('Prepared video archive. The report and course submission are separate.\n' if formal else
                'PIPELINE CHECK ONLY. Example footage; not a formal course submission.\n') +
               '\nclips/: RGB and fixed-scale depth comparisons, timestamps and provenance.\n'
-              'application/: RGB/depth/point-Z demonstration and raw-value trace.\n'
+              'application/: recorded depth application, parameters and verification.\n'
               'manifest.json: every source payload, its size and SHA256.\n'
               'Relative values are arbitrary inverse-depth-like units. Metric Z is camera-axis depth.\n'
               'Raw arrays, weights, datasets, source code and personal acceptance notes remain outside this archive.\n')

@@ -1,0 +1,80 @@
+{
+  "status": "complete",
+  "protocol": {
+    "id": "spring2027_revision_20261031",
+    "output_size_hw": [
+      480,
+      640
+    ],
+    "crop_yx_half_open": [
+      45,
+      471,
+      41,
+      601
+    ],
+    "gt_range_m_inclusive": [
+      0.001,
+      10.0
+    ],
+    "prediction_clip_m": [
+      0.001,
+      10.0
+    ],
+    "alignment": "none",
+    "aggregation": "equal mean of all 654 per-image scores",
+    "metrics": [
+      "abs_rel",
+      "rmse_m",
+      "delta1"
+    ],
+    "invalid_policy": "fail on nonfinite predictions in the GT evaluation region; do not drop pixels/images"
+  },
+  "source_run": "outputs/nyuv2_test_20261028/unidepth",
+  "source_metadata_sha256": "ee32c4e835097cec94b250e956b97acc9df5eb5421539d56dc3117c78e0cf364",
+  "source_model": {
+    "model": "unidepth",
+    "asset": {
+      "source_commit": "8d8cfe4c7ee15297099983607febf0d4f32eb3d6",
+      "filename": "model.safetensors",
+      "sha256": "93705cb3295dd7476b44911b8a55f5215bf74e8d5eccd27cecdb1b338270a648",
+      "prediction_type": "metric_depth",
+      "unit": "m",
+      "alignment": "none",
+      "config_sha256": "ecc1f898690debe387d10329cca5d9d66a0a447ce83c3a2a7ae3673c7ce43cfe",
+      "resolution_level": 0
+    },
+    "device": "cuda",
+    "requested_precision": "fp16",
+    "parameters": 34184323,
+    "weight_bytes": 136777580,
+    "gt_used_by_model": false,
+    "camera_input": "predicted intrinsics",
+    "torch_version": "2.10.0+cu128",
+    "cuda_version": "12.8",
+    "device_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "input_size": "official resolution_level=0",
+    "threads": 8,
+    "actual_precision": "official CUDA FP16 autocast",
+    "encoder_shapes_nchw": [
+      [
+        1,
+        3,
+        434,
+        574
+      ]
+    ]
+  },
+  "manifest_sha256": "1f68150ef942dd0667d6d5214808a536e03875a1e986033371e4f7adf147d738",
+  "implementation_sha256": {
+    "scripts/evaluate_course_nyu.py": "f65e6803f78ba40ed42290fd7fd51a9a1695820f216ff5d9876efc74f1a94d85",
+    "src/p3_depth/evaluation/course.py": "dae680a3446415548b53c7a74f5424f2d22097ea40f72ee03898fae3df11ebaf",
+    "src/p3_depth/evaluation/depth.py": "e2c0c1b533680f67077dd3dbcd9b00cd1cbdec8cf41b6fc0ce0b5ff3000f0433",
+    "src/p3_depth/data/nyuv2.py": "712d14614738689ca3333d297894c620e27fb779e32f98ab282b228fac83f8c6"
+  },
+  "code_commit": "294d6615579f0dac2a43f77d36efce245167c97a",
+  "per_image_sha256": "b229633d32eaaf04b64b1f9046d4d15e3820af20a31c1d48399df17001f82729",
+  "summary_sha256": "1df2449aabe703b7425e0b5711718a7e036c543a6e60e9abf29dcf185662a0d9",
+  "inference_reused": true,
+  "raw_predictions_modified": false,
+  "efficiency_source": "Reuse the source inference measurements; this command times no model inference"
+}

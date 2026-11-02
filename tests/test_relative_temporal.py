@@ -53,6 +53,15 @@ class RelativeTemporalTests(unittest.TestCase):
         self.assertIsNone(missing['temporal_l1_relative_on_valid'])
         self.assertIsNone(missing['median_absolute_change_relative'])
 
+    def test_improvement_uses_unchanged_baseline_span(self):
+        ramp=np.tile(np.arange(6,dtype=np.float32),(4,1))
+        values=np.stack([ramp,ramp+1])
+        scores,_=evaluate_relative_video(values,np.ones_like(values,dtype=bool),
+            np.zeros((*values[1:].shape,2),np.float32),np.ones(values[1:].shape,bool),[0,1],
+            normalization_limits=[0,10])
+        self.assertAlmostEqual(scores['capped_normalized_l1_full_reference'],.1)
+        self.assertEqual(scores['normalization_span'],10)
+
 
 if __name__ == '__main__':
     unittest.main()

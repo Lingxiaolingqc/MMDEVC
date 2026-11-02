@@ -1,4 +1,6 @@
-# 点选深度 Demo
+# 历史米制点选 Demo（可选）
+
+> 新版正式应用为相对深度背景虚化，见 [当前流程](../docs/course_protocol_20261102.md) 和 scripts/render_blur_demo.py。以下保留旧米制应用的接口与示例验证，不作为新版额外要求。
 
 主责：B / Jun Yu Eugene YIP。助手已实现并运行；组员人工验收待完成。
 

@@ -1,4 +1,6 @@
-# AIAA3201 Project 3：第一周两人详细工作计划
+# 历史记录：AIAA3201 Project 3：第一周两人详细工作计划
+
+> 2026-11-02：本文保留旧版计划或协议及已运行成果。当前必做范围、relative 视频、NYUv2 clipping 和冻结结果以 [新版协议](course_protocol_20261102.md) 为准；文中的自录视频或旧 pending 状态不再表示当前阻塞。
 
 **项目：** Monocular Metric Depth Estimation & Video Consistency
 

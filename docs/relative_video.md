@@ -1,4 +1,6 @@
-# Part 1：相对视频诊断
+# 历史记录：Part 1：相对视频诊断
+
+> 2026-11-02：本文保留旧版计划或协议及已运行成果。当前必做范围、relative 视频、NYUv2 clipping 和冻结结果以 [新版协议](course_protocol_20261102.md) 为准；文中的自录视频或旧 pending 状态不再表示当前阻塞。
 
 Depth Anything V2 Small relative 输出 inverse-depth-like 相对值，近处通常较大，单位不是米。该流程直接测量其原始输出变化，不取倒数冒充真实深度，也不使用逐帧 GT 对齐。
 

@@ -66,12 +66,14 @@ def main():
             if not len(values):
                 raise ValueError('Relative prediction has no finite pixels to set a display scale')
             low, high = map(float,np.quantile(values,[.01,.99]))
+            if meta.get('normalization_reference'):
+                low,high=map(float,meta['normalization_reference']['limits'])
             high = max(high,low+1e-6)
         else:
             low, high = 0., args.depth_max
         inputs.append((depth,valid,{'run':name,'model':meta['model']['model'],
             'low':low,'high':high,'unit':'arbitrary inverse' if relative else 'm',
-            'scale_rule':'whole-clip 1st/99th percentiles' if relative else 'fixed user metric range',
+            'scale_rule':('unchanged baseline whole-clip 1st/99th percentiles' if meta.get('normalization_reference') else 'whole-clip 1st/99th percentiles') if relative else 'fixed user metric range',
             'metadata_sha256':checksum(run/'metadata.json')}))
     output.mkdir(parents=True)
     h,w = frames.shape[1:3]

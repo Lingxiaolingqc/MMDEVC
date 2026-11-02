@@ -1,5 +1,7 @@
 # 环境与官方实现
 
+2026-11-02：新版正式视频使用 DA V2 Small relative 与 VDA Small relative，FP16/364 已在 dev 100 帧和 test 70 帧验证。VDA relative 权重见 model_assets.json，可运行 prepare_model_assets.py --model vda_relative。当前执行顺序见 [新版协议](../docs/course_protocol_20261102.md)。
+
 基础包没有强制第三方运行依赖；`scripts/check_setup.py` 可直接用 Python 3.10+ 执行。StereoSGBM/NYUv2/单图评测使用 `python -m pip install -e ".[data,stereo,nyu]"`，不需要 GPU 或 opencv-contrib。UniDepthV2 ViT-S 已完成 CPU 真实单样本推理，见 [已验证环境与命令](unidepth.md)。DA V2 relative / metric 与 VDA metric 的 CPU 小样本流程也已验证，批量和视频命令见 [depth_models.md](depth_models.md)；CUDA 三模型标准测试和 VDA 预检已完成，见 [CUDA 环境](cuda.md)。
 
 Middlebury 读取与诊断使用可选依赖：`python -m pip install -e ".[data]"`（NumPy、Pillow、PyYAML、Matplotlib）。2026-10-20 本机数据检查通过的版本记录在 [数据检查说明](../docs/middlebury_data.md)；该记录不代表模型环境兼容性。

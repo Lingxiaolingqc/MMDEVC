@@ -1,4 +1,4 @@
-"""Prepare one indexed video cache. Register only real project clips before tuning."""
+"""Prepare a timestamped RGB cache with explicit source identity and scene split."""
 
 import argparse
 import csv
@@ -18,6 +18,10 @@ def main():
     p.add_argument('--split', required=True, choices=['dev','test','smoke'])
     p.add_argument('--scene-type', required=True)
     p.add_argument('--target-fps', type=float, default=10)
+    p.add_argument('--original-fps', action='store_true', help='Keep every consecutive source frame and its PTS')
+    p.add_argument('--source-kind', choices=['self_recorded', 'public_example', 'course_example'], default='self_recorded')
+    p.add_argument('--source-url', help='Original public source, required for registered public/course examples')
+    p.add_argument('--expected-frames', type=int, help='Fail rather than silently accept a short source')
     p.add_argument('--max-long-edge', type=int, default=640)
     p.add_argument('--max-frames', type=int)
     p.add_argument('--output-dir', required=True)
@@ -25,8 +29,12 @@ def main():
     args = p.parse_args()
     if not re.fullmatch(r'[A-Za-z0-9_-]+', args.clip_id) or not re.fullmatch(r'[A-Za-z0-9_-]+', args.scene_group):
         p.error('Use stable alphanumeric, underscore or hyphen IDs')
-    if args.register and (args.split == 'smoke' or args.max_frames is not None):
-        p.error('Only complete real dev/test clips may be registered')
+    if args.register and args.split == 'smoke':
+        p.error('Smoke clips cannot be registered as formal project inputs')
+    if args.register and args.source_kind == 'self_recorded' and args.max_frames is not None:
+        p.error('Register complete self-recorded clips; use public_example for bounded public excerpts')
+    if args.register and args.source_kind != 'self_recorded' and not args.source_url:
+        p.error('Registered public inputs need their original source URL')
     source = repo_path(args.video)
     output = repo_path(args.output_dir)
     if output.exists():
@@ -43,15 +51,18 @@ def main():
             raise ValueError('A scene group cannot cross dev/test')
         if any(source_hash in r['notes'] for r in rows):
             raise ValueError('Identical video content already registered under another ID')
-    frames, index, info = decode_video(source, args.target_fps, args.max_long_edge, args.max_frames)
+    frames, index, info = decode_video(source, None if args.original_fps else args.target_fps, args.max_long_edge, args.max_frames)
+    if args.expected_frames is not None and len(frames) != args.expected_frames:
+        raise ValueError(f'Expected {args.expected_frames} original frames, decoded {len(frames)}; never pad/repeat missing source frames')
     output.mkdir(parents=True)
     np.save(output / 'frames.npy', frames)
     write_csv(output / 'frames.csv', index)
     meta = {**info, 'clip_id': args.clip_id, 'scene_group': args.scene_group, 'split': args.split,
             'scene_type': args.scene_type, 'source_path': str(source), 'source_sha256': source_hash,
             'frames_sha256': checksum(output / 'frames.npy'), 'index_sha256': checksum(output / 'frames.csv'),
-            'frames': len(frames), 'color': 'RGB uint8', 'self_recorded': args.register,
-            'scope': 'self_recorded_project' if args.register else 'pipeline_check_not_final_evaluation'}
+            'frames': len(frames), 'color': 'RGB uint8', 'self_recorded': args.source_kind == 'self_recorded',
+            'source_kind': args.source_kind, 'source_url': args.source_url, 'expected_frames': args.expected_frames,
+            'scope': args.source_kind + '_project' if args.register else 'pipeline_check_not_final_evaluation'}
     write_json(output / 'metadata.json', meta)
     if args.register:
         raw = ROOT / 'data/videos/raw' / (args.clip_id + source.suffix.lower())

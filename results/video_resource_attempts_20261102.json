@@ -1,0 +1,32 @@
+{
+  "hardware": "NVIDIA GeForce RTX 4060 Laptop GPU, 8188 MiB",
+  "model": "Video Depth Anything Small relative",
+  "precision": "fp16",
+  "mode": "official offline, original attention implementation without xFormers",
+  "attempts": [
+    {
+      "input_size": 518,
+      "cache": "outputs/course_video_20261102/dev_tokyo_100/cache",
+      "status": "failed_out_of_memory",
+      "stage": "warmup (one frame padded by official inference to a 32-frame window)",
+      "error": "torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 4.27 GiB",
+      "action": "Reduce input_size to 364 as allowed by the course; preserve this failure record"
+    },
+    {
+      "input_size": 364,
+      "status": "complete",
+      "frames": 100,
+      "inference_seconds": 10.89119330001995,
+      "peak_cuda_allocated_bytes": 2502274560,
+      "encoder_shapes_nchw": [
+        [
+          32,
+          3,
+          364,
+          644
+        ]
+      ],
+      "source_run": "outputs/course_video_20261102/dev_tokyo_100/vda_relative_364"
+    }
+  ]
+}

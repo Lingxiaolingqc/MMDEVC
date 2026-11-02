@@ -1,80 +1,37 @@
-# 导出、打包与最终交付
+# 提交、打包与交叉验收
 
-2026-10-28：图像实验、视频程序、应用和报告草稿已经有运行证据。自录视频尚未提供；正式 `depth_results.zip`、最终视频结论与完整个人验收指南尚未生成。下面是已实现的打包流程，不能把示例测试包当作正式提交。
+当前以 2026-11-02 收到的新版说明为准。必做视频为官方 rollercoaster，已经按用户确认采用完整 70 帧；不要求补拍自录视频。arXiv 是可选项。
 
-## 正式视频完成后的顺序
+## 交付物
 
-1. 按 [采集说明](video_capture.md) 登记全部 dev/test，按 [相对视频诊断](relative_video.md) 处理 Part 1，并运行 DA metric、VDA 和公共光流。
-2. 按 [开发选择](fusion_selection.md) 比较三个小候选，记录真实观察，冻结后运行全部独立 test。每段保存 E0–E5 结果并完成 `verify_fusion_suite.py`。
-3. 对每段导出相对视频，以及包含 E0–E5 的米制视频。可以分成多个比较视频，避免七列挤在一个画面里；同一片段的所有米制视频采用同一色标，例如 0–10 m。
-4. 在至少一个正式 test 上导出 [应用 Demo](../demo/README.md)：RGB、深度、点选 Z 读数和时间曲线。观察者检查 RGB/深度是否同步、数值与数组是否一致、无效值是否留空。读数是预测，不能凭 Demo 宣称绝对距离正确。
-5. 写出困难条件索引，更新报告实际结论，最后生成并检查压缩包。
+1. 报告：CVPR camera-ready，正文 6–8 页，参考文献另计；两位作者、所有指定阅读、摘要末 GitHub 链接、实际结果/消融/困难案例。源码位于 report/paper/，本地 PDF 位于 outputs/submission_20261102/。
+2. GitHub：完整项目代码、环境与复现说明、紧凑结果证据。当前工作分支 feat/depth-video-pipeline，最终合并 main 由成员完成。
+3. 视频与应用：outputs/submission_20261102/depth_results.zip。包含 dev/test 比较、E0–E5、背景虚化、时间戳、冻结证据和三个困难案例，不包含原始代码或数据集。
+4. 本人验收：outputs/personal_acceptance/ 下的中文指南，仅本机保留，不进 Git，也不进 ZIP。
 
-`results/video_failure_cases.csv` 由实际观察生成，表头为：
+## 打包与验证
 
-```csv
-category,clip_id,start_s,end_s,observation
-```
+在仓库根目录、项目 Python 环境中执行。已有目标 ZIP 时不要覆盖；使用新的 outputs 子目录。
 
-category 包含 `mirror`、`glass`、`sky`、`motion_blur`、`thin_object`。时间使用缓存保留的原始相对时间戳，观察描述应定位画面区域和具体表现。若某条件没有造成明显失败，也如实写出观察；不能为了填表虚构失败。缺少某类内容时补录诊断片段，并先确定其用途和 split，再运行模型。
+~~~powershell
+python scripts/package_depth_results.py --plan configs/course_export_plan.json --output outputs/submission_20261102/depth_results.zip --check-only
+python scripts/package_depth_results.py --plan configs/course_export_plan.json --output outputs/submission_20261102/depth_results.zip
+~~~
 
-## 打包计划
+当前正式 scope 为 course_project_20261031。打包前检查：
 
-复制 `configs/depth_results.example.json` 到本地 `outputs/depth_results_plan.json`。`clips` 必须列出 `manifests/videos.csv` 中每一个真实片段。每条记录的结构如下，路径应替换为实际产物；dev 的 `suite` 使用所选候选，test 使用冻结配置生成的目录。
+- 必须覆盖全部已登记的开发和测试片段，场景/源哈希不得交叉。
+- 固定官方 test 的完整帧数和源 SHA256 必须匹配帧数差异记录。
+- 每组 E0–E5 都已独立复算，配置等于开发选定参数；test 绑定冻结凭据。
+- 原始 DA/E0–E4 同色标，VDA 单独整段固定色标；不混入米制视频。
+- 背景虚化为冻结 test 输出；应用值与原始预测复算通过、视频 PTS 一致。
+- 三个案例必须指向真实登记片段、合法时间区间和具体观察。
+- ZIP 创建后逐项回读核查 SHA256、CRC 和文件数量。
 
-```json
-{
-  "clip_id": "test_static",
-  "cache": "outputs/videos/test_static/cache",
-  "suite": "outputs/videos/test_static/frozen_suite",
-  "renders": {
-    "metric_baselines": "outputs/videos/test_static/metric_baselines",
-    "fusion_ablations": "outputs/videos/test_static/fusion_ablations",
-    "relative_baseline": "outputs/videos/test_static/relative_rendered"
-  },
-  "relative_diagnostics": "outputs/videos/test_static/relative_diagnostics",
-  "demo": "outputs/videos/test_static/demo"
-}
-```
+旧 self_recorded_project / pipeline_check_not_final_evaluation 模式仍用于历史记录和兼容性测试，不用于本次新版包。旧示例包不能改名冒充当前提交包。
 
-`renders` 的标签用于压缩包目录；每个目录必须是 `render_depth_video.py` 的完整导出。米制视频合起来包含 E0、E1、E2、E3、E4 和 `vda_metric`，相对视频包含 `dav2_relative`。`demo` 对普通片段可省略，但至少一个 test 必须提供 `render_demo.py` 的完整导出。`frozen_config` 指向生成的冻结配置，`failure_cases` 指向真实困难条件索引。
+## 成员最后确认
 
-在仓库根目录运行：
+A 复核单位、GT 区域、新版 NYUv2 数值和融合公式；B 复核两个视频模型、固定范围、三个案例、效率边界和应用。双方各执行一次复算命令，并检查 PDF 与 ZIP 能在另一台电脑打开。助手执行不等于成员已验收。
 
-```powershell
-$py = '.\.venv-cuda\Scripts\python.exe'
-& $py scripts/package_depth_results.py --plan outputs/depth_results_plan.json --output outputs/submission/depth_results.zip --check-only
-if ($LASTEXITCODE -ne 0) { throw '先修复打包检查报告的问题' }
-& $py scripts/package_depth_results.py --plan outputs/depth_results_plan.json --output outputs/submission/depth_results.zip
-```
-
-入口检查完整片段覆盖、冻结证据、所选版本、预测/时间索引对应关系、固定米制色标、相对诊断和应用导出。文件清单是显式白名单，不扫描整个仓库；数据、权重、完整浮点数组和个人验收文件不打包。已有目标文件不会被覆盖。
-
-打包后重新读取 ZIP，检查 CRC、条目数量和每个载荷文件的 SHA256；旁边生成 `depth_results.verification.json`。这些检查证明压缩包与指定产物一致，不能代替对场景身份、观察描述、报告结论或成员验收的确认。
-
-```text
-depth_results.zip
-  README.txt
-  manifest.json
-  clips/<clip_id>/           视频、预览、时间索引、指标与模型来源
-  application/<clip_id>/     RGB/深度/点选应用视频和原始数值曲线
-  evidence/                 视频划分、冻结配置、开发选择和困难条件记录
-```
-
-## 已验证的示例测试包
-
-本机已有完整示例导出时可运行：
-
-```sh
-python scripts/package_depth_results.py --plan configs/depth_results_smoke.json --output outputs/submission_check/depth_results_smoke.zip
-```
-
-这个包只验证导出与打包，允许示例素材和 provisional 参数；包内、包名及核验记录均标明范围，程序拒绝把它命名为正式的 `depth_results.zip`。真实测试记录见 [打包检查](../results/submission_packaging_checks.md)。
-
-## 最终提交由成员确认
-
-Spring 2027 说明要求 CVPR camera-ready 报告正文 6–8 页、参考文献另计；摘要末尾包含公开 GitHub 链接，引用全部指定阅读，报告实际消融与分类失败案例。最终报告需上传 arXiv，并在 Canvas 提交第一页写明 arXiv ID。代码保留在公开 GitHub，不另向 Canvas 上传原始代码文件；视频和应用输出作为 `depth_results.zip`。
-
-仓库公开状态已于 2026-10-28 通过 GitHub 元数据确认；本次工作仍在功能分支。最终检查时需确认提交链接指向完整代码版本、README 可复现、PDF 与 ZIP 相互一致。没有训练步骤，因为本项目运行预训练模型并做后处理；需报告源码、权重、依赖和推理/评测命令。
-
-助手不会替成员声称已完成独立验收。最终中文个人验收指南将放在 `outputs/personal_acceptance/`，不 commit、不 push、不装进提交包。arXiv 与 Canvas 发布以及 main 合并仍由成员确认。
+按课程当前渠道提交 PDF、公开仓库链接和 ZIP。没有替成员合并 main、上传 Canvas 或发布 arXiv，也没有可填写的 arXiv ID。不要把个人验收笔记或模型权重加入提交包。

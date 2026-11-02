@@ -1,61 +1,55 @@
 \section{Experimental Protocol}
-\subsection{Data and separation}
-Middlebury Stereo v3 is used at its downloaded quarter resolution~\cite{middlebury}. All 15 training pairs are processed: Adirondack and Pipes are development scenes, while the other 13 are evaluation scenes. The latter are held out from our parameter selection but are not the official hidden benchmark test set. All-GT and nonoccluded-GT regions come from the supplied disparity and visibility data.
+\subsection{Data and development separation}
+Middlebury Stereo v3 is evaluated at its downloaded quarter resolution~\cite{middlebury}. We process all 15 training pairs. Adirondack and Pipes determine the stereo configuration; the other 13 are held out from our selection, but are not the official hidden benchmark test set. Related illumination/exposure variants remain on the same side of the split. The required 15-pair statistics are therefore descriptive and include development data.
 
-NYUv2 contains 1,449 labeled pairs~\cite{nyu}. We retain the standard 795/654 train/test partition and use three train-side IDs (0003, 0005, 0010) for integration checks. RGB and filled depth are extracted from the labeled MATLAB file with verified axis order; depth remains floating-point metres. The model sees the full $480\times640$ RGB image. The evaluation crop is the half-open Python region $y=45{:}471$, $x=41{:}601$, with finite GT in $[0.001,10]$ m.
+NYUv2 provides 1,449 labeled RGB/depth pairs~\cite{nyu}. We preserve the standard 795 train / 654 test split. Three train-side images are used for integration checks; test images are not used for model or parameter selection. We extract the provided filled depth without additional denoising or filling, verify axis order and metres, and infer from the full RGB image. Saved raw predictions are reused for the revised course evaluation; they are not altered by scoring.
 
-The seven metric formulas follow the released DA V2 metric-depth implementation. That release does not supply an NYUv2-specific loader/crop, so the crop follows the pinned UniDepth NYUv2 evaluator and the lower bound is an explicit project setting. We do not describe this combination as an official DA V2 NYUv2 crop. The standard split source, data checksums, and source revisions are recorded with the results.
+The specified test video is the official VDA \texttt{davis\_rollercoaster.mp4}. \textbf{The updated task requests 100 frames, but the complete official file decodes to only 70 frames at 24 fps.} The pinned source and a fresh upstream download have identical SHA256 values. Following the project owner's explicit decision, we use every consecutive source frame 0--69, with timestamps 0--2.875 s, without duplication or interpolation. This records a source/requirement discrepancy, not an instructor-approved exception.
 
-Self-recorded footage is pending. We plan four development and four independent test clips: fixed-camera static scenes, lateral camera motion, camera approach/retreat, and moving foreground occlusion, each approximately 15 seconds. This count is a workload choice, not a dataset statistic. Scene groups must not overlap between development and test. Thin structures, glass, mirrors, blur, and a separately labeled outdoor/sky diagnostic will be included where available. An indoor checkpoint's sky behavior must be described as out-of-domain evidence.
+Development uses frames 0--99 of the separate official \texttt{Tokyo-Walk\_rgb.mp4}, retaining 15 fps and timestamps 0--6.6 s. It is a nighttime street example with people and reflective pavement. The development and test scene groups and source hashes differ. The development footage is an auxiliary supplied example, not a benchmark with depth GT or independently verified physical capture. Neither clip provides GT depth; self-recorded footage is not required for this revised delivery.
 
-\subsection{Accuracy and missing outputs}
-Let $G$ be the fixed GT region, $P$ the finite positive prediction support, and $V=G\cap P$. For predictions $p_i$ and GT $g_i$, conditional errors are
+\subsection{Stereo and NYUv2 accuracy}
+Stereo GT pixels have finite strictly positive disparity. An audit verifies that this is exactly the previously saved all-GT mask for every downloaded pair. For this fixed region $G$ and final prediction support $P$, we report $|G\cap P|/|G|$ and disparity MAE on $G\cap P$. MAE is averaged equally over scenes; coverage is pooled over GT pixels. Nonoccluded-region and conditional Z-depth results remain supplementary.
+
+For NYUv2, predictions must have size $480\times640$. The evaluation region is Python's half-open crop $[45{:}471,41{:}601]$ intersected with finite GT in $[0.001,10]$ m. We clamp finite predictions to this same range. Nonfinite predictions in the region cause evaluation failure instead of being silently excluded. With clipped prediction $p_i$ and GT $g_i$,
 \begin{align}
-{\rm AbsRel}&=\frac{1}{|V|}\sum_{i\in V}\frac{|p_i-g_i|}{g_i},\\
-{\rm SqRel}&=\frac{1}{|V|}\sum_{i\in V}\frac{(p_i-g_i)^2}{g_i},\\
-{\rm RMSE}&=\sqrt{\frac{1}{|V|}\sum_{i\in V}(p_i-g_i)^2},\\
-{\rm RMSE}_{\log}&=\sqrt{\frac{1}{|V|}\sum_{i\in V}(\ln p_i-\ln g_i)^2}.
+\mathrm{AbsRel}&=|G|^{-1}\sum_{i\in G}|p_i-g_i|/g_i,\\
+\mathrm{RMSE}&=\sqrt{|G|^{-1}\sum_{i\in G}(p_i-g_i)^2},\\
+\delta_1&=|G|^{-1}\sum_{i\in G}\mathbf{1}\{\max(p_i/g_i,g_i/p_i)<1.25\}.
 \end{align}
-We report $\delta_k$ using the strict threshold $\max(p_i/g_i,g_i/p_i)<1.25^k$ for $k=1,2,3$. Coverage is $|V|/|G|$. A second threshold score divides successful valid pixels by $|G|$, so missing predictions count as failures. Empty $V$ yields undefined conditional errors. Stereo additionally reports disparity Bad$>1$ and Bad$>2$ with invalid predictions counted as bad.
+Each metric is computed per image and then averaged equally across all 654 test images. The strict threshold is retained. The previous unclipped protocol and GT-aligned relative experiments remain in historical result files; their numbers are not mixed into this main table.
 
-Depth metrics are averaged per image/scene, with contributing-image counts exposed. Coverage and disparity failure rates are also pooled over fixed GT pixels. A failed relative alignment remains among the 654 images for coverage and full-GT scores despite its undefined conditional error.
+\subsection{Video inference and display}
+Both video models consume identical cached RGB frames resized with preserved aspect ratio to $640\times360$. Original presentation timestamps and consecutive frames are retained. We first attempted VDA at input short side 518, which failed with CUDA out-of-memory during warmup on this laptop. We reduced both models to 364; their encoder spatial dimensions are $364\times644$. FP16 and official preprocessing are retained. VDA uses its original 32-frame offline windows, overlap, stitching, and internal padding; that internal padding does not add frames to our exported video.
 
-\subsection{Boundaries}
-A depth discontinuity is a four-neighbor absolute log-depth difference above $\ln(1.1)$, retaining both endpoints. The GT region is eroded by one pixel; predicted edges require a valid $3\times3$ neighborhood. Precision matches predicted edges to GT within 2 pixels in Euclidean distance, while recall matches GT edges to predictions. Edge counts are pooled before calculating F1. Missing predictions reduce recall. We also report mean GT-to-prediction distance capped at 10 pixels, charging 10 pixels when a predicted edge is absent. These are explicit project metrics, not a claimed replication of another paper's edge benchmark.
+Every relative depth movie uses Viridis with limits fixed over the whole clip. Raw DA V2 determines its 1st and 99th percentile limits, shared unchanged by E0--E4. VDA uses its own whole-clip limits. Colors therefore encode relative order within each method, not a common metre scale. Display saturation does not clip the saved raw array. No per-frame display normalization is used.
 
-\subsection{Temporal evaluation and ablations}
-Videos are decoded once with actual presentation timestamps, sampled at a target 10 fps, and resized to an even resolution with longest edge at most 640, without upscaling. Every model uses this RGB/time cache. Model input short side is 364; on the current 16:9 example, both encoder shapes are $364\times644$. VDA retains its official offline 32-frame window, overlap, and padding.
-
-For each adjacent pair, $R_t$ is the shared RGB/flow-derived reference. A model's valid current and warped-previous support defines $V_t\subseteq R_t$. We report conditional mean $|D_t-H_t|$, absolute log difference, symmetric relative difference, and change per actual second, together with coverage $|V_t|/|R_t|$. A fixed-denominator error is
-\begin{equation}
-E_{\rm cap}=\frac{\sum_{p\in V_t}\min(|D_t-H_t|,1)
-+|R_t\setminus V_t|}{|R_t|},
-\end{equation}
-in metres. We also measure the fraction of $R_t$ with $|D_t-H_t|/((D_t+H_t)/2)<0.05$, with invalid pairs failing. The appropriate pixel counts are pooled across pairs; empty references remain undefined.
-
-Per-frame median depth and mean absolute consecutive log-median changes expose sequence-level variation. Only fixed-camera static scenes additionally receive pixelwise temporal standard deviation and all-frames-valid coverage. Neither median change nor flow-aligned change is pure scale drift under arbitrary scene/camera motion. Per-frame normalization is not used to erase these effects.
-
+\subsection{Ablations and temporal diagnostic}
 \begin{table}[t]
 \centering\small
 \begin{tabular}{ll}
 \toprule
-Version & Change from raw frame-wise metric depth\\
-\midrule
-E0 & DA V2 metric, unchanged\\
-E1 & Same-pixel EMA, fixed history weight\\
+Version & Operation\\\midrule
+E0 & Raw DA V2 Small relative\\
+E1 & Same-pixel exponential moving average\\
 E2 & Flow-warped history, fixed weight\\
 E3 & E2 + consistency/photometric rejection\\
-E4 & E3 + adaptive history weighting\\
-E5 & Independent raw VDA metric\\
-\bottomrule
+E4 & E3 + adaptive weight, Eq.~\ref{eq:weight}\\
+E5 & Independent VDA Small relative\\\bottomrule
 \end{tabular}
-\caption{Implemented ablations. All flow variants reject impossible interpolation; E3/E4 additionally filter correspondences.}
+\caption{Controlled variants. E1--E4 use the same selected maximum history weight; only E4 is the proposed final method.}
 \label{tab:ablations}
 \end{table}
-Table~\ref{tab:ablations} separates averaging, correspondence, rejection, and weighting. Formal selection will use only self-recorded development clips and a small parameter set, considering stability and visible edge/occlusion response. The test entry point requires a frozen configuration and development evidence.
+The RGB/flow checks define a fixed reference $R_t$ for adjacent frames before scoring any method. Let $V_t$ be its subset with valid current and warped previous predictions. With one fixed span $S$ per reference model, we compute
+\begin{equation}
+T=\frac{\sum_t\left[\sum_{p\in V_t}\min\left(\frac{|r_t(p)-r_{t-1}(q)|}{S},1\right)+|R_t\setminus V_t|\right]}{\sum_t|R_t|}.
+\label{eq:temporal}
+\end{equation}
+For each variant, $r$ in this diagnostic denotes that variant's saved output. E0--E4 share DA's span; E5 uses VDA's own span. Missing pairs pay the capped penalty 1, and pair coverage is reported. This optional quantity measures normalized change after estimated motion alignment, not depth accuracy. A lower score can result from lag or loss of detail, and comparing independently normalized models does not remove all relative-depth ambiguities.
+
+The three candidate weights are compared only on development data, using $T$, departure from the current raw prediction, and saved contour comparisons. The freeze records the review, candidate verification receipts, source hashes, and selected parameters. Test fusion rejects an absent or inconsistent freeze. With no static-camera sequence or video GT, we do not report static flicker, calibrated response delay, or metric video error.
 
 \subsection{Efficiency and provenance}
-Inference runs on an RTX 4060 Laptop with 8,188 MiB reported memory, PyTorch 2.10.0+cu128, and FP16. The same RGB images, encoder spatial dimensions, GT region, and evaluation code are shared; normalization and restoration retain each released model's required preprocessing. One train image warms each model before the 654-image run. CUDA-synchronized timings include preprocessing, transfers, inference, and output resizing, excluding disk I/O and evaluation. Peak allocated/reserved memory refers to the PyTorch allocator, not total device occupancy. Parameter count, checkpoint bytes, and actual tensor shapes are recorded.
+Runs use an RTX 4060 Laptop with 8,188 MiB reported memory, PyTorch 2.10.0+cu128, and FP16. Warmup precedes measured inference. CUDA-synchronized inference includes preprocessing, transfers, network execution, output restoration, and VDA stitching; it excludes loading weights, decoding, and disk writes. Peak memory is PyTorch allocated/reserved memory rather than total device occupancy. CPU flow and fusion times are measured separately. Their summed-time throughput is an additive estimate, not measured end-to-end FPS or online latency.
 
-Source commits are pinned for DA V2 (\texttt{a561b849}), VDA (\texttt{4f5ae231}), and UniDepth (\texttt{8d8cfe4c}); complete revisions and checkpoint SHA256 values are in the repository. Video timing separates network, CPU flow, and fusion. Their summed-time throughput estimate excludes decoding/writing and is not an end-to-end or streaming-latency measurement.
-
+Source commits are pinned for DA V2 (\texttt{a561b849}), VDA (\texttt{4f5ae231}), and UniDepth (\texttt{8d8cfe4c}). Complete revisions, checkpoint hashes, tensor shapes, original output hashes, and timing boundaries accompany each run. Numerical reproducibility is checked from saved arrays independently of network inference.

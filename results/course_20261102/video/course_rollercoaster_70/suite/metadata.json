@@ -1,0 +1,45 @@
+{
+  "status": "complete",
+  "scope": "course_example_project",
+  "split": "test",
+  "clip_id": "course_rollercoaster_70",
+  "prediction_type": "inverse_depth_like",
+  "unit": "arbitrary",
+  "baseline_normalization_limits": [
+    0.0,
+    2.3497524309158324
+  ],
+  "cache_metadata_sha256": "6ec747b7d35b313a75e86b8c0a44794cdcd49830d2d57cc8bd237f6cb4380c75",
+  "base_metadata_sha256": "509db8f7c50b2dea0e4f87c9b32fc41d2b0ee1a8b58b361d9bc5e74a2a33bad1",
+  "vda_metadata_sha256": "cce6832cbbb0128416fa0082e9eaca1c3e1b9694f42179860d6e2d468c36bd2a",
+  "flow_metadata_sha256": "f89e455836ab539c8e9dbba04cd10780d5151e772fc83c7565aad26e42c6829e",
+  "config": {
+    "schema_version": 1,
+    "status": "frozen",
+    "representation": "inverse_depth_like",
+    "selection_evidence": {
+      "path": "outputs/course_video_20261102/selection/frozen/selection.json",
+      "sha256": "0de3cee698f04919933c11df7a00e6dbef94bb4756420fd7e730611a3324ff69"
+    },
+    "parameters": {
+      "history_weight": 0.7,
+      "fb_relative": 0.01,
+      "fb_absolute": 0.5,
+      "photo_max": 0.2,
+      "photo_sigma": 0.1,
+      "flow_sigma_px": 1.0,
+      "depth_span_sigma": 0.1,
+      "edge_span_sigma": 0.1
+    }
+  },
+  "config_sha256": "24db6b5cf52831bad6b7481adf2b8a6311d07b8cc0db04b8254544923f050e15",
+  "comparison_sha256": "06740c0f4bc43f7ef633e094d905ea99d48a5e8ec09e6df1f08ddc51facc1a88",
+  "E5_predictions": "outputs/course_video_20261102/course_rollercoaster_70/vda_relative_364",
+  "efficiency": "estimated additive base inference + CPU flow + fusion; excludes decode/IO; not measured end-to-end FPS",
+  "implementation_sha256": {
+    "scripts/run_fusion_suite.py": "b5eeda0ff1e2471d65fbd4498ea5760020a61c4f58b17c36aae8e80438d26fe7",
+    "src/p3_depth/temporal/fusion.py": "f5240b6a4752b15f0cbe38117eafa9cccf3ee22de2111fb4124d85f3f205a78b",
+    "src/p3_depth/temporal/flow.py": "b0e77104ae524031db548bf6c3bcc3a83c789a41713bc443a7433e4d501006cd",
+    "src/p3_depth/evaluation/temporal.py": "10a1402d124a457173ae3ce62f2b66fc7c4c6042f056f636d7c54b87a53a27ee"
+  }
+}
