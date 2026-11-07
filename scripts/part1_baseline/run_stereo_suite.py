@@ -17,6 +17,7 @@ import yaml
 
 from _common import ROOT, checksum, read_yaml, repo_path, select_sample, write_csv, write_json
 from part1_baseline.run_stereo_baseline import run
+from _paths import choose_output
 from p3_depth.data.middlebury import EXPECTED_SCENES, load_sample
 from p3_depth.evaluation.stereo import evaluate_region
 from p3_depth.models.stereo_sgbm import StereoConfig, predict_stereo
@@ -58,12 +59,13 @@ def summary(rows):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--phase", choices=("tune", "all", "verify"), required=True)
-    parser.add_argument("--output-dir", required=True, help="New run directory, or existing run for verify")
+    parser.add_argument("--output-dir", help="New run directory, or existing run for verify")
     parser.add_argument("--config", default="configs/stereo_sgbm_selected.yaml")
     parser.add_argument("--manifest", default="manifests/middlebury.csv")
     parser.add_argument("--paths-config", default="configs/paths.local.yaml")
     args = parser.parse_args()
-    manifest, output = repo_path(args.manifest), repo_path(args.output_dir)
+    manifest=repo_path(args.manifest)
+    output=choose_output(args.output_dir,'stereo_suite',args.paths_config,phase='all' if args.phase=='verify' else args.phase)
     settings = read_yaml(repo_path(args.paths_config))
     data_root = repo_path(settings["data_roots"]["middlebury"])
     rows = rows_from(manifest)

@@ -6,7 +6,7 @@
 
 ## 1. 固定素材划分，缓存网络输出
 
-按 [采集说明](video_capture.md) 录制并用 `prepare_video.py --register` 登记全部 dev/test。缓存路径和源视频 SHA256 写入 `manifests/videos.csv`，同一场景不能跨 split。正式选择要求所有候选覆盖全部已登记 dev；test 内容不用于选参数。
+按 [采集说明](video_capture.md) 录制并用 `prepare_video.py --register --manifest manifests/videos.csv` 登记全部 dev/test。缓存路径和源视频 SHA256 写入 `manifests/videos.csv`，同一场景不能跨 split。正式选择要求所有候选覆盖全部已登记 dev；test 内容不用于选参数。当前课程重跑使用另一份清单，见 [分阶段指南](rerun_by_part.md)。
 
 以下命令约定每段缓存位于 `outputs/videos/<clip_id>/cache`，DA/VDA 输出分别为 `dav2_metric`、`vda_metric`，光流为 `flow`。模型生成见 [环境与推理说明](../environments/depth_models.md)，光流生成见 [时序协议](temporal_protocol.md)。先准备 dev 输出，test 融合评测必须等冻结之后。
 
@@ -70,7 +70,7 @@ foreach ($clip in $devClips) {
 ```powershell
 $reviewPath = 'outputs/video_selection/review.json'
 $selected = (Get-Content -Raw $reviewPath | ConvertFrom-Json).selected_candidate
-$freezeArgs = @('--selected', $selected, '--review', $reviewPath, '--output-dir', 'outputs/video_selection/frozen')
+$freezeArgs = @('--selected', $selected, '--review', $reviewPath, '--output-dir', 'outputs/video_selection/frozen', '--manifest', 'manifests/videos.csv')
 foreach ($name in $candidates.Keys) {
   foreach ($clip in $devClips) {
     $freezeArgs += @('--candidate', "$name=outputs/videos/$($clip.clip_id)/$name")

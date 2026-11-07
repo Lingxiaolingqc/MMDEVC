@@ -27,4 +27,4 @@ python scripts/application/render_blur_demo.py --help
 python scripts/package_depth_results.py --help
 ```
 
-package_depth_results.py 是共享的正式视频包验证/打包脚本；报告是单独的 PDF。旧米制点选应用入口 render_demo.py、serve_demo.py 也放在本目录，使用说明见 [demo](../../demo/README.md)。已验证交付物在 [delivery](../../results/by_part/delivery/README.md) 中查找，实际原始路径见 [提交说明](../../docs/submission.md)。
+render_blur_demo.py 默认将演示保存至 outputs/application/{clip}/。package_depth_results.py 是共享的正式视频包验证/打包脚本，默认使用 course_export_plan_current.json 并写入 outputs/submission/depth_results.zip；报告是单独的 PDF。新运行按 [分阶段指南](../../docs/rerun_by_part.md)。旧米制点选应用入口 render_demo.py、serve_demo.py 也放在本目录，使用说明见 [demo](../../demo/README.md)。历史已验证交付物在 [delivery](../../results/by_part/delivery/README.md) 中查找。

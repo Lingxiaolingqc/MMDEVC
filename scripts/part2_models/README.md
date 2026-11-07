@@ -59,4 +59,4 @@ python scripts/prepare_video.py --help
 python scripts/render_depth_video.py --help
 ```
 
-run_nyuv2.py 用 --model unidepth 选择本次米制模型；run_video.py 默认使用 vda_relative，只允许 VDA 系列，共用 [推理实现](../_video_inference.py)。参数详情和运行顺序见 [课程协议](../../docs/course_protocol_20261102.md)。两模型实际视频 encoder 尺寸为 364×644，输出为 360×640，FP16。不是把输入压成 364×364。
+run_nyuv2.py 默认使用 unidepth，自动生成逐图 PNG 和浏览页；run_video.py 默认使用 vda_relative，只允许 VDA 系列，共用 [推理实现](../_video_inference.py)，自动生成 VDA 独立视频。默认输出在 outputs/part2_models/；参数详情和顺序见 [分阶段重跑指南](../../docs/rerun_by_part.md)。两模型实际视频 encoder 尺寸为 364×644，输出为 360×640，FP16。不是把输入压成 364×364。

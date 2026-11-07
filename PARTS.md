@@ -1,8 +1,22 @@
 # 按 Part 阅读代码与结果
 
-本导航核对于 2026-11-07，对应 2026-11-02 收到的新版 Project 3。先按下表阅读，再进入对应目录。技术结果已完成；成员验收和课程提交仍由成员完成。
+本导航核对于 2026-11-07，对应 2026-11-02 收到的新版 Project 3。历史实验已有结果；当前已改为各 Part 入口自动生成可视化，**新目录全流程等待成员在助手指导下重跑**。旧输出已归档，暂不删除。
 
-## 入口和目录
+## 新运行入口
+
+按照 [分阶段重跑指南](docs/rerun_by_part.md)执行和检查，不要一次运行全部阶段。默认输出规则在 [output_layout.yaml](configs/output_layout.yaml)：
+
+| 部分 | 新原始输出和可视化位置 |
+| --- | --- |
+| Part 1 | `outputs/part1_baseline/stereo/`、`outputs/part1_baseline/dav2_relative/` |
+| Part 2 | `outputs/part2_models/unidepth/`、`outputs/part2_models/vda_relative/` |
+| Part 3 | `outputs/part3_improvement/flow/`、`dev_candidates/`、`selection/`、`test/` |
+| Application | `outputs/application/{clip}/` |
+| Delivery | `outputs/submission/` |
+
+DA/VDA 各自目录的 `visualizations/comparison.mp4` 只展示 RGB 与该模型；多方法比较由 Part 3 生成。NYU 每张图都有 PNG，`visualizations/index.html` 提供浏览页。新输出直接按 Part 保存，不再复制一层 `outputs/by_part/`。
+
+## 历史结果和阅读材料
 
 | 课程部分 | 可运行入口和源码说明 | 表格、指标、元数据（Git 同步） | 图片、视频和提交文件（本机） |
 | --- | --- | --- | --- |
@@ -40,7 +54,7 @@ $py = ".\.venv-cuda\Scripts\python.exe"
 
 “本项目实现”不表示原创发明了 SGBM、光流或融合思想。三种网络都使用官方预训练权重，本项目没有训练/微调网络。官方版本见 [model_sources.yaml](environments/model_sources.yaml)，权重记录见 [model_assets.json](environments/model_assets.json)。
 
-## 更新、检查分类结果
+## 历史分类副本检查
 
 ```powershell
 # 本机：复制精选表格/图/视频，核对每个副本与原件的 SHA256
@@ -51,6 +65,6 @@ $py = ".\.venv-cuda\Scripts\python.exe"
 & $py scripts/organize_part_results.py --tables-only --check-only
 ```
 
-清单是 [configs/part_results.json](configs/part_results.json)。分类目录是方便阅读的副本，原始实验仍以 [新版协议](docs/course_protocol_20261102.md)指定的运行目录为准。副本若与原件不同，整理脚本报错，不覆盖或删除任何一方。原始数组、数据集、权重和个人验收指南没有复制进这组导航目录，也不会随这次整理提交。
+此工具仅针对历史结果；新运行不需要执行。清单是 [configs/part_results.json](configs/part_results.json)。分类目录是方便阅读的副本，历史原件以 [旧路径协议](docs/course_protocol_20261102.md)指定的运行目录为准。副本若与原件不同，整理脚本报错，不覆盖或删除任何一方。原始数组、数据集、权重和个人验收指南没有复制进这组导航目录，也不会随 Git 提交。
 
 Git 提供按 Part 整理的 scripts/ 和 results/by_part/；outputs/by_part/ 的媒体只在本机，和其他大体积输出一样需要另行同步。

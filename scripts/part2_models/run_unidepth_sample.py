@@ -19,6 +19,7 @@ from PIL import Image
 
 from _common import ROOT, checksum, read_yaml, repo_path, write_csv, write_json
 from evaluate_depth import evaluate_saved
+from _paths import choose_output
 
 UPSTREAM_COMMIT = "8d8cfe4c7ee15297099983607febf0d4f32eb3d6"
 WEIGHT_REVISION = "038c238f06c87b6c2f5b3749fd51fbf442b1f218"
@@ -29,14 +30,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--sample", default="nyuv2_0003")
     parser.add_argument("--paths-config", default="configs/paths.local.yaml")
-    parser.add_argument("--output-dir", required=True)
+    parser.add_argument("--output-dir")
     parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="auto")
     parser.add_argument("--resolution-level", type=int, choices=range(10), default=0)
     parser.add_argument("--threads", type=int, default=8)
     args = parser.parse_args()
     if args.threads < 1:
         parser.error("--threads must be positive")
-    output = repo_path(args.output_dir)
+    output=choose_output(args.output_dir,'unidepth_sample',args.paths_config,sample=args.sample)
     if output.exists():
         raise FileExistsError(f"Will not overwrite {output}")
     settings = read_yaml(repo_path(args.paths_config))

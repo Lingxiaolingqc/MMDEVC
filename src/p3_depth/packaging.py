@@ -23,7 +23,7 @@ def collect_exports(root, plan):
     ids = [clip['clip_id'] for clip in clips]
     if not ids or len(set(ids)) != len(ids) or any(not re.fullmatch(r'[A-Za-z0-9_-]+', x) for x in ids):
         raise ValueError('Provide unique nonempty clip IDs')
-    registry = registered_clips(root) if formal else {}
+    registry = registered_clips(root,plan.get('video_manifest','manifests/videos.csv')) if formal else {}
     if formal and set(ids) != set(registry):
         raise ValueError('Formal archive must cover every registered development and test clip')
     files, clip_summary, demos = {}, [], []
@@ -50,7 +50,10 @@ def collect_exports(root, plan):
         proof = read_json(proof_path)
         add(proof_path, 'evidence/selection.json', config['selection_evidence']['sha256'])
         add(proof['review_path'], 'evidence/development_review.json', proof['review_sha256'])
-        add(root/'manifests/videos.csv', 'evidence/videos.csv', proof['manifest_sha256'])
+        video_manifest=proof.get('manifest_path','manifests/videos.csv')
+        if video_manifest!=plan.get('video_manifest','manifests/videos.csv'):
+            raise ValueError('Export plan and selection must use the same manifest')
+        add(local_path(root,video_manifest), 'evidence/videos.csv', proof['manifest_sha256'])
         if course:
             audit_path = local_path(root, plan['input_audit'])
             audit = read_json(audit_path)

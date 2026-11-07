@@ -11,6 +11,7 @@ import yaml
 
 from _common import ROOT, repo_path, write_json, write_csv, checksum
 from p3_depth.temporal.selection import selection_evidence
+from _paths import choose_output,CURRENT_VIDEO_MANIFEST
 
 
 def main():
@@ -19,9 +20,10 @@ def main():
                         help='Repeat once per development clip and candidate')
     parser.add_argument('--selected', required=True)
     parser.add_argument('--review', required=True)
-    parser.add_argument('--output-dir', required=True)
+    parser.add_argument('--output-dir')
+    parser.add_argument('--manifest',default=CURRENT_VIDEO_MANIFEST)
     args = parser.parse_args()
-    output = repo_path(args.output_dir)
+    output=choose_output(args.output_dir,'selection')
     if output.exists() or not output.is_relative_to(ROOT):
         raise ValueError('Use a new output directory inside the repository')
     candidates = {}
@@ -30,7 +32,7 @@ def main():
         if not re.fullmatch(r'[A-Za-z0-9_-]+', name):
             raise ValueError('Candidate names use letters, digits, underscores or hyphens')
         candidates.setdefault(name, []).append(suite)
-    proof, rows = selection_evidence(ROOT, candidates, args.selected, repo_path(args.review))
+    proof, rows = selection_evidence(ROOT, candidates, args.selected, repo_path(args.review),manifest=args.manifest)
     output.mkdir(parents=True)
     write_json(output / 'selection.json', proof)
     write_csv(output / 'development_comparison.csv', rows)

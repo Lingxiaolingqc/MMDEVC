@@ -17,6 +17,8 @@ from PIL import Image
 
 from _common import ROOT, read_yaml, repo_path, checksum, write_json, write_csv
 from p3_depth.models.runtime import ImageModel
+from _paths import choose_output
+from _media import nyu_gallery
 from p3_depth.evaluation.benchmark import select_nyu, score_raw, summarize
 
 
@@ -29,7 +31,7 @@ def implementation_hashes():
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--model', required=True, choices=['dav2_relative', 'dav2_metric', 'unidepth'])
+    parser.add_argument('--model', default='unidepth', choices=['dav2_relative', 'dav2_metric', 'unidepth'])
     parser.add_argument('--subset', choices=['dev', 'test'], default='dev')
     parser.add_argument('--limit', type=int)
     parser.add_argument('--device', choices=['cpu', 'cuda'], default='cpu')
@@ -37,15 +39,26 @@ def main():
     parser.add_argument('--input-size', type=int, default=434, help='DA V2 short side; 434 matches UniDepth level=0 encoder shape for 480x640')
     parser.add_argument('--threads', type=int, default=8)
     parser.add_argument('--paths-config', default='configs/paths.local.yaml')
-    parser.add_argument('--output-dir', required=True)
+    parser.add_argument('--output-dir')
+    parser.add_argument('--visualize-only',action='store_true')
     parser.add_argument('--resume', action='store_true')
     args = parser.parse_args()
+    if args.visualize_only:
+        settings=read_yaml(repo_path(args.paths_config))
+        _,rows=select_nyu(ROOT,args.subset,args.limit)
+        subset=args.subset if args.limit is None else f'{args.subset}_smoke{args.limit}'
+        output=choose_output(args.output_dir,'nyu',args.paths_config,model=args.model,subset=subset)
+        meta=json.loads((output/'metadata.json').read_text(encoding='utf-8'))
+        if meta['status']!='complete' or meta['model']['model']!=args.model or meta['identity']['sample_ids']!=[r['sample_id'] for r in rows]:
+            raise ValueError('Use the saved model and exact saved sample selection')
+        nyu_gallery(output,rows,repo_path(settings['data_roots']['nyuv2']),args.model);return
     import torch
     packages = {k: importlib.metadata.version(k) for k in ('torch','torchvision','numpy','Pillow','opencv-python')}
     settings = read_yaml(repo_path(args.paths_config))
     manifest, rows = select_nyu(ROOT, args.subset, args.limit)
-    output = repo_path(args.output_dir)
-    config = {k: v for k, v in vars(args).items() if k not in ('resume', 'output_dir')}
+    subset=args.subset if args.limit is None else f'{args.subset}_smoke{args.limit}'
+    output = choose_output(args.output_dir,'nyu',args.paths_config,model=args.model,subset=subset)
+    config = {k: v for k, v in vars(args).items() if k not in ('resume', 'output_dir', 'visualize_only')}
     identity = {'config': config, 'manifest_sha256': checksum(manifest), 'sample_ids': [r['sample_id'] for r in rows],
                 'implementation_sha256': implementation_hashes(), 'packages': packages, 'python': platform.python_version()}
     if output.exists():
@@ -131,6 +144,7 @@ def main():
                     peak_cuda_reserved_bytes=max(previous_meta.get('peak_cuda_reserved_bytes') or 0, torch.cuda.max_memory_reserved()) if args.device == 'cuda' else None,
                     resumed_previous_run=bool(previous_meta))
     write_json(output / 'metadata.json', metadata)
+    nyu_gallery(output,rows,root,args.model)
     print(json.dumps(summary, indent=2), flush=True)
 
 

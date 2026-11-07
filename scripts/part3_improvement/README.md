@@ -26,6 +26,6 @@ python scripts/part3_improvement/freeze_fusion_config.py --help
 python scripts/render_depth_video.py --help
 ```
 
-完整数据与选参顺序见 [新版协议](../../docs/course_protocol_20261102.md)。在 Tokyo 开发片段选 0.70，再冻结后用于 rollercoaster。现有选择和输出原件不覆盖。
+新运行的数据与选参顺序见 [分阶段重跑指南](../../docs/rerun_by_part.md)。默认输出在 outputs/part3_improvement/；光流入口自动生成诊断视频，融合入口自动生成 E0–E4 独立视频以及主比较/消融影片。E5 引用 Part 2 原 VDA。新冻结使用 manifests/videos_current.csv，旧记录仍按原清单验证。历史在 Tokyo 选定 0.70 后用于 rollercoaster，本轮复现保留该设定并重新核查开发证据。
 
 E4 测试变化指标下降 15.93%；E2/E3 的该指标更低，E4 并非数值最优。更低变化可能伴随过度平滑，现有无 GT 视频无法证明准确率或运动延迟改善。3.10 fps 是推理+CPU 光流+融合的加和估算，不含视频解码和写盘。对应影片可观察 E1 拖影与 E4 的取舍。

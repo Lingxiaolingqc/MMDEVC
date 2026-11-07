@@ -10,18 +10,20 @@ import json
 import numpy as np
 from _common import ROOT, repo_path, read_yaml, checksum, write_csv, write_json
 from p3_depth.data.middlebury import discover_samples,load_sample,EXPECTED_SCENES
+from _paths import output_path,choose_output
 
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--run',default='outputs/stereo_all_week1_20261021')
-    p.add_argument('--output-dir',required=True)
-    a=p.parse_args();run,output=repo_path(a.run),repo_path(a.output_dir)
+    p.add_argument('--run')
+    p.add_argument('--output-dir')
+    a=p.parse_args();run=repo_path(a.run) if a.run else output_path('stereo_suite',phase='all')
+    output=choose_output(a.output_dir,'stereo_audit')
     if output.exists():raise FileExistsError('Use a new audit directory')
     data=repo_path(read_yaml(ROOT/'configs/paths.local.yaml')['data_roots']['middlebury'])
     samples=discover_samples(data)
     if {x.sample_id for x in samples}!=set(EXPECTED_SCENES):raise ValueError('Need all 15 trainingQ pairs')
-    with (ROOT/'results/tables/stereo_week1_per_scene.csv').open(encoding='utf-8',newline='') as f:
+    with (run/'per_scene.csv').open(encoding='utf-8',newline='') as f:
         table={r['sample_id']:r for r in csv.DictReader(f) if r['region']=='all_gt'}
     rows=[]
     for paths in samples:

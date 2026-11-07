@@ -17,13 +17,17 @@ from _common import ROOT, repo_path, checksum, write_json, write_csv
 from part3_improvement.run_fusion_suite import load_run
 from render_depth_video import colorize,text
 from p3_depth.application import background_blur
+from _paths import clip_output
 
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    for name in ('cache','baseline','improved','output-dir'):
+    for name in ('cache','baseline','improved'):
         p.add_argument('--'+name,required=True)
-    a=p.parse_args();cache,output=repo_path(a.cache),repo_path(a.output_dir)
+    p.add_argument('--output-dir')
+    a=p.parse_args();cache=repo_path(a.cache)
+    cm=json.loads((cache/'metadata.json').read_text(encoding='utf-8'))
+    output=clip_output('application',cm,a.output_dir)
     if output.exists():
         raise FileExistsError('Preserve previous application exports; use a new directory')
     cm=json.loads((cache/'metadata.json').read_text(encoding='utf-8'))

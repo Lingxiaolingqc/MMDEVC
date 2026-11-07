@@ -22,8 +22,8 @@ def relative(root, path):
     return local_path(root, path).relative_to(root.resolve()).as_posix()
 
 
-def registered_clips(root):
-    with (root / 'manifests/videos.csv').open(encoding='utf-8', newline='') as handle:
+def registered_clips(root, manifest='manifests/videos.csv'):
+    with local_path(root,manifest).open(encoding='utf-8', newline='') as handle:
         rows = list(csv.DictReader(handle))
     clips, groups, sources = {}, {}, set()
     for row in rows:
@@ -113,9 +113,10 @@ def checked_suite(root, suite, clips):
     return meta, record, rows
 
 
-def selection_evidence(root, candidates, selected, review_path):
+def selection_evidence(root, candidates, selected, review_path, manifest='manifests/videos.csv'):
     """No automatic winner: the review must address stability and motion response."""
-    clips = registered_clips(root)
+    manifest=relative(root,local_path(root,manifest))
+    clips = registered_clips(root,manifest)
     dev_ids = {key for key, value in clips.items() if value['row']['split'] == 'dev'}
     if not dev_ids or not any(c['row']['split'] == 'test' for c in clips.values()):
         raise ValueError('Register both development and independent test clips before freezing')
@@ -162,11 +163,13 @@ def selection_evidence(root, candidates, selected, review_path):
         if seen != dev_ids:
             raise ValueError('Every candidate must cover all registered development clips')
     proof = {'schema_version': 1, 'split': 'dev', 'dev_clip_ids': sorted(dev_ids),
-             'manifest_sha256': file_hash(root / 'manifests/videos.csv'),
+             'manifest_sha256': file_hash(local_path(root,manifest)),
              'selected_candidate': selected, 'selected_parameters': parameters[selected],
              'selected_representation': representations[selected],
              'candidates': records, 'review_path': relative(root, review_path),
              'review_sha256': file_hash(review_path), 'reviewer_kind': review['reviewer_kind']}
+    if manifest!='manifests/videos.csv':
+        proof['manifest_path']=manifest
     return proof, tables
 
 
@@ -178,14 +181,15 @@ def validate_test_freeze(root, config, cache_metadata):
     if file_hash(path) != evidence['sha256']:
         raise ValueError('Development selection evidence hash mismatch')
     proof = read_json(path)
-    if proof.get('schema_version') != 1 or proof['manifest_sha256'] != file_hash(root / 'manifests/videos.csv'):
+    manifest=proof.get('manifest_path','manifests/videos.csv')
+    if proof.get('schema_version') != 1 or proof['manifest_sha256'] != file_hash(local_path(root,manifest)):
         raise ValueError('Registered dev/test split changed after parameter selection')
     candidates = {name: [r['suite'] for r in records] for name, records in proof['candidates'].items()}
-    current, _ = selection_evidence(root, candidates, proof['selected_candidate'], proof['review_path'])
+    current, _ = selection_evidence(root, candidates, proof['selected_candidate'], proof['review_path'],manifest)
     if (current != proof or proof['selected_parameters'] != config['parameters']
             or proof['selected_representation']!=config.get('representation','metric_depth')):
         raise ValueError('Frozen parameters or development evidence changed')
-    clips = registered_clips(root)
+    clips = registered_clips(root,manifest)
     clip = clips.get(cache_metadata['clip_id'])
     if clip is None or clip['row']['split'] != 'test' or clip['metadata'] != cache_metadata:
         raise ValueError('Test input must be the independently registered complete test cache')

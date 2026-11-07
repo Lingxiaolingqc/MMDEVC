@@ -1,4 +1,6 @@
-# 新版 Project 3：协议与复现
+# 新版 Project 3：历史运行协议与复算
+
+2026-11-07 后的新运行使用 [按 Part 重跑指南](rerun_by_part.md)。本页保留历史输出路径，便于复核旧证据；默认输出已改为按 Part 组织，下面命令通过显式路径保持历史含义。
 
 任务依据：2026-11-02 收到的 Project_3__Monocular_Metric_Depth_Estimation_and_Video_Consistency.pdf（修订日期 2026-10-31）。[文件哈希与视频帧数差异](../results/course_input_audit_20261102.json)、[实际结果](../results/course_20261102/README.md)。
 
@@ -32,7 +34,7 @@
 $py = ".\.venv-cuda\Scripts\python.exe"
 & $py -m unittest discover -s tests -v
 & $py scripts/part1_baseline/run_stereo_suite.py --phase verify --output-dir outputs/stereo_all_week1_20261021
-& $py scripts/part1_baseline/audit_course_stereo.py --output-dir outputs/stereo_personal_recheck
+& $py scripts/part1_baseline/audit_course_stereo.py --run outputs/stereo_all_week1_20261021 --output-dir outputs/stereo_personal_recheck
 & $py scripts/part2_models/evaluate_course_nyu.py --run outputs/nyuv2_test_20261028/unidepth --output-dir outputs/nyu_personal_recheck
 $v = "outputs/course_video_20261102"
 $c = "$v/course_rollercoaster_70"
@@ -68,11 +70,11 @@ Copy-Item third_party/Video-Depth-Anything/assets/example_videos/Tokyo-Walk_rgb.
 Copy-Item third_party/Video-Depth-Anything/assets/example_videos/davis_rollercoaster.mp4 data/videos/raw/course_rollercoaster_70.mp4
 $v = "outputs/course_video_20261102"
 $source = "https://github.com/DepthAnything/Video-Depth-Anything/blob/4f5ae23172ba60fd7bc11ef671cca678842c7072/assets/example_videos"
-& $py scripts/prepare_video.py --video data/videos/raw/dev_tokyo_100.mp4 --clip-id dev_tokyo_100 --scene-group tokyo_walk --split dev --scene-type camera_motion --original-fps --source-kind public_example --source-url "$source/Tokyo-Walk_rgb.mp4" --expected-frames 100 --max-frames 100 --max-long-edge 640 --output-dir "$v/dev_tokyo_100/cache"
-& $py scripts/prepare_video.py --video data/videos/raw/course_rollercoaster_70.mp4 --clip-id course_rollercoaster_70 --scene-group davis_rollercoaster --split test --scene-type camera_motion --original-fps --source-kind course_example --source-url "$source/davis_rollercoaster.mp4" --expected-frames 70 --max-frames 100 --max-long-edge 640 --output-dir "$v/course_rollercoaster_70/cache"
+& $py scripts/prepare_video.py --video data/videos/raw/dev_tokyo_100.mp4 --clip-id dev_tokyo_100 --scene-group tokyo_walk --split dev --scene-type camera_motion --original-fps --source-kind public_example --source-url "$source/Tokyo-Walk_rgb.mp4" --expected-frames 100 --max-frames 100 --max-long-edge 640 --output-dir "$v/dev_tokyo_100/cache" --registered --manifest manifests/videos.csv
+& $py scripts/prepare_video.py --video data/videos/raw/course_rollercoaster_70.mp4 --clip-id course_rollercoaster_70 --scene-group davis_rollercoaster --split test --scene-type camera_motion --original-fps --source-kind course_example --source-url "$source/davis_rollercoaster.mp4" --expected-frames 70 --max-frames 100 --max-long-edge 640 --output-dir "$v/course_rollercoaster_70/cache" --registered --manifest manifests/videos.csv
 ~~~
 
-两个 ID 已在清单里，所以这里不加 --register；该参数只用于登记新片段。缓存保留连续原始 frame index、PTS 和方向信息，不静默补齐缺失帧。
+两个 ID 已在旧清单里，因此使用 --registered --manifest manifests/videos.csv 核对登记；--register 只用于新增片段。缓存保留连续原始 frame index、PTS 和方向信息，不静默补齐缺失帧。
 
 ## 5. 开发、选择和冻结
 
@@ -95,7 +97,7 @@ foreach ($a in @("050","070","085")) {
 开发中看固定帧与完整视频，比较轮廓、拖影、遮挡、当前帧偏离和指标。按 docs/fusion_selection_review.example.json 字段写 review，保存在 outputs/course_video_20261102/selection/review.json。可参考已保存的本次 review，但不要复制未检查的观察作为自己的验收。
 
 ~~~powershell
-& $py scripts/part3_improvement/freeze_fusion_config.py --candidate "alpha050=$d/alpha050" --candidate "alpha070=$d/alpha070" --candidate "alpha085=$d/alpha085" --selected alpha070 --review "$v/selection/review.json" --output-dir "$v/selection/frozen"
+& $py scripts/part3_improvement/freeze_fusion_config.py --candidate "alpha050=$d/alpha050" --candidate "alpha070=$d/alpha070" --candidate "alpha085=$d/alpha085" --selected alpha070 --review "$v/selection/review.json" --output-dir "$v/selection/frozen" --manifest manifests/videos.csv
 ~~~
 
 本次 0.70 是保守取舍：0.85 的指标更低，但更偏离当前帧，三组 E4 画面差别较小。不能手动只改 status=frozen，测试会核对 dev 凭据、参数和源哈希。

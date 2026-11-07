@@ -7,11 +7,20 @@ from PIL import Image,ImageDraw,ImageFont
 from _common import ROOT, repo_path, checksum, write_json
 from render_depth_video import colorize
 from p3_depth.application import background_blur
+from _paths import output_path,choose_output
 
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output-dir',required=True);a=p.parse_args()
-    output=repo_path(a.output_dir)
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--output-dir')
+    p.add_argument('--plan',default='configs/course_export_plan_current.json')
+    p.add_argument('--nyu-run')
+    p.add_argument('--nyu-evaluation')
+    a=p.parse_args()
+    plan=json.loads(repo_path(a.plan).read_text(encoding='utf-8'))
+    nyu_run=repo_path(a.nyu_run) if a.nyu_run else output_path('nyu',model='unidepth',subset='test')
+    nyu_evaluation=repo_path(a.nyu_evaluation) if a.nyu_evaluation else nyu_run/'course_evaluation'
+    output=choose_output(a.output_dir,'figures')
     if output.exists():raise FileExistsError('Use a new figure directory')
     output.mkdir(parents=True);sources={};font=ImageFont.truetype('arial.ttf',25)
     def load(path):
@@ -28,12 +37,13 @@ def main():
         out=Image.new('RGB',(rows[0].width,sum(x.height for x in rows)),'white');y=0
         for row in rows:out.paste(row,(0,y));y+=row.height
         out.save(output/name)
-    root=ROOT/'outputs/course_video_20261102';runs={}
-    for clip,suite in [('dev_tokyo_100','alpha070'),('course_rollercoaster_70','frozen_suite')]:
-        base=root/clip;rgb=load(base/'cache/frames.npy')
-        depths={v:load(base/suite/v/'depths.npy') for v in ('E0','E1','E4')}
-        depths['VDA']=load(base/'vda_relative_364/depths.npy')
-        meta=json.loads((base/suite/'metadata.json').read_text(encoding='utf-8'))
+    runs={}
+    for item in plan['clips']:
+        clip=item['clip_id'];suite=repo_path(item['suite']);cache=repo_path(item['cache'])
+        rgb=load(cache/'frames.npy')
+        depths={v:load(suite/v/'depths.npy') for v in ('E0','E1','E4')}
+        meta=json.loads((suite/'metadata.json').read_text(encoding='utf-8'))
+        depths['VDA']=load(repo_path(meta['E5_predictions'])/'depths.npy')
         limits=meta['baseline_normalization_limits'];vlimits=list(map(float,np.quantile(depths['VDA'],[.01,.99])))
         runs[clip]=(rgb,depths,limits,vlimits)
     rgb,depths,limits,vlimits=runs['course_rollercoaster_70']
@@ -53,17 +63,17 @@ def main():
     # Different crop aspect ratios are retained, with a common column width.
     stack(rows,'difficult_cases.png')
     with (ROOT/'manifests/nyuv2.csv').open(encoding='utf-8',newline='') as f:nyu={x['sample_id']:x for x in csv.DictReader(f)}
-    with (ROOT/'results/course_20261102/nyuv2/per_image.csv').open(encoding='utf-8',newline='') as f:scores=sorted(csv.DictReader(f),key=lambda x:(float(x['rmse_m']),x['sample_id']))
+    with (nyu_evaluation/'per_image.csv').open(encoding='utf-8',newline='') as f:scores=sorted(csv.DictReader(f),key=lambda x:(float(x['rmse_m']),x['sample_id']))
     selected=[scores[(len(scores)-1)//2],scores[-1]];rows=[]
     for record in selected:
         name=record['sample_id'];row=nyu[name];rgbpath=ROOT/'data/nyuv2'/row['rgb_path']
         sources[rgbpath.relative_to(ROOT).as_posix()]=checksum(rgbpath)
         rgb=np.array(Image.open(rgbpath).convert('RGB'));gt=load(ROOT/'data/nyuv2'/row['depth_gt_path'])
-        pred=np.clip(load(ROOT/'outputs/nyuv2_test_20261028/unidepth/predictions'/f'{name}.npy'),.001,10)
+        pred=np.clip(load(nyu_run/'predictions'/f'{name}.npy'),.001,10)
         rows.append(panel([rgb,colorize(gt,np.isfinite(gt)&(gt>0),0,10),colorize(pred,np.isfinite(pred),0,10)],
                           [name,'Filled GT (0-10 m)',f'UniDepth | RMSE {float(record["rmse_m"]):.3f} m']))
     stack(rows,'nyu_course.png')
-    app=ROOT/'outputs/course_video_20261102/course_rollercoaster_70/application/metadata.json'
+    app=repo_path(next(c['demo'] for c in plan['clips'] if c['clip_id']=='course_rollercoaster_70'))/'metadata.json'
     sources[app.relative_to(ROOT).as_posix()]=checksum(app)
     rgb,depths,limits,_=runs['course_rollercoaster_70'];t=35
     raw_blur,_=background_blur(rgb[t],depths['E0'][t],np.isfinite(depths['E0'][t]),limits)

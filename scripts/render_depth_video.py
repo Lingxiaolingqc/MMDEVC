@@ -26,16 +26,10 @@ def text(canvas, label, x, y, scale=.45):
     cv2.putText(canvas, label, (x,y), cv2.FONT_HERSHEY_SIMPLEX, scale, (240,240,240), 1, cv2.LINE_AA)
 
 
-def main():
-    p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--cache', required=True)
-    p.add_argument('--run', action='append', required=True)
-    p.add_argument('--output-dir', required=True)
-    p.add_argument('--depth-max', type=float, default=10., help='Metric display limit only; no prediction clipping')
-    args = p.parse_args()
-    if not np.isfinite(args.depth_max) or args.depth_max <= 0:
-        p.error('Positive finite metric display limit required')
-    cache, output = repo_path(args.cache), repo_path(args.output_dir)
+def render_comparison(cache, runs, output, depth_max=10.):
+    if not np.isfinite(depth_max) or depth_max <= 0:
+        raise ValueError('Positive finite metric display limit required')
+    cache, output = repo_path(cache), repo_path(output)
     if output.exists():
         raise FileExistsError('Use a new render directory')
     cm = json.loads((cache/'metadata.json').read_text(encoding='utf-8'))
@@ -48,7 +42,7 @@ def main():
     if len(times) != len(frames) or not np.all(np.diff(times)>0):
         raise ValueError('Invalid timestamp index')
     inputs = []
-    for name in args.run:
+    for name in runs:
         run = repo_path(name)
         meta = json.loads((run/'metadata.json').read_text(encoding='utf-8'))
         if meta['status'] != 'complete' or any(meta['cache_metadata'][key] != cm[key] for key in ('frames_sha256','index_sha256')):
@@ -70,8 +64,8 @@ def main():
                 low,high=map(float,meta['normalization_reference']['limits'])
             high = max(high,low+1e-6)
         else:
-            low, high = 0., args.depth_max
-        inputs.append((depth,valid,{'run':name,'model':meta['model']['model'],
+            low, high = 0., depth_max
+        inputs.append((depth,valid,{'run':run.relative_to(ROOT).as_posix(),'model':meta['model']['model'],
             'low':low,'high':high,'unit':'arbitrary inverse' if relative else 'm',
             'scale_rule':('unchanged baseline whole-clip 1st/99th percentiles' if meta.get('normalization_reference') else 'whole-clip 1st/99th percentiles') if relative else 'fixed user metric range',
             'metadata_sha256':checksum(run/'metadata.json')}))
@@ -124,6 +118,16 @@ def main():
         'video_sha256':checksum(output/'comparison.mp4'),'preview_sha256':checksum(output/'preview.png'),
         'renderer_sha256':checksum(ROOT/'scripts/render_depth_video.py')})
     print(f'PASS: {len(times)} rendered frames with original timestamps and fixed scales: {output}')
+
+
+def main():
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--cache', required=True)
+    p.add_argument('--run', action='append', required=True)
+    p.add_argument('--output-dir', required=True)
+    p.add_argument('--depth-max', type=float, default=10.)
+    args=p.parse_args()
+    render_comparison(args.cache,args.run,args.output_dir,args.depth_max)
 
 
 if __name__ == '__main__':

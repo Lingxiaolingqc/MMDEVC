@@ -19,6 +19,7 @@ import numpy as np
 import yaml
 
 from p3_depth.data.middlebury import load_sample
+from _paths import choose_output
 from p3_depth.evaluation.stereo import evaluate_region
 from p3_depth.models.stereo_sgbm import StereoConfig, predict_stereo
 from p3_depth.visualization.stereo import DISPLAY_RANGES, save_stereo_preview
@@ -39,9 +40,7 @@ def run(args):
     paths, split = select_sample(manifest, data_root, args.sample)
     sample = load_sample(paths)
     parameters = config.resolved(sample.calibration)
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S_%fZ")
-    output = repo_path(args.output_dir) if args.output_dir else (
-        repo_path(settings.get("output_root", "outputs")) / f"stereo_{args.sample}_{stamp}")
+    output=choose_output(args.output_dir,'stereo_sample',args.paths_config,sample=args.sample)
     if output.exists():
         raise FileExistsError(f"Use a new output directory; will not overwrite {output}")
     output.mkdir(parents=True)
@@ -146,7 +145,7 @@ def run(args):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--sample", default="Adirondack")
-    parser.add_argument("--config", default="configs/stereo_sgbm.yaml")
+    parser.add_argument("--config", default="configs/stereo_sgbm_selected.yaml")
     parser.add_argument("--manifest", default="manifests/middlebury.csv")
     parser.add_argument("--paths-config", default="configs/paths.local.yaml")
     parser.add_argument("--data-root")

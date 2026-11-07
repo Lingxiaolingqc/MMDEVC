@@ -14,6 +14,8 @@ from _common import ROOT, repo_path, read_yaml, write_json, write_csv, checksum
 from p3_depth.temporal.fusion import fuse_sequence
 from p3_depth.evaluation.temporal import evaluate_video, evaluate_relative_video
 from p3_depth.temporal.selection import validate_test_freeze
+from _paths import output_path,clip_output
+from _media import fusion_previews
 
 
 def load_run(path,cache_meta):
@@ -55,10 +57,22 @@ def main():
     p.add_argument('--baseline',required=True)
     p.add_argument('--reference-vda',required=True)
     p.add_argument('--flow',required=True)
-    p.add_argument('--config',default='configs/fusion_provisional.yaml')
-    p.add_argument('--output-dir',required=True)
+    p.add_argument('--config')
+    p.add_argument('--output-dir')
+    p.add_argument('--visualize-only',action='store_true')
     a=p.parse_args()
-    cache,output,flow_dir=repo_path(a.cache),repo_path(a.output_dir),repo_path(a.flow)
+    cache,flow_dir=repo_path(a.cache),repo_path(a.flow)
+    cm=json.loads((cache/'metadata.json').read_text(encoding='utf-8'))
+    if a.config is None:
+        a.config=str(output_path('selection')/'fusion_frozen.yaml') if cm['split']=='test' else 'configs/fusion_relative070.yaml'
+    config=read_yaml(repo_path(a.config))
+    if cm['split']=='test':
+        output=clip_output('fusion_test',cm,a.output_dir)
+    else:
+        candidate='alpha%03d' % round(100*float(config['parameters']['history_weight']))
+        output=clip_output('fusion_dev',cm,a.output_dir,candidate=candidate)
+    if a.visualize_only:
+        fusion_previews(cache,output,repo_path(a.baseline),repo_path(a.reference_vda));return
     if output.exists():
         raise FileExistsError('Use a new suite directory')
     cm=json.loads((cache/'metadata.json').read_text(encoding='utf-8'))
@@ -134,6 +148,7 @@ def main():
         'comparison_sha256':checksum(output/'comparison.csv'),'E5_predictions':a.reference_vda,
         'efficiency':'estimated additive base inference + CPU flow + fusion; excludes decode/IO; not measured end-to-end FPS',
         'implementation_sha256':{name:checksum(ROOT/name) for name in ['scripts/part3_improvement/run_fusion_suite.py','src/p3_depth/temporal/fusion.py','src/p3_depth/temporal/flow.py','src/p3_depth/evaluation/temporal.py']}})
+    fusion_previews(cache,output,repo_path(a.baseline),repo_path(a.reference_vda))
     print(f'PASS E0-E5: same {table[0]["reference_pixels"]} reference pixels; {cm["scope"]}; {config["status"]}')
 
 

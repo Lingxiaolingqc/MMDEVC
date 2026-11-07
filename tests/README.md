@@ -1,11 +1,20 @@
-# 关键验证计划
+# 关键验证
 
-当前有 10 项 Middlebury 回归测试：PFM 字节序与上下方向、非单位头字段、截断文件、标定/单位/主点差、无效深度、mask 编码、分包配对、缺失/重复文件、尺寸错误、手工划分保留。
+2026-11-07 当前完整套件为 82 项。使用项目环境运行：
 
-仅检查数据读取可安装 `.[data]` 后运行 `python -m unittest discover -s tests -p test_middlebury.py -v`。测试使用自行生成的极小样本，不下载数据或依赖 GPU；临时文件位于被忽略的 `outputs/test-temp/`。实际 15 场景检查由 `scripts/inspect_middlebury.py --all` 完成。
+```powershell
+& .\.venv-cuda\Scripts\python.exe -X utf8 -m unittest discover -s tests -v
+```
 
-StereoSGBM 新增 12 项检查：定点视差及哨兵、零视差、LR 符号/坐标/最近邻/阈值、搜索范围、合成纹理的真实 8 px 匹配与米制深度、输入尺寸/类型、GT=prediction、尺度错误、覆盖率与无效惩罚、零预测/空 GT 区域、固定 GT mask。共 22 项测试。
+覆盖数据读取与标定、StereoSGBM 和 LR 检查、NYU 裁剪/单位/指标、时序对应和光流融合、开发冻结、视频导出、应用及提交包。测试使用小型合成样本和模型替身，不下载权重或执行真实模型推理；完整环境需包含 PyTorch、OpenCV、PyAV、Pillow 等，见 [环境说明](../environments/cuda.md)。临时文件在被忽略的 outputs/test-temp/。
 
-运行完整测试需安装 `.[data,stereo]`。StereoSGBM 实际数据入口见 [单样本基线](../docs/stereo_baseline.md)。NYUv2、单目模型、边界和时序模块尚未实现，因此没有对应测试。
+本次自动可视化新增检查：
 
-后续优先检查：标定与单位换算、prediction=GT 的指标、无效/空区域处理、原始预测读写、视频帧对应、warping 边界。只编写能发现实际计算或接口错误的检查。
+- DA 独立入口输出视频且不会加载 VDA；保留负相对预测，发现保存数组被改动。
+- 每张 NYU 图像都有 PNG/浏览页，超过显示范围的原始预测仍保持原值。
+- 光流视频保留帧数和不等间隔时间戳。
+- 默认目录区分 Part，并拒绝通过片段 ID 越出输出目录。
+- 已登记源的缓存重建不修改清单，目的地不符时在解码前拒绝。
+- 新清单的冻结记录与历史清单互不干扰，当前清单被改动时检查失败。
+
+通过测试只说明这些接口和数值规则通过检查，不代表真实模型实验或成员验收完成。完整实验由成员按 [重跑指南](../docs/rerun_by_part.md)执行。

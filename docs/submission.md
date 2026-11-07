@@ -2,6 +2,8 @@
 
 当前以 2026-11-02 收到的新版说明为准。必做视频为官方 rollercoaster，已经按用户确认采用完整 70 帧；不要求补拍自录视频。arXiv 是可选项。
 
+2026-11-07 后新运行改用 [按 Part 重跑指南](rerun_by_part.md)，输出在 outputs/submission/，默认打包计划为 configs/course_export_plan_current.json。完整新运行尚待成员执行；下文带 20261102 的路径指历史已验证交付物。重跑后需更新报告、真实案例和来源记录，再生成新提交包，不能直接把旧 PDF 改名。
+
 ## 交付物
 
 1. 报告：CVPR camera-ready，正文 6–8 页，参考文献另计；两位作者、所有指定阅读、摘要末 GitHub 链接、实际结果/消融/困难案例。源码位于 report/paper/，本地 PDF 位于 outputs/submission_20261102/。

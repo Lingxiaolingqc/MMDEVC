@@ -12,16 +12,18 @@ import numpy as np
 
 from _common import ROOT, repo_path, read_yaml, checksum, write_csv, write_json
 from p3_depth.evaluation.benchmark import select_nyu
+from _paths import output_path
 from p3_depth.evaluation.course import PROTOCOL, score_course_nyu, summarize_course
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--run', required=True)
-    parser.add_argument('--output-dir', required=True)
+    parser.add_argument('--run')
+    parser.add_argument('--output-dir')
     parser.add_argument('--paths-config', default='configs/paths.local.yaml')
     args = parser.parse_args()
-    run, output = repo_path(args.run), repo_path(args.output_dir)
+    run=repo_path(args.run) if args.run else output_path('nyu',args.paths_config,model='unidepth',subset='test')
+    output=repo_path(args.output_dir) if args.output_dir else run/'course_evaluation'
     if output.exists():
         raise FileExistsError('Use a new directory; preserve previous scores and raw predictions')
     metadata = json.loads((run / 'metadata.json').read_text(encoding='utf-8'))

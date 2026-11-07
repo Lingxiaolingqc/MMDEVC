@@ -1,6 +1,6 @@
 # 脚本入口
 
-实验入口按课程 Part 放入子目录；根目录保留共享辅助工具。参数与执行顺序见 [当前复现说明](../docs/course_protocol_20261102.md)，结果见 [总导航](../PARTS.md)。命令从仓库根目录运行，新输出使用新目录。
+实验入口按课程 Part 放入子目录；根目录保留共享辅助工具。新运行按 [分阶段重跑指南](../docs/rerun_by_part.md)，历史结果复算按 [旧路径协议](../docs/course_protocol_20261102.md)。命令从仓库根目录运行；入口自动保存原始数组和本 Part 的图片/视频，默认路径集中在 [output_layout.yaml](../configs/output_layout.yaml)。
 
 ```text
 scripts/
@@ -10,6 +10,8 @@ scripts/
 ├── application/           背景虚化、旧米制交互演示
 ├── _common.py            路径、读写、哈希、清单工具
 ├── _video_inference.py   DA/VDA 共用推理与保存流程
+├── _media.py             入口自动调用的图片/视频可视化
+├── _paths.py             统一默认输出目录
 └── *.py                  数据准备、通用评测、绘图、打包
 ```
 
@@ -67,11 +69,16 @@ scripts/
 | [render_depth_video.py](render_depth_video.py) | 多方法视频比较 |
 | [build_course_figures.py](build_course_figures.py) | 报告图表 |
 | [package_depth_results.py](package_depth_results.py) | ZIP 打包与预检 |
-| [organize_part_results.py](organize_part_results.py) | 结果分类副本与哈希检查 |
+| [archive_outputs.py](archive_outputs.py) | 归档旧输出和复现材料，逐项 SHA256 校验，不删除源文件 |
+| [organize_part_results.py](organize_part_results.py) | 历史结果分类副本与哈希检查；新运行不再需要 |
 
-以下两个文件供入口导入，不直接作为实验命令执行：
+以下文件供入口导入，不直接作为实验命令执行：
 
 - [_common.py](_common.py)：共用文件操作，不依赖某个实验入口。
 - [_video_inference.py](_video_inference.py)：DA/VDA 共用模型调用、计时、保存；对应入口各自限制模型类型。
+- [_media.py](_media.py)：从保存的数组生成预览、影片、NYU 浏览页；不修改 raw 数组。
+- [_paths.py](_paths.py)：解析默认输出目录，显式 --output-dir 优先。
+
+DA、VDA、NYU、光流和融合入口支持 `--visualize-only`，只读取已保存输出补可视化；不要为补图重新运行模型。NYU 的课程主评测仍由 `evaluate_course_nyu.py` 单独执行。
 
 `src/p3_depth/` 放共享算法和模型适配器，`third_party/` 放官方网络。没有另建一套 `parts/` 转发入口。历史输出的代码路径/哈希按记录中的 Git commit 追溯；当前命令以本页为准。

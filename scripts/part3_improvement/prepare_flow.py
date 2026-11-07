@@ -12,15 +12,22 @@ import numpy as np
 
 from _common import ROOT, repo_path, read_yaml, write_json, checksum
 from p3_depth.temporal.flow import estimate_pair
+from _paths import clip_output
+from _media import flow_preview
 
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--cache',required=True)
     p.add_argument('--config',default='configs/flow.yaml')
-    p.add_argument('--output-dir',required=True)
+    p.add_argument('--output-dir')
+    p.add_argument('--visualize-only',action='store_true')
     a=p.parse_args()
-    cache,output=repo_path(a.cache),repo_path(a.output_dir)
+    cache=repo_path(a.cache)
+    meta=json.loads((cache/'metadata.json').read_text(encoding='utf-8'))
+    output=clip_output('flow',meta,a.output_dir)
+    if a.visualize_only:
+        flow_preview(cache,output);return
     if output.exists():
         raise FileExistsError('Use a new flow directory')
     meta=json.loads((cache/'metadata.json').read_text(encoding='utf-8'))
@@ -51,6 +58,7 @@ def main():
         'coordinates':'forward[t-1]: previous -> current on previous grid; backward[t-1]: current -> previous on current grid',
         'evaluation_region':'current-frame pixels; RGB/flow only; independent of all depth predictions and fusion weights',
         'implementation_sha256':{name:checksum(ROOT/name) for name in ['scripts/part3_improvement/prepare_flow.py','src/p3_depth/temporal/flow.py']}})
+    flow_preview(cache,output)
     print(f'PASS: {len(frames)-1} RGB-only flow pairs; {elapsed:.3f}s; {output}')
 
 

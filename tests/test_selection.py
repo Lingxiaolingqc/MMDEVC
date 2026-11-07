@@ -111,6 +111,21 @@ class SelectionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'independently registered'):
             validate_test_freeze(self.root, config, self.metas['dev_static'])
 
+    def test_new_manifest_freeze_is_isolated_from_historical_manifest(self):
+        manifest=self.root/'manifests/videos_current.csv'
+        manifest.write_bytes((self.root/'manifests/videos.csv').read_bytes())
+        proof,_=selection_evidence(self.root,self.candidates,'mild',self.review,
+                                   manifest='manifests/videos_current.csv')
+        self.assertEqual(proof['manifest_path'],'manifests/videos_current.csv')
+        path=self.root/'selection.json';write_json(path,proof)
+        config={'status':'frozen','parameters':proof['selected_parameters'],
+                'selection_evidence':{'path':'selection.json','sha256':file_hash(path)}}
+        (self.root/'manifests/videos.csv').write_text('historical manifest is independent')
+        validate_test_freeze(self.root,config,self.metas['test_static'])
+        manifest.write_text('changed current registration')
+        with self.assertRaisesRegex(ValueError,'split changed'):
+            validate_test_freeze(self.root,config,self.metas['test_static'])
+
     def test_provisional_and_changed_parameters_rejected(self):
         config, _ = self.freeze()
         config['status'] = 'provisional'
