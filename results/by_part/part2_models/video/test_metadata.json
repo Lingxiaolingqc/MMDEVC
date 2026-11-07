@@ -1,0 +1,99 @@
+{
+  "status": "complete",
+  "model": {
+    "model": "vda_relative",
+    "asset": {
+      "source_directory": "Video-Depth-Anything",
+      "source_repository": "https://github.com/DepthAnything/Video-Depth-Anything",
+      "source_commit": "4f5ae23172ba60fd7bc11ef671cca678842c7072",
+      "repository": "depth-anything/Video-Depth-Anything-Small",
+      "revision": "256875362cff76724b920335dfb4b29dd611f66e",
+      "filename": "video_depth_anything_vits.pth",
+      "bytes": 116440756,
+      "sha256": "13379300b739e659f076a59d52e9801bd8d38c541a7e71f73bbca4dcfb013609",
+      "prediction_type": "inverse_depth_like",
+      "unit": "arbitrary",
+      "alignment": "none"
+    },
+    "mode": "official_offline",
+    "device": "cuda",
+    "precision": "fp16",
+    "input_size": 364,
+    "threads": 8,
+    "parameters": 29035137,
+    "weight_bytes": 116440756,
+    "gt_used_by_model": false,
+    "torch_version": "2.10.0+cu128",
+    "cuda_version": "12.8",
+    "device_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "temporal_windows": "official INFER_LEN=32, OVERLAP=10, padding/keyframes/interpolation unchanged",
+    "alignment": "official relative window stitching; no GT or test scale fitting",
+    "encoder_shapes_nchw": [
+      [
+        32,
+        3,
+        364,
+        644
+      ]
+    ]
+  },
+  "cache_metadata": {
+    "source_fps_nominal": 24.0,
+    "source_duration_s": 2.9166666666666665,
+    "source_size_hw": [
+      540,
+      960
+    ],
+    "output_size_hw": [
+      360,
+      640
+    ],
+    "requested_fps": 24.0,
+    "original_frame_rate": true,
+    "display_rotation_degrees": 0,
+    "effective_fps": 24.0,
+    "sampled_duration_s": 2.875,
+    "max_frames": 100,
+    "requested_frame_limit_reached": false,
+    "timestamp_rule": "all consecutive decoded frames; original PTS retained",
+    "spatial_resize": "aspect-preserving INTER_AREA, even dimensions, no upsampling",
+    "orientation": "apply source display rotation before spatial resize",
+    "clip_id": "course_rollercoaster_70",
+    "scene_group": "davis_rollercoaster",
+    "split": "test",
+    "scene_type": "camera_motion",
+    "source_path": "D:\\Documents\\OneDrive\\OneDrive - HKUST (Guangzhou)\\桌面\\大三上\\AIAA3201(L01)Intro2CV\\Projects\\MMDEVC\\third_party\\Video-Depth-Anything\\assets\\example_videos\\davis_rollercoaster.mp4",
+    "source_sha256": "7268cbecd9806a1e90a416de50dc02e50b4ae01428d5971837cf679dd0c87cb8",
+    "frames_sha256": "e51b3132c434971ce5cd21f34418efb5a23f28ac34381770d896abf584992c4a",
+    "index_sha256": "e06d7838ffbbb40fa26a632e4178d8c39cdb6d7786088f5d7b506ac00170825e",
+    "frames": 70,
+    "color": "RGB uint8",
+    "self_recorded": false,
+    "source_kind": "course_example",
+    "source_url": "https://github.com/DepthAnything/Video-Depth-Anything/blob/4f5ae23172ba60fd7bc11ef671cca678842c7072/assets/example_videos/davis_rollercoaster.mp4",
+    "expected_frames": 70,
+    "scope": "course_example_project"
+  },
+  "cache_path": "D:\\Documents\\OneDrive\\OneDrive - HKUST (Guangzhou)\\桌面\\大三上\\AIAA3201(L01)Intro2CV\\Projects\\MMDEVC\\outputs\\course_video_20261102\\course_rollercoaster_70\\cache",
+  "code_commit": "294d6615579f0dac2a43f77d36efce245167c97a",
+  "working_tree_status": "M .gitattributes\n M docs/project_progress.md\n M environments/model_assets.json\n M manifests/videos.csv\n M results/stereo_week1.md\n M scripts/freeze_fusion_config.py\n M scripts/prepare_video.py\n M scripts/render_depth_video.py\n M scripts/run_fusion_suite.py\n M scripts/run_video_models.py\n M scripts/verify_fusion_suite.py\n M src/p3_depth/data/video.py\n M src/p3_depth/evaluation/temporal.py\n M src/p3_depth/models/video.py\n M src/p3_depth/temporal/fusion.py\n M src/p3_depth/temporal/selection.py\n M tests/test_relative_temporal.py\n M tests/test_selection.py\n M tests/test_temporal.py\n M tests/test_video.py\n?? configs/fusion_relative050.yaml\n?? configs/fusion_relative070.yaml\n?? configs/fusion_relative085.yaml\n?? results/course_20261102/\n?? results/course_input_audit_20261102.json\n?? results/video_resource_attempts_20261102.json\n?? scripts/evaluate_course_nyu.py\n?? src/p3_depth/evaluation/course.py\n?? tests/test_course_protocol.py",
+  "implementation_sha256": {
+    "scripts/run_video_models.py": "ca3ed5496d5ce4328cd4795403e6f7d189b8f487470519bd8b19757717ac8a9d",
+    "src/p3_depth/models/video.py": "bfa6cfe29c7ba591867d302e70f1325603f388edeb7c91c14f5d9e35f330f879",
+    "src/p3_depth/models/runtime.py": "2d93b6074a2b524e5c3a96cb0034d7fd5cd26599d7b9d1b2d34860381325eb99"
+  },
+  "frames": 70,
+  "prediction_type": "inverse_depth_like",
+  "unit": "arbitrary",
+  "alignment": "none",
+  "gt_used": false,
+  "depths_sha256": "d3ef61ce92c3ebc61974f580aa9971775e2d45d8988028d28bae5f5557a58356",
+  "valid_sha256": "e1800dbc0429189517f749733da375106e8c6e67d0aa358b38cde6218ec9c507",
+  "inference_seconds": 8.978152800002135,
+  "mean_seconds_per_frame": 0.12825932571431622,
+  "fps": 7.796704016886786,
+  "timing_scope": "synchronized cache RGB to raw depth, official preprocessing and temporal stitching included; excludes load, decode and disk writes",
+  "warmup": "one original frame; VDA internally pads its official temporal window",
+  "peak_cuda_allocated_bytes": 2502274560,
+  "peak_cuda_reserved_bytes": 3317694464
+}

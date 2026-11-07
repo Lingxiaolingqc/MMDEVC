@@ -1,0 +1,37 @@
+{
+  "status": "complete",
+  "reviewer_kind": "assistant",
+  "selected_candidate": "alpha070",
+  "rationale": "Select the intermediate weight 0.70: normalized temporal proxy decreases 33.45%, while departure from current predictions is below alpha085. E4 candidate visuals are close, so this is a conservative stability/responsiveness choice, not a proven optimum or selection solely by the smallest temporal error. The full course rollercoaster sequence has not been inferred/reviewed for tuning.",
+  "candidate_observations": {
+    "alpha050": {
+      "dev_tokyo_100": {
+        "stability": "RGB-flow aligned normalized proxy 0.003899031, 24.55% lower than unchanged E0; fixed baseline span and common mask. This moving-camera clip cannot establish static-camera flicker or depth accuracy.",
+        "motion_response": "Inspected frames 15/45/75/99 (1.00/3.00/5.00/6.60 s) at the walking person and road. E4 remains close to the current silhouette; mean departure from raw current-frame output is 0.001844119 of baseline span. No GT latency measurement; differences among E4 candidates are visually small.",
+        "occlusion_and_edges": "Walking-person outline and legs are much less smeared than E1 alpha085 in the inspected frames. Thin background people and road reflection structure remain uncertain in the original prediction; E4 does not establish corrected depth. All three E4 candidates look similar at this display scale."
+      }
+    },
+    "alpha070": {
+      "dev_tokyo_100": {
+        "stability": "RGB-flow aligned normalized proxy 0.003439247, 33.45% lower than unchanged E0; fixed baseline span and common mask. This moving-camera clip cannot establish static-camera flicker or depth accuracy.",
+        "motion_response": "Inspected frames 15/45/75/99 (1.00/3.00/5.00/6.60 s) at the walking person and road. E4 remains close to the current silhouette; mean departure from raw current-frame output is 0.002816870 of baseline span. No GT latency measurement; differences among E4 candidates are visually small.",
+        "occlusion_and_edges": "Walking-person outline and legs are much less smeared than E1 alpha085 in the inspected frames. Thin background people and road reflection structure remain uncertain in the original prediction; E4 does not establish corrected depth. All three E4 candidates look similar at this display scale."
+      }
+    },
+    "alpha085": {
+      "dev_tokyo_100": {
+        "stability": "RGB-flow aligned normalized proxy 0.003100670, 40.00% lower than unchanged E0; fixed baseline span and common mask. This moving-camera clip cannot establish static-camera flicker or depth accuracy.",
+        "motion_response": "Inspected frames 15/45/75/99 (1.00/3.00/5.00/6.60 s) at the walking person and road. E4 remains close to the current silhouette; mean departure from raw current-frame output is 0.003740534 of baseline span. No GT latency measurement; differences among E4 candidates are visually small.",
+        "occlusion_and_edges": "Walking-person outline and legs are much less smeared than E1 alpha085 in the inspected frames. Thin background people and road reflection structure remain uncertain in the original prediction; E4 does not establish corrected depth. All three E4 candidates look similar at this display scale."
+      }
+    }
+  },
+  "review_artifacts": [
+    "outputs/course_video_20261102/dev_tokyo_100/review/candidate_contact_sheet.jpg",
+    "outputs/course_video_20261102/dev_tokyo_100/review/current_frame_departure.json"
+  ],
+  "limitations": [
+    "One public development scene; no depth or motion-response ground truth",
+    "Assistant observation, not member acceptance"
+  ]
+}

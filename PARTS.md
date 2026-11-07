@@ -1,0 +1,54 @@
+# 按 Part 阅读代码与结果
+
+本导航核对于 2026-11-07，对应 2026-11-02 收到的新版 Project 3。先按下表阅读，再进入对应目录。技术结果已完成；成员验收和课程提交仍由成员完成。
+
+## 入口和目录
+
+| 课程部分 | 可运行入口和源码说明 | 表格、指标、元数据（Git 同步） | 图片、视频和提交文件（本机） |
+| --- | --- | --- | --- |
+| Part 1：StereoSGBM + 逐帧 DA V2 | [代码入口](parts/part1_baseline/README.md) | [结果](results/by_part/part1_baseline/README.md) | [媒体](outputs/by_part/part1_baseline/README.md) |
+| Part 2：UniDepthV2 + VDA | [代码入口](parts/part2_models/README.md) | [结果](results/by_part/part2_models/README.md) | [媒体](outputs/by_part/part2_models/README.md) |
+| Part 3：光流融合与消融 | [代码入口](parts/part3_improvement/README.md) | [结果](results/by_part/part3_improvement/README.md) | [媒体](outputs/by_part/part3_improvement/README.md) |
+| Application：背景虚化 | [代码入口](parts/application/README.md) | [结果](results/by_part/application/README.md) | [演示](outputs/by_part/application/README.md) |
+| Delivery：报告与 ZIP | [提交说明](docs/submission.md) | [验证记录](results/by_part/delivery/README.md) | [交付文件](outputs/by_part/delivery/README.md) |
+
+从仓库根目录运行，例如：
+```powershell
+$py = ".\.venv-cuda\Scripts\python.exe"
+& $py parts/part1_baseline/run.py --help
+& $py parts/part2_models/run.py video --help
+& $py parts/part3_improvement/run.py fusion --help
+& $py parts/application/run.py blur --help
+```
+
+新入口只转发到原有脚本，并固定所属模型。原有脚本、共享实现和官方源码保留原路径：已保存实验、冻结凭据和报告引用了这些路径及代码哈希。实际运行/评测规则没有改变。阅读主线按 Part 分目录；需要修改算法时，打开每个 Part 中列出的真实实现文件。
+
+## 哪些是官方的，哪些是本项目实现的
+
+| 内容 | 来源 | 本项目工作 |
+| --- | --- | --- |
+| StereoSGBM 匹配内核 | OpenCV | 调用、参数选择、额外左右一致性检查、标定转换、评测与可视化 |
+| DA V2 网络和权重 | Depth Anything V2 作者 | 固定版本/权重、格式适配、逐帧推理、保存原始输出 |
+| UniDepthV2 网络和权重 | UniDepth 作者 | RGB-only 调用、NYUv2 读取、按课程 crop/clip/指标评测 |
+| VDA 网络、时间窗口和拼接 | Video Depth Anything 作者 | 准备相同视频帧、调用官方离线接口、计时/显存与结果保存 |
+| Farneback 光流内核 | OpenCV | 在连续 RGB 帧上调用，缓存并复用光流 |
+| E1–E4 融合、可靠性过滤、自适应权重、公共评测区域 | 本项目由助手编写 | 实现课程给出的改进方向，进行冻结、控制消融与复算 |
+| 背景虚化、图表、视频导出、打包验证 | 本项目由助手编写，使用 OpenCV/NumPy 等库 | 从保存的预测生成应用与交付材料 |
+| CVPR 模板 | 官方 author-kit | 保留模板来源，撰写本项目方法、结果和限制 |
+
+“本项目实现”不表示原创发明了 SGBM、光流或融合思想。三种网络都使用官方预训练权重，本项目没有训练/微调网络。官方版本见 [model_sources.yaml](environments/model_sources.yaml)，权重记录见 [model_assets.json](environments/model_assets.json)。
+
+## 更新、检查分类结果
+
+```powershell
+# 本机：复制精选表格/图/视频，核对每个副本与原件的 SHA256
+& $py scripts/organize_part_results.py
+& $py scripts/organize_part_results.py --check-only
+
+# B 只有 Git 内容、没有本机 outputs 时，检查小型结果即可
+& $py scripts/organize_part_results.py --tables-only --check-only
+```
+
+清单是 [configs/part_results.json](configs/part_results.json)。分类目录是方便阅读的副本，原始实验仍以 [新版协议](docs/course_protocol_20261102.md)指定的运行目录为准。副本若与原件不同，整理脚本报错，不覆盖或删除任何一方。原始数组、数据集、权重和个人验收指南没有复制进这组导航目录，也不会随这次整理提交。
+
+Git 提供 parts/ 和 results/by_part/；outputs/by_part/ 的媒体只在本机，和其他大体积输出一样需要另行同步。
