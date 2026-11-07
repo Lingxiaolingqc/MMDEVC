@@ -1,11 +1,16 @@
 """Run causal E0-E4, compare independent E5, and score all on the same RGB-only mask."""
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 import argparse
 import csv
 import json
 from time import perf_counter
 import numpy as np
 
-from run_stereo_baseline import ROOT,repo_path,read_yaml,write_json,write_csv,checksum
+from _common import ROOT, repo_path, read_yaml, write_json, write_csv, checksum
 from p3_depth.temporal.fusion import fuse_sequence
 from p3_depth.evaluation.temporal import evaluate_video, evaluate_relative_video
 from p3_depth.temporal.selection import validate_test_freeze
@@ -128,7 +133,7 @@ def main():
         'config':config,'config_sha256':checksum(repo_path(a.config)),
         'comparison_sha256':checksum(output/'comparison.csv'),'E5_predictions':a.reference_vda,
         'efficiency':'estimated additive base inference + CPU flow + fusion; excludes decode/IO; not measured end-to-end FPS',
-        'implementation_sha256':{name:checksum(ROOT/name) for name in ['scripts/run_fusion_suite.py','src/p3_depth/temporal/fusion.py','src/p3_depth/temporal/flow.py','src/p3_depth/evaluation/temporal.py']}})
+        'implementation_sha256':{name:checksum(ROOT/name) for name in ['scripts/part3_improvement/run_fusion_suite.py','src/p3_depth/temporal/fusion.py','src/p3_depth/temporal/flow.py','src/p3_depth/evaluation/temporal.py']}})
     print(f'PASS E0-E5: same {table[0]["reference_pixels"]} reference pixels; {cm["scope"]}; {config["status"]}')
 
 

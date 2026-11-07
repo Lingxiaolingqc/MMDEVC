@@ -1,9 +1,14 @@
 """Verify the revised positive-disparity GT rule against the saved 15-pair baseline."""
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 import argparse
 import csv
 import json
 import numpy as np
-from run_stereo_baseline import ROOT,repo_path,read_yaml,checksum,write_csv,write_json
+from _common import ROOT, repo_path, read_yaml, checksum, write_csv, write_json
 from p3_depth.data.middlebury import discover_samples,load_sample,EXPECTED_SCENES
 
 
@@ -41,7 +46,7 @@ def main():
     write_json(output/'audit.json',{'status':'verified','scenes':len(rows),'gt_rule':'finite disparity > 0',
         'existing_gt_masks_match':True,'source_arrays_modified':False,'pooled_valid_fraction':sum(r['valid_prediction_pixels'] for r in rows)/sum(r['gt_pixels'] for r in rows),
         'macro_disparity_mae_px':float(np.mean([r['disparity_mae_px'] for r in rows])),
-        'per_scene_sha256':checksum(output/'per_scene.csv'),'implementation_sha256':checksum(ROOT/'scripts/audit_course_stereo.py')})
+        'per_scene_sha256':checksum(output/'per_scene.csv'),'implementation_sha256':checksum(ROOT/'scripts/part1_baseline/audit_course_stereo.py')})
     print(f'PASS: all {len(rows)} GT masks and saved disparity MAE/valid fractions agree')
 
 

@@ -1,9 +1,14 @@
 """Score saved NYUv2 depth discontinuities with fixed, explicit project thresholds."""
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 import argparse
 import json
 import numpy as np
 
-from run_stereo_baseline import ROOT,repo_path,read_yaml,write_json,write_csv,checksum
+from _common import ROOT, repo_path, read_yaml, write_json, write_csv, checksum
 from p3_depth.data.nyuv2 import evaluation_mask
 from p3_depth.evaluation.benchmark import select_nyu
 from p3_depth.evaluation.depth import prepare_prediction,RelativeAlignmentError
@@ -61,7 +66,7 @@ def main():
         'settings':SETTINGS,'definition':'max four-neighbor abs log-depth difference > log(1.1); both endpoints; 3x3 eroded fixed GT domain; Euclidean 2px match',
         'interpretation':'project depth-discontinuity metric, not a claim of reproducing a published boundary benchmark',
         'per_image_sha256':checksum(output/'per_image.csv'),'summary_sha256':checksum(output/'summary.json'),
-        'implementation_sha256':{name:checksum(ROOT/name) for name in ['scripts/evaluate_nyuv2_boundaries.py','src/p3_depth/evaluation/boundary.py','src/p3_depth/temporal/fusion.py','src/p3_depth/evaluation/depth.py']}})
+        'implementation_sha256':{name:checksum(ROOT/name) for name in ['scripts/part2_models/evaluate_nyuv2_boundaries.py','src/p3_depth/evaluation/boundary.py','src/p3_depth/temporal/fusion.py','src/p3_depth/evaluation/depth.py']}})
     print(json.dumps(summary,indent=2))
 
 

@@ -1,11 +1,16 @@
 """Cache RGB-only forward/backward flow and one fixed evaluation mask per pair."""
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 import argparse
 import json
 from time import perf_counter
 import cv2
 import numpy as np
 
-from run_stereo_baseline import ROOT,repo_path,read_yaml,write_json,checksum
+from _common import ROOT, repo_path, read_yaml, write_json, checksum
 from p3_depth.temporal.flow import estimate_pair
 
 
@@ -45,7 +50,7 @@ def main():
         'opencv':cv2.__version__,'unit':'pixels at cached RGB resolution',
         'coordinates':'forward[t-1]: previous -> current on previous grid; backward[t-1]: current -> previous on current grid',
         'evaluation_region':'current-frame pixels; RGB/flow only; independent of all depth predictions and fusion weights',
-        'implementation_sha256':{name:checksum(ROOT/name) for name in ['scripts/prepare_flow.py','src/p3_depth/temporal/flow.py']}})
+        'implementation_sha256':{name:checksum(ROOT/name) for name in ['scripts/part3_improvement/prepare_flow.py','src/p3_depth/temporal/flow.py']}})
     print(f'PASS: {len(frames)-1} RGB-only flow pairs; {elapsed:.3f}s; {output}')
 
 

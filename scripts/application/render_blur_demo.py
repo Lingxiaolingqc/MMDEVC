@@ -1,5 +1,10 @@
 """Export RGB, relative depth and matched baseline/improved background-blur effects."""
 
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 import argparse
 import csv
 from fractions import Fraction
@@ -8,8 +13,8 @@ import av
 import numpy as np
 from PIL import Image
 
-from run_stereo_baseline import ROOT,repo_path,checksum,write_json,write_csv
-from run_fusion_suite import load_run
+from _common import ROOT, repo_path, checksum, write_json, write_csv
+from part3_improvement.run_fusion_suite import load_run
 from render_depth_video import colorize,text
 from p3_depth.application import background_blur
 
@@ -84,7 +89,7 @@ def main():
         'parameters':{'sigma_px':5.,'transition_normalized':[.45,.70],'limits':limits},
         'verification':{'decoded_timestamps_match':True,'application_recomputed_from_raw':True},
         'files':{name:checksum(output/name) for name in ('demo.mp4','preview.png','blur_strength.csv')},
-        'implementation_sha256':{name:checksum(ROOT/name) for name in ['scripts/render_blur_demo.py','src/p3_depth/application.py']},
+        'implementation_sha256':{name:checksum(ROOT/name) for name in ['scripts/application/render_blur_demo.py','src/p3_depth/application.py']},
         'interpretation':'Relative depth-based artistic effect, not calibrated distance or physical lens simulation; uncertain boundaries can bleed',
     })
     print(f'PASS: {len(frames)} RGB/depth/blur frames; raw-array recomputation and timestamps verified')

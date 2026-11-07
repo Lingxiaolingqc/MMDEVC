@@ -1,5 +1,10 @@
 """Run a pinned Small image model on the declared NYUv2 dev or standard test split."""
 
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 import argparse
 import importlib.metadata
 import json
@@ -10,13 +15,13 @@ from time import perf_counter
 import numpy as np
 from PIL import Image
 
-from run_stereo_baseline import ROOT, read_yaml, repo_path, checksum, write_json, write_csv
+from _common import ROOT, read_yaml, repo_path, checksum, write_json, write_csv
 from p3_depth.models.runtime import ImageModel
 from p3_depth.evaluation.benchmark import select_nyu, score_raw, summarize
 
 
 def implementation_hashes():
-    paths = ['scripts/run_nyuv2.py', 'scripts/run_stereo_baseline.py', 'src/p3_depth/models/runtime.py',
+    paths = ['scripts/part2_models/run_nyuv2.py', 'scripts/_common.py', 'src/p3_depth/models/runtime.py',
              'src/p3_depth/evaluation/benchmark.py', 'src/p3_depth/evaluation/depth.py',
              'src/p3_depth/data/nyuv2.py', 'environments/model_assets.json']
     return {name: checksum(ROOT / name) for name in paths}

@@ -6,7 +6,7 @@ import subprocess
 
 import numpy as np
 
-from run_stereo_baseline import ROOT, checksum, read_yaml, repo_path, select_sample, write_csv, write_json
+from _common import ROOT, checksum, read_yaml, repo_path, select_sample, write_csv, write_json
 from p3_depth.data.middlebury import load_sample
 from p3_depth.data.nyuv2 import evaluation_mask
 from p3_depth.evaluation.depth import evaluate_depth, prepare_prediction

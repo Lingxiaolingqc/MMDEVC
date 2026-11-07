@@ -7,8 +7,8 @@ Depth Anything V2 Small relative 输出 inverse-depth-like 相对值，近处通
 先按 [模型入口](../environments/depth_models.md) 准备缓存，并按 [时序协议](temporal_protocol.md) 准备同一缓存的光流。对于每个自录片段执行以下命令，将 `dev_static` 替换为实际 clip ID：
 
 ```sh
-python scripts/run_video_models.py --model dav2_relative --cache outputs/videos/dev_static/cache --device cuda --precision fp16 --input-size 364 --output-dir outputs/videos/dev_static/dav2_relative
-python scripts/evaluate_relative_video.py --cache outputs/videos/dev_static/cache --run outputs/videos/dev_static/dav2_relative --flow outputs/videos/dev_static/flow --output-dir outputs/videos/dev_static/relative_diagnostics
+python scripts/part1_baseline/run_framewise.py --model dav2_relative --cache outputs/videos/dev_static/cache --device cuda --precision fp16 --input-size 364 --output-dir outputs/videos/dev_static/dav2_relative
+python scripts/part3_improvement/evaluate_relative_video.py --cache outputs/videos/dev_static/cache --run outputs/videos/dev_static/dav2_relative --flow outputs/videos/dev_static/flow --output-dir outputs/videos/dev_static/relative_diagnostics
 python scripts/render_depth_video.py --cache outputs/videos/dev_static/cache --run outputs/videos/dev_static/dav2_relative --output-dir outputs/videos/dev_static/relative_rendered
 ```
 

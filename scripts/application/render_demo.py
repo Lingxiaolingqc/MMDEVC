@@ -1,4 +1,9 @@
 """Export RGB, metric depth, point readouts and time traces using original timestamps."""
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 import argparse
 import csv
 from fractions import Fraction
@@ -6,7 +11,7 @@ import av
 import cv2
 import numpy as np
 from PIL import Image
-from run_stereo_baseline import ROOT,repo_path,checksum,write_json
+from _common import ROOT, repo_path, checksum, write_json
 from p3_depth.demo import DemoData
 
 COLORS=[(109,175,255),(99,223,177),(245,191,100),(221,140,245),(251,140,140),(140,229,239)]
@@ -116,7 +121,7 @@ def main():
             'verification':{'decoded_timestamps_match':True,'trace_matches_raw_predictions':True},
             'raw_predictions_modified':False,
             'files':{name:checksum(output/name) for name in ['demo.mp4','preview.png','point_trace.csv']},
-            'implementation_sha256':{name:checksum(ROOT/name) for name in ['scripts/render_demo.py','src/p3_depth/demo.py']}})
+            'implementation_sha256':{name:checksum(ROOT/name) for name in ['scripts/application/render_demo.py','src/p3_depth/demo.py']}})
         print(f'PASS: {data.count} Demo frames; decoded timestamps and raw point trace verified: {output}')
     finally:data.close()
 

@@ -10,7 +10,7 @@ import cv2
 import numpy as np
 from PIL import Image
 
-from run_stereo_baseline import ROOT, repo_path, checksum, write_json
+from _common import ROOT, repo_path, checksum, write_json
 
 
 def colorize(values, valid, low, high):

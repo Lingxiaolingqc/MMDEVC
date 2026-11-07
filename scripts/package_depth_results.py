@@ -3,7 +3,7 @@
 import argparse
 import json
 
-from run_stereo_baseline import ROOT, repo_path
+from _common import ROOT, repo_path
 from p3_depth.packaging import collect_exports, write_archive
 
 

@@ -6,22 +6,24 @@
 
 | 课程部分 | 可运行入口和源码说明 | 表格、指标、元数据（Git 同步） | 图片、视频和提交文件（本机） |
 | --- | --- | --- | --- |
-| Part 1：StereoSGBM + 逐帧 DA V2 | [代码入口](parts/part1_baseline/README.md) | [结果](results/by_part/part1_baseline/README.md) | [媒体](outputs/by_part/part1_baseline/README.md) |
-| Part 2：UniDepthV2 + VDA | [代码入口](parts/part2_models/README.md) | [结果](results/by_part/part2_models/README.md) | [媒体](outputs/by_part/part2_models/README.md) |
-| Part 3：光流融合与消融 | [代码入口](parts/part3_improvement/README.md) | [结果](results/by_part/part3_improvement/README.md) | [媒体](outputs/by_part/part3_improvement/README.md) |
-| Application：背景虚化 | [代码入口](parts/application/README.md) | [结果](results/by_part/application/README.md) | [演示](outputs/by_part/application/README.md) |
+| Part 1：StereoSGBM + 逐帧 DA V2 | [代码入口](scripts/part1_baseline/README.md) | [结果](results/by_part/part1_baseline/README.md) | [媒体](outputs/by_part/part1_baseline/README.md) |
+| Part 2：UniDepthV2 + VDA | [代码入口](scripts/part2_models/README.md) | [结果](results/by_part/part2_models/README.md) | [媒体](outputs/by_part/part2_models/README.md) |
+| Part 3：光流融合与消融 | [代码入口](scripts/part3_improvement/README.md) | [结果](results/by_part/part3_improvement/README.md) | [媒体](outputs/by_part/part3_improvement/README.md) |
+| Application：背景虚化 | [代码入口](scripts/application/README.md) | [结果](results/by_part/application/README.md) | [演示](outputs/by_part/application/README.md) |
 | Delivery：报告与 ZIP | [提交说明](docs/submission.md) | [验证记录](results/by_part/delivery/README.md) | [交付文件](outputs/by_part/delivery/README.md) |
 
 从仓库根目录运行，例如：
 ```powershell
 $py = ".\.venv-cuda\Scripts\python.exe"
-& $py parts/part1_baseline/run.py --help
-& $py parts/part2_models/run.py video --help
-& $py parts/part3_improvement/run.py fusion --help
-& $py parts/application/run.py blur --help
+& $py scripts/part1_baseline/run_stereo_suite.py --help
+& $py scripts/part2_models/run_video.py --help
+& $py scripts/part3_improvement/run_fusion_suite.py --help
+& $py scripts/application/render_blur_demo.py --help
 ```
 
-新入口只转发到原有脚本，并固定所属模型。原有脚本、共享实现和官方源码保留原路径：已保存实验、冻结凭据和报告引用了这些路径及代码哈希。实际运行/评测规则没有改变。阅读主线按 Part 分目录；需要修改算法时，打开每个 Part 中列出的真实实现文件。
+实验脚本实际位于 `scripts/part1_baseline/`、`scripts/part2_models/`、`scripts/part3_improvement/` 和 `scripts/application/`；公共数据准备、绘图、打包工具留在 `scripts/`。完整入口清单见 [scripts/README.md](scripts/README.md)。共享算法在 `src/p3_depth/`，官方网络在 `third_party/`，不按 Part 复制算法代码。
+
+2026-11-07 整理了脚本路径，旧 `parts/` 转发层已移除。历史结果内的代码路径和哈希仍描述当时运行，按记录的 Git commit 追溯；新运行会记录新路径与哈希。已有实验、冻结凭据、报告和结果副本均保留。旧版本的未完成推理不能跨本次代码版本 `--resume`，应使用新输出目录。
 
 ## 哪些是官方的，哪些是本项目实现的
 
@@ -51,4 +53,4 @@ $py = ".\.venv-cuda\Scripts\python.exe"
 
 清单是 [configs/part_results.json](configs/part_results.json)。分类目录是方便阅读的副本，原始实验仍以 [新版协议](docs/course_protocol_20261102.md)指定的运行目录为准。副本若与原件不同，整理脚本报错，不覆盖或删除任何一方。原始数组、数据集、权重和个人验收指南没有复制进这组导航目录，也不会随这次整理提交。
 
-Git 提供 parts/ 和 results/by_part/；outputs/by_part/ 的媒体只在本机，和其他大体积输出一样需要另行同步。
+Git 提供按 Part 整理的 scripts/ 和 results/by_part/；outputs/by_part/ 的媒体只在本机，和其他大体积输出一样需要另行同步。

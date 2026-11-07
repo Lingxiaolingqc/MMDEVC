@@ -1,12 +1,17 @@
 """Recompute saved flow, E0-E4 fusion and all E0-E5 scores without model inference."""
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 import argparse
 import csv
 import json
 import cv2
 import numpy as np
 
-from run_stereo_baseline import ROOT,repo_path,checksum,write_json
-from run_fusion_suite import load_run,suite_scores,score_columns
+from _common import ROOT, repo_path, checksum, write_json
+from part3_improvement.run_fusion_suite import load_run,suite_scores,score_columns
 from p3_depth.temporal.selection import suite_artifacts,relative
 from p3_depth.temporal.flow import estimate_pair
 from p3_depth.temporal.fusion import fuse_sequence
@@ -17,8 +22,12 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('suite','cache','baseline','reference-vda','flow'):
         p.add_argument('--'+name,required=True)
+    p.add_argument('--verification-output', help='Write a separate new verification record when reviewing a frozen suite.')
     a=p.parse_args()
     suite,cache,flow_dir=repo_path(a.suite),repo_path(a.cache),repo_path(a.flow)
+    verification_output = repo_path(a.verification_output) if a.verification_output else suite/'verification.json'
+    if a.verification_output and verification_output.exists():
+        raise FileExistsError('Use a new verification output; preserve existing evidence')
     sm=json.loads((suite/'metadata.json').read_text(encoding='utf-8'))
     sources=[(cache,'cache_metadata_sha256'),(repo_path(a.baseline),'base_metadata_sha256'),
              (repo_path(a.reference_vda),'vda_metadata_sha256'),(flow_dir,'flow_metadata_sha256')]
@@ -87,11 +96,11 @@ def main():
             actual=float(row[column]) if row[column] else None
             if actual!=scores[key]:
                 raise ValueError('Exported table differs from verified scores')
-    write_json(suite/'verification.json',{'schema_version':1,'status':'verified',
+    write_json(verification_output,{'schema_version':1,'status':'verified',
         'suite_metadata_sha256':checksum(suite/'metadata.json'),
         'artifacts_sha256':{name:checksum(suite/name) for name in suite_artifacts()},
         'input_metadata_sha256':{relative(ROOT,path/'metadata.json'):checksum(path/'metadata.json') for path,_ in sources},
-        'verifier_sha256':checksum(ROOT/'scripts/verify_fusion_suite.py'),
+        'verifier_sha256':checksum(ROOT/'scripts/part3_improvement/verify_fusion_suite.py'),
         'scope':sm['scope'],'statement':'Recomputed flow/masks, E0-E4 fusion/weights and E0-E5 metrics; not member acceptance'})
     print(f'PASS: {len(frames)-1} flow/mask pairs, E0-E4 raw fusion/weights, and E0-E5 metrics recomputed; scope={sm["scope"]}')
 

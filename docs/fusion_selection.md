@@ -35,9 +35,9 @@ foreach ($clip in $devClips) {
   $base = 'outputs/videos/' + $clip.clip_id
   foreach ($name in $candidates.Keys) {
     $suite = "$base/$name"
-    & $py scripts/run_fusion_suite.py --cache "$base/cache" --baseline "$base/dav2_metric" --reference-vda "$base/vda_metric" --flow "$base/flow" --config $candidates[$name] --output-dir $suite
+    & $py scripts/part3_improvement/run_fusion_suite.py --cache "$base/cache" --baseline "$base/dav2_metric" --reference-vda "$base/vda_metric" --flow "$base/flow" --config $candidates[$name] --output-dir $suite
     if ($LASTEXITCODE -ne 0) { throw "融合失败：$suite" }
-    & $py scripts/verify_fusion_suite.py --suite $suite --cache "$base/cache" --baseline "$base/dav2_metric" --reference-vda "$base/vda_metric" --flow "$base/flow"
+    & $py scripts/part3_improvement/verify_fusion_suite.py --suite $suite --cache "$base/cache" --baseline "$base/dav2_metric" --reference-vda "$base/vda_metric" --flow "$base/flow"
     if ($LASTEXITCODE -ne 0) { throw "复算失败：$suite" }
   }
 }
@@ -76,7 +76,7 @@ foreach ($name in $candidates.Keys) {
     $freezeArgs += @('--candidate', "$name=outputs/videos/$($clip.clip_id)/$name")
   }
 }
-& $py scripts/freeze_fusion_config.py @freezeArgs
+& $py scripts/part3_improvement/freeze_fusion_config.py @freezeArgs
 if ($LASTEXITCODE -ne 0) { throw '冻结失败，先解决显示的证据问题' }
 ```
 

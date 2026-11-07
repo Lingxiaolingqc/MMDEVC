@@ -15,7 +15,7 @@
 ## 我们实现了什么
 
 - [背景虚化函数](../../src/p3_depth/application.py)：助手实现固定整段相对范围、近处清晰/远处模糊权重、图像混合；GaussianBlur 来自 OpenCV。
-- [应用视频导出](../../scripts/render_blur_demo.py)：同一 RGB、同一阈值和模糊参数，对比原 DA 与 E4。保存数值并核查视频帧数与时间戳。
+- [应用视频导出](../../scripts/application/render_blur_demo.py)：同一 RGB、同一阈值和模糊参数，对比原 DA 与 E4。保存数值并核查视频帧数与时间戳。
 - [比较视频导出](../../scripts/render_depth_video.py)：助手实现标签、色标和拼版，使用现成编码库。
 
 相对预测一般大值更近。应用使用相对排序，不显示距离米数，也不模拟经过标定的镜头光圈。两种效果差别较小，边界光晕、误判前后景仍可能存在。
@@ -23,8 +23,8 @@
 ## 使用入口
 
 ```powershell
-python parts/application/run.py blur --help
-python parts/application/run.py package --help
+python scripts/application/render_blur_demo.py --help
+python scripts/package_depth_results.py --help
 ```
 
-package 转发到正式视频包验证/打包脚本；报告是单独的 PDF。已验证交付物在 [delivery](../../results/by_part/delivery/README.md) 中查找，实际原始路径见 [提交说明](../../docs/submission.md)。
+package_depth_results.py 是共享的正式视频包验证/打包脚本；报告是单独的 PDF。旧米制点选应用入口 render_demo.py、serve_demo.py 也放在本目录，使用说明见 [demo](../../demo/README.md)。已验证交付物在 [delivery](../../results/by_part/delivery/README.md) 中查找，实际原始路径见 [提交说明](../../docs/submission.md)。

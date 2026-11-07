@@ -1,5 +1,10 @@
 """Run pinned official UniDepthV2 ViT-S on one training-side NYUv2 development image."""
 
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 import argparse
 import csv
 import importlib.metadata
@@ -7,13 +12,12 @@ import json
 import os
 import platform
 import subprocess
-import sys
 from time import perf_counter
 
 import numpy as np
 from PIL import Image
 
-from run_stereo_baseline import ROOT, checksum, read_yaml, repo_path, write_csv, write_json
+from _common import ROOT, checksum, read_yaml, repo_path, write_csv, write_json
 from evaluate_depth import evaluate_saved
 
 UPSTREAM_COMMIT = "8d8cfe4c7ee15297099983607febf0d4f32eb3d6"
@@ -154,7 +158,7 @@ def main():
         "timing_scope": "wall time of official infer including internal preprocessing and device transfer; excludes model load, file IO and evaluation",
         "peak_cuda_allocated_bytes": torch.cuda.max_memory_allocated() if device == "cuda" else None,
         "peak_cuda_reserved_bytes": torch.cuda.max_memory_reserved() if device == "cuda" else None,
-        "reproduce": f"python scripts/run_unidepth_sample.py --sample {args.sample} --device {device} --resolution-level {args.resolution_level} --threads {args.threads} --output-dir outputs/unidepth_reproduce_NEW",
+        "reproduce": f"python scripts/part2_models/run_unidepth_sample.py --sample {args.sample} --device {device} --resolution-level {args.resolution_level} --threads {args.threads} --output-dir outputs/unidepth_reproduce_NEW",
         "display_ranges_m": {"gt_and_prediction": [0, 10], "absolute_error": [0, 1]}}
     write_json(output / "metadata.json", metadata)
     (output / "run.log").write_text(f"PASS {args.sample}; direct metric; device={device}; infer={elapsed:.6f}s; no GT alignment\n", encoding="utf-8")

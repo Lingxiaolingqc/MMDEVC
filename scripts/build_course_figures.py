@@ -4,7 +4,7 @@ import csv
 import json
 import numpy as np
 from PIL import Image,ImageDraw,ImageFont
-from run_stereo_baseline import ROOT,repo_path,checksum,write_json
+from _common import ROOT, repo_path, checksum, write_json
 from render_depth_video import colorize
 from p3_depth.application import background_blur
 

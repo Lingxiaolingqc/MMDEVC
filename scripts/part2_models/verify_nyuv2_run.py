@@ -1,10 +1,15 @@
 """Recompute a saved NYUv2 run using GT and saved raw predictions, without model inference."""
 
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 import argparse
 import json
 import numpy as np
 
-from run_stereo_baseline import ROOT, read_yaml, repo_path, checksum
+from _common import ROOT, read_yaml, repo_path, checksum
 from p3_depth.evaluation.benchmark import score_raw, summarize, select_nyu
 
 

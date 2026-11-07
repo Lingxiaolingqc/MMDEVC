@@ -13,7 +13,7 @@ DA V2 与 UniDepthV2 都有 ViT 编码器；输出含义的区别来自完整模
 - [官方 UniDepthV2](../../third_party/UniDepth/unidepth/models/unidepthv2/unidepthv2.py)：infer / rays 与 Z-depth。
 - [官方解码器](../../third_party/UniDepth/unidepth/models/unidepthv2/decoder.py)：CameraHead / DepthHead。
 - [项目适配器](../../src/p3_depth/models/runtime.py)：ImageModel，只传 RGB，不传测试 GT。
-- [NYUv2 运行](../../scripts/run_nyuv2.py)、[课程指标实现](../../src/p3_depth/evaluation/course.py)、[新版重算](../../scripts/evaluate_course_nyu.py)。
+- [NYUv2 运行](../../scripts/part2_models/run_nyuv2.py)、[课程指标实现](../../src/p3_depth/evaluation/course.py)、[新版重算](../../scripts/part2_models/evaluate_course_nyu.py)。
 - [官方论文](https://arxiv.org/html/2502.20110v1)、[固定源码网页](https://github.com/lpiccinelli-eth/UniDepth/blob/8d8cfe4c7ee15297099983607febf0d4f32eb3d6/unidepth/models/unidepthv2/unidepthv2.py)。
 
 ## VDA-Small：多帧相对深度与窗口
@@ -45,18 +45,18 @@ DA V2 与 UniDepthV2 都有 ViT 编码器；输出含义的区别来自完整模
 - [官方窗口实现](../../third_party/Video-Depth-Anything/video_depth_anything/video_depth.py)：infer_video_depth。
 - [官方时空预测头](../../third_party/Video-Depth-Anything/video_depth_anything/dpt_temporal.py)。
 - [项目适配器](../../src/p3_depth/models/video.py)：VideoDepthModel，固定官方版本、加载权重、调用离线推理、检查输出长度。
-- [视频运行/资源记录](../../scripts/run_video_models.py)、[统一视频输入](../../scripts/prepare_video.py)。
+- [视频运行/资源记录](../../scripts/part2_models/run_video.py)、[统一视频输入](../../scripts/prepare_video.py)。
 - [固定窗口源码网页](https://github.com/DepthAnything/Video-Depth-Anything/blob/4f5ae23172ba60fd7bc11ef671cca678842c7072/video_depth_anything/video_depth.py#L91-L162)。
 - [官方拼接函数](https://github.com/DepthAnything/Video-Depth-Anything/blob/4f5ae23172ba60fd7bc11ef671cca678842c7072/utils/util.py#L16-L74)、[论文 Architecture](https://arxiv.org/html/2501.12375v4#S3.SS1)。
 
 ## 使用入口
 
 ```powershell
-python parts/part2_models/run.py metric --help
-python parts/part2_models/run.py evaluate-metric --help
-python parts/part2_models/run.py video --help
-python parts/part2_models/run.py prepare-video --help
-python parts/part2_models/run.py compare --help
+python scripts/part2_models/run_nyuv2.py --model unidepth --help
+python scripts/part2_models/evaluate_course_nyu.py --help
+python scripts/part2_models/run_video.py --help
+python scripts/prepare_video.py --help
+python scripts/render_depth_video.py --help
 ```
 
-metric 固定 UniDepth，video 固定 VDA relative；参数详情和运行顺序见 [课程协议](../../docs/course_protocol_20261102.md)。两模型实际视频 encoder 尺寸为 364×644，输出为 360×640，FP16。不是把输入压成 364×364。
+run_nyuv2.py 用 --model unidepth 选择本次米制模型；run_video.py 默认使用 vda_relative，只允许 VDA 系列，共用 [推理实现](../_video_inference.py)。参数详情和运行顺序见 [课程协议](../../docs/course_protocol_20261102.md)。两模型实际视频 encoder 尺寸为 364×644，输出为 360×640，FP16。不是把输入压成 364×364。

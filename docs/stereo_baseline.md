@@ -11,7 +11,7 @@
 ```sh
 python -m pip install -e ".[data,stereo]"
 python -m unittest discover -s tests -v
-python scripts/run_stereo_baseline.py --sample Adirondack
+python scripts/part1_baseline/run_stereo_baseline.py --sample Adirondack
 ```
 
 数据路径使用 `configs/paths.local.yaml`；也可用 `--data-root "你的 Middlebury 目录"` 覆盖。输出默认自动创建唯一的 `outputs/stereo_Adirondack_<UTC时间>/`。`--output-dir` 可指定新目录，已有目录会报错，避免覆盖历史实验。入口读取 `manifests/middlebury.csv`，只处理选中的一对图。更换场景前须先确定其 `dev/evaluation` 划分。

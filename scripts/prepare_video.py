@@ -6,7 +6,7 @@ import re
 import shutil
 import numpy as np
 
-from run_stereo_baseline import ROOT, repo_path, write_csv, write_json, checksum
+from _common import ROOT, repo_path, write_csv, write_json, checksum
 from p3_depth.data.video import decode_video
 
 

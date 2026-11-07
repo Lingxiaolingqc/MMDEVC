@@ -25,12 +25,12 @@ UniDepth 的源码、config 和权重沿用 [UniDepth 说明](unidepth.md)。DA 
 ## 单图开发和全测试集
 
 ```sh
-python scripts/run_nyuv2.py --model dav2_relative --subset dev --device cpu --output-dir outputs/dav2_relative_dev
-python scripts/verify_nyuv2_run.py --run outputs/dav2_relative_dev
-python scripts/run_nyuv2.py --model dav2_metric --subset dev --device cpu --output-dir outputs/dav2_metric_dev
-python scripts/verify_nyuv2_run.py --run outputs/dav2_metric_dev
-python scripts/run_nyuv2.py --model unidepth --subset test --device cpu --output-dir outputs/unidepth_test
-python scripts/verify_nyuv2_run.py --run outputs/unidepth_test
+python scripts/part2_models/run_nyuv2.py --model dav2_relative --subset dev --device cpu --output-dir outputs/dav2_relative_dev
+python scripts/part2_models/verify_nyuv2_run.py --run outputs/dav2_relative_dev
+python scripts/part2_models/run_nyuv2.py --model dav2_metric --subset dev --device cpu --output-dir outputs/dav2_metric_dev
+python scripts/part2_models/verify_nyuv2_run.py --run outputs/dav2_metric_dev
+python scripts/part2_models/run_nyuv2.py --model unidepth --subset test --device cpu --output-dir outputs/unidepth_test
+python scripts/part2_models/verify_nyuv2_run.py --run outputs/unidepth_test
 ```
 
 `--subset test` 不带 `--limit` 才是完整 654 张标准测试。每次用新目录；中断续跑需加 `--resume`，且配置、相关实现哈希、环境、清单和设备必须一致。每张已完成记录还会核对 RGB、GT、预测和 mask 的哈希。复算入口只读取已保存数组，不重新推理。
@@ -47,8 +47,8 @@ DA 默认 short side 434；开发样本实际 encoder 输入 **434×574**，与 
 
 ```sh
 python scripts/prepare_video.py --video data/videos/raw/dev_static.mp4 --clip-id dev_static --scene-group room_a --split dev --scene-type static --output-dir outputs/videos/dev_static/cache --register
-python scripts/run_video_models.py --model dav2_metric --cache outputs/videos/dev_static/cache --device cpu --precision fp32 --output-dir outputs/videos/dev_static/dav2_metric
-python scripts/run_video_models.py --model vda_metric --cache outputs/videos/dev_static/cache --device cpu --precision fp32 --output-dir outputs/videos/dev_static/vda_metric
+python scripts/part1_baseline/run_framewise.py --model dav2_metric --cache outputs/videos/dev_static/cache --device cpu --precision fp32 --output-dir outputs/videos/dev_static/dav2_metric
+python scripts/part2_models/run_video.py --model vda_metric --cache outputs/videos/dev_static/cache --device cpu --precision fp32 --output-dir outputs/videos/dev_static/vda_metric
 python scripts/render_depth_video.py --cache outputs/videos/dev_static/cache --run outputs/videos/dev_static/dav2_metric --run outputs/videos/dev_static/vda_metric --output-dir outputs/videos/dev_static/rendered
 ```
 
@@ -66,7 +66,7 @@ Part 1 还需对相同自录帧运行 `dav2_relative`，并按 [相对视频诊�
 
 ```sh
 python scripts/prepare_video.py --video third_party/Video-Depth-Anything/assets/example_videos/Tokyo-Walk_rgb.mp4 --clip-id upstream_smoke --scene-group upstream_demo --split smoke --scene-type walking --max-long-edge 320 --max-frames 24 --output-dir outputs/video_check/cache
-python scripts/run_video_models.py --model vda_metric --cache outputs/video_check/cache --device cpu --precision fp32 --input-size 140 --output-dir outputs/video_check/vda_metric
+python scripts/part2_models/run_video.py --model vda_metric --cache outputs/video_check/cache --device cpu --precision fp32 --input-size 140 --output-dir outputs/video_check/vda_metric
 python -m unittest discover -s tests -v
 ```
 

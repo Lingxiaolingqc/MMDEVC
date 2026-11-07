@@ -1,10 +1,15 @@
 """Freeze reviewed development candidates; never choose the lowest error automatically."""
 
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 import argparse
 import re
 import yaml
 
-from run_stereo_baseline import ROOT, repo_path, write_json, write_csv, checksum
+from _common import ROOT, repo_path, write_json, write_csv, checksum
 from p3_depth.temporal.selection import selection_evidence
 
 

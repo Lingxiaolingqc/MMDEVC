@@ -10,7 +10,7 @@
 2. [融合](../../src/p3_depth/temporal/fusion.py)：当前 DA 预测 r、历史预测 h，经光流对齐后按 (1-w)r+wh 融合。E4 的 w 会随图像差异、光流残差、预测分歧和边缘强度下降。
 3. [时序评测](../../src/p3_depth/evaluation/temporal.py)：所有方法共用 RGB/flow 参考区域；归一化变化不是深度准确率。
 4. [选参冻结](../../src/p3_depth/temporal/selection.py)：三个开发候选及冻结凭据。
-5. [实验流程](../../scripts/run_fusion_suite.py)和[保存结果复算](../../scripts/verify_fusion_suite.py)。
+5. [实验流程](../../scripts/part3_improvement/run_fusion_suite.py)和[保存结果复算](../../scripts/part3_improvement/verify_fusion_suite.py)。
 
 α=0.70 是历史权重上限，不是每个像素都用 70% 历史。第一帧保持原样；历史不可靠时 w=0。当前帧的相对范围只用于置信权重，不把输出逐帧重新归一化。
 
@@ -19,11 +19,11 @@ E0 原 DA；E1 同位置平滑；E2 光流对齐融合；E3 再加可靠性过�
 ## 使用入口
 
 ```powershell
-python parts/part3_improvement/run.py flow --help
-python parts/part3_improvement/run.py fusion --help
-python parts/part3_improvement/run.py verify --help
-python parts/part3_improvement/run.py freeze --help
-python parts/part3_improvement/run.py compare --help
+python scripts/part3_improvement/prepare_flow.py --help
+python scripts/part3_improvement/run_fusion_suite.py --help
+python scripts/part3_improvement/verify_fusion_suite.py --help
+python scripts/part3_improvement/freeze_fusion_config.py --help
+python scripts/render_depth_video.py --help
 ```
 
 完整数据与选参顺序见 [新版协议](../../docs/course_protocol_20261102.md)。在 Tokyo 开发片段选 0.70，再冻结后用于 rollercoaster。现有选择和输出原件不覆盖。

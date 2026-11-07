@@ -1,6 +1,6 @@
 # 历史米制点选 Demo（可选）
 
-> 新版正式应用为相对深度背景虚化，见 [当前流程](../docs/course_protocol_20261102.md) 和 scripts/render_blur_demo.py。以下保留旧米制应用的接口与示例验证，不作为新版额外要求。
+> 新版正式应用为相对深度背景虚化，见 [当前流程](../docs/course_protocol_20261102.md) 和 scripts/application/render_blur_demo.py。以下保留旧米制应用的接口与示例验证，不作为新版额外要求。
 
 主责：B / Jun Yu Eugene YIP。助手已实现并运行；组员人工验收待完成。
 
@@ -14,7 +14,7 @@ Z 是沿相机前方轴的深度，不是相机中心到该点的欧氏距离。
 
 ```powershell
 $py = '.\.venv-cuda\Scripts\python.exe'
-& $py scripts/serve_demo.py `
+& $py scripts/application/serve_demo.py `
   --cache outputs/video_smoke_20261028/cache `
   --run outputs/video_smoke_20261028/fusion_364/E0 `
   --run outputs/video_smoke_20261028/fusion_364/E4 `
@@ -27,7 +27,7 @@ $py = '.\.venv-cuda\Scripts\python.exe'
 ## 导出演示视频
 
 ```powershell
-& $py scripts/render_demo.py `
+& $py scripts/application/render_demo.py `
   --cache outputs/video_smoke_20261028/cache `
   --run outputs/video_smoke_20261028/fusion_364/E0 `
   --run outputs/video_smoke_20261028/fusion_364/E4 `

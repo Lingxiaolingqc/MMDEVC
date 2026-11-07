@@ -1,5 +1,10 @@
 """Measure Part 1 relative-video fluctuation without converting it to metric depth."""
 
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 import argparse
 import csv
 import json
@@ -9,7 +14,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 
-from run_stereo_baseline import ROOT, repo_path, checksum, write_json, write_csv
+from _common import ROOT, repo_path, checksum, write_json, write_csv
 from p3_depth.evaluation.temporal import evaluate_relative_video
 
 
@@ -66,7 +71,7 @@ def main():
         'source_model': rm['model'], 'artifacts_sha256': {name: checksum(output/name) for name in
             ('metrics.json', 'per_pair.csv', 'per_frame.csv', 'diagnostics.png')},
         'implementation_sha256': {name: checksum(ROOT/name) for name in
-            ('scripts/evaluate_relative_video.py', 'src/p3_depth/evaluation/temporal.py')}})
+            ('scripts/part3_improvement/evaluate_relative_video.py', 'src/p3_depth/evaluation/temporal.py')}})
     print(f'PASS: {len(times)} relative frames, {summary["reference_pixels"]} fixed reference pixels; scope={cm["scope"]}')
 
 

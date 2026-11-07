@@ -1,11 +1,16 @@
 """Re-evaluate a saved raw metric run under the revised course protocol, without inference."""
 
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 import argparse
 import json
 import subprocess
 import numpy as np
 
-from run_stereo_baseline import ROOT, repo_path, read_yaml, checksum, write_csv, write_json
+from _common import ROOT, repo_path, read_yaml, checksum, write_csv, write_json
 from p3_depth.evaluation.benchmark import select_nyu
 from p3_depth.evaluation.course import PROTOCOL, score_course_nyu, summarize_course
 
@@ -57,7 +62,7 @@ def main():
         'source_run': run.relative_to(ROOT).as_posix(), 'source_metadata_sha256': checksum(run / 'metadata.json'),
         'source_model': metadata['model'], 'manifest_sha256': checksum(manifest),
         'implementation_sha256': {p: checksum(ROOT / p) for p in
-            ['scripts/evaluate_course_nyu.py', 'src/p3_depth/evaluation/course.py',
+            ['scripts/part2_models/evaluate_course_nyu.py', 'src/p3_depth/evaluation/course.py',
              'src/p3_depth/evaluation/depth.py', 'src/p3_depth/data/nyuv2.py']},
         'code_commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
         'per_image_sha256': checksum(output / 'per_image.csv'), 'summary_sha256': checksum(output / 'summary.json'),

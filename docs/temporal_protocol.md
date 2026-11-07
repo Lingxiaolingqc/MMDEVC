@@ -57,9 +57,9 @@ E4 使用以下启发式权重，不把它解释为校准后的概率：
 先按 [模型说明](../environments/depth_models.md) 为同一缓存生成 DA metric 与 VDA metric 输出，再执行：
 
 ```sh
-python scripts/prepare_flow.py --cache outputs/videos/dev_static/cache --output-dir outputs/videos/dev_static/flow
-python scripts/run_fusion_suite.py --cache outputs/videos/dev_static/cache --baseline outputs/videos/dev_static/dav2_metric --reference-vda outputs/videos/dev_static/vda_metric --flow outputs/videos/dev_static/flow --output-dir outputs/videos/dev_static/ablations
-python scripts/verify_fusion_suite.py --suite outputs/videos/dev_static/ablations --cache outputs/videos/dev_static/cache --baseline outputs/videos/dev_static/dav2_metric --reference-vda outputs/videos/dev_static/vda_metric --flow outputs/videos/dev_static/flow
+python scripts/part3_improvement/prepare_flow.py --cache outputs/videos/dev_static/cache --output-dir outputs/videos/dev_static/flow
+python scripts/part3_improvement/run_fusion_suite.py --cache outputs/videos/dev_static/cache --baseline outputs/videos/dev_static/dav2_metric --reference-vda outputs/videos/dev_static/vda_metric --flow outputs/videos/dev_static/flow --output-dir outputs/videos/dev_static/ablations
+python scripts/part3_improvement/verify_fusion_suite.py --suite outputs/videos/dev_static/ablations --cache outputs/videos/dev_static/cache --baseline outputs/videos/dev_static/dav2_metric --reference-vda outputs/videos/dev_static/vda_metric --flow outputs/videos/dev_static/flow
 python scripts/render_depth_video.py --cache outputs/videos/dev_static/cache --run outputs/videos/dev_static/ablations/E0 --run outputs/videos/dev_static/ablations/E4 --run outputs/videos/dev_static/vda_metric --output-dir outputs/videos/dev_static/comparison
 ```
 

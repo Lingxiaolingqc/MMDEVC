@@ -66,7 +66,7 @@ python scripts/evaluate_depth.py --dataset nyuv2 --sample nyuv2_0003 --predictio
 
 匹配容差为欧氏距离 2 px，分别报告 prediction→GT precision 与 GT→prediction recall，再计算 F1。汇总按边缘像素数合并，另保留逐图指标。GT→prediction 的距离在 10 px 截断；缺少预测边缘时每个 GT 边缘计 10 px，不缩小 GT 边缘分母。无 GT 边缘的图不参与未定义的 recall/F1 宏平均，并明确计数。
 
-这是本项目明确规定的边界质量指标，用于同一协议下比较方法，不声称完全复现其他论文的 edge benchmark。参数在开发检查时固定，正式测试不按结果调节。入口为 `scripts/evaluate_nyuv2_boundaries.py`。
+这是本项目明确规定的边界质量指标，用于同一协议下比较方法，不声称完全复现其他论文的 edge benchmark。参数在开发检查时固定，正式测试不按结果调节。入口为 `scripts/part2_models/evaluate_nyuv2_boundaries.py`。
 
 ## 视频解释边界
 

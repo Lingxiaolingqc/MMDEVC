@@ -1,18 +1,22 @@
 """Tune only on declared dev scenes, or run/verify the frozen 15-pair baseline."""
 
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 import argparse
 import csv
 from dataclasses import asdict
-from pathlib import Path
 import subprocess
-import sys
 from time import perf_counter
 
 import cv2
 import numpy as np
 import yaml
 
-from run_stereo_baseline import ROOT, checksum, read_yaml, repo_path, run, select_sample, write_csv, write_json
+from _common import ROOT, checksum, read_yaml, repo_path, select_sample, write_csv, write_json
+from part1_baseline.run_stereo_baseline import run
 from p3_depth.data.middlebury import EXPECTED_SCENES, load_sample
 from p3_depth.evaluation.stereo import evaluate_region
 from p3_depth.models.stereo_sgbm import StereoConfig, predict_stereo

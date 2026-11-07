@@ -31,12 +31,12 @@
 ~~~powershell
 $py = ".\.venv-cuda\Scripts\python.exe"
 & $py -m unittest discover -s tests -v
-& $py scripts/run_stereo_suite.py --phase verify --output-dir outputs/stereo_all_week1_20261021
-& $py scripts/audit_course_stereo.py --output-dir outputs/stereo_personal_recheck
-& $py scripts/evaluate_course_nyu.py --run outputs/nyuv2_test_20261028/unidepth --output-dir outputs/nyu_personal_recheck
+& $py scripts/part1_baseline/run_stereo_suite.py --phase verify --output-dir outputs/stereo_all_week1_20261021
+& $py scripts/part1_baseline/audit_course_stereo.py --output-dir outputs/stereo_personal_recheck
+& $py scripts/part2_models/evaluate_course_nyu.py --run outputs/nyuv2_test_20261028/unidepth --output-dir outputs/nyu_personal_recheck
 $v = "outputs/course_video_20261102"
 $c = "$v/course_rollercoaster_70"
-& $py scripts/verify_fusion_suite.py --suite "$c/frozen_suite" --cache "$c/cache" --baseline "$c/dav2_relative_364" --reference-vda "$c/vda_relative_364" --flow "$c/flow"
+& $py scripts/part3_improvement/verify_fusion_suite.py --suite "$c/frozen_suite" --cache "$c/cache" --baseline "$c/dav2_relative_364" --reference-vda "$c/vda_relative_364" --flow "$c/flow" --verification-output outputs/video_personal_recheck.json
 & $py scripts/package_depth_results.py --plan configs/course_export_plan.json --output outputs/submission_20261102/depth_results.zip --check-only
 ~~~
 
@@ -51,9 +51,9 @@ $c = "$v/course_rollercoaster_70"
 ~~~powershell
 & $py scripts/prepare_model_assets.py --model dav2_relative
 & $py scripts/prepare_model_assets.py --model vda_relative
-& $py scripts/run_stereo_suite.py --phase all --output-dir outputs/stereo_all_week1_20261021 --config configs/stereo_sgbm_selected.yaml
-& $py scripts/run_nyuv2.py --model unidepth --subset test --device cuda --precision fp16 --output-dir outputs/nyuv2_test_20261028/unidepth
-& $py scripts/evaluate_course_nyu.py --run outputs/nyuv2_test_20261028/unidepth --output-dir outputs/course_nyu_20261102/unidepth
+& $py scripts/part1_baseline/run_stereo_suite.py --phase all --output-dir outputs/stereo_all_week1_20261021 --config configs/stereo_sgbm_selected.yaml
+& $py scripts/part2_models/run_nyuv2.py --model unidepth --subset test --device cuda --precision fp16 --output-dir outputs/nyuv2_test_20261028/unidepth
+& $py scripts/part2_models/evaluate_course_nyu.py --run outputs/nyuv2_test_20261028/unidepth --output-dir outputs/course_nyu_20261102/unidepth
 ~~~
 
 UniDepth 权重见其独立环境说明。run_nyuv2 的内置历史七指标不是新版主成绩；新版以 evaluate_course_nyu 输出为准。无需训练或更换大模型。
@@ -79,14 +79,15 @@ $source = "https://github.com/DepthAnything/Video-Depth-Anything/blob/4f5ae23172
 ~~~powershell
 $d = "$v/dev_tokyo_100"
 foreach ($model in @("dav2_relative","vda_relative")) {
-    & $py scripts/run_video_models.py --model $model --cache "$d/cache" --input-size 364 --device cuda --precision fp16 --output-dir ($d+"/"+$model+"_364")
+    $entry = if ($model -eq "dav2_relative") { "scripts/part1_baseline/run_framewise.py" } else { "scripts/part2_models/run_video.py" }
+    & $py $entry --model $model --cache "$d/cache" --input-size 364 --device cuda --precision fp16 --output-dir ($d+"/"+$model+"_364")
     if ($LASTEXITCODE -ne 0) { throw "Model failed: $model" }
 }
-& $py scripts/prepare_flow.py --cache "$d/cache" --output-dir "$d/flow"
+& $py scripts/part3_improvement/prepare_flow.py --cache "$d/cache" --output-dir "$d/flow"
 foreach ($a in @("050","070","085")) {
-    & $py scripts/run_fusion_suite.py --cache "$d/cache" --baseline "$d/dav2_relative_364" --reference-vda "$d/vda_relative_364" --flow "$d/flow" --config "configs/fusion_relative$a.yaml" --output-dir "$d/alpha$a"
+    & $py scripts/part3_improvement/run_fusion_suite.py --cache "$d/cache" --baseline "$d/dav2_relative_364" --reference-vda "$d/vda_relative_364" --flow "$d/flow" --config "configs/fusion_relative$a.yaml" --output-dir "$d/alpha$a"
     if ($LASTEXITCODE -ne 0) { throw "Suite failed: $a" }
-    & $py scripts/verify_fusion_suite.py --suite "$d/alpha$a" --cache "$d/cache" --baseline "$d/dav2_relative_364" --reference-vda "$d/vda_relative_364" --flow "$d/flow"
+    & $py scripts/part3_improvement/verify_fusion_suite.py --suite "$d/alpha$a" --cache "$d/cache" --baseline "$d/dav2_relative_364" --reference-vda "$d/vda_relative_364" --flow "$d/flow"
     if ($LASTEXITCODE -ne 0) { throw "Verification failed: $a" }
 }
 ~~~
@@ -94,7 +95,7 @@ foreach ($a in @("050","070","085")) {
 开发中看固定帧与完整视频，比较轮廓、拖影、遮挡、当前帧偏离和指标。按 docs/fusion_selection_review.example.json 字段写 review，保存在 outputs/course_video_20261102/selection/review.json。可参考已保存的本次 review，但不要复制未检查的观察作为自己的验收。
 
 ~~~powershell
-& $py scripts/freeze_fusion_config.py --candidate "alpha050=$d/alpha050" --candidate "alpha070=$d/alpha070" --candidate "alpha085=$d/alpha085" --selected alpha070 --review "$v/selection/review.json" --output-dir "$v/selection/frozen"
+& $py scripts/part3_improvement/freeze_fusion_config.py --candidate "alpha050=$d/alpha050" --candidate "alpha070=$d/alpha070" --candidate "alpha085=$d/alpha085" --selected alpha070 --review "$v/selection/review.json" --output-dir "$v/selection/frozen"
 ~~~
 
 本次 0.70 是保守取舍：0.85 的指标更低，但更偏离当前帧，三组 E4 画面差别较小。不能手动只改 status=frozen，测试会核对 dev 凭据、参数和源哈希。
@@ -104,19 +105,20 @@ foreach ($a in @("050","070","085")) {
 ~~~powershell
 $c = "$v/course_rollercoaster_70"
 foreach ($model in @("dav2_relative","vda_relative")) {
-    & $py scripts/run_video_models.py --model $model --cache "$c/cache" --input-size 364 --device cuda --precision fp16 --output-dir ($c+"/"+$model+"_364")
+    $entry = if ($model -eq "dav2_relative") { "scripts/part1_baseline/run_framewise.py" } else { "scripts/part2_models/run_video.py" }
+    & $py $entry --model $model --cache "$c/cache" --input-size 364 --device cuda --precision fp16 --output-dir ($c+"/"+$model+"_364")
     if ($LASTEXITCODE -ne 0) { throw "Model failed: $model" }
 }
-& $py scripts/prepare_flow.py --cache "$c/cache" --output-dir "$c/flow"
-& $py scripts/run_fusion_suite.py --cache "$c/cache" --baseline "$c/dav2_relative_364" --reference-vda "$c/vda_relative_364" --flow "$c/flow" --config "$v/selection/frozen/fusion_frozen.yaml" --output-dir "$c/frozen_suite"
-& $py scripts/verify_fusion_suite.py --suite "$c/frozen_suite" --cache "$c/cache" --baseline "$c/dav2_relative_364" --reference-vda "$c/vda_relative_364" --flow "$c/flow"
+& $py scripts/part3_improvement/prepare_flow.py --cache "$c/cache" --output-dir "$c/flow"
+& $py scripts/part3_improvement/run_fusion_suite.py --cache "$c/cache" --baseline "$c/dav2_relative_364" --reference-vda "$c/vda_relative_364" --flow "$c/flow" --config "$v/selection/frozen/fusion_frozen.yaml" --output-dir "$c/frozen_suite"
+& $py scripts/part3_improvement/verify_fusion_suite.py --suite "$c/frozen_suite" --cache "$c/cache" --baseline "$c/dav2_relative_364" --reference-vda "$c/vda_relative_364" --flow "$c/flow"
 foreach ($clip in @("dev_tokyo_100","course_rollercoaster_70")) {
     $b = "$v/$clip"
     $s = if ($clip -eq "dev_tokyo_100") { "$b/alpha070" } else { "$b/frozen_suite" }
     & $py scripts/render_depth_video.py --cache "$b/cache" --run "$b/dav2_relative_364" --run "$s/E4" --run "$b/vda_relative_364" --output-dir "$b/render_primary"
     & $py scripts/render_depth_video.py --cache "$b/cache" --run "$s/E0" --run "$s/E1" --run "$s/E2" --run "$s/E3" --run "$s/E4" --output-dir "$b/render_ablations"
 }
-& $py scripts/render_blur_demo.py --cache "$c/cache" --baseline "$c/dav2_relative_364" --improved "$c/frozen_suite/E4" --output-dir "$c/application"
+& $py scripts/application/render_blur_demo.py --cache "$c/cache" --baseline "$c/dav2_relative_364" --improved "$c/frozen_suite/E4" --output-dir "$c/application"
 ~~~
 
 三个实际案例见 results/course_20261102/failure_cases.csv。完整视频仍需成员播放检查，图片不能独自证明流畅性或无拖影。测试结果不能用于再次选择参数。

@@ -1,4 +1,9 @@
 """Export full-test tables, provenance, and deterministically selected qualitative cases."""
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 import argparse
 import csv
 import json
@@ -9,7 +14,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
-from run_stereo_baseline import ROOT,repo_path,read_yaml,write_json,write_csv,checksum
+from _common import ROOT, repo_path, read_yaml, write_json, write_csv, checksum
 from p3_depth.data.nyuv2 import evaluation_mask
 from p3_depth.evaluation.depth import prepare_prediction,RelativeAlignmentError
 
@@ -107,7 +112,7 @@ def main():
     write_json(output/'provenance.json',{'runs':provenance,'case_selection':selections,'alignment_failure_ids':failures,
         'visualization':'full RGB/GT/prediction dimensions; metrics separately apply fixed evaluation crop; shared 0-10 m display',
         'summary_sha256':checksum(output/'summary.csv'),'figure_sha256':checksum(output/'comparison.png'),
-        'exporter_sha256':checksum(ROOT/'scripts/summarize_nyuv2.py')})
+        'exporter_sha256':checksum(ROOT/'scripts/part2_models/summarize_nyuv2.py')})
     print(f'PASS: {len(runs)} complete standard tests; selected cases {selections}; failures={failures}')
 
 

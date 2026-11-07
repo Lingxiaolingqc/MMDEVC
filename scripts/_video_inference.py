@@ -6,14 +6,14 @@ import subprocess
 from time import perf_counter
 import numpy as np
 
-from run_stereo_baseline import ROOT, repo_path, read_yaml, write_json, checksum
+from _common import ROOT, repo_path, read_yaml, write_json, checksum
 from p3_depth.models.runtime import ImageModel
 from p3_depth.models.video import VideoModel
 
 
-def main():
+def main(models, default):
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--model',choices=['dav2_relative','dav2_metric','vda_relative','vda_metric'],required=True)
+    p.add_argument('--model',choices=models,default=default)
     p.add_argument('--cache',required=True)
     p.add_argument('--output-dir',required=True)
     p.add_argument('--paths-config',default='configs/paths.local.yaml')
@@ -61,7 +61,7 @@ def main():
     info={'status':'complete','model':model.metadata,'cache_metadata':meta,'cache_path':str(cache),
         'code_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
         'working_tree_status':subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True).strip(),
-        'implementation_sha256':{name:checksum(ROOT/name) for name in ['scripts/run_video_models.py','src/p3_depth/models/video.py','src/p3_depth/models/runtime.py']},
+        'implementation_sha256':{name:checksum(ROOT/name) for name in ['scripts/_video_inference.py','scripts/_common.py','scripts/part1_baseline/run_framewise.py','scripts/part2_models/run_video.py','src/p3_depth/models/video.py','src/p3_depth/models/runtime.py']},
         'frames':len(depths),'prediction_type':'inverse_depth_like' if is_relative else 'metric_depth',
         'unit':'arbitrary' if is_relative else 'm','alignment':'none','gt_used':False,
         'depths_sha256':checksum(output/'depths.npy'),'valid_sha256':checksum(output/'valid.npy'),
@@ -72,7 +72,3 @@ def main():
         'peak_cuda_reserved_bytes':torch.cuda.max_memory_reserved() if args.device=='cuda' else None}
     write_json(output/'metadata.json',info)
     print(f'PASS {args.model}: {len(depths)} original-sized outputs; {elapsed:.3f}s; scope={meta["scope"]}',flush=True)
-
-
-if __name__=='__main__':
-    main()

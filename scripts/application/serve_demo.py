@@ -1,8 +1,13 @@
 """Serve the saved-depth Demo on loopback; no inference, upload, or dataset writes."""
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 import argparse
 import json
 import os
-from run_stereo_baseline import ROOT,repo_path,write_json,checksum
+from _common import ROOT, repo_path, write_json, checksum
 from p3_depth.demo import DemoData,create_server
 
 
@@ -20,7 +25,7 @@ def main():
         'cache_metadata_sha256':checksum(repo_path(a.cache)/'metadata.json'),
         'model_metadata_sha256':[m['metadata_sha256'] for m in data.methods],
         'scope':data.cache_meta['scope'],'read_only':True,
-        'implementation_sha256':{name:checksum(ROOT/name) for name in ['scripts/serve_demo.py','src/p3_depth/demo.py','demo/index.html','demo/app.js','demo/style.css']}}
+        'implementation_sha256':{name:checksum(ROOT/name) for name in ['scripts/application/serve_demo.py','src/p3_depth/demo.py','demo/index.html','demo/app.js','demo/style.css']}}
     if a.session_record:
         path=repo_path(a.session_record)
         if path.exists():

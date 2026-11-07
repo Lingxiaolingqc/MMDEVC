@@ -7,7 +7,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-from run_stereo_baseline import ROOT, checksum, read_yaml, repo_path, write_csv, write_json
+from _common import ROOT, checksum, read_yaml, repo_path, write_csv, write_json
 from p3_depth.data.nyuv2 import NYU_CROP_YX, NYUv2Labeled, read_standard_split
 
 

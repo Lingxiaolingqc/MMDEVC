@@ -28,7 +28,7 @@ Windows 可直接用浏览器或 `curl.exe -L --retry 5 -C - -o <目标文件> <
 ## 运行与复算
 
 ```sh
-python scripts/run_unidepth_sample.py --sample nyuv2_0003 --device cpu --resolution-level 0 --threads 8 --output-dir outputs/unidepth_week1
+python scripts/part2_models/run_unidepth_sample.py --sample nyuv2_0003 --device cpu --resolution-level 0 --threads 8 --output-dir outputs/unidepth_week1
 python scripts/evaluate_depth.py --dataset nyuv2 --sample nyuv2_0003 --prediction outputs/unidepth_week1/predictions/nyuv2_0003.npy --mask outputs/unidepth_week1/masks/nyuv2_0003.npy --prediction-type metric_depth --unit m --alignment none --output-dir outputs/unidepth_eval_again
 ```
 
