@@ -1,8 +1,11 @@
 # 按 Part 重跑：成员操作，助手逐步指导
 
-这份说明对应新的自动可视化和默认输出目录。**完整重跑尚未执行**。实际操作时每次只完成一个阶段，把终端结果和预览交给助手检查，再进入下一阶段；不要一次粘贴整页。每条命令报错后先停下，不删除结果或手改哈希。
+这份说明对应新的自动可视化和默认输出目录。**按课程 5.1 → 5.2 → 5.3 的顺序逐项执行和验收**。实际操作时每次只完成一个阶段，把终端结果和预览交给助手检查，再进入下一阶段；不要一次粘贴整页。每条命令报错后先停下，不删除结果或手改哈希。
 
 2026-11-07 已将旧 outputs 与当时受 Git 跟踪的复现材料归档至仓库外的 `../MMDEVC_archives/outputs_before_20261107.zip`，8,307 个文件逐项校验通过，旁边的 `.verification.json` 记录 ZIP 哈希。旧输出仍原地保留。新结果验收、报告更新和提交包检查完成后，再单独核对旧目录清单并清理。
+
+
+顺序固定为：StereoSGBM → 指定视频逐帧 DA V2 → UniDepth / NYUv2 → 指定视频 VDA 与 DA 对比 → Part 3 光流融合 → 应用 → 报告与提交。额外训练建议不进入当前验收流程。已完成的步骤保留结果，核对后直接复用，不因顺序调整重新推理。
 
 ## 0. 环境检查
 
@@ -59,7 +62,36 @@ outputs/
 
 默认使用已选定的 `configs/stereo_sgbm_selected.yaml`，不重新用 evaluation 场景调参。每个场景自动生成八面板 PNG；课程主表在 `stereo/course_evaluation/`。输出已存在时命令拒绝覆盖。
 
-## 2. Part 2：UniDepth / NYUv2
+## 2. Part 1：指定视频逐帧 DA V2
+
+课程 Part 1 的 Stereo 后面紧接 Monocular Frame Baseline。先准备指定视频，再逐帧运行 DA V2-Small relative；UniDepth 在下一步。
+
+新运行使用 [videos_current.csv](../manifests/videos_current.csv)，旧 videos.csv 保留以验证历史冻结记录。源文件和 split 不变，只有缓存路径改变。本轮是同一素材的复现，不是新的未见测试集。
+
+本机已有原视频。先建立共享缓存：
+
+```powershell
+$source = "https://github.com/DepthAnything/Video-Depth-Anything/blob/4f5ae23172ba60fd7bc11ef671cca678842c7072/assets/example_videos"
+& $py -X utf8 scripts/prepare_video.py --video data/videos/raw/course_rollercoaster_70.mp4 --clip-id course_rollercoaster_70 --scene-group davis_rollercoaster --split test --scene-type camera_motion --original-fps --source-kind course_example --source-url "$source/davis_rollercoaster.mp4" --expected-frames 70 --max-frames 100 --max-long-edge 640 --registered
+```
+
+预期为 70 个真实帧、原始 24 fps；不重复或插帧。官方完整片段不足任务书的 100 帧，继续采用用户已确认的全部 70 帧，并在报告说明。`--registered` 核对既有登记，不追加清单。
+
+缓存检查通过后运行：
+
+```powershell
+$clip = "course_rollercoaster_70"
+$cache = "outputs/shared/video_cache/$clip"
+& $py -X utf8 scripts/part1_baseline/run_framewise.py --model dav2_relative --cache $cache --input-size 364 --device cuda --precision fp16
+```
+
+打开 `outputs/part1_baseline/dav2_relative/test/course_rollercoaster_70/visualizations/comparison.mp4`，检查 RGB 与 DA 相对预测、结构、边缘和闪烁；同目录有 preview.png。原始数组和有效区域在模型目录的 depths.npy、valid.npy。现在不运行 VDA 或融合。
+
+这里的 test 是指定视频在项目清单中的角色。固定预训练基线可以先运行和展示；Part 3 改进的参数仍只在开发片段确定，冻结后才应用到指定片段。
+
+## 3. Part 2：UniDepth / NYUv2
+
+若此前已经运行成功，先让助手检查已有结果；不要再次执行同一输出目录的推理命令。
 
 先跑 3 张 train-side dev 图像，确认输入、输出和显存：
 
@@ -78,21 +110,33 @@ outputs/
 
 预期有 654 份预测、记录和 PNG；课程主成绩在 `outputs/part2_models/unidepth/test/course_evaluation/summary.json`。`run_nyuv2.py` 的历史七指标作为补充保留，报告使用 `course_evaluation` 的 AbsRel、RMSE、δ1。NYU 全部可视化在推理完成后自动生成，因此中途看不到全部 PNG 属于正常现象。
 
-## 3. 准备正式视频输入
+## 4. Part 2：指定视频 VDA 与基线对比
 
-新运行使用 [videos_current.csv](../manifests/videos_current.csv)，旧 `videos.csv` 保留以验证历史冻结记录。两个清单使用相同原视频、split 和源哈希，只有缓存位置不同。**这次是相同素材的复现，不是新的未见测试集。**
+在课程 Part 2 的单图 metric 评测之后运行 Video Depth Anything。复用 Part 1 的同一缓存及 DA 输出：
 
-本机已有 `data/videos/raw/dev_tokyo_100.mp4` 和 `course_rollercoaster_70.mp4`，不需要下载或拍摄新视频。准备两个缓存：
+```powershell
+$clip = "course_rollercoaster_70"
+$cache = "outputs/shared/video_cache/$clip"
+$da = "outputs/part1_baseline/dav2_relative/test/$clip"
+$vda = "outputs/part2_models/vda_relative/test/$clip"
+& $py -X utf8 scripts/part2_models/run_video.py --model vda_relative --cache $cache --input-size 364 --device cuda --precision fp16
+& $py -X utf8 scripts/render_depth_video.py --cache $cache --run $da --run $vda --output-dir "outputs/part2_models/video_comparison/$clip"
+```
+
+VDA 目录自动包含独立视频；最后一条生成 RGB / DA / VDA 三列比较，尚不包含 Part 3。两个模型同帧、同尺寸、FP16；各自整段固定色标，颜色不代表共享的米制尺度。实际分辨率和资源由元数据记录。
+
+先验收 frame-wise 与 video-based 的差异，再进入 Part 3；不把额外训练建议插入这里。
+
+## 5. Part 3：开发、消融和冻结
+
+Parts 1 和 2 已验收后，开始课程 Direction A。Tokyo 是既有方案的独立开发素材，用于冻结融合参数，不替代指定的 rollercoaster。此处补充运行开发素材上的两个固定模型，以供 Part 3 候选复用。
 
 ```powershell
 $source = "https://github.com/DepthAnything/Video-Depth-Anything/blob/4f5ae23172ba60fd7bc11ef671cca678842c7072/assets/example_videos"
 & $py -X utf8 scripts/prepare_video.py --video data/videos/raw/dev_tokyo_100.mp4 --clip-id dev_tokyo_100 --scene-group tokyo_walk --split dev --scene-type camera_motion --original-fps --source-kind public_example --source-url "$source/Tokyo-Walk_rgb.mp4" --expected-frames 100 --max-frames 100 --max-long-edge 640 --registered
-& $py -X utf8 scripts/prepare_video.py --video data/videos/raw/course_rollercoaster_70.mp4 --clip-id course_rollercoaster_70 --scene-group davis_rollercoaster --split test --scene-type camera_motion --original-fps --source-kind course_example --source-url "$source/davis_rollercoaster.mp4" --expected-frames 70 --max-frames 100 --max-long-edge 640 --registered
 ```
 
-`--registered` 核对现有登记，不再追加清单。预期 Tokyo 100 帧 / 15 fps；rollercoaster 全部 70 帧 / 24 fps；不重复帧伪造 100 帧。与课程“前 100 帧”的差异继续在报告说明。此阶段只解码 test 原视频，不进行选参。
-
-## 4. Part 1 / Part 2：开发视频的独立模型输出
+预期为前 100 帧、原始 15 fps。接着生成开发素材的模型预测：
 
 ```powershell
 $dev = "dev_tokyo_100"
@@ -107,8 +151,6 @@ $flow = "outputs/part3_improvement/flow/dev/$dev"
 两条命令各自生成 `depths.npy`、`valid.npy`、元数据、独立 MP4 和 PNG。先播放 `$da/visualizations/comparison.mp4`，再播放 `$vda/visualizations/comparison.mp4`。两个模型都输出相对深度，颜色不能解释为米；各片段色标固定，不逐帧重新拉伸。
 
 这里保持原实验 input-size=364、FP16，避免把结构整理和模型设置变化混在一起。
-
-## 5. Part 3：开发实验和复算
 
 ```powershell
 & $py -X utf8 scripts/part3_improvement/prepare_flow.py --cache $cache
@@ -142,7 +184,9 @@ $candidates = "outputs/part3_improvement/dev_candidates"
 
 预期生成 `outputs/part3_improvement/selection/fusion_frozen.yaml` 和对应证据。若选择改变，先同步打包计划中的 dev suite，再运行 test；不能只手改 frozen 状态。
 
-## 6. 冻结后运行 test 和应用
+## 6. Part 3：冻结后评估指定视频
+
+复用 Parts 1/2 已保存的指定视频 DA/VDA 输出，不再运行模型推理。
 
 ```powershell
 $clip = "course_rollercoaster_70"
@@ -151,17 +195,25 @@ $da = "outputs/part1_baseline/dav2_relative/test/$clip"
 $vda = "outputs/part2_models/vda_relative/test/$clip"
 $flow = "outputs/part3_improvement/flow/test/$clip"
 $suite = "outputs/part3_improvement/test/$clip"
-& $py -X utf8 scripts/part1_baseline/run_framewise.py --cache $cache --input-size 364 --device cuda --precision fp16
-& $py -X utf8 scripts/part2_models/run_video.py --cache $cache --input-size 364 --device cuda --precision fp16
 & $py -X utf8 scripts/part3_improvement/prepare_flow.py --cache $cache
 & $py -X utf8 scripts/part3_improvement/run_fusion_suite.py --cache $cache --baseline $da --reference-vda $vda --flow $flow
 & $py -X utf8 scripts/part3_improvement/verify_fusion_suite.py --suite $suite --cache $cache --baseline $da --reference-vda $vda --flow $flow
-& $py -X utf8 scripts/application/render_blur_demo.py --cache $cache --baseline $da --improved "$suite/E4"
 ```
 
-test 默认读取第 5 步生成的冻结配置，检查开发证据后运行。影片应有 70 帧；时序评测有 69 对。应用视频在 `outputs/application/course_rollercoaster_70/demo.mp4`。不要根据这一步的结果反过来修改候选选择。
+test 默认读取第 5 步生成的冻结配置，检查开发证据后运行。影片应有 70 帧；时序评测有 69 对。不要根据这一步的结果反过来修改候选选择。
 
-## 7. 报告、打包和最后清理
+## 7. 应用：背景虚化
+
+Part 3 验收后生成课程要求的简单应用：
+
+```powershell
+$clip = "course_rollercoaster_70"
+& $py -X utf8 scripts/application/render_blur_demo.py --cache "outputs/shared/video_cache/$clip" --baseline "outputs/part1_baseline/dav2_relative/test/$clip" --improved "outputs/part3_improvement/test/$clip/E4"
+```
+
+应用视频在 `outputs/application/course_rollercoaster_70/demo.mp4`，展示原 DA 与冻结后的 E4 在同参数背景虚化中的效果。
+
+## 8. 报告、打包和最后清理
 
 先由助手陪你查看新影片、指标以及三个困难案例，记录当前真实观察至 `outputs/submission/failure_cases.csv`。可沿用历史案例的片段位置，但观察内容需要对照新输出；新打包计划故意不自动引用旧案例结论。
 
