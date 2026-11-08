@@ -41,6 +41,14 @@ T 是固定 RGB/flow 公共区域上的预测变化，不是 GT 深度准确率�
 
 生成的三张总览包含所有场景。视觉结论需要实际检查后另写 review.json/analysis.md，注明总览、原有细节图与局部放大的真实检查范围。LR 对照只切换额外自定义检查，OpenCV 内部设置保持原样。
 
+## DA 逐帧基线分析
+
+~~~powershell
+& $py -X utf8 scripts/part1_baseline/analyze_framewise.py
+~~~
+
+默认分析指定过山车的 DA 输出，保存在该运行的 `analysis/`。从保存数组复算 69 帧对的 RGB/flow 诊断，核对原视频时间戳，生成整段取样、较大变化处与固定中段的连续图；实际视觉判断另记在 review.json/analysis.md。通用接触图与时间戳检查辅助函数位于 `scripts/_video_review.py`。视频没有深度 GT，T、全图分位数和零值比例只是诊断；ROI 是固定图像区域，不是物体跟踪。已有输出会拒绝覆盖。
+
 ## 应用阈值分析
 
 `scripts/application/analyze_blur.py` 读取已有新旧应用导出，比较相同深度的新旧阈值和相同阈值的 DA/E4。它核对输入与输出哈希、时间戳及固定范围，从保存预测复算四组效果，并与已有逐帧统计核对。只在新的 analysis 目录保存数值、图表及待视觉核验记录；完成实际图片检查后另外写 analysis.md 和 review.json。
