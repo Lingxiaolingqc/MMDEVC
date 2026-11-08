@@ -1,0 +1,15 @@
+#!/bin/sh
+branch=$(git symbolic-ref --quiet --short HEAD) || {
+    echo 'Independent project: commits require a named feature branch.' >&2
+    exit 1
+}
+case "$branch" in
+    feat/independent-*|fix/independent-*|docs/independent-*|experiment/independent-*) ;;
+    *) echo "Independent project: refusing commit on $branch." >&2; exit 1 ;;
+esac
+outside=$(git diff --cached --name-only -- . ':(exclude)independent/**') || exit 1
+if [ -n "$outside" ]; then
+    echo 'Independent project: staged changes outside independent/ are not allowed.' >&2
+    printf '%s\n' "$outside" >&2
+    exit 1
+fi
