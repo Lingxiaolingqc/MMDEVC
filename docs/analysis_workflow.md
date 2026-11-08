@@ -49,6 +49,16 @@ T 是固定 RGB/flow 公共区域上的预测变化，不是 GT 深度准确率�
 
 默认分析指定过山车的 DA 输出，保存在该运行的 `analysis/`。从保存数组复算 69 帧对的 RGB/flow 诊断，核对原视频时间戳，生成整段取样、较大变化处与固定中段的连续图；实际视觉判断另记在 review.json/analysis.md。通用接触图与时间戳检查辅助函数位于 `scripts/_video_review.py`。视频没有深度 GT，T、全图分位数和零值比例只是诊断；ROI 是固定图像区域，不是物体跟踪。已有输出会拒绝覆盖。
 
+## NYUv2 metric model 分析
+
+~~~powershell
+& $py -X utf8 scripts/part2_models/analyze_nyuv2.py
+~~~
+
+默认读取 `outputs/part2_models/unidepth/test/` 的 654 张保存预测，在该目录新建 `analysis/`。脚本核对官方 test 编号、manifest、RGB/GT/预测/掩码/记录哈希，以及课程和边缘评测的来源，再复算全部指标。导出逐图分布、GT 距离分组、尺度比值诊断、资源记录及 13 张诊断样本的匹配图。已有分析目录拒绝覆盖。
+
+主表保留课程规定的逐图等权平均，像素合并 RMSE 和边缘 F1 单独标注。预测/GT 比值仅描述偏差，不用于测试尺度拟合；GT 距离分组混合场景，不能当作只改变距离的控制实验。图像选择覆盖分数排序位置、尺度比值极端值和原边缘样本，是事后诊断选择。完成实际看图后另写 review.json/analysis.md，不能将程序生成图像等同于视觉检查。
+
 ## 应用阈值分析
 
 `scripts/application/analyze_blur.py` 读取已有新旧应用导出，比较相同深度的新旧阈值和相同阈值的 DA/E4。它核对输入与输出哈希、时间戳及固定范围，从保存预测复算四组效果，并与已有逐帧统计核对。只在新的 analysis 目录保存数值、图表及待视觉核验记录；完成实际图片检查后另外写 analysis.md 和 review.json。
