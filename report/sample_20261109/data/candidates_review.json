@@ -1,0 +1,53 @@
+{
+  "status": "complete_for_declared_quantitative_and_visual_scope",
+  "date": "2026-11-09",
+  "reviewer": "assistant",
+  "quantitative_source_sha256": "94a888db0c3c668578775d43be8d3240c673dea8e5d3969cf3560f9d5f9e9ba4",
+  "analysis_markdown_sha256": "3eabfd927eb3446f8084cf08f6df19a44e963f71736035bf8b0bce4d9d252b76",
+  "inspection_method": "Directly viewed all listed statistical plots and matched consecutive contact sheets. No claim of real-time full-video playback.",
+  "overview_frames": [],
+  "consecutive_windows": [
+    [
+      28,
+      29,
+      30,
+      31,
+      32,
+      33
+    ],
+    [
+      60,
+      61,
+      62,
+      63,
+      64,
+      65
+    ]
+  ],
+  "roi_xyxy": [
+    200,
+    60,
+    390,
+    350
+  ],
+  "figures_actually_inspected": [
+    "figures/roi_28_33.png",
+    "figures/roi_60_65.png",
+    "figures/tradeoff.png"
+  ],
+  "observations": [
+    "Alpha 0.50/0.70/0.85 produce very similar inspected pedestrian outlines at f28-33 and f60-65.",
+    "Alpha 0.85 has lowest T and largest departure; no clear additional visual harm established in inspected windows.",
+    "Retained 0.70 is an existing conservative choice, not demonstrated global optimum; selection files unchanged."
+  ],
+  "prior_observations": "Preserved as preliminary; current conclusions independently checked against current images and verified arrays.",
+  "limitations": "No video depth GT or labeled response latency. T/departure/weights are diagnostics. Post-hoc review, not a new blind test. Frozen main settings preserved.",
+  "artifacts_sha256": {
+    "analysis.md": "3eabfd927eb3446f8084cf08f6df19a44e963f71736035bf8b0bce4d9d252b76",
+    "comparison.csv": "7f11aaac94a02b069e569b52f6cf27f8cd12a5b0907bbca41ca1da212f732c95",
+    "figures/roi_28_33.png": "5336302b7686d542ea8f7e86a3df86a49ccc7ea6dea931b775f4a7bf81eb90b2",
+    "figures/roi_60_65.png": "92c3378883e42301d2cdb5b513c5f032a27af7e6d0b23adfcf31536a4aad3e5d",
+    "figures/tradeoff.png": "a243682fe84615754bafea476214dc0ad887249b69dc5f97598424611f0f697a",
+    "quantitative_review.json": "94a888db0c3c668578775d43be8d3240c673dea8e5d3969cf3560f9d5f9e9ba4"
+  }
+}

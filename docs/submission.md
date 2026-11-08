@@ -1,39 +1,36 @@
 # 提交、打包与交叉验收
 
-当前以 2026-11-02 收到的新版说明为准。必做视频为官方 rollercoaster，已经按用户确认采用完整 70 帧；不要求补拍自录视频。arXiv 是可选项。
+截至 2026-11-09，本轮实验、逐项分析和 sample report 已整理完成，待两位成员验收。采用 Spring 2027 新版说明，官方 rollercoaster 的完整 70 帧按用户决定使用，并披露与任务文字 100 帧的差异。不要求补拍自录视频，arXiv 为可选项。
 
-2026-11-07 后新运行改用 [按 Part 重跑指南](rerun_by_part.md)，输出在 outputs/submission/，默认打包计划为 configs/course_export_plan_current.json。完整新运行尚待成员执行；下文带 20261102 的路径指历史已验证交付物。重跑后需更新报告、真实案例和来源记录，再生成新提交包，不能直接把旧 PDF 改名。
+## 当前交付
 
-## 交付物
+1. CVPR sample report：`report/sample_20261109/` 是源码，`outputs/submission_20261109/MMDEVC_Project3_Sample_Report.pdf` 是本机 PDF。8 页正文、1 页参考文献、14 条引用，包括指定阅读、方法、主结果、控制实验、应用和真实困难案例。
+2. 视频包：`outputs/submission_20261109/depth_results.zip`，80 个载荷文件，另有包内说明和 manifest。包含两个片段的主比较、E0–E5 对照和新阈值背景虚化；不包含代码、数据集、权重或个人验收笔记。
+3. 分析：各实验 `analysis/` 下的 `analysis.md`、最终 `review.json`、表和图；入口为 `outputs/project_analysis_20261109/index.md`。报告 data 随 Git 保存紧凑证据。
+4. 本人验收：`outputs/personal_acceptance/project3_sample_report_20261109.md`，仅本机，不 commit/push。
 
-1. 报告：CVPR camera-ready，正文 6–8 页，参考文献另计；两位作者、所有指定阅读、摘要末 GitHub 链接、实际结果/消融/困难案例。源码位于 report/paper/，本地 PDF 位于 outputs/submission_20261102/。
-2. GitHub：完整项目代码、环境与复现说明、紧凑结果证据。当前工作分支 feat/depth-video-pipeline，最终合并 main 由成员完成。
-3. 视频与应用：outputs/submission_20261102/depth_results.zip。包含 dev/test 比较、E0–E5、背景虚化、时间戳、冻结证据和三个困难案例，不包含原始代码或数据集。
-4. 本人验收：outputs/personal_acceptance/ 下的中文指南，仅本机保留，不进 Git，也不进 ZIP。
+历史 `outputs/submission_20261102/` 保留。2026-11-07 后的 [按 Part 重跑指南](rerun_by_part.md) 继续作为复现流程；本轮实际交付有独立日期目录，避免旧新结果混用。
 
-## 打包与验证
+## 打包和校验
 
-在仓库根目录、项目 Python 环境中执行。已有目标 ZIP 时不要覆盖；使用新的 outputs 子目录。
+新计划为 `configs/course_export_plan_sample_20261109.json`。在仓库根目录执行：
 
 ~~~powershell
-python scripts/package_depth_results.py --plan configs/course_export_plan.json --output outputs/submission_20261102/depth_results.zip --check-only
-python scripts/package_depth_results.py --plan configs/course_export_plan.json --output outputs/submission_20261102/depth_results.zip
+python scripts/package_depth_results.py --plan configs/course_export_plan_sample_20261109.json --output outputs/submission_20261109/depth_results.zip --check-only
 ~~~
 
-当前正式 scope 为 course_project_20261031。打包前检查：
+这是只读预检。若需要重新创建，改用尚不存在的输出目录：
 
-- 必须覆盖全部已登记的开发和测试片段，场景/源哈希不得交叉。
-- 固定官方 test 的完整帧数和源 SHA256 必须匹配帧数差异记录。
-- 每组 E0–E5 都已独立复算，配置等于开发选定参数；test 绑定冻结凭据。
-- 原始 DA/E0–E4 同色标，VDA 单独整段固定色标；不混入米制视频。
-- 背景虚化为冻结 test 输出；应用值与原始预测复算通过、视频 PTS 一致。
-- 三个案例必须指向真实登记片段、合法时间区间和具体观察。
-- ZIP 创建后逐项回读核查 SHA256、CRC 和文件数量。
+~~~powershell
+python scripts/package_depth_results.py --plan configs/course_export_plan_sample_20261109.json --output outputs/submission_recheck/depth_results.zip
+~~~
 
-旧 self_recorded_project / pipeline_check_not_final_evaluation 模式仍用于历史记录和兼容性测试，不用于本次新版包。旧示例包不能改名冒充当前提交包。
+预检要求登记片段与源哈希一致、全部主结果复算通过、既有冻结配置匹配、DA/E0–E4 共用固定色标、VDA 使用独立的全段固定色标、应用从原始数组复算通过且时间戳一致、困难案例指向合法区间。创建后逐项回读 CRC 和 SHA256。
 
-## 成员最后确认
+这些工程检查不证明测试独立性或画质提升：补充实验和应用阈值是事后分析，报告已有说明。新包采用相同冻结 E4 深度与新的应用阈值，不能把阈值改善归于 E4。
 
-A 复核单位、GT 区域、新版 NYUv2 数值和融合公式；B 复核两个视频模型、固定范围、三个案例、效率边界和应用。双方各执行一次复算命令，并检查 PDF 与 ZIP 能在另一台电脑打开。助手执行不等于成员已验收。
+## 成员最终确认
 
-按课程当前渠道提交 PDF、公开仓库链接和 ZIP。没有替成员合并 main、上传 Canvas 或发布 arXiv，也没有可填写的 arXiv ID。不要把个人验收笔记或模型权重加入提交包。
+A 复核单位、GT 区域、NYU 协议与结果；B 复核 DA/VDA、视频对照、效率和应用。双方阅读贡献与助手协助表述，检查 PDF 和 ZIP 可在另一台电脑打开，并按本地指南完成必要复算。
+
+工作分支为 `feat/depth-video-pipeline`。最终合并 main、按课程渠道提交 PDF/公开仓库链接/ZIP 由成员决定。助手没有上传 Canvas 或发布 arXiv。个人验收文件不加入任何提交包。

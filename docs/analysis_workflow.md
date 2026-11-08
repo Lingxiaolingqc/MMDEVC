@@ -11,7 +11,7 @@
 - summary.csv、per_pair.csv 等：可复用统计。
 - figures/：报告统计图、全景和连续局部证据。
 
-已有 review.json 等记录保持原位置。outputs 被 Git 忽略；完整分析的本地总导航位于 outputs/project_analysis_20261109/index.md。最终报告将择取这些证据，单独提供 CVPR LaTeX 源码和 PDF；个人验收指南只保存在本机。
+已有 review.json 等记录保持原位置。outputs 被 Git 忽略；完整分析的本地总导航位于 outputs/project_analysis_20261109/index.md。2026-11-09 的完整 sample report 已选取这些证据，源码见 [report/sample_20261109](../report/sample_20261109/README.md)，本机 PDF 位于 outputs/submission_20261109/。个人验收指南只保存在本机 outputs/personal_acceptance/project3_sample_report_20261109.md。
 
 ## 置信度去除结果分析
 
