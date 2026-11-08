@@ -24,3 +24,8 @@ Ruling: Maintain this tracked ledger and task briefs with native Python/PowerShe
 
 Task 1 evidence: 5 video tests RED -> GREEN; official source independently decodes 70 frames at 960x540, 24 FPS, SHA-256 7268cbecd9806a1e90a416de50dc02e50b4ae01428d5971837cf679dd0c87cb8. First three previews saved. CUDA verification awaits wheel download.
 Task 2 evidence: 11 cache/model-contract tests observed failing before implementation; implementation now checked by full suite. Official source revisions recorded in manifests/sources.json.
+
+Task 3 code verified: exact course metrics, HDF5 axes, split indices, PFM endianness, stereo conversion, and 15-pair guard tested. Real stereo run: mean pair MAE 1.894695421 px, mean coverage 0.756890603. PFM display-scale regression observed RED then GREEN; the raw pixel samples are preserved. NYU neural evaluation awaits data/checkpoints.
+Ruling: Official Middlebury ZIP uses trainingQ/ rather than the PDF shorthand trainQ/. Use its 15 supplied trainingQ pairs. Cost if wrong: pairing/count/hash guards prevent a silent substitution.
+Task 4 code verified: 8 identity/translation/bilinear/border/flow-direction checks RED -> GREEN. Full suite now 45 tests. Visual diagnostics pending baseline inference.
+Task 5 code verified: 8 numerical/scene-cut/causality/flat-map/synthetic checks RED -> GREEN; real-video tuning is pending.
