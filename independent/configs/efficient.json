@@ -1,0 +1,30 @@
+{
+  "flow": {
+    "backend": "farneback",
+    "max_res": 320
+  },
+  "consistency": {
+    "alpha": 0.01,
+    "beta": 0.5
+  },
+  "scene_cut_rgb_difference": 0.45,
+  "photo_sigma": 0.1,
+  "relative_affine_alignment": false,
+  "method": "adaptive",
+  "history_cap": 0.75,
+  "depth_sigma": 0.5,
+  "selection": {
+    "clip": "Tokyo-Walk first 100 frames",
+    "source_sha256": "097f16c33dd8c8d1d2a24d9ea31a90b76bd0ee324b958a47385183e3547a63a8",
+    "criterion": {
+      "minimum_edge_retention": 0.9,
+      "maximum_step_settling_frames": 2,
+      "maximum_synthetic_mse_ratio": 1.05,
+      "objective": "lowest development temporal proxy among eligible non-baselines"
+    },
+    "method_name": "adaptive_w0.75_b0.5_d0.5",
+    "status": "frozen on development before secondary engineering evaluation"
+  },
+  "engineering_selection": "smallest flow resolution within 5% of original development temporal proxy and at least 90% edge-strength retention",
+  "stage": "secondary engineering study after initial held-out evaluation; selection uses development data only"
+}
