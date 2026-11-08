@@ -29,6 +29,18 @@ $py = ".\.venv-cuda\Scripts\python.exe"
 
 T 是固定 RGB/flow 公共区域上的预测变化，不是 GT 深度准确率。偏离 DA 也不是误差，因为 DA 不是 GT。逐帧对箱型图用于描述分布，主表是按参考像素加权的汇总；相关帧对不能视作独立实验样本。方法实际融合时间和原推理时间属于加和估计，不能充当同轮端到端 benchmark。
 
+## Stereo 基线、LR 与深度转换
+
+~~~powershell
+& $py -X utf8 scripts/part1_baseline/analyze_stereo.py
+~~~
+
+默认读取当前 15 场景 Stereo 套件和已有 LR 对照，在 `outputs/part1_baseline/stereo/all/analysis/` 新建分析。已有目录会拒绝覆盖，可用 `--output-dir` 指定新目录。该脚本不运行匹配器；它检查输入与保存结果哈希、int16/16 视差、LR 掩码、GT 区域、米制转换，并重算逐场景指标和拒绝统计。
+
+误差箱型图用有效像素的精确分位数，须为 P5–P95，尾部数字保存在 CSV，同时显示 coverage。GT 距离分组分别汇总全部 15 场景和 13 个 evaluation 场景；空距离组不填零。6 m 以上仅有 dev 场景 Pipes，因此不能把总体距离趋势当作只改变距离的因果实验。Pipes 额外生成 0–9 m 显示范围，保留原来的 0–4 m 图。
+
+生成的三张总览包含所有场景。视觉结论需要实际检查后另写 review.json/analysis.md，注明总览、原有细节图与局部放大的真实检查范围。LR 对照只切换额外自定义检查，OpenCV 内部设置保持原样。
+
 ## 应用阈值分析
 
 `scripts/application/analyze_blur.py` 读取已有新旧应用导出，比较相同深度的新旧阈值和相同阈值的 DA/E4。它核对输入与输出哈希、时间戳及固定范围，从保存预测复算四组效果，并与已有逐帧统计核对。只在新的 analysis 目录保存数值、图表及待视觉核验记录；完成实际图片检查后另外写 analysis.md 和 review.json。
