@@ -213,6 +213,8 @@ $clip = "course_rollercoaster_70"
 
 应用视频在 `outputs/application/course_rollercoaster_70/demo.mp4`，展示原 DA 与冻结后的 E4 在同参数背景虚化中的效果。
 
+若需要减少近中景结构被误虚化，按 [应用参数对照](application_settings.md) 在独立输出目录比较原参数与较宽松阈值。此项是应用层探索，保持原预测与冻结的 E4 不变；先保留原演示，验收后再决定提交版本。
+
 ## 8. 报告、打包和最后清理
 
 先由助手陪你查看新影片、指标以及三个困难案例，记录当前真实观察至 `outputs/submission/failure_cases.csv`。可沿用历史案例的片段位置，但观察内容需要对照新输出；新打包计划故意不自动引用旧案例结论。

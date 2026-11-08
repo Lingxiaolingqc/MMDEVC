@@ -75,9 +75,14 @@ def main():
     stack(rows,'nyu_course.png')
     app=repo_path(next(c['demo'] for c in plan['clips'] if c['clip_id']=='course_rollercoaster_70'))/'metadata.json'
     sources[app.relative_to(ROOT).as_posix()]=checksum(app)
+    app_parameters=json.loads(app.read_text(encoding='utf-8'))['parameters']
     rgb,depths,limits,_=runs['course_rollercoaster_70'];t=35
-    raw_blur,_=background_blur(rgb[t],depths['E0'][t],np.isfinite(depths['E0'][t]),limits)
-    fused_blur,_=background_blur(rgb[t],depths['E4'][t],np.isfinite(depths['E4'][t]),limits)
+    if app_parameters['limits']!=limits:
+        raise ValueError('Application figure must use the selected application scale')
+    raw_blur,_=background_blur(rgb[t],depths['E0'][t],np.isfinite(depths['E0'][t]),limits,
+        sigma=app_parameters['sigma_px'],transition=app_parameters['transition_normalized'])
+    fused_blur,_=background_blur(rgb[t],depths['E4'][t],np.isfinite(depths['E4'][t]),limits,
+        sigma=app_parameters['sigma_px'],transition=app_parameters['transition_normalized'])
     panel([rgb[t],colorize(depths['E4'][t],np.isfinite(depths['E4'][t]),*limits),raw_blur,fused_blur],
           ['RGB | 1.458 s','E4 relative depth','Background blur: DA','Background blur: E4']).save(output/'application.png')
     write_json(output/'provenance.json',{'sources_sha256':sources,'nyu_selection':'lower median and maximum revised-course per-image RMSE',
