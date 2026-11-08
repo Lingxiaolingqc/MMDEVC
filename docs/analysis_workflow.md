@@ -59,6 +59,25 @@ T 是固定 RGB/flow 公共区域上的预测变化，不是 GT 深度准确率�
 
 主表保留课程规定的逐图等权平均，像素合并 RMSE 和边缘 F1 单独标注。预测/GT 比值仅描述偏差，不用于测试尺度拟合；GT 距离分组混合场景，不能当作只改变距离的控制实验。图像选择覆盖分数排序位置、尺度比值极端值和原边缘样本，是事后诊断选择。完成实际看图后另写 review.json/analysis.md，不能将程序生成图像等同于视觉检查。
 
+## DA / VDA 同帧比较
+
+~~~powershell
+& $py -X utf8 scripts/part2_models/analyze_video_comparison.py
+~~~
+
+默认读取指定过山车的当前 DA/VDA 和光流，核对来源与原导出视频的时间戳，复算两种模型全部帧对指标，导出资源表、整段取样、运动局部和官方窗口插值区域的连续图。结果新建于 VDA 运行的 analysis/；存在时拒绝覆盖，可传 --output-dir。两种模型使用各自整段固定范围，T 跨模型比较须说明这一差异，不能把任意相对数值解释成米。
+
+## 融合主实验、历史来源与开发参数
+
+~~~powershell
+& $py -X utf8 scripts/part3_improvement/analyze_fusion_controls.py --clip dev_tokyo_100
+& $py -X utf8 scripts/part3_improvement/analyze_fusion_controls.py --clip course_rollercoaster_70
+~~~
+
+脚本核对原套件、history 对照与冻结选择的来源哈希，复算 E0–E4、E1–E4 pairwise/recursive 的全部诊断。Tokyo 另核对三组候选只改变 alpha。分别在主套件、history 和 selection 下新建 analysis/，已有目录拒绝覆盖；重做可用 --output-root 指定新根目录。来源验证和复算通过不代表视觉验收，实际检查后另写 analysis.md/review.json。
+
+Pairwise 使用前一帧原始预测，recursive 使用前一帧融合结果；两者都使用历史。E4 的置信度公式固定，但数值权重会随历史变化。开发参数比较只描述原选择，不重新选参。输出中的 DA_positive/DA_zero 权重分组是预测定义的诊断，不是语义前景/背景标注。
+
 ## 应用阈值分析
 
 `scripts/application/analyze_blur.py` 读取已有新旧应用导出，比较相同深度的新旧阈值和相同阈值的 DA/E4。它核对输入与输出哈希、时间戳及固定范围，从保存预测复算四组效果，并与已有逐帧统计核对。只在新的 analysis 目录保存数值、图表及待视觉核验记录；完成实际图片检查后另外写 analysis.md 和 review.json。
