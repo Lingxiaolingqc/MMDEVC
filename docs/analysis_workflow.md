@@ -29,6 +29,16 @@ $py = ".\.venv-cuda\Scripts\python.exe"
 
 T 是固定 RGB/flow 公共区域上的预测变化，不是 GT 深度准确率。偏离 DA 也不是误差，因为 DA 不是 GT。逐帧对箱型图用于描述分布，主表是按参考像素加权的汇总；相关帧对不能视作独立实验样本。方法实际融合时间和原推理时间属于加和估计，不能充当同轮端到端 benchmark。
 
+## 应用阈值分析
+
+`scripts/application/analyze_blur.py` 读取已有新旧应用导出，比较相同深度的新旧阈值和相同阈值的 DA/E4。它核对输入与输出哈希、时间戳及固定范围，从保存预测复算四组效果，并与已有逐帧统计核对。只在新的 analysis 目录保存数值、图表及待视觉核验记录；完成实际图片检查后另外写 analysis.md 和 review.json。
+
+~~~powershell
+& $py -X utf8 scripts/application/analyze_blur.py --run outputs/application_exploratory/course_rollercoaster_70/transition010_030 --cache outputs/shared/video_cache/course_rollercoaster_70 --baseline outputs/part1_baseline/dav2_relative/test/course_rollercoaster_70 --improved outputs/part3_improvement/test/course_rollercoaster_70/E4
+~~~
+
+已有 analysis 目录会触发拒绝覆盖；重做分析时传入新的 `--output-dir`。完全清晰/模糊比例与 RGB 输出差只能描述效果变化，不能当作主体保留准确率或画质评分。检查方式和帧号必须记录；静帧接触图不等于完整实时播放。
+
 ## 报告使用规则
 
 每条主要结论对应当前文件、明确设置、统计和具体图片/帧。既有用户初步观察单列，所有步骤均重新独立核对，包括原本已有简单分析的部分。显示无改善或差别细微的实验也保留。
