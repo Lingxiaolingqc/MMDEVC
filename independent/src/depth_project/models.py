@@ -77,10 +77,12 @@ def load_image_adapter(name: str, root: Path, input_size: int = 518, precision: 
     return adapter
 
 
-def infer_video_official(frames: np.ndarray, fps: float, root: Path, input_size: int = 518, precision: str = "fp16") -> np.ndarray:
+def infer_video_official(frames: np.ndarray, fps: float, root: Path, input_size: int = 518, precision: str = "fp16", stats: dict | None = None) -> np.ndarray:
     """Preserve the official offline overlap/keyframe/scale-alignment procedure."""
     import torch
+    import time
 
+    loading_start=time.perf_counter()
     for rgb in frames:
         validate_rgb(rgb)
     _source(root, "Video-Depth-Anything")
@@ -91,7 +93,15 @@ def infer_video_official(frames: np.ndarray, fps: float, root: Path, input_size:
     weights = Path(root) / "checkpoints/video_depth_anything_vits.pth"
     model.load_state_dict(torch.load(weights, map_location="cpu", weights_only=True), strict=True)
     model = model.to(device).eval()
+    if device=='cuda':
+        torch.cuda.synchronize()
+        torch.cuda.reset_peak_memory_stats()
+    inference_start=time.perf_counter()
     output, returned_fps = model.infer_video_depth(frames, fps, input_size=input_size, device=device, fp32=precision == "fp32")
+    if device=='cuda':
+        torch.cuda.synchronize()
+    if stats is not None:
+        stats.update(load_s=inference_start-loading_start,inference_s=time.perf_counter()-inference_start,peak_allocated_mb=torch.cuda.max_memory_allocated()/1024**2 if device=='cuda' else None,peak_reserved_mb=torch.cuda.max_memory_reserved()/1024**2 if device=='cuda' else None,device=device)
     if output.shape != frames.shape[:3] or returned_fps != fps or not np.isfinite(output).all():
         raise ValueError("Official video prediction shape/FPS/finite contract failed")
     return output.astype(np.float32)

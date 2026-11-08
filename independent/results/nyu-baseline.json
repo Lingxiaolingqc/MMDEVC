@@ -1,0 +1,49 @@
+{
+  "metrics": {
+    "abs_rel": 0.11454575963356031,
+    "rmse": 0.3988876970877689,
+    "delta1": 0.8922178329918349,
+    "image_count": 654
+  },
+  "protocol": {
+    "model": "lpiccinelli/unidepth-v2-vits14",
+    "input": "RGB-only official infer(rgb)",
+    "output_hw": [
+      480,
+      640
+    ],
+    "crop_yx": [
+      45,
+      471,
+      41,
+      601
+    ],
+    "valid_gt_min_exclusive_m": 0.001,
+    "valid_gt_max_exclusive_m": 10.0,
+    "prediction_clip_inclusive_m": [
+      0.001,
+      10.0
+    ],
+    "resize": "bilinear",
+    "aggregation": "equal arithmetic mean of per-image metrics",
+    "alignment": "none",
+    "expected_test_images": 654,
+    "expected_development_images": 795
+  },
+  "checkpoint_sha256": "93705cb3295dd7476b44911b8a55f5215bf74e8d5eccd27cecdb1b338270a648",
+  "dataset_sha256": "2d724b0c0ab358aa1ce5df855e5bd14a2279ab7202efe22f32a30d612dcb86aa",
+  "split_sha256": "6e081404491a8bfba2f066beaa9713ef6046f9007aa5f799f2a350506a580cee",
+  "timing": {
+    "warmup_calls": 2,
+    "mean_image_s": 0.05834750733940844,
+    "median_image_s": 0.05836959999578539,
+    "peak_allocated_mb": 485.8369140625,
+    "peak_reserved_mb": 604.0,
+    "scope": "official infer(rgb), GPU synchronized; excludes file I/O/metrics/prediction compression"
+  },
+  "hardware": "NVIDIA GeForce RTX 4070 Laptop GPU",
+  "torch_version": "2.8.0+cu128",
+  "precision": "official-fp16-autocast",
+  "preprocessing": "official-infer-rgb-only-default-resolution",
+  "trained_or_fitted": "none"
+}

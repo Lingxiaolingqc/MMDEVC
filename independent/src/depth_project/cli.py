@@ -17,7 +17,25 @@ def main(argv=None):
     inspect.add_argument("--required-frames", type=int, default=100)
     inspect.add_argument("--preview-frames", type=int, default=3)
     inspect.add_argument("--output", type=Path, default=Path("runs/video-inspection"))
+    stereo=commands.add_parser('stereo')
+    stereo.add_argument('--data-root',type=Path,default=Path('data/middlebury/MiddEval3/trainingQ'))
+    stereo.add_argument('--output',type=Path,default=Path('runs/stereo'))
+    baseline=commands.add_parser('baseline')
+    baseline.add_argument('--input',type=Path,required=True)
+    baseline.add_argument('--output',type=Path,required=True)
+    baseline.add_argument('--model',choices=['dav2','vda'],required=True)
+    baseline.add_argument('--input-size',type=int,default=518)
+    baseline.add_argument('--max-res',type=int,default=640)
+    baseline.add_argument('--limit',type=int,default=100)
+    baseline.add_argument('--precision',choices=['fp16','fp32'],default='fp16')
+    nyu=commands.add_parser('nyu')
+    nyu.add_argument('--output',type=Path,default=Path('runs/nyu'))
+    sweep=commands.add_parser('sweep')
+    sweep.add_argument('--input',type=Path,required=True)
+    sweep.add_argument('--baseline',type=Path,required=True)
+    sweep.add_argument('--output',type=Path,required=True)
     args = parser.parse_args(argv)
+    root=Path(__file__).resolve().parents[2]
     if args.command == "inspect-video":
         info = inspect_video(args.input, args.required_frames)
         args.output.mkdir(parents=True, exist_ok=True)
@@ -28,6 +46,19 @@ def main(argv=None):
                 raise OSError(f"Could not write {target}")
         print(json.dumps(asdict(info), indent=2))
         return 0 if info.compliant else 2
+    if args.command=='stereo':
+        from .experiments import run_stereo
+        run_stereo(args.data_root,args.output)
+    elif args.command=='baseline':
+        from .experiments import run_video_model
+        run_video_model(args.input,args.output,args.model,root,limit=args.limit,max_res=args.max_res,input_size=args.input_size,precision=args.precision)
+    elif args.command=='nyu':
+        from .experiments import run_nyu
+        run_nyu(root,args.output)
+    elif args.command=='sweep':
+        from .evaluation import run_development_sweep
+        result=run_development_sweep(args.input,args.baseline,args.output)
+        print(json.dumps(result['selected'],indent=2))
     return 0
 
 

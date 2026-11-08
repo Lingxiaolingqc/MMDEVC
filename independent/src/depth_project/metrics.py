@@ -47,3 +47,26 @@ def stereo_metrics(pred: np.ndarray, gt: np.ndarray) -> dict:
     if not count:
         raise ValueError("Stereo image has no finite positive ground truth")
     return {'mae_px':float(np.mean(np.abs(pred[supported]-gt[supported]))) if predicted else None,'coverage':predicted/count,'gt_valid_count':count,'prediction_valid_count':predicted}
+
+
+def evaluate_video(predictions,evaluation_flow,evaluation_masks,reference_scale,frame_ids=None):
+    from .warp import warp_previous
+
+    values=np.asarray(predictions,dtype=np.float32)
+    if values.ndim!=3 or len(values)<2 or len(evaluation_flow)!=len(values)-1 or len(evaluation_masks)!=len(values)-1:
+        raise ValueError("Video frame/pair counts must agree")
+    if frame_ids is not None and (len(frame_ids)!=len(values) or any(b!=a+1 for a,b in zip(frame_ids,frame_ids[1:]))):
+        raise ValueError("Evaluation frame IDs must be consecutive and match predictions")
+    if not np.isfinite(values).all():
+        raise ValueError("Video predictions must be finite; candidate pixels cannot be silently dropped")
+    if not np.isfinite(reference_scale) or reference_scale<=0:
+        raise ValueError("Reference scale must be finite and positive")
+    error=0.0; support=0
+    for index,(backward,mask) in enumerate(zip(evaluation_flow,evaluation_masks)):
+        if np.asarray(mask).shape!=values.shape[1:]:
+            raise ValueError("Evaluation mask shape differs from predictions")
+        aligned,inbounds=warp_previous(values[index],backward)
+        valid=np.asarray(mask,dtype=bool)&inbounds
+        support+=int(valid.sum())
+        error+=float(np.abs(values[index+1][valid]-aligned[valid]).sum(dtype=np.float64))
+    return {'aligned_mae_normalized':error/support/reference_scale if support else None,'support_pixels':support,'support_fraction':support/((len(values)-1)*values.shape[1]*values.shape[2]),'pair_count':len(values)-1,'reference_scale':float(reference_scale),'median_drift_normalized':float(np.mean(np.abs(np.diff(np.median(values,axis=(1,2)))))/reference_scale),'interpretation':'temporal proxy only; true 3D depth changes may be penalized'}
