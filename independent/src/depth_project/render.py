@@ -6,6 +6,16 @@ import cv2
 import numpy as np
 
 
+HEADER_HEIGHT=28
+
+
+def comparison_canvas_hw(output_hw,method_count):
+    height,width=output_hw
+    columns=min(2,method_count);rows=math.ceil(method_count/columns)
+    canvas_h=rows*(height+HEADER_HEIGHT);canvas_w=columns*width
+    return canvas_h+canvas_h%2,canvas_w+canvas_w%2
+
+
 def compute_display_range(raw_sequence):
     values=np.asarray(raw_sequence)
     if not values.size or not np.isfinite(values).all():
@@ -35,9 +45,8 @@ def render_comparison(frame_ids,methods,ranges,fps,output):
     shape=next(iter(methods.values())).shape[1:3]
     height,width=shape
     columns=min(2,len(methods)); rows=math.ceil(len(methods)/columns)
-    header=28
-    canvas_h=rows*(height+header); canvas_w=columns*width
-    canvas_h+=canvas_h%2; canvas_w+=canvas_w%2
+    header=HEADER_HEIGHT
+    canvas_h,canvas_w=comparison_canvas_hw(shape,len(methods))
     output=Path(output); output.parent.mkdir(parents=True,exist_ok=True)
     writer=cv2.VideoWriter(str(output),cv2.VideoWriter_fourcc(*'mp4v'),float(fps),(canvas_w,canvas_h))
     if not writer.isOpened():

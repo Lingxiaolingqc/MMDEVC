@@ -12,7 +12,7 @@ from .experiments import fuse_sequence
 from .flow import estimate_pair
 from .metrics import evaluate_video
 from .records import Frame,sha256_file,run_provenance
-from .video import iter_rgb_frames
+from .video import iter_rgb_frames,inspect_video
 from .warp import flow_consistency
 
 
@@ -157,6 +157,9 @@ def run_final_evaluation(source,baseline_cache,video_cache,config_path,output):
     if config.get('selection',{}).get('status') not in {'frozen before rollercoaster fusion evaluation','frozen on development before secondary engineering evaluation'}:
         raise ValueError("Final evaluation requires the frozen development-selected configuration")
     frames,baseline,metadata,forward,backward,masks,evaluator=prepare_evaluation(source,baseline_cache,output/'evaluation')
+    source_info=inspect_video(source,required_frames=100)
+    if abs(source_info.fps-metadata['fps'])>0.01:
+        raise ValueError("Cached video FPS differs from the actual source")
     candidate_forward,candidate_backward=fusion_flows(frames,forward,backward,config.get('flow',{}))
     reference,reference_metadata=load_predictions(video_cache,expected_frame_ids=metadata['frame_ids'])
     if reference_metadata['source_sha256']!=metadata['source_sha256'] or reference.shape!=baseline.shape:
@@ -187,6 +190,14 @@ def run_final_evaluation(source,baseline_cache,video_cache,config_path,output):
     first=float(rows[0]['temporal']);last=float(rows[-1]['temporal'])
     summary={'source_sha256':metadata['source_sha256'],'source_frame_count':metadata['source_decoded_frames'],'requested_frames':metadata['source_required_frames'],'processed_frames':len(frames),'compliant_100_frames':metadata['source_compliant'],'fps':metadata['fps'],'output_hw':metadata['output_hw'],'configuration_sha256':sha256_file(config_path),'baseline_cache_key':metadata['key'],'display_ranges':ranges,'baseline_timing':metadata['timing'],'video_reference':reference_metadata,'evaluator':evaluator,'fusion_flow_config':config.get('flow',{}),'evaluation_stage':config.get('stage','primary evaluation of frozen development selection'),'rows':rows,'relative_temporal_proxy_reduction_percent':100*(first-last)/first,'interpretation':'Temporal proxy reduction is not metric-depth accuracy. Configuration selected on development data only; see evaluation_stage for primary versus engineering follow-up. All ablations share one fixed cap except unchanged baseline.','application_config':app_config,'raw_prediction_files':[str(Path(baseline_cache).resolve()),str(Path(video_cache).resolve()),str((output/'adaptive.npz').resolve())]}
     summary['provenance']=provenance
+    summary['frame_ids']=[frame.index for frame in frames]
+    summary['source_frame_count']=source_info.decoded_frames
+    summary['baseline_requested_limit']=metadata['source_required_frames']
+    summary['requested_frames']=100
+    summary['course_required_frames']=100
+    summary['compliant_100_frames']=summary['frame_ids']==list(range(100))
+    summary['raw_prediction_roles']=['baseline','video_reference','fusion']
     (output/'summary.json').write_text(json.dumps(summary,indent=2,allow_nan=False),encoding='utf-8')
-    (output/'COMPLIANCE.txt').write_text('The official repository source contains 70 real frames, despite the instruction requesting 100. No frames were fabricated. This demo remains provisional pending a longer course source or TA clarification.\n' if not metadata['source_compliant'] else 'The required 100 genuine frames were processed.\n',encoding='utf-8')
+    compliance=('The required first 100 genuine frames (IDs 0-99) were processed.\n' if summary['compliant_100_frames'] else f"Provisional: the course requires the first 100 genuine frames. The source contains {source_info.decoded_frames} real frames; this run processed {len(frames)} genuine frames. No exported frames were fabricated. Obtain a longer course source or TA clarification before claiming compliance.\n")
+    (output/'COMPLIANCE.txt').write_text(compliance,encoding='utf-8')
     return summary

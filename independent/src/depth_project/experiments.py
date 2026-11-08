@@ -124,6 +124,10 @@ def run_video_model(source: Path,output: Path,model_name: str,root: Path,limit: 
         values=np.stack(values)
         stats.update(inference_s=sum(latencies),median_frame_s=float(np.median(latencies)),frame_latency_s=latencies,warmup_calls=2,peak_allocated_mb=torch.cuda.max_memory_allocated()/1024**2 if device=='cuda' else None,peak_reserved_mb=torch.cuda.max_memory_reserved()/1024**2 if device=='cuda' else None,device=device)
     metadata={'key':cache_key(info.source_sha256,config),'inference':config,'frame_ids':config['frame_ids'],'source_sha256':info.source_sha256,'source_decoded_frames':info.decoded_frames,'source_required_frames':limit,'source_compliant':info.compliant,'fps':info.fps,'kind':'relative','output_hw':list(values.shape[1:]),'decode_resize_s':decode_s,'timing':stats,'torch_version':torch.__version__ if torch is not None else None,'hardware':torch.cuda.get_device_name() if device=='cuda' else platform.processor(),'numpy_version':np.__version__,'opencv_version':cv2.__version__}
+    # A caller's small smoke-test limit is independent of the course's fixed 100.
+    metadata['requested_limit_satisfied']=info.decoded_frames>=limit
+    metadata['course_required_frames']=100
+    metadata['source_compliant']=info.decoded_frames>=100
     metadata['provenance']=provenance
     save_predictions(output,values,metadata)
     output.with_suffix('.json').write_text(json.dumps(metadata,indent=2,allow_nan=False),encoding='utf-8')
