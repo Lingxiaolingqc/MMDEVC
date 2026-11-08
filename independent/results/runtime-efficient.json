@@ -1,0 +1,54 @@
+{
+  "trials": [
+    {
+      "trial": 1,
+      "frame_count": 70,
+      "pipeline_s": 16.113332799999625,
+      "fps": 4.34422852608131,
+      "depth_s": 7.764814599926467,
+      "flow_s": 3.1607381000503665,
+      "fusion_s": 5.150020199987921,
+      "peak_allocated_mb": 385.69384765625,
+      "peak_reserved_mb": 502.0
+    },
+    {
+      "trial": 2,
+      "frame_count": 70,
+      "pipeline_s": 16.80983469999046,
+      "fps": 4.164228932009648,
+      "depth_s": 8.516263300043647,
+      "flow_s": 3.1469552999478765,
+      "fusion_s": 5.106899399965187,
+      "peak_allocated_mb": 385.69384765625,
+      "peak_reserved_mb": 502.0
+    },
+    {
+      "trial": 3,
+      "frame_count": 70,
+      "pipeline_s": 15.90518859999429,
+      "fps": 4.401079531997825,
+      "depth_s": 8.268825399994967,
+      "flow_s": 2.8566282999527175,
+      "fusion_s": 4.745318699991913,
+      "peak_allocated_mb": 385.69384765625,
+      "peak_reserved_mb": 502.0
+    }
+  ],
+  "median_fps": 4.34422852608131,
+  "min_fps": 4.164228932009648,
+  "max_fps": 4.401079531997825,
+  "median_frame_s": 0.23019046857142322,
+  "scope": "full depth inference + both optical-flow directions + fusion; RGB decode/resize and disk video encoding excluded; no cached depth or flow",
+  "warmup_calls": 2,
+  "repeats": 3,
+  "source_sha256": "7268cbecd9806a1e90a416de50dc02e50b4ae01428d5971837cf679dd0c87cb8",
+  "configuration_sha256": "69a3618f9342b9344542ba97e45d25e7d0bcdd6805331c53068c08d901827efb",
+  "hardware": "NVIDIA GeForce RTX 4070 Laptop GPU",
+  "input_size": 518,
+  "output_hw": [
+    360,
+    640
+  ],
+  "precision": "fp16 depth; fp32 flow/fusion",
+  "source_compliant": false
+}

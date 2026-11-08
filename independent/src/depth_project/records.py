@@ -51,3 +51,18 @@ def sha256_file(path) -> str:
         for block in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def run_provenance(root) -> dict:
+    """Capture at run start, including source hashes when a worktree is dirty."""
+    from datetime import datetime,timezone
+    from pathlib import Path
+    import platform
+    import subprocess
+
+    root=Path(root).resolve()
+    head=subprocess.run(['git','-C',str(root),'rev-parse','HEAD'],text=True,capture_output=True)
+    status=subprocess.run(['git','-C',str(root),'status','--porcelain'],text=True,capture_output=True)
+    sources={path.relative_to(root).as_posix():sha256_file(path) for path in sorted((root/'src/depth_project').glob('*.py'))}
+    configs={path.relative_to(root).as_posix():sha256_file(path) for path in sorted((root/'configs').glob('*.json'))}
+    return {'captured_utc':datetime.now(timezone.utc).isoformat(),'git_sha':head.stdout.strip() if head.returncode==0 else None,'git_dirty':bool(status.stdout.strip()) if status.returncode==0 else None,'source_sha256':sources,'config_sha256':configs,'python_version':platform.python_version(),'platform':platform.platform(),'lockfile_sha256':sha256_file(root/'requirements.lock.txt') if (root/'requirements.lock.txt').is_file() else None,'randomness':'frozen networks in evaluation mode; controlled synthetic studies use NumPy seed 42'}

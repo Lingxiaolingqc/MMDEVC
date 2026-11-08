@@ -11,13 +11,24 @@ from .cache import cache_key,load_predictions,save_predictions
 from .experiments import fuse_sequence
 from .flow import estimate_pair
 from .metrics import evaluate_video
-from .records import Frame,sha256_file
+from .records import Frame,sha256_file,run_provenance
 from .video import iter_rgb_frames
 from .warp import flow_consistency
 
 
 EVALUATOR={'backend':'farneback','max_res':640,'pyr_scale':0.5,'levels':4,'winsize':21,'iterations':4,'poly_n':7,'poly_sigma':1.5,'flags':0}
 CONSISTENCY={'alpha':0.01,'beta':0.5}
+
+
+def fusion_flows(frames,reference_forward,reference_backward,requested):
+    canonical={**EVALUATOR,**requested}
+    if canonical==EVALUATOR:
+        return reference_forward,reference_backward
+    forward=[];backward=[]
+    for previous,current in zip(frames,frames[1:]):
+        f,b=estimate_pair(previous.rgb,current.rgb,requested)
+        forward.append(f);backward.append(b)
+    return np.stack(forward),np.stack(backward)
 
 
 def prepare_evaluation(source,baseline_cache,output):
@@ -132,3 +143,50 @@ def run_development_sweep(source,baseline_cache,output):
     results={'source_sha256':metadata['source_sha256'],'frame_ids':metadata['frame_ids'],'evaluator':evaluator,'selection_policy':{'minimum_edge_retention':0.90,'maximum_step_settling_frames':2,'maximum_synthetic_mse_ratio':1.05,'objective':'lowest development temporal proxy among eligible non-baselines'},'rows':rows,'selected':winner}
     (output/'sweep.json').write_text(json.dumps(results,indent=2,allow_nan=False),encoding='utf-8')
     return results
+
+
+def run_final_evaluation(source,baseline_cache,video_cache,config_path,output):
+    from .application import background_blur
+    from .render import compute_display_range,render_comparison,colorize
+
+    output=Path(output)
+    if (output/'summary.json').exists():
+        raise FileExistsError("Refusing to overwrite an existing held-out evaluation")
+    provenance=run_provenance(Path(config_path).resolve().parent.parent)
+    config=json.loads(Path(config_path).read_text())
+    if config.get('selection',{}).get('status') not in {'frozen before rollercoaster fusion evaluation','frozen on development before secondary engineering evaluation'}:
+        raise ValueError("Final evaluation requires the frozen development-selected configuration")
+    frames,baseline,metadata,forward,backward,masks,evaluator=prepare_evaluation(source,baseline_cache,output/'evaluation')
+    candidate_forward,candidate_backward=fusion_flows(frames,forward,backward,config.get('flow',{}))
+    reference,reference_metadata=load_predictions(video_cache,expected_frame_ids=metadata['frame_ids'])
+    if reference_metadata['source_sha256']!=metadata['source_sha256'] or reference.shape!=baseline.shape:
+        raise ValueError("Video-reference input/frames/output shape mismatch")
+    output.mkdir(parents=True,exist_ok=True)
+    configurations=[('baseline',{**config,'method':'baseline','history_cap':0}),('ema',{**config,'method':'ema'}),('flow',{**config,'method':'flow'}),('occlusion',{**config,'method':'occlusion'}),('adaptive',config)]
+    rows=[];selected=None
+    for name,candidate_config in configurations:
+        start=time.perf_counter()
+        values,diagnostics=fuse_sequence(frames,baseline,candidate_forward,candidate_backward,candidate_config)
+        replay_s=time.perf_counter()-start
+        metric=evaluate_video(values,backward,masks,evaluator['reference_scale'],metadata['frame_ids'])
+        row={'method':name,'config':candidate_config,'temporal':metric['aligned_mae_normalized'],'edge_retention':edge_retention(values,baseline),'cached_replay_s':replay_s,'evaluation':metric,'diagnostics':diagnostics,**synthetic_controls(candidate_config)}
+        rows.append(row)
+        save_predictions(output/f'{name}.npz',values,{**metadata,'key':cache_key(metadata['key'],candidate_config),'fusion_config':candidate_config,'parent_baseline_key':metadata['key'],'configuration_sha256':sha256_file(config_path)})
+        if name=='adaptive': selected=values
+        print(f"TEST {name}: temporal={row['temporal']:.6f} edge={row['edge_retention']:.3f}",flush=True)
+    display_range=compute_display_range(baseline)
+    reference_range=compute_display_range(reference)
+    rgb=np.stack([frame.rgb for frame in frames])
+    methods={'RGB':rgb,'DA V2 Small (relative)':baseline,'VDA Small (relative)':reference,'Flow-guided fusion (relative)':selected}
+    ranges={'DA V2 Small (relative)':display_range,'VDA Small (relative)':reference_range,'Flow-guided fusion (relative)':display_range}
+    render_comparison(metadata['frame_ids'],methods,ranges,metadata['fps'],output/'comparison.mp4')
+    app_config={'display_range':display_range,'focus_threshold':0.6,'transition':0.1,'blur_sigma':8}
+    original_blur=np.stack([background_blur(frame.rgb,depth,app_config) for frame,depth in zip(frames,baseline)])
+    fused_blur=np.stack([background_blur(frame.rgb,depth,app_config) for frame,depth in zip(frames,selected)])
+    render_comparison(metadata['frame_ids'],{'Original-depth blur':original_blur,'Fused-depth blur':fused_blur},{},metadata['fps'],output/'background-blur.mp4')
+    first=float(rows[0]['temporal']);last=float(rows[-1]['temporal'])
+    summary={'source_sha256':metadata['source_sha256'],'source_frame_count':metadata['source_decoded_frames'],'requested_frames':metadata['source_required_frames'],'processed_frames':len(frames),'compliant_100_frames':metadata['source_compliant'],'fps':metadata['fps'],'output_hw':metadata['output_hw'],'configuration_sha256':sha256_file(config_path),'baseline_cache_key':metadata['key'],'display_ranges':ranges,'baseline_timing':metadata['timing'],'video_reference':reference_metadata,'evaluator':evaluator,'fusion_flow_config':config.get('flow',{}),'evaluation_stage':config.get('stage','primary evaluation of frozen development selection'),'rows':rows,'relative_temporal_proxy_reduction_percent':100*(first-last)/first,'interpretation':'Temporal proxy reduction is not metric-depth accuracy. Configuration selected on development data only; see evaluation_stage for primary versus engineering follow-up. All ablations share one fixed cap except unchanged baseline.','application_config':app_config,'raw_prediction_files':[str(Path(baseline_cache).resolve()),str(Path(video_cache).resolve()),str((output/'adaptive.npz').resolve())]}
+    summary['provenance']=provenance
+    (output/'summary.json').write_text(json.dumps(summary,indent=2,allow_nan=False),encoding='utf-8')
+    (output/'COMPLIANCE.txt').write_text('The official repository source contains 70 real frames, despite the instruction requesting 100. No frames were fabricated. This demo remains provisional pending a longer course source or TA clarification.\n' if not metadata['source_compliant'] else 'The required 100 genuine frames were processed.\n',encoding='utf-8')
+    return summary
