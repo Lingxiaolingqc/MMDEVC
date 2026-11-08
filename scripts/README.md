@@ -22,6 +22,7 @@ scripts/
 | [run_stereo_baseline.py](part1_baseline/run_stereo_baseline.py) | 单场景 StereoSGBM |
 | [run_stereo_suite.py](part1_baseline/run_stereo_suite.py) | dev 选参、15 场景运行、保存结果复算 |
 | [audit_course_stereo.py](part1_baseline/audit_course_stereo.py) | 新版 Stereo MAE / coverage 审计 |
+| [analyze_stereo_lr.py](part1_baseline/analyze_stereo_lr.py) | 已保存自定义 LR 前后视差：统计拒绝代价并自动出图 |
 | [run_framewise.py](part1_baseline/run_framewise.py) | 逐帧 DA V2；默认 dav2_relative |
 
 ## Part 2 · Models
@@ -34,7 +35,7 @@ scripts/
 | [run_unidepth_sample.py](part2_models/run_unidepth_sample.py) | 单张 UniDepth 冒烟检查 |
 | [verify_nyuv2_run.py](part2_models/verify_nyuv2_run.py) | 已保存 NYUv2 旧七指标复算 |
 | [summarize_nyuv2.py](part2_models/summarize_nyuv2.py) | 旧单图对比表与图 |
-| [evaluate_nyuv2_boundaries.py](part2_models/evaluate_nyuv2_boundaries.py) | 补充边界评测 |
+| [evaluate_nyuv2_boundaries.py](part2_models/evaluate_nyuv2_boundaries.py) | 补充边界评测及图集；当前课程使用 --protocol course_clipped |
 
 旧七指标和边界分析保留为补充，不混入新版 NYUv2 主表。
 
@@ -47,6 +48,10 @@ scripts/
 | [verify_fusion_suite.py](part3_improvement/verify_fusion_suite.py) | 保存数组复算；复查冻结结果用 --verification-output 新文件 |
 | [freeze_fusion_config.py](part3_improvement/freeze_fusion_config.py) | 绑定 dev 证据与冻结参数 |
 | [evaluate_relative_video.py](part3_improvement/evaluate_relative_video.py) | 补充相对视频诊断 |
+| [run_supplementary_ablations.py](part3_improvement/run_supplementary_ablations.py) | history/confidence 两组事后对照；复用预测并自动输出视频 |
+| [verify_supplementary_ablations.py](part3_improvement/verify_supplementary_ablations.py) | 补充配置的数组、权重、表格、视频时间戳复算 |
+
+补充实验按 [分阶段指南](../docs/supplementary_experiments.md)执行。原 E0–E5 主入口、冻结选择和默认 recursive/full-confidence 行为保留。
 
 ## Application
 

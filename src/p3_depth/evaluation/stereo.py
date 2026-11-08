@@ -5,6 +5,25 @@ import numpy as np
 from p3_depth.evaluation.depth import depth_values_metrics
 
 
+def compare_lr_rejection(before, after, before_valid, after_valid, gt, region):
+    """Explain the coverage trade-off of filtering; never treat discarded values as corrected."""
+    if any(x.shape != before.shape for x in (after,before_valid,after_valid,gt,region)):
+        raise ValueError('LR arrays must share the same image grid')
+    if any(x.dtype != np.bool_ for x in (before_valid,after_valid,region)):
+        raise ValueError('LR masks must be boolean')
+    if np.any(after_valid & ~before_valid) or not np.array_equal(before[after_valid],after[after_valid]):
+        raise ValueError('LR filtering must retain a subset without changing its values')
+    if np.any(region & ~np.isfinite(gt)) or np.any(before_valid & ~np.isfinite(before)):
+        raise ValueError('Valid GT/predictions must be finite')
+    removed=region & before_valid & ~after_valid
+    errors=np.abs(before[removed].astype(np.float64)-gt[removed])
+    n=int(removed.sum());bad=int((errors>1).sum())
+    return {'removed_gt_pixels':n,'removed_bad_gt1px_pixels':bad,'removed_within_1px_pixels':n-bad,
+            'removed_bad_gt1px_fraction':bad/n if n else None,
+            'removed_disparity_mae_px':float(errors.mean()) if n else None,
+            'retained_values_unchanged':True}
+
+
 def evaluate_region(prediction_depth: np.ndarray, prediction_disparity: np.ndarray,
                     prediction_valid: np.ndarray, gt_depth: np.ndarray,
                     gt_disparity: np.ndarray, region: np.ndarray) -> dict:

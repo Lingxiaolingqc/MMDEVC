@@ -2,6 +2,8 @@
 
 [总导航](../../PARTS.md) · [结果与消融](../../results/by_part/part3_improvement/README.md)
 
+补充实验入口：[历史来源/置信度消融](run_supplementary_ablations.py)、[复算](verify_supplementary_ablations.py)。按 [补充实验指南](../../docs/supplementary_experiments.md)由成员运行观看、助手定量分析和核验。新输出位于 outputs/part3_improvement/supplementary/，原默认 E0–E5 行为不变。
+
 ## 代码来源和阅读顺序
 
 本项目由助手实现对 DA V2 relative 输出的后处理；改进方向来自课程任务书。Farneback 光流本身调用 OpenCV，融合和评测逻辑在本仓库。
@@ -28,4 +30,4 @@ python scripts/render_depth_video.py --help
 
 新运行的数据与选参顺序见 [分阶段重跑指南](../../docs/rerun_by_part.md)。默认输出在 outputs/part3_improvement/；光流入口自动生成诊断视频，融合入口自动生成 E0–E4 独立视频以及主比较/消融影片。E5 引用 Part 2 原 VDA。新冻结使用 manifests/videos_current.csv，旧记录仍按原清单验证。历史在 Tokyo 选定 0.70 后用于 rollercoaster，本轮复现保留该设定并重新核查开发证据。
 
-E4 测试变化指标下降 15.93%；E2/E3 的该指标更低，E4 并非数值最优。更低变化可能伴随过度平滑，现有无 GT 视频无法证明准确率或运动延迟改善。3.10 fps 是推理+CPU 光流+融合的加和估算，不含视频解码和写盘。对应影片可观察 E1 拖影与 E4 的取舍。
+E4 测试变化指标下降 15.93%；E2/E3 的该指标更低，E4 并非数值最优。更低变化可能伴随过度平滑，现有无 GT 视频无法证明准确率或运动延迟改善。具体速度从各次 comparison.csv 读取；estimated_pipeline_fps 是推理+CPU 光流+融合的加和估算，不含视频解码和写盘。对应影片可观察 E1 拖影与 E4 的取舍。

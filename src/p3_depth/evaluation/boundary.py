@@ -5,11 +5,11 @@ from scipy.ndimage import binary_erosion,distance_transform_edt
 from p3_depth.temporal.fusion import log_edge_strength
 
 
-def evaluate_boundary(prediction,gt,region,valid,relative_jump=.1,tolerance_px=2.,distance_cap_px=10.):
+def boundary_masks(prediction,gt,region,valid,relative_jump=.1):
     if prediction.ndim!=2 or any(x.shape!=prediction.shape for x in (gt,region,valid)) or region.dtype!=np.bool_ or valid.dtype!=np.bool_:
         raise ValueError('Expected same-shape HW arrays and boolean masks')
-    if relative_jump<=0 or tolerance_px<0 or distance_cap_px<=tolerance_px:
-        raise ValueError('Invalid boundary thresholds')
+    if not np.isfinite(relative_jump) or relative_jump<=0:
+        raise ValueError('Invalid boundary jump threshold')
     if np.any(region & (~np.isfinite(gt)|(gt<=0))) or np.any(valid & (~np.isfinite(prediction)|(prediction<=0))):
         raise ValueError('Masks must describe positive finite depths')
     domain=binary_erosion(region,structure=np.ones((3,3)),border_value=0)
@@ -17,6 +17,13 @@ def evaluate_boundary(prediction,gt,region,valid,relative_jump=.1,tolerance_px=2
     threshold=np.log1p(relative_jump)
     gt_edges=(log_edge_strength(gt,region)>threshold)&domain
     pred_edges=(log_edge_strength(prediction,valid)>threshold)&prediction_domain
+    return domain,prediction_domain,gt_edges,pred_edges
+
+
+def evaluate_boundary(prediction,gt,region,valid,relative_jump=.1,tolerance_px=2.,distance_cap_px=10.):
+    if not np.isfinite(tolerance_px) or not np.isfinite(distance_cap_px) or tolerance_px<0 or distance_cap_px<=tolerance_px:
+        raise ValueError('Invalid boundary thresholds')
+    domain,prediction_domain,gt_edges,pred_edges=boundary_masks(prediction,gt,region,valid,relative_jump)
     ng,npred=int(gt_edges.sum()),int(pred_edges.sum())
     if npred:
         gt_dist=distance_transform_edt(~pred_edges)[gt_edges]
