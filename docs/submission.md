@@ -1,36 +1,30 @@
-# 提交、打包与交叉验收
+# 实验复现与提交材料
 
-截至 2026-11-09，本轮实验、逐项分析和 sample report 已整理完成，待两位成员验收。采用 Spring 2027 新版说明，官方 rollercoaster 的完整 70 帧按用户决定使用，并披露与任务文字 100 帧的差异。不要求补拍自录视频，arXiv 为可选项。
+采用 Spring 2027 新版任务说明。实验代码、评测和图表入口按 [重跑指南](rerun_by_part.md) 与 [分析流程](analysis_workflow.md) 执行；报告制作和文件打包不属于实验步骤。
 
-## 当前交付
+## 报告与已有交付物
 
-1. CVPR sample report：`report/sample_20261109/` 是源码，`outputs/submission_20261109/MMDEVC_Project3_Sample_Report.pdf` 是本机 PDF。8 页正文、1 页参考文献、14 条引用，包括指定阅读、方法、主结果、控制实验、应用和真实困难案例。
-2. 视频包：`outputs/submission_20261109/depth_results.zip`，80 个载荷文件，另有包内说明和 manifest。包含两个片段的主比较、E0–E5 对照和新阈值背景虚化；不包含代码、数据集、权重或个人验收笔记。
-3. 分析：各实验 `analysis/` 下的 `analysis.md`、最终 `review.json`、表和图；入口为 `outputs/project_analysis_20261109/index.md`。报告 data 随 Git 保存紧凑证据。
-4. 本人验收：`outputs/personal_acceptance/project3_sample_report_20261109.md`，仅本机，不 commit/push。
+- 当前报告源码：[研究顺序版](../report/sample_20261109_research/README.md)。本机 PDF 为 `outputs/submission_20261109_research/MMDEVC_Project3_Research_Report.pdf`，正文 8 页、参考文献 1 页。
+- 已有扩展视频包：`outputs/submission_20261109_extension/depth_results_extended.zip`。其中包含上一版扩展报告，未替换为最新研究顺序版；提交时单独选择当前 PDF。
+- 原始数组、视频、PDF 和个人验收指南均不随 Git 同步。报告中的紧凑统计和图片随 Git 保留。
 
-历史 `outputs/submission_20261102/` 保留。2026-11-07 后的 [按 Part 重跑指南](rerun_by_part.md) 继续作为复现流程；本轮实际交付有独立日期目录，避免旧新结果混用。
+历史报告验证、打包、输出迁移工具已移出当前代码树，生成时实现可从 Git 版本 `d55270f` 追溯。已有 provenance 记录和 ZIP 保持原始含义，不能改写哈希来冒充新一次运行。
 
-## 打包和校验
+## 从新运行收集提交文件
 
-新计划为 `configs/course_export_plan_sample_20261109.json`。在仓库根目录执行：
+完成各 Part、指标复算、补充实验和实际看图后，按课程要求收集：
 
-~~~powershell
-python scripts/package_depth_results.py --plan configs/course_export_plan_sample_20261109.json --output outputs/submission_20261109/depth_results.zip --check-only
-~~~
+1. 当前 PDF 和公开 GitHub 仓库链接。
+2. 指定视频的 DA/VDA 对比、主方法和消融对比视频。
+3. 背景虚化应用视频；若使用新阈值，注明阈值及其事后选择性质。
+4. 与报告对应的指标表、运行元数据、困难案例及必要的补充比较。
 
-这是只读预检。若需要重新创建，改用尚不存在的输出目录：
+视频由实验入口直接生成，可使用系统压缩工具整理为课程要求的 ZIP，无需运行专用报告脚本。打包后检查文件可以打开，表格/帧号/设置对应同一轮实验，不混入数据集、模型权重或个人笔记。
 
-~~~powershell
-python scripts/package_depth_results.py --plan configs/course_export_plan_sample_20261109.json --output outputs/submission_recheck/depth_results.zip
-~~~
-
-预检要求登记片段与源哈希一致、全部主结果复算通过、既有冻结配置匹配、DA/E0–E4 共用固定色标、VDA 使用独立的全段固定色标、应用从原始数组复算通过且时间戳一致、困难案例指向合法区间。创建后逐项回读 CRC 和 SHA256。
-
-这些工程检查不证明测试独立性或画质提升：补充实验和应用阈值是事后分析，报告已有说明。新包采用相同冻结 E4 深度与新的应用阈值，不能把阈值改善归于 E4。
+官方 rollercoaster 只有 70 帧，任务文字要求 100 帧；报告已说明使用全部 70 帧且不重复或插帧。这是项目所有者的处理决定，不代表教师确认。视频没有深度 GT；时序诊断下降和虚化变化都不等于深度准确率提升。
 
 ## 成员最终确认
 
-A 复核单位、GT 区域、NYU 协议与结果；B 复核 DA/VDA、视频对照、效率和应用。双方阅读贡献与助手协助表述，检查 PDF 和 ZIP 可在另一台电脑打开，并按本地指南完成必要复算。
+A 复核数据、单位、GT 区域和课程评测；B 复核视频对应、稳定性、效率和应用。双方阅读报告中的贡献与助手协助说明，并检查 PDF 和视频能在另一台电脑打开。
 
-工作分支为 `feat/depth-video-pipeline`。最终合并 main、按课程渠道提交 PDF/公开仓库链接/ZIP 由成员决定。助手没有上传 Canvas 或发布 arXiv。个人验收文件不加入任何提交包。
+当前工作分支是 `feat/depth-video-pipeline`。合并 main、通过课程渠道提交或发布 arXiv，由成员决定。生成结果、代码测试通过与成员验收分别记录。

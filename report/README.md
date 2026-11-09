@@ -1,9 +1,9 @@
 # 报告工作区
 
-2026-11-09 的当前 sample report 在 [sample_20261109/](sample_20261109/README.md)。它使用本轮重新运行、补充对照和独立定性分析后的证据；正文 8 页，参考文献 1 页。LaTeX、图片、紧凑统计和来源核验随 Git。
+当前按研究问题组织的版本是 [sample_20261109_research/](sample_20261109_research/README.md)：正文 8 页、参考文献 1 页，实验按 Stereo、米制深度、视频基线、融合改进与消融、应用排列，保留课程 Part 对应关系。
 
-本机 PDF 和演示包保存在 `outputs/submission_20261109/`。完整中文分析入口为 `outputs/project_analysis_20261109/index.md`；个人验收指南为 `outputs/personal_acceptance/project3_sample_report_20261109.md`，只保留本机，不 commit/push。
+本机 PDF 在 `outputs/submission_20261109_research/MMDEVC_Project3_Research_Report.pdf`。此前报告与视频包保留。LaTeX、图片和紧凑统计随 Git；完整预测、视频、PDF 和个人验收指南不随 Git 同步。
 
-[paper/](paper/) 和 [source_audit.md](source_audit.md) 是 2026-11-02 的历史报告与审计，保留供追溯。它们引用当时的输出，不能作为新运行的完成凭据。新的来源说明见 [sample_20261109/source_audit.md](sample_20261109/source_audit.md)。
+实验复现见 [重跑指南](../docs/rerun_by_part.md) 和 [分析流程](../docs/analysis_workflow.md)。报告制作、PDF 检查和打包工具不属于实验入口，历史实现可从 Git 版本 `d55270f` 追溯。各 provenance JSON 保留生成时的路径与哈希，不作为清理后 README/工具文件的当前哈希凭据。
 
-修改新报告后须重新编译、检查 6–8 页正文与全部引用，并逐页核查图片和表格。作者为 Qinchuan XIAO / Jun Yu Eugene YIP；助手协助实施与分析不代表成员独立验收或课程提交。
+旧 `paper/`、`sample_20261109/`、`sample_20261109_extension/` 是历史版本，保留用于核对。修改报告后仍需编译、检查课程页数和引用，并逐页核对图片与表格；生成样稿不代表成员验收或课程提交。

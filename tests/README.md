@@ -6,7 +6,7 @@
 & .\.venv-cuda\Scripts\python.exe -X utf8 -m unittest discover -s tests -v
 ```
 
-覆盖数据读取与标定、StereoSGBM 和 LR 检查、NYU 裁剪/单位/指标、时序对应和光流融合、开发冻结、视频导出、应用及提交包。测试使用小型合成样本和模型替身，不下载权重或执行真实模型推理；完整环境需包含 PyTorch、OpenCV、PyAV、Pillow 等，见 [环境说明](../environments/cuda.md)。临时文件在被忽略的 outputs/test-temp/。
+覆盖数据读取与标定、StereoSGBM 和 LR 检查、NYU 裁剪/单位/指标、时序对应和光流融合、开发冻结、视频导出、当前背景虚化应用。测试使用小型合成样本和模型替身，不下载权重或执行真实模型推理；完整环境需包含 PyTorch、OpenCV、PyAV、Pillow 等，见 [环境说明](../environments/cuda.md)。临时文件在被忽略的 outputs/test-temp/。
 
 本次自动可视化新增检查：
 
@@ -22,3 +22,5 @@
 2026-11-08 的补充实验改动通过 43 项相关回归检查，包含所有独立脚本的 `--help` 检查。新增 [test_supplementary.py](test_supplementary.py) 的九项测试验证：两种历史策略的解析结果；关闭软项仍保留硬过滤；LR 只过滤不修正；课程 clipping 与边缘定义；四帧合成视频的两组导出/复算、原时间戳、固定色标及源文件不变；LR 图像和 NYU 边缘浏览页导出；输入篡改与覆盖拒绝。
 
 另以三帧保存的 Tokyo 开发预测检查默认 E0–E4 与修改前 c38f25f 的数组和权重完全相同。这是兼容性检查，不是正式补充实验或效果结论。运行与人工观察顺序见 [补充实验指南](../docs/supplementary_experiments.md)。
+
+保留的测试保护当前实验的数据/单位/指标、融合、参数冻结和媒体导出。报告检查、打包及旧米制网页专属测试已随相应工具移出；运行实验本身不要求先运行单元测试。

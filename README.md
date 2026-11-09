@@ -13,7 +13,7 @@ AIAA3201 Project 3 · Spring 2027 · 按 2026-11-02 收到的新版任务说明�
 | ONE Improvement | Flow-Guided Fusion；独立 Tokyo dev 比较三组参数，冻结 α=0.70 后完成 E0–E5 测试 |
 | 测试结果 | 官方 rollercoaster 全 70 帧；E4 归一化时序变化指标下降 15.93%，附计算开销与三个实际困难案例 |
 | Application | 同参数比较原始 DA 与 E4 的背景虚化；导出全部 70 帧并核验时间戳 |
-| 交付 | CVPR 报告源码、视频打包入口、结果与复现记录；成员个人验收及正式提交由成员完成 |
+| 交付 | CVPR 报告源码、实验统计与绘图入口、结果与复现记录；成员个人验收及正式提交由成员完成 |
 
 **官方源文件完整只有 70 帧、24 fps，新版文字要求前 100 帧。** 已按项目所有者确认使用全部 70 帧并记录差异，没有重复或插帧；这不是教师已确认的变更。证据见 [输入核查](results/course_input_audit_20261102.json)。
 
@@ -59,14 +59,14 @@ python -m unittest discover -s tests -v
 ## 目录
 
 ~~~text
-configs/       路径示例、模型/光流/融合配置、当前打包计划
+configs/       路径示例、模型/光流/融合配置
 docs/          当前协议、复现、协作与历史周计划
 environments/  官方源码/权重版本、CUDA 与依赖记录
 manifests/     固定图像划分和两个视频源清单
 src/p3_depth/  读取、模型适配、评测、融合、应用与打包
 scripts/       数据准备、运行、复算、导出入口
 results/       可随 Git 同步的表格、元数据、选择与验证证据
-report/paper/  CVPR LaTeX 正文、参考文献和图片
+report/        CVPR 报告源码、参考文献、图片和统计证据
 data/          本地数据，不进 Git
 checkpoints/   本地权重，不进 Git
 third_party/   固定官方源码，不进 Git

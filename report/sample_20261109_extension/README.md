@@ -23,10 +23,11 @@ tectonic -X compile --only-cached --untrusted --keep-logs --keep-intermediates -
 
 The inspected deliverables are stored locally in `outputs/submission_20261109_extension/`: `MMDEVC_Project3_Sample_Report_Extended.pdf` and `depth_results_extended.zip`. Large outputs are Git-ignored. The ZIP includes the previous main experiment payloads plus the new report and supplement. Full NPY arrays, datasets and model weights remain local. The private acceptance guide is excluded.
 
-`scripts/build_extension_report_assets.py` builds only this version's new figures and copies; `--refresh-draft` explicitly permits refreshing this draft's evidence. `scripts/verify_extension_report.py` checks all nine numeric result tables, 16 independent review records, source hashes, embedded fonts, 8+1 pages and all package payload hashes. Full verification requires the recorded local outputs and pypdf, while compilation uses files in this report directory.
 
 ## Interpretation
 
 The 70-frame course source differs from the requested first 100 frames; all available frames are retained without duplication. User acceptance of this handling is not instructor approval. Video has no depth GT. Temporal diagnostics, blur strength, and output changes do not measure depth accuracy. Streaming display normalization uses the full clip only for offline review. Figures represent explicitly recorded samples and consecutive windows, not full real-time playback. Existing main and new repeated timings have distinct measurement protocols.
 
 The targeted refinement was selected on Tokyo before applying unchanged parameters to the already-viewed course clip. The course comparison is post-hoc. The original E4 is retained because neither candidate establishes clear visual benefit. The authors must review the report and follow their course's attribution/submission requirements; generating this sample is not submission or acceptance.
+
+The report receipts preserve the original generation hashes, including old tooling and README bytes. They are historical records, not a claim that the current documentation has those same hashes. No experiment result or PDF was changed during the tooling cleanup.

@@ -60,3 +60,7 @@ python scripts/render_depth_video.py --help
 ```
 
 run_nyuv2.py 默认使用 unidepth，自动生成逐图 PNG 和浏览页；run_video.py 默认使用 vda_relative，只允许 VDA 系列，共用 [推理实现](../_video_inference.py)，自动生成 VDA 独立视频。默认输出在 outputs/part2_models/；参数详情和顺序见 [分阶段重跑指南](../../docs/rerun_by_part.md)。两模型实际视频 encoder 尺寸为 364×644，输出为 360×640，FP16。不是把输入压成 364×364。
+
+## 精选 NYUv2 误差图
+
+[plot_nyuv2_cases.py](plot_nyuv2_cases.py) 从保存的米制预测生成 RGB / GT / prediction / absolute error 图，检查样本来源，记录课程 crop/clip 与每行显示范围。默认输出到 NYU 分析目录的 `selected_figures/`；不依赖报告制作工具。完整统计与运行说明见 [分析流程](../../docs/analysis_workflow.md)。

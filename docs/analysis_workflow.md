@@ -92,4 +92,19 @@ Pairwise 使用前一帧原始预测，recursive 使用前一帧融合结果；�
 
 每条主要结论对应当前文件、明确设置、统计和具体图片/帧。既有用户初步观察单列，所有步骤均重新独立核对，包括原本已有简单分析的部分。显示无改善或差别细微的实验也保留。
 
-当前路线中的 LR、历史来源、置信度和应用阈值做控制变量比较；streaming、metric-video 等其他可选路线不会自动扩展为必做实验。冻结主结果不因事后分析改写。
+当前路线中的 LR、历史来源、置信度和应用阈值做控制变量比较。已完成的 streaming 和定向 refinement 另见 [扩展实验](extension_results_20261109.md)；metric-video 未加入本次实验。冻结主结果不因事后分析改写。
+
+## 独立生成精选图表
+
+以下入口从已保存统计或预测出图，不复制报告素材、不编译或检查 PDF，也不改写原数组：
+
+```powershell
+& $py -X utf8 scripts/part1_baseline/plot_stereo_distributions.py
+& $py -X utf8 scripts/part2_models/plot_nyuv2_cases.py
+```
+
+默认分别生成 Stereo 的 `analysis/selected_figures/stereo_boxes.png` 与 NYU 的 `analysis/selected_figures/nyu_cases.png`，并记录输入哈希和显示设置。输出已存在时指定新的 `--output-dir`。
+
+Stereo 可通过 `--samples` 选择场景，分位数来自所有有效像素，coverage 使用固定 GT 分母。NYU 可通过 `--samples`、`--depth-max`、`--error-max` 指定样本及每行显示上限；同一行 GT/预测共享米制色标，预测按课程范围裁剪，误差只展示课程 GT 区域内的有效预测。显示上限不改变评测结果。
+
+全部场景/图像的分布仍由前面的 `analyze_stereo.py`、`analyze_nyuv2.py` 导出。视频匹配帧图、流式对照、历史/置信度对照与应用图继续由各自分析入口生成；固定整段色标和真实帧索引保持在元数据中。图表是实验输出，不以报告 PDF 验证通过为运行前提。

@@ -184,7 +184,7 @@ $candidates = "outputs/part3_improvement/dev_candidates"
 & $py -X utf8 scripts/part3_improvement/freeze_fusion_config.py --candidate "alpha050=$candidates/alpha050/$dev" --candidate "alpha070=$candidates/alpha070/$dev" --candidate "alpha085=$candidates/alpha085/$dev" --selected alpha070 --review outputs/part3_improvement/development_review.json
 ```
 
-预期生成 `outputs/part3_improvement/selection/fusion_frozen.yaml` 和对应证据。若选择改变，先同步打包计划中的 dev suite，再运行 test；不能只手改 frozen 状态。
+预期生成 `outputs/part3_improvement/selection/fusion_frozen.yaml` 和对应证据。若 dev 选择改变，应从对应候选重新生成冻结凭据，再运行 test；不能只手改 frozen 状态。
 
 ## 6. Part 3：冻结后评估指定视频
 
@@ -217,21 +217,20 @@ $clip = "course_rollercoaster_70"
 
 若需要减少近中景结构被误虚化，按 [应用参数对照](application_settings.md) 在独立输出目录比较原参数与较宽松阈值。此项是应用层探索，保持原预测与冻结的 E4 不变；先保留原演示，验收后再决定提交版本。
 
-## 8. 报告、打包和最后清理
+## 8. 分析和复现实验图表
 
-先由助手陪你查看新影片、指标以及三个困难案例，记录当前真实观察至 `outputs/submission/failure_cases.csv`。可沿用历史案例的片段位置，但观察内容需要对照新输出；新打包计划故意不自动引用旧案例结论。
+按 [分析流程](analysis_workflow.md) 复算 Stereo/LR、NYU、视频、控制实验和应用的统计，并输出匹配帧图。每个分析入口默认在对应实验下创建 `analysis/`；已有目录时使用新的输出路径，保留原结果。
 
-之后执行：
+Stereo 选定场景箱型图、NYU RGB/GT/预测/误差图可以独立生成：
 
 ```powershell
-& $py -X utf8 scripts/build_course_figures.py
-& $py -X utf8 scripts/package_depth_results.py --check-only
-& $py -X utf8 scripts/package_depth_results.py
+& $py -X utf8 scripts/part1_baseline/plot_stereo_distributions.py
+& $py -X utf8 scripts/part2_models/plot_nyuv2_cases.py
 ```
 
-图表在 `outputs/submission/figures/`，视频包在 `outputs/submission/depth_results.zip`。`--check-only` 先核对新来源、冻结证据和输出文件；通过后才写 ZIP。报告 PDF 仍需助手根据新图表、指标、硬件与代码版本更新并重新编译，不能把旧 PDF 改名当作新结果。
+这两项分别保存到 Stereo 和 NYU 的 `analysis/selected_figures/`。视频、主融合与消融的图片/影片由各 Part 的运行和分析入口生成；无需运行报告制作工具。用新运行的指标、设置和实际观察更新报告，不能沿用旧结果冒充本次复现。
 
-全部通过后，我们再列出旧目录与新目录的对应关系，核对归档仍可读，然后清理旧 outputs、旧分类副本及这次小样本检查目录。数据集、checkpoint、源码、个人验收文档不属于输出清理对象；个人验收文档也不进入 Git 或提交 ZIP。
+如需课程提交，按 [提交说明](submission.md) 收集报告和视频；这不属于模型或评测运行步骤。
 
 ## 只补可视化与中断处理
 
@@ -247,4 +246,4 @@ $clip = "course_rollercoaster_70"
 
 NYU 推理中断可在**同一代码版本、配置、设备、样本和输入**下原命令加 `--resume`。旧代码版本的未完成输出不能跨本次改造直接续跑。其他入口默认拒绝覆盖已有运行；不要自行加覆盖参数或清空整个 outputs。
 
-旧结果的复查仍使用 [历史协议](course_protocol_20261102.md)中的显式路径与 `configs/course_export_plan.json`。本页是新运行入口，旧 `organize_part_results.py` 仅用于历史副本核验，新流程不再额外复制一层 `outputs/by_part/`。
+旧结果的算法与指标复查仍可使用 [历史协议](course_protocol_20261102.md)中的显式运行路径。历史打包和分类迁移工具已退出当前实验流程；新结果直接保存在对应 Part。

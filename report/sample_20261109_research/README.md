@@ -38,12 +38,10 @@ From this report directory, create the output directory and run:
 tectonic -X compile --only-cached --untrusted --keep-logs --keep-intermediates --outdir ../../outputs/submission_20261109_research/report_build main.tex
 ```
 
-Copy `report_build/main.pdf` to the named PDF above, render all pages, inspect them, and record the inspected PDF and page hashes in `outputs/submission_20261109_research/visual_review.json`. Then, from the repository root:
+Copy `report_build/main.pdf` to the named output, inspect all pages and check the course page limit. The retained validation receipts describe the report at generation time. Report-only verification utilities are archived in Git revision `d55270f`; they are not part of experiment reproduction.
 
-```text
-python -X utf8 scripts/verify_research_report.py
-```
-
-Compilation is self-contained. Full verification also requires pypdf and the saved local experiment outputs. It checks the retained result rows, all 220 recorded source files, exact copied assets, five experiment subsections in the agreed order, references, fonts, page count and visual-review hashes. The receipt covers this PDF; it does not claim that the older ZIP contains it.
+Compilation uses the files in this directory. Experiment statistics and figures can be regenerated with the per-Part commands in [the analysis guide](../../docs/analysis_workflow.md).
 
 The 70/100-frame source discrepancy, absent video depth GT, post-hoc status and sampled visual-review scope remain explicit. Original E4 is retained; the bounded candidates did not establish clear visual improvement. The authors still need to review and accept this sample before course submission.
+
+The report receipts preserve the original generation hashes, including old tooling and README bytes. They are historical records, not a claim that the current documentation has those same hashes. No experiment result or PDF was changed during the tooling cleanup.

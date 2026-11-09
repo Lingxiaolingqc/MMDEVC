@@ -38,3 +38,7 @@ python scripts/part1_baseline/run_framewise.py --help
 run_framewise.py 默认使用 dav2_relative，只允许 DA 系列；共同推理/计时/保存逻辑在 [公共实现](../_video_inference.py)。新运行按 [分阶段指南](../../docs/rerun_by_part.md)，默认保存至 outputs/part1_baseline/，含独立视频，不依赖 Part 2/3。
 
 历史 Stereo 主结果为 15 场景有效预测 MAE 1.3113 px、GT 像素合并 coverage 62.65%。两项汇总方式不同，不能把低条件误差解释成整个画面都准确。新流程的 DA 独立视频属于 Part 1，多方法比较视频由 Part 3 生成。
+
+## 精选误差分布图
+
+[plot_stereo_distributions.py](plot_stereo_distributions.py) 从已有 Stereo 分析 CSV 生成选定场景的视差/深度箱型图和 coverage 标签。用 `--samples` 指定场景，默认输出到对应分析目录的 `selected_figures/`；不依赖报告制作工具。完整复算及用法见 [分析流程](../../docs/analysis_workflow.md)。

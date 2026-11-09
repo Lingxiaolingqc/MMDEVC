@@ -27,14 +27,10 @@ tectonic -X compile --untrusted --keep-logs --keep-intermediates --outdir ../../
 
 本机编译使用已缓存的官方模板依赖，加了 `--only-cached`。不得用旧 PDF 改名代替重新编译。
 
-若修改报告，重新编译、逐页检查渲染、更新视觉核验记录后，从仓库根运行：
-
-~~~powershell
-python scripts/verify_sample_report.py
-~~~
-
-核验脚本需要 `pypdf`，并需要本机已有实验、编译日志、演示包与视觉核验记录。它核查来源和全部结果表，不代替人工看图，也不重新推理。图表重建命令为 `python scripts/build_sample_report_assets.py --refresh-draft`，只用于明确要更新这份 sample 的情形。
+修改报告后应重新编译，并逐页检查图表、引用和页数。报告专属验证工具属于生成时流程，可从 Git 版本 `d55270f` 追溯；实验统计与图表使用 [分析流程](../../docs/analysis_workflow.md) 中的入口。
 
 ## 结论边界
 
 报告保留负面结果：LR 提高条件准确度但降低覆盖率；时间变化小不代表深度准确；完整置信度和三个 alpha 的视觉差异细微；应用改善主要来自阈值。新增对照为事后分析，既有主配置保持不变。70 帧与任务文字 100 帧的差异已披露。报告未宣称两位成员已经独立验收、完成课程提交或发布 arXiv。
+
+provenance 保留生成时的工具和 README 哈希，属于历史记录；不代表当前说明文档仍具有相同字节。此次工具清理没有修改实验数值或 PDF。

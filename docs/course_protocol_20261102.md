@@ -39,10 +39,9 @@ $py = ".\.venv-cuda\Scripts\python.exe"
 $v = "outputs/course_video_20261102"
 $c = "$v/course_rollercoaster_70"
 & $py scripts/part3_improvement/verify_fusion_suite.py --suite "$c/frozen_suite" --cache "$c/cache" --baseline "$c/dav2_relative_364" --reference-vda "$c/vda_relative_364" --flow "$c/flow" --verification-output outputs/video_personal_recheck.json
-& $py scripts/package_depth_results.py --plan configs/course_export_plan.json --output outputs/submission_20261102/depth_results.zip --check-only
 ~~~
 
-预期：Stereo 全 15 对通过；NYU 为 0.1107756635 / 0.3928173152 m / 0.8947810718；video 为 69 对 flow/mask、E0–E4 原始预测/权重及 E0–E5 分数复算通过；打包 2 clips / 80 payload。单元测试通过不等于成员完成实验验收。
+预期：Stereo 全 15 对通过；NYU 为 0.1107756635 / 0.3928173152 m / 0.8947810718；video 为 69 对 flow/mask、E0–E4 原始预测/权重及 E0–E5 分数复算通过。单元测试通过不等于成员完成实验验收。
 
 ## 3. 新工作副本：准备环境与数据
 
@@ -125,4 +124,4 @@ foreach ($clip in @("dev_tokyo_100","course_rollercoaster_70")) {
 
 三个实际案例见 results/course_20261102/failure_cases.csv。完整视频仍需成员播放检查，图片不能独自证明流畅性或无拖影。测试结果不能用于再次选择参数。
 
-报告图片由 scripts/build_course_figures.py 从保存数组生成，并记录源哈希和裁剪区域。报告采用本次原结果；跨机重跑若数值变化，应同步更新表格和 provenance。最终按 [提交说明](submission.md)核验并打包。验收者无需重跑训练或所有 GPU 推理，优先使用第 2 节的复算路径。
+本页记录历史运行及其原结果；原报告制图和打包实现可在 Git 版本 d55270f 中追溯。当前图表使用 [分析流程](analysis_workflow.md) 中按 Part 的入口。跨机重跑若数值变化，应同步更新报告；不要改写历史来源记录。
