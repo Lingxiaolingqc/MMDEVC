@@ -1,0 +1,43 @@
+{
+  "status": "diagnosis_complete",
+  "clip": "dev_tokyo_100",
+  "setting": {
+    "schema_version": 1,
+    "status": "bounded_posthoc_candidate",
+    "representation": "inverse_depth_like",
+    "hypothesis": "In RGB/flow-consistent interiors, depth disagreement can suppress useful history; selectively relax it while retaining hard gates and edge protection.",
+    "depth_sigma_factor": 2,
+    "reliable_photo_max": 0.05,
+    "reliable_fb_max_px": 0.5,
+    "edge_guard_normalized": 0.02,
+    "edge_guard_radius_px": 2,
+    "selection_basis": "One factor and one guard rule specified before candidate generation; half existing photo/flow sigmas and an explicit 2%-of-span edge band. Heuristic, not calibrated probabilities or optimized values.",
+    "candidate_modes": [
+      "original",
+      "global",
+      "selective"
+    ],
+    "stop_rule": "One comparison; do not tune on rollercoaster. Keep original E4 if dev has no clear visible gain. Always report negative results.",
+    "notes": "The fixed spatial guard uses only current raw DA, RGB and flow, never improved history, future frames or GT. Recursive history differs across modes. Outside guard, the original rule is retained for that mode's own history; sequence outputs need not equal original E4."
+  },
+  "setting_sha256": "cc134e6b029bc2fe1e559c95c493a5adea36b97212765645f4c57be52cfaa40c",
+  "source_suite_sha256": "36657e999f2ace206490add0efa947a929143899f4058be89c113366e65558ad",
+  "source_verification_sha256": "3215501706b3749d1f1a57f438460888c3391e83309da6f3f7ffdd2ed427addf",
+  "all_original_E4_frames_and_weights_recomputed": true,
+  "interpretation": "Regions overlap as declared: reliable_positive is a subset, not semantic foreground. Exponents are suppression strengths, not error probabilities. All-zero components have no dominant term. Hard-rejected residual means use only finite components.",
+  "selected_frames": [
+    30,
+    75
+  ],
+  "baseline_modified": false,
+  "implementation_sha256": {
+    "scripts/part3_improvement/diagnose_confidence_regions.py": "17e9dd1e4344b62a323aaf82c35ce06c03fdfa26af147801e9651cc0b5439b2a",
+    "src/p3_depth/temporal/refinement.py": "a48b19c98b396dec0012f32f0ba13b41219a48afe457723a22a29c5e68dba4cb"
+  },
+  "artifacts_sha256": {
+    "per_frame.csv": "4ea0e33371c157c09af68bc837bc29f60b2f3687a0325e3b13089a5642443a04",
+    "regions.csv": "f2c6ce38e615378b7c5a24fb7ad2c4849f6d8232d9a375d104262b9758dd4b6e",
+    "figures/region_maps.png": "e2c2cf89eadebffe788a272b30ba029a0e519fc8182d92910fe2c610abb3de95",
+    "figures/region_terms.png": "77ece440c068bce792bde7fa1df088222cfe35c52a1b51974226a1d1977fb20f"
+  }
+}

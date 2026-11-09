@@ -1,0 +1,100 @@
+{
+  "status": "complete",
+  "split": "test",
+  "clip": "course_rollercoaster_70",
+  "setting": {
+    "schema_version": 1,
+    "status": "bounded_posthoc_candidate",
+    "representation": "inverse_depth_like",
+    "hypothesis": "In RGB/flow-consistent interiors, depth disagreement can suppress useful history; selectively relax it while retaining hard gates and edge protection.",
+    "depth_sigma_factor": 2,
+    "reliable_photo_max": 0.05,
+    "reliable_fb_max_px": 0.5,
+    "edge_guard_normalized": 0.02,
+    "edge_guard_radius_px": 2,
+    "selection_basis": "One factor and one guard rule specified before candidate generation; half existing photo/flow sigmas and an explicit 2%-of-span edge band. Heuristic, not calibrated probabilities or optimized values.",
+    "candidate_modes": [
+      "original",
+      "global",
+      "selective"
+    ],
+    "stop_rule": "One comparison; do not tune on rollercoaster. Keep original E4 if dev has no clear visible gain. Always report negative results.",
+    "notes": "The fixed spatial guard uses only current raw DA, RGB and flow, never improved history, future frames or GT. Recursive history differs across modes. Outside guard, the original rule is retained for that mode's own history; sequence outputs need not equal original E4."
+  },
+  "setting_sha256": "cc134e6b029bc2fe1e559c95c493a5adea36b97212765645f4c57be52cfaa40c",
+  "dev_decision": {
+    "status": "dev_decision_frozen",
+    "date": "2026-11-09",
+    "setting_sha256": "cc134e6b029bc2fe1e559c95c493a5adea36b97212765645f4c57be52cfaa40c",
+    "dev_review_sha256": "f33a098725ca040af96be76baf5f12047d3f722f4dc418e2c3b9b017dc33b713",
+    "selected_main": "original_E4",
+    "reason": "Small diagnostic changes without clear sampled visual gain; selective has extra CPU cost.",
+    "course_comparison": "Apply the identical original/global/selective settings for disclosed post-hoc characterization only; no retuning.",
+    "diagnosis": "Weak support for excessive depth suppression in reliable interiors; bounded attempt retained as a negative-result control."
+  },
+  "source_suite_sha256": "27e2840b5794d56ce5d1978814b67a86a1c112bad88e44d17d0636ac5c09e503",
+  "source_verification_sha256": "9026c8b2ea47af2e2ecdc58333b2b5711690627c2501ad1f4caa556e6687dc76",
+  "timing_protocol": "CPU only, OpenCV threads=8; two-frame warmup per mode; three repeats with rotated mode order; excludes I/O/render/scoring. Includes allocation and per-mode implementation overhead, not optimized theoretical complexity.",
+  "interpretation": "One predeclared factor and guard; current-DA-derived fixed masks; no GT; all modes recursive. Outside guard retains the original rule for the candidate's own history, not necessarily identical output to original. No test retuning.",
+  "visual_sampling": {
+    "uniform_full_frames": 6,
+    "roi": [
+      100,
+      60,
+      450,
+      260
+    ],
+    "starts": [
+      14,
+      32,
+      64
+    ],
+    "max_change_frame": 16,
+    "max_change_selection": "largest whole-frame selective-versus-original normalized absolute difference"
+  },
+  "implementation_sha256": {
+    "scripts/part3_improvement/run_confidence_refinement.py": "0d0b1860629c002175bb8471a519ea95bfe5e30a4ebac779e291e53c75c277b2",
+    "src/p3_depth/temporal/refinement.py": "a48b19c98b396dec0012f32f0ba13b41219a48afe457723a22a29c5e68dba4cb",
+    "src/p3_depth/temporal/fusion.py": "98a2a1ca28c2f1e4cfb49c58a43af7d1ef8128ecb2ac52c20cabc20c13f66beb"
+  },
+  "artifacts_sha256": {
+    "comparison.csv": "3121bc59b6a8c6d013eaa2a5f1c472f922b3b721ed6e2e51ffe070997d02a594",
+    "per_frame_change.csv": "826354ac48e5fe06c169ddb6f12897afae05c2ca6f539313ed9e70d95cf1597c",
+    "regions.csv": "010dc68849124f5beb56c6b9a4a321ad0458978780abfd8eb6f11d48a8805fa8",
+    "timings.csv": "b4073d3c17d90c6d6dfc4e71eaf2490c4b5cab6da59648b36e12f258b53b73d3",
+    "figures/overview.png": "12f854f3667636099225c0c5d9c3d06d91c4f21b7c5ef1e4ee4a2b48c386e7bf",
+    "figures/roi_14_19.png": "0af0ba5bcd8e96b12ac6ca7524b76a45b8c651e6f6c8ed06ba094b3be5d6643e",
+    "figures/roi_32_37.png": "f355980840cce0b4be61a8697b94a7ef7d8af885ab8ba0d1d84f4f71fe49d8a5",
+    "figures/roi_64_69.png": "f57658a2c14c749da26927a363517b1178ef7faf83bff060530cc10b8c9926f3",
+    "global/depths.npy": "00c993983afdad0117c02cc7a5ad4d3f5f7efd0000110fec8c95e5d945bd589b",
+    "global/history_weight.npy": "90062df1d09426ae783fea3055eb178bac0d1d3681ce736e5ab29ddb2dfa6ed4",
+    "global/metadata.json": "8919a10b930cc84bef3225edabe2938f3121225cfe1561b35a89ece644b05734",
+    "global/metrics.json": "c6954c8ac6feb76935c6b6b5dfdf32151bd9bdb3f148ccfab1365f5db406c349",
+    "global/per_pair.csv": "629102d5b279ff43dc7440bb05bb8b1730d54db19ee424803217253a59cada68",
+    "global/valid.npy": "e1800dbc0429189517f749733da375106e8c6e67d0aa358b38cde6218ec9c507",
+    "original/depths.npy": "20d30e636c1a9ade29e2f2523e726007fb9c25d9361f93cc13d4a43d3fc03bb0",
+    "original/history_weight.npy": "4da9480bc807aa0b08fb01508e1820f00f8737f5e06952bb7b8c08875efd4c7b",
+    "original/metadata.json": "6d43051391ac034fd5536e440331375b760827c907c3ad43b27da9b51654cad6",
+    "original/metrics.json": "85d07a7f96debad9c6ca16b31a47c1f2c964973329d32e4537289cd1c08842bb",
+    "original/per_pair.csv": "03d1b0bc6b57da600378d94e5c45247752d782154c9f6224195184a464bc39f1",
+    "original/valid.npy": "e1800dbc0429189517f749733da375106e8c6e67d0aa358b38cde6218ec9c507",
+    "selective/depths.npy": "4534fb0ce1505aac5784d5465022f72051462a6341078558008876b06f4dd09f",
+    "selective/history_weight.npy": "6856bbf25e3fb62c46aff5d56aa73b4602256f25c613231589558623b8a1138b",
+    "selective/metadata.json": "fb8153bdddcf5701b668ac263e906aa8910febb0b7c449e8ac4d00a6519f2e61",
+    "selective/metrics.json": "f64de87d79b9d953424ec7b077490910a5fa320e1567576a1512a9dd95e7155f",
+    "selective/per_pair.csv": "3c90a35097cc16c752b5ce2e0f232adf682e20f3168e0ccac7bcdaca998e6539",
+    "selective/valid.npy": "e1800dbc0429189517f749733da375106e8c6e67d0aa358b38cde6218ec9c507",
+    "visualizations/comparison.mp4": "14fe1866aba4f31dfc4baaa66c0b882b26e6eaafe9a17d93ed1a21f146a58c68",
+    "visualizations/metadata.json": "a919676ea535e56f1d61ba4c3ef992b92d9871e2f581e30d5616842e5194004f",
+    "visualizations/preview.png": "8e77c1154fa7933aec885ad6e5dfa43cce04ab5dcae16935cdf8357294b3e363",
+    "selective/visualizations/comparison.mp4": "98bf51d2195593c2307195eb7a992a007d506c4570fde96160e982e4be024407",
+    "selective/visualizations/metadata.json": "ff6071625b57d7069a51fca4fd87fbcb739e14cad181be1e0e677c889df24e3a",
+    "selective/visualizations/preview.png": "66de00e35cb18ac4d3a1066b34795f7b390f6a3ae2a254e8e44889449b264232",
+    "original/visualizations/comparison.mp4": "57f629ba677d5f7b7d34cfbe279d3b13cc0a1d55f3ba8775c7ec080bda475ecb",
+    "original/visualizations/metadata.json": "52bcd86dcf82630efce7debbebc10875c3e1dba6d286b577eaa489c05ee82245",
+    "original/visualizations/preview.png": "69a82c799d843957b8844096ee37a5ab78ce00ea04100fd6b9436f8abc4cab8a",
+    "global/visualizations/comparison.mp4": "588ce3ba0741d57d49918beb5250bb8e696e1ffc4f7ecf92d689812942c898b1",
+    "global/visualizations/metadata.json": "c863de5497b681c7574ff98ba6dd049fb8266949116d20a37483dd60331bfe26",
+    "global/visualizations/preview.png": "247fdb2a67dda8c66ed85732a0281a8ecfa143523b93123e7978d58fcb71c485"
+  }
+}

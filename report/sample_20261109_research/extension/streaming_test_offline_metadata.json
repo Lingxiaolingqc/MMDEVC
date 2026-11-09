@@ -1,0 +1,111 @@
+{
+  "status": "complete",
+  "model": {
+    "model": "vda_relative_offline",
+    "asset": {
+      "source_directory": "Video-Depth-Anything",
+      "source_repository": "https://github.com/DepthAnything/Video-Depth-Anything",
+      "source_commit": "4f5ae23172ba60fd7bc11ef671cca678842c7072",
+      "repository": "depth-anything/Video-Depth-Anything-Small",
+      "revision": "256875362cff76724b920335dfb4b29dd611f66e",
+      "filename": "video_depth_anything_vits.pth",
+      "bytes": 116440756,
+      "sha256": "13379300b739e659f076a59d52e9801bd8d38c541a7e71f73bbca4dcfb013609",
+      "prediction_type": "inverse_depth_like",
+      "unit": "arbitrary",
+      "alignment": "none"
+    },
+    "mode": "official_offline",
+    "device": "cuda",
+    "precision": "fp16",
+    "input_size": 364,
+    "threads": 8,
+    "parameters": 29035137,
+    "weight_bytes": 116440756,
+    "gt_used_by_model": false,
+    "torch_version": "2.10.0+cu128",
+    "cuda_version": "12.8",
+    "device_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "temporal_windows": "official INFER_LEN=32, OVERLAP=10, padding/keyframes/interpolation unchanged",
+    "alignment": "official relative window stitching; no GT or test scale fitting",
+    "encoder_shapes_nchw": [
+      [
+        32,
+        3,
+        364,
+        644
+      ]
+    ]
+  },
+  "cache_metadata": {
+    "source_fps_nominal": 24.0,
+    "source_duration_s": 2.9166666666666665,
+    "source_size_hw": [
+      540,
+      960
+    ],
+    "output_size_hw": [
+      360,
+      640
+    ],
+    "requested_fps": 24.0,
+    "original_frame_rate": true,
+    "display_rotation_degrees": 0,
+    "effective_fps": 24.0,
+    "sampled_duration_s": 2.875,
+    "max_frames": 100,
+    "requested_frame_limit_reached": false,
+    "timestamp_rule": "all consecutive decoded frames; original PTS retained",
+    "spatial_resize": "aspect-preserving INTER_AREA, even dimensions, no upsampling",
+    "orientation": "apply source display rotation before spatial resize",
+    "clip_id": "course_rollercoaster_70",
+    "scene_group": "davis_rollercoaster",
+    "split": "test",
+    "scene_type": "camera_motion",
+    "source_path": "D:\\Documents\\OneDrive\\OneDrive - HKUST (Guangzhou)\\桌面\\大三上\\AIAA3201(L01)Intro2CV\\Projects\\MMDEVC\\data\\videos\\raw\\course_rollercoaster_70.mp4",
+    "source_sha256": "7268cbecd9806a1e90a416de50dc02e50b4ae01428d5971837cf679dd0c87cb8",
+    "frames_sha256": "e51b3132c434971ce5cd21f34418efb5a23f28ac34381770d896abf584992c4a",
+    "index_sha256": "e06d7838ffbbb40fa26a632e4178d8c39cdb6d7786088f5d7b506ac00170825e",
+    "frames": 70,
+    "color": "RGB uint8",
+    "self_recorded": false,
+    "source_kind": "course_example",
+    "source_url": "https://github.com/DepthAnything/Video-Depth-Anything/blob/4f5ae23172ba60fd7bc11ef671cca678842c7072/assets/example_videos/davis_rollercoaster.mp4",
+    "expected_frames": 70,
+    "scope": "course_example_project"
+  },
+  "prediction_type": "inverse_depth_like",
+  "unit": "arbitrary",
+  "alignment": "none",
+  "gt_used": false,
+  "frames": 70,
+  "depths_sha256": "d3ef61ce92c3ebc61974f580aa9971775e2d45d8988028d28bae5f5557a58356",
+  "valid_sha256": "e1800dbc0429189517f749733da375106e8c6e67d0aa358b38cde6218ec9c507",
+  "saved_repeat": 0,
+  "inference_seconds": 5.928538699983619,
+  "repetitions": 3,
+  "load_seconds_diagnostic": 7.241380700026639,
+  "timing_scope": "resident uint8 RGB through official preprocessing/inference/CPU float32 return; synchronized CUDA; excludes load/decode/disk/render",
+  "first_return_definition": "all input frames already resident; offline official API returns full clip, streaming API returns first frame. Not intrinsic lookahead or live capture waiting time.",
+  "warmup": "offline one 32-frame window; streaming first two calls followed by complete temporal-state reset; no weights updated",
+  "repetition_policy": "same loaded model, streaming state reset and CUDA allocator cache cleared before every measured sequence",
+  "prefix_reset_max_absolute_error": null,
+  "repeat_max_absolute_errors": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "visualization_note": "full-clip fixed normalization is an offline review display, not an online color-scale algorithm",
+  "code_commit": "cb12117f21f2916a0490dc7e56a5c742a2e69895",
+  "implementation_sha256": {
+    "scripts/part2_models/run_vda_mode.py": "874e66c7763ecc15214109d3a5f222da6f0135014a4d24c106669aef3433521e",
+    "src/p3_depth/models/streaming.py": "1ac6a8c295b98e9e4a5c4b357d335c98141d136e0351416327eb790a12cf678b",
+    "src/p3_depth/models/video.py": "bfa6cfe29c7ba591867d302e70f1325603f388edeb7c91c14f5d9e35f330f879",
+    "src/p3_depth/models/runtime.py": "2d93b6074a2b524e5c3a96cb0034d7fd5cd26599d7b9d1b2d34860381325eb99"
+  },
+  "artifacts_sha256": {
+    "depths.npy": "d3ef61ce92c3ebc61974f580aa9971775e2d45d8988028d28bae5f5557a58356",
+    "timing_repeats.csv": "4d96975a070145ae38a720bb88836f59f75c1697a1f0262b9afadda9b0fa8198",
+    "valid.npy": "e1800dbc0429189517f749733da375106e8c6e67d0aa358b38cde6218ec9c507"
+  }
+}

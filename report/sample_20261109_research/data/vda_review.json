@@ -1,0 +1,135 @@
+{
+  "status": "complete_for_declared_quantitative_and_visual_scope",
+  "date": "2026-11-09",
+  "reviewer": "assistant",
+  "quantitative_source_sha256": "5537950c04a6c68fbeeba721330d51cb9da392e0e99995fea748cc924479cf3c",
+  "analysis_markdown_sha256": "9660671ad15fb411270006e789574029713922aeeb02d2bcd4f9fe24840e8459",
+  "inspection_method": "Direct inspection of six matched full-frame samples, all five consecutive ROI sheets and diagnostic plots. Programmatic video decoding verified original timestamps. Not real-time playback.",
+  "overview_frames": [
+    0,
+    14,
+    28,
+    41,
+    55,
+    69
+  ],
+  "consecutive_windows": [
+    [
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    [
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    [
+      32,
+      33,
+      34,
+      35,
+      36,
+      37
+    ],
+    [
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53
+    ],
+    [
+      64,
+      65,
+      66,
+      67,
+      68,
+      69
+    ]
+  ],
+  "roi_xyxy": [
+    100,
+    60,
+    450,
+    260
+  ],
+  "observations": [
+    {
+      "frames": [
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "finding": "VDA reduces the DA train/nearby-track bright-dark-bright change, but passenger/seat detail remains merged."
+    },
+    {
+      "frames": [
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53
+      ],
+      "finding": "No prominent color seam visible in the two inspected official interpolation regions; fine structure remains incomplete."
+    },
+    {
+      "frames": [
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69
+      ],
+      "finding": "Coarse poles and train motion remain visible in both; VDA does not establish complete fine-structure recovery or measured response-latency improvement."
+    }
+  ],
+  "limitations": "No depth GT or latency labels; each model has its own fixed whole-clip display scale. Raw units differ. VDA is offline, not a causal streaming method. Timing is the recorded inference scope, not application FPS.",
+  "prior_observations": "Preserved as preliminary; conclusions here were independently checked against current arrays and matched frames.",
+  "artifacts_sha256": {
+    "analysis.md": "9660671ad15fb411270006e789574029713922aeeb02d2bcd4f9fe24840e8459",
+    "comparison.csv": "435207f447afab8f074bc3e5cd4711a37286302ab4399076ba1f08893f88e87f",
+    "figures/diagnostics.png": "a3e2d7beb4c392ca511f5b38f7e9592e45f231ee93a803cfd52f7f2aaac31621",
+    "figures/overview.png": "4a5443b9793e65470f4b64bf8ce53d23e1bc0c798bd784033055b9784109a74b",
+    "figures/roi_14_19.png": "648d25f573b1b893d812e815ce4296b5e9c05b228720c26461bed9c77aa2a6fd",
+    "figures/roi_24_31.png": "0a9fcf8e754fde353c93fa9df2f7c97963819d88b17a1e8f2aa739ffd9af44fd",
+    "figures/roi_32_37.png": "5e06b873367849d8cd2f3dfd2ffc4e983b0b9f9771792d40aa3f94afd2bf5358",
+    "figures/roi_46_53.png": "50e7b3c897c463549c40e63a0e739d08c8ac3dd21589875f7c573149c3a4c617",
+    "figures/roi_64_69.png": "826bd7424fa31656d3b5600bf303e99f71a52dfcc0027c39286a6a99da32d6e7",
+    "model_resources.json": "fa2afb958709e5c35ef18baf870cb6678c76c8dd904ea2bd008e3885cc1a228a",
+    "per_pair.csv": "297418e1cd2dc0d316a93b577a0ac52c2d9511bf0944f278dc78f1907ccaee13",
+    "quantitative_review.json": "5537950c04a6c68fbeeba721330d51cb9da392e0e99995fea748cc924479cf3c"
+  }
+}

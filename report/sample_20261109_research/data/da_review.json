@@ -1,0 +1,107 @@
+{
+  "status": "complete_for_declared_quantitative_and_visual_scope",
+  "date": "2026-11-09",
+  "reviewer": "assistant",
+  "quantitative_source": "quantitative_review.json",
+  "quantitative_source_sha256": "e600bf9b895cced304b652ba5c32cff503dfb01d9b6032f3fc06656b7b043470",
+  "analysis_markdown_sha256": "62919206e903fe9d80aee1fda0728072291ddc8401cb51957e320d4b4c3b3c9f",
+  "inspection_method": "Direct inspection of diagnostic curves, six uniformly spaced overview frames, three consecutive six-frame full-image sheets and their native-resolution ROI sheets. Saved visualization timestamps were programmatically decoded and checked.",
+  "scope_limit": "Contact-sheet and ROI inspection, not complete real-time video playback or examination of every native-resolution pixel.",
+  "overview_frames": [
+    0,
+    14,
+    28,
+    41,
+    55,
+    69
+  ],
+  "consecutive_windows": [
+    [
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    [
+      32,
+      33,
+      34,
+      35,
+      36,
+      37
+    ],
+    [
+      64,
+      65,
+      66,
+      67,
+      68,
+      69
+    ]
+  ],
+  "roi_xyxy": [
+    100,
+    60,
+    450,
+    260
+  ],
+  "selection": "Six uniform overview frames; two non-overlapping high-T windows plus fixed middle window. ROI is fixed image coordinates, not object tracking. Post-hoc diagnostic selection.",
+  "findings": [
+    {
+      "finding": "Large tracks, supports and the train remain separable from the sky; fine passenger/seat/rail gaps often merge.",
+      "evidence": [
+        "figures/overview.png",
+        "figures/roi_64_69.png"
+      ]
+    },
+    {
+      "finding": "At frames 14, 15 and 16, train and neighboring rail values alternate lighter/darker/lighter while RGB motion remains continuous. Fixed display limits rule out per-frame color rescaling. No GT is available to measure how much change is erroneous.",
+      "evidence": [
+        "figures/roi_14_19.png",
+        "figures/consecutive_14_19.png",
+        "figures/diagnostics.png"
+      ]
+    },
+    {
+      "finding": "Frames 32-37 retain coarse pole outlines with more subtle local changes; evidence does not support claiming that every edge flickers.",
+      "evidence": [
+        "figures/roi_32_37.png",
+        "figures/consecutive_32_37.png"
+      ]
+    },
+    {
+      "finding": "Late train descent and trees entering the image also change whole-frame quantiles; real motion and scene composition must be distinguished from prediction instability.",
+      "evidence": [
+        "figures/consecutive_64_69.png",
+        "figures/roi_64_69.png"
+      ]
+    },
+    {
+      "finding": "All frame medians are zero because exact-zero relative output covers 66.76-75.44 percent of each frame. This statistic cannot establish temporal stability. Finite zeros are valid relative values, not zero meters.",
+      "evidence": [
+        "per_frame.csv",
+        "figures/diagnostics.png"
+      ]
+    }
+  ],
+  "prior_user_observations": "Preserved as preliminary context. These findings were independently checked against current arrays and visual evidence rather than accepted from prior user wording.",
+  "limitations": "No video depth GT. T is not depth accuracy; whole-frame quantile changes also reflect scene composition. Zero relative values are finite model output, not invalid metric depths.",
+  "artifacts_sha256": {
+    "analysis.md": "62919206e903fe9d80aee1fda0728072291ddc8401cb51957e320d4b4c3b3c9f",
+    "figures/consecutive_14_19.png": "07e19e4714a227c346122823999c95f65111e40a541deaa377b9e3e568aa275d",
+    "figures/consecutive_32_37.png": "7e993c63fb394cb9c0524836dd9b80b27308c11acd8f5a5ebb3ebc39821cae31",
+    "figures/consecutive_64_69.png": "ca08358a76521ad7ad0705b45706ad8e55ebd64e36804833c5b5ebbc00d0fe65",
+    "figures/diagnostics.png": "8b1db2f4baede1399dbe7cd036048cee9bc8053fd01b9b34f341a0a69da00d53",
+    "figures/overview.png": "d789b545a37343b8f3e513231d7c87115f2115e1a0bf2c57f7768276d18c8adc",
+    "figures/roi_14_19.png": "77375c27c6c45dfe06363aa3b05d4360e2d6b8930bdaceb186553fed1a5c0b98",
+    "figures/roi_32_37.png": "39841b7d1015ba6346b8115c7eae1f75dc7a0e2c92acdb4fbaa8b740e4b98a91",
+    "figures/roi_64_69.png": "c8322e89d3caead22fab1790dad673c8f14299e8647d3a10dbbadd30e9743c38",
+    "per_frame.csv": "4a2021ef1cae54e151bdccbe23defee4939fc1e66a1c08a6ff7343b0cdf96716",
+    "per_pair.csv": "d24b41642669a5392c534deec3e357cdc1e9d5231425c39e906859bf2fb95b57",
+    "quantitative_review.json": "e600bf9b895cced304b652ba5c32cff503dfb01d9b6032f3fc06656b7b043470",
+    "resources.json": "8c8d1162bf54f58c03d0d29d0e5ecd58632c1f588a2d4cba3cd3d3a26d1fa235",
+    "summary.json": "911701d056bed32e45215d38765e0fc94b469b09fb61730546abfe74c96e82ac"
+  }
+}

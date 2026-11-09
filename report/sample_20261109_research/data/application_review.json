@@ -1,0 +1,81 @@
+{
+  "status": "complete_for_declared_quantitative_and_sampled_visual_scope",
+  "review_date": "2026-11-09",
+  "reviewer": "assistant",
+  "quantitative_source": "quantitative_review.json",
+  "input_frame_count": 70,
+  "controls": [
+    "DA old versus DA new: same prediction and blur sigma, transition only",
+    "E4 old versus E4 new: same prediction and blur sigma, transition only",
+    "DA versus E4 at each fixed transition"
+  ],
+  "visual_method": "Direct inspection of recomputed raw-effect overview, consecutive-frame contact sheets and native-resolution early ROI; no real-time full-video playback claimed",
+  "inspected_figures": [
+    "figures/application_diagnostics.png",
+    "figures/overview.png",
+    "figures/early_subject.png",
+    "figures/consecutive_32_37.png",
+    "figures/consecutive_64_69.png"
+  ],
+  "overview_frames": [
+    0,
+    14,
+    28,
+    41,
+    55,
+    69
+  ],
+  "consecutive_windows": [
+    [
+      32,
+      33,
+      34,
+      35,
+      36,
+      37
+    ],
+    [
+      64,
+      65,
+      66,
+      67,
+      68,
+      69
+    ]
+  ],
+  "roi_frames": [
+    0,
+    14
+  ],
+  "roi_xyxy": [
+    100,
+    60,
+    450,
+    200
+  ],
+  "selection": "Uniform whole-clip overview, fixed middle window, and window containing largest new-threshold model difference; post-hoc diagnostic selection",
+  "findings": [
+    "New thresholds preserve more train/passenger/track/support detail in inspected frames while clouds and late trees remain blurred.",
+    "DA and E4 under the same new thresholds are nearly indistinguishable at inspected scale; no clear visual application improvement attributable to E4.",
+    "Thin structure boundaries retain softening or halos; perfect foreground protection is unsupported."
+  ],
+  "quantitative_interpretation": "Blur weights and RGB output differences describe application changes, not semantic retention accuracy, depth accuracy or perceptual quality.",
+  "limitations": [
+    "No foreground/background labels, ideal blur reference or depth GT",
+    "Only specified samples and consecutive windows inspected visually",
+    "Application thresholds were adjusted after seeing the test clip; not independently validated optimal parameters",
+    "Whole-image means may conceal localized errors"
+  ],
+  "previous_user_observations": "Preserved in conversation and previous records as preliminary observations, not adopted as final evidence",
+  "frozen_results_modified": false,
+  "original_outputs_modified": false,
+  "quantitative_source_sha256": "0bc255d933dfdf8ae33a30f8298da5d883bf3d72d22baad29bfa28b4f83f8d11",
+  "analysis_markdown_sha256": "a3e2d7043b0910eb416efe0cb4d701d97af734054c0fbf31a3446609dffef086",
+  "source_metadata_sha256": {
+    "outputs\\application_exploratory\\course_rollercoaster_70\\transition010_030\\metadata.json": "cae67d170e4939ee92778f5d2e4e6cf181b5755ab77958053ebca7e6e5740c48",
+    "outputs\\application\\course_rollercoaster_70\\metadata.json": "2f3792ca19765e4b15e78b90c1195089e88e6a9ae87a105e0986f19233c67d48",
+    "outputs\\shared\\video_cache\\course_rollercoaster_70\\metadata.json": "42e836a310002a427c44252a9582c5bce7fc24d6a9fe4d139348e9ad427242c0",
+    "outputs\\part1_baseline\\dav2_relative\\test\\course_rollercoaster_70\\metadata.json": "81b6d919031afda9a059fb3cce315c8522bccce42f2f72de69278569d1e541e9",
+    "outputs\\part3_improvement\\test\\course_rollercoaster_70\\E4\\metadata.json": "940222d730692cfbf18825a8ceec6eed9b1652bbfcca8324fbad5ef459940805"
+  }
+}

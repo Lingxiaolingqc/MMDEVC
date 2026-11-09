@@ -1,0 +1,30 @@
+{
+  "status": "complete_for_declared_quantitative_and_sampled_visual_scope",
+  "date": "2026-11-09",
+  "reviewer": "assistant",
+  "independent_reanalysis": true,
+  "findings": [
+    "六个均匀抽样全景：整体轨道、支架和车厢结构相近，新方法未恢复合并的细小结构。",
+    "14–19 帧包含差异最大帧 16：三者都保留 14→15→16 的亮暗亮变化。global 的车厢内部有轻微色块变化，selective 更接近原 E4，未见明确消除闪烁。",
+    "32–37 帧：轨道和支架轮廓相近，没有明显新增的大范围重复轮廓，也没有可靠证据支持新方法更清晰。",
+    "64–69 帧：乘客/座椅细节仍呈锯齿或合并，global/selective 均未解决。",
+    "区域图显示大量可靠内部落在输出为零的天空背景；仅看此域均值会掩盖正值内部的深度冲突，必须分组解释。"
+  ],
+  "decision": "retain_original_E4_from_dev",
+  "verification_sha256": "70b64db0ce5ea034d48d66d0b4c06e544d4e539f3cdfed83f975d02c43938170",
+  "metadata_sha256": "d3e69815a941dce5ce969aa21dc301550297e18a3103102e78871c1c13f0477e",
+  "analysis_markdown_sha256": "dd1b23d48fa0ac0ebaea6514a9cec804075dfd96fc32b5697b1066e1629d9336",
+  "visual_evidence": {
+    "overview.png": "12f854f3667636099225c0c5d9c3d06d91c4f21b7c5ef1e4ee4a2b48c386e7bf",
+    "roi_14_19.png": "0af0ba5bcd8e96b12ac6ca7524b76a45b8c651e6f6c8ed06ba094b3be5d6643e",
+    "roi_32_37.png": "f355980840cce0b4be61a8697b94a7ef7d8af885ab8ba0d1d84f4f71fe49d8a5",
+    "roi_64_69.png": "f57658a2c14c749da26927a363517b1178ef7faf83bff060530cc10b8c9926f3"
+  },
+  "diagnosis_sha256": "76860e82638abd57f6f5a0fddc846bfad2c251f0b27abfafa0989ac9acd7f5f5",
+  "limitations": [
+    "No depth GT",
+    "Post-hoc already-viewed clip",
+    "Sampled visual inspection, not full playback",
+    "One bounded attempt, no optimality claim"
+  ]
+}

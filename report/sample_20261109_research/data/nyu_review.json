@@ -1,0 +1,135 @@
+{
+  "status": "complete_for_declared_quantitative_and_visual_scope",
+  "date": "2026-11-09",
+  "reviewer": "assistant",
+  "quantitative_source": "quantitative_review.json",
+  "quantitative_source_sha256": "e528c4d121edcbe4e1f2fec08f3a014e347e5e5fc008885767b3c1337e27c3cb",
+  "analysis_markdown_sha256": "122eb2befe635b57c9c7f2a8a6463733ba2639b199705f6c81b53a8c7785c303",
+  "verification": "All 654 course and boundary metrics recomputed from hash-checked arrays; official splits.mat test IDs verified. Distance-bin AbsRel and signed bias independently reconciled with weighted image scores; pooled RMSE reconciled with weighted squared image RMSE.",
+  "inspection_method": "Direct inspection of all 13 selected six-panel RGB/GT/prediction/absolute-error/signed-error/depth-edge figures, their four overview sheets and all three statistical figures.",
+  "scope_limit": "This is a declared post-hoc diagnostic sample, not random selection or visual inspection of all 654 test images. No inference, GT scale correction or raw prediction modification.",
+  "selection": {
+    "nyuv2_0413": "AbsRel rank quantile 0",
+    "nyuv2_1217": "AbsRel rank quantile 0.25",
+    "nyuv2_0056": "AbsRel rank quantile 0.5",
+    "nyuv2_1293": "AbsRel rank quantile 0.75",
+    "nyuv2_0650": "AbsRel rank quantile 0.99",
+    "nyuv2_0088": "AbsRel rank quantile 1",
+    "nyuv2_1208": "Extreme median prediction/GT ratio",
+    "nyuv2_0033": "Existing lowest/median boundary F1 selection",
+    "nyuv2_0037": "Existing lowest/median boundary F1 selection",
+    "nyuv2_0042": "Existing lowest/median boundary F1 selection",
+    "nyuv2_0299": "Existing lowest/median boundary F1 selection",
+    "nyuv2_1354": "Existing lowest/median boundary F1 selection",
+    "nyuv2_0387": "Existing lowest/median boundary F1 selection"
+  },
+  "observations": [
+    {
+      "sample_id": "nyuv2_0413",
+      "evidence": "samples/nyuv2_0413.png",
+      "observation_zh": "橱柜、台面与墙的大结构和深度接近 GT，AbsRel 0.0135、RMSE 0.0501 m；水槽及台面物品的锐利边缘仍较少，边界 F1 只有 0.2045。低整体误差不保证细节完整。"
+    },
+    {
+      "sample_id": "nyuv2_1217",
+      "evidence": "samples/nyuv2_1217.png",
+      "observation_zh": "沙发、墙和右侧书架的大层次保留；左侧明亮门口区域预测比 GT 近，沙发旁物品过渡较平滑。平均偏差 −0.2092 m。"
+    },
+    {
+      "sample_id": "nyuv2_0056",
+      "evidence": "samples/nyuv2_0056.png",
+      "observation_zh": "床和墙能区分，整体偏远 +0.1872 m；床沿、枕头和床头柜的部分过渡变弱，边界 F1 0.1123。"
+    },
+    {
+      "sample_id": "nyuv2_1293",
+      "evidence": "samples/nyuv2_1293.png",
+      "observation_zh": "沙发与柜体轮廓存在，柜体大面积略偏远；中左侧镜面区域预测明显比指定 GT 近，局部误差超过图中色标上限。镜像和 filled GT 的物理含义需谨慎解释。"
+    },
+    {
+      "sample_id": "nyuv2_0650",
+      "evidence": "samples/nyuv2_0650.png",
+      "observation_zh": "门沿、门把手和洗手台的结构能辨认，但右侧门板区域与 GT 有很大深度分歧，RMSE 1.6099 m。可确认相对课程 GT 的误差；仅凭 RGB 不能断定该区域真实物理深度或错误成因。"
+    },
+    {
+      "sample_id": "nyuv2_0088",
+      "evidence": "samples/nyuv2_0088.png",
+      "observation_zh": "书堆前景与远背景仍分层，但大范围预测偏远，课程截断后中位比值仍为 1.6812，AbsRel 0.6198。80,327 个评测像素被截至 10 m；原预测评测域最大值为 16.7584 m。结构可辨与米制准确是两个问题。"
+    },
+    {
+      "sample_id": "nyuv2_1208",
+      "evidence": "samples/nyuv2_1208.png",
+      "observation_zh": "沙发、电视墙、壁炉和门口层次仍可见，整体却偏近；中位比值 0.6757，平均偏差 −0.8130 m。玻璃桌及远处开口附近与 GT 的差异更明显，不把所有误差归因于同一材质。"
+    },
+    {
+      "sample_id": "nyuv2_0033",
+      "evidence": "samples/nyuv2_0033.png",
+      "observation_zh": "GT 中右侧显示器的深度轮廓明显，预测中该结构变弱并接近背景；没有超过既定阈值的预测边缘，F1=0，但 RMSE 仅 0.1475 m。"
+    },
+    {
+      "sample_id": "nyuv2_0037",
+      "evidence": "samples/nyuv2_0037.png",
+      "observation_zh": "两侧墙面及复印机的大结构仍在，过渡比 GT 平滑；仅 4 个预测边缘像素且均未匹配，F1=0，不能写成“场景结构全部失败”。"
+    },
+    {
+      "sample_id": "nyuv2_0042",
+      "evidence": "samples/nyuv2_0042.png",
+      "observation_zh": "白板与墙的大平面深度接近 GT；右下桌面小范围突变未达到预测边缘阈值。文字纹理没有对应深度变化本身不是错误。"
+    },
+    {
+      "sample_id": "nyuv2_0299",
+      "evidence": "samples/nyuv2_0299.png",
+      "observation_zh": "桌面和部分椅背外轮廓保留，椅腿、包和小物体边界较少；远侧墙窗区域整体偏远。中位比值 1.2079、RMSE 1.0363 m，兼有尺度与细节问题。"
+    },
+    {
+      "sample_id": "nyuv2_1354",
+      "evidence": "samples/nyuv2_1354.png",
+      "observation_zh": "部分椅背和柜子轮廓保留，细灯杆较弱；镜中区域的指定 GT 更远，而预测接近墙面，造成较大局部误差。此类反射区域不能据 filled GT 自动推断真实表面位置。"
+    },
+    {
+      "sample_id": "nyuv2_0387",
+      "evidence": "samples/nyuv2_0387.png",
+      "observation_zh": "门框和近墙边界保持，室内椅子、桌面物品及部分椅腿更平滑或不完整；AbsRel 0.0584 较低，但 boundary F1 0.5016，说明平均误差会掩盖局部细节损失。"
+    }
+  ],
+  "interpretation_limits": [
+    "Primary scores use the required course clipping and equal per-image average. Raw and pixel-pooled diagnostics are separate.",
+    "Predicted/GT ratios describe mixed scale and shape errors; no ratio is applied to correct test predictions.",
+    "Image and pixel distributions are descriptive; multiple images share scenes and are not independent trials.",
+    "Depth boundaries are not all RGB texture edges. Zero thresholded F1 is not total scene-depth failure.",
+    "Reflective/transmissive regions and filled GT can complicate physical interpretation; visible disagreement is not independent proof of material-specific causation.",
+    "CUDA allocated/reserved peaks and synchronized inference timing are recorded-run measurements, not full-application memory/FPS."
+  ],
+  "prior_notes": "Older user and assistant observations remain preserved. All findings listed here were rechecked against current numeric and visual evidence.",
+  "validation_tests": {
+    "test_course_protocol.py": 4,
+    "test_video_metrics.py": 5,
+    "result": "all passed"
+  },
+  "artifacts_sha256": {
+    "analysis.md": "122eb2befe635b57c9c7f2a8a6463733ba2639b199705f6c81b53a8c7785c303",
+    "depth_bins.csv": "583b96e0e98af88a16b6c42347c92acc593ab917bc8ef40f308b83381d4de69b",
+    "figures/boundaries.png": "08f74c7ff75cc85e04fd572c9b005ff7fad46d71bf87458c820a0e22cb1d5270",
+    "figures/overview_1.png": "9f3d9b5aff91c3e79d8fe024c9f1c9c23f6a6014bfb5cc7a15e3f695821c3b4a",
+    "figures/overview_2.png": "7391758a1982f3367c06310c330271434cc0553382b98157d4cf98e44f96c0d4",
+    "figures/overview_3.png": "9cad94fe9a7a13085afd2c4b3d2205d0ff72ff97c607fc13d681490ab9c753ce",
+    "figures/overview_4.png": "8a2028c3c9f8942087fe4f118b6e04c8c1ae0129bbe9620f4880e411c270c60e",
+    "figures/per_image_distributions.png": "0f0977e31e339319dcb3a8187177c76ebacb906e0b3feb5e4008900f63c258ed",
+    "figures/scale_and_distance.png": "922499eab5e52102ff951dab34d8f4889306bdae7476cfdc94a24a90ff3e3529",
+    "per_image.csv": "eb84c7b0c0f00ddb02d564fd468e58a6da337b23242667e7a4b929664fc09f4b",
+    "quantitative_review.json": "e528c4d121edcbe4e1f2fec08f3a014e347e5e5fc008885767b3c1337e27c3cb",
+    "resources.json": "f3716fbf5dfac18187ff2d8373666ce5a29b36198f7a49a3d4c89585c7ae7d58",
+    "samples/nyuv2_0033.png": "6504237213ed494758be9e867232a916380d2d56a4b2136f631b9133bb6be9f6",
+    "samples/nyuv2_0037.png": "f10c5e6f03fa9d405d4408ff19807cc8f6a44aff767987bc791e12f0c9be4735",
+    "samples/nyuv2_0042.png": "761254f127a57ceaf20a3e5095b201a95cf82969f1a83c215ddd963259f8582c",
+    "samples/nyuv2_0056.png": "adf08c711894297e05689179d3ce734184a6155a277603bcff9d6229435aeed4",
+    "samples/nyuv2_0088.png": "b014d3c9664fd3797ea51a0484828a890e71297b4cc640117fa31caceecd2663",
+    "samples/nyuv2_0299.png": "f13d5d1a3916b3db816bfb015133cac4b95720b95cee009c7aa890eae2aa08ef",
+    "samples/nyuv2_0387.png": "08539869bc23eb02bfedcdaf63b70e64e6dd2f637e99e62063849dc5c8c75785",
+    "samples/nyuv2_0413.png": "11ee0e81942838862a9787166caeb39db6ecbd66b2d93c3898f8947c3afc47b7",
+    "samples/nyuv2_0650.png": "3f8c90bc2723f455041cbc87f9c687f92f19fb3dc68c77971f0032e45a2ee22c",
+    "samples/nyuv2_1208.png": "2e21943053d92991eabf13d7b001d0510c7fd0ae79381416f57c555cfffe9cb6",
+    "samples/nyuv2_1217.png": "0b8a6f4706c1db74a27793d972182959e62e5c2a82a82a05fd30d4660fec03c5",
+    "samples/nyuv2_1293.png": "daad3be383db10e7d9fc3da569e03c55d311475dfa8c6aac310d319ca5ca1f25",
+    "samples/nyuv2_1354.png": "1015622f201350c7e0b5689fed084362419092c34641c74051f945af595c77b4",
+    "summary.json": "a7de755ac86ffce8c5dd3de19191116aceb0b66deca4d4a4415e99327cf91149"
+  }
+}
