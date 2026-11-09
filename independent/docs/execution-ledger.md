@@ -19,8 +19,9 @@ Ruling: Maintain this tracked ledger and task briefs with native Python/PowerShe
 
 ## Task status
 
-- Task 1: in progress; video tests written before implementation.
-- Tasks 2-7: pending.
+- Tasks 1-7: implemented and verified; see the chronological evidence below and final artifact checks.
+- External submission dependency: obtain 100 genuine source frames or TA clarification. Current exports remain explicitly provisional at 70 frames.
+- Teaching notes are prepared, but the user's understanding has not been assessed in an interactive walkthrough.
 
 Task 1 evidence: 5 video tests RED -> GREEN; official source independently decodes 70 frames at 960x540, 24 FPS, SHA-256 7268cbecd9806a1e90a416de50dc02e50b4ae01428d5971837cf679dd0c87cb8. First three previews saved. CUDA verification awaits wheel download.
 Task 2 evidence: 11 cache/model-contract tests observed failing before implementation; implementation now checked by full suite. Official source revisions recorded in manifests/sources.json.
@@ -56,3 +57,11 @@ Final: Ruling: the reviewer did not judge report/README/figure authoring because
 Final: Ruling: obtaining 100 source frames is external, not a code defect. Keep strict readiness false and preserve the provisional warning pending course clarification. Cost if wrong: a submission could otherwise claim an unmet requirement.
 Final: Ruling: the reviewer did not repeat neural experiments; measured performance remains supported by this session and saved per-image/per-frame evidence, rather than an independent GPU rerun. Cost if wrong: an undiscovered model/evaluation integration error would need a separate reproduction.
 Final: Ruling: RAFT and affine alignment remain optional and unused. They are not needed for the implemented controlled Direction A study. Cost if wrong: potential gains from other backends remain unmeasured.
+
+Task 7 final evidence (2026-11-09): the official CVPR report compiled successfully offline with no LaTeX warnings: seven body pages plus one reference page, 13 resolved references. Every rendered page was visually inspected. Actual scientific figures include static comparisons, fixed video frames, the three highest-AbsRel NYU failures, and development flow/history/support/weight diagnostics. The diagnostic figure was added during final QA, after fusion implementation; geometry and synthetic correctness had already been checked numerically before real-video fusion.
+
+Final artifact validation: all four primary/efficient videos decode 70 frames at 24 FPS; comparison canvas 1280x776, application canvas 1280x388. Frames 0, 35, and 69 from each export were visually inspected. Three raw caches contain finite float32 arrays shaped 70x360x640, with matching source/frame/config relationships. The 69,415,126-byte preview ZIP contains nine entries including its manifest; all archived file sizes, SHA-256 values, and CRC checks pass. It includes the PDF and raw predictions. Strict packaging was exercised against the real run and rejected the short source without creating depth_results.zip. Full evidence: results/deliverable-verification.json.
+
+Final validation: 77/77 tests pass in the complete suite. Local document links resolve. No weights, datasets, raw caches, videos, or ZIPs are staged. Report author Eugene remains a draft to confirm before group submission. Keep the checkout and feature branch; the user has already requested branch-based updates. Publish only that named branch, with no merge or force push and no unsolicited PR creation.
+
+Isolation audit: sibling MMDEVC remains clean on main at 6fccdfdb4759b2b8e4391926843105892e8986e4. The independent branch diff against its base contains only independent/ paths. Vendored official ieeenat_fullname.bst retains one upstream trailing space in its header; leave the attributed file unchanged and exclude that file from our whitespace check.

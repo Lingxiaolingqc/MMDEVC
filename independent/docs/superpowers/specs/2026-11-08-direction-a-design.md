@@ -1,6 +1,6 @@
-# Independent Direction A: proposed design
+# Independent Direction A: approved design
 
-Date: 2026-11-08, Asia/Hong_Kong. Status: proposed for review; implementation has not started.
+Date: 2026-11-08, Asia/Hong_Kong. Approved by the user's "go". Implementation and measured experiments are complete; the external 70-versus-100-frame submission issue remains. See the execution ledger and implementation-plan completion record.
 
 ## Intent and success
 

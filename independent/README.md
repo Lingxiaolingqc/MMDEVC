@@ -1,40 +1,136 @@
 # Independent Computer Vision Project 3
 
-An independently developed, local-first implementation of the revised AIAA3201 assignment, with Direction A: flow-guided temporal depth fusion.
+An independently developed implementation of the revised AIAA3201 assignment, using official Small pretrained models and **Direction A: flow-guided temporal fusion**. All experiments ran locally on an RTX 4070 Laptop GPU with 8 GB VRAM.
 
-**Current status:** planning and isolated Git setup. There are no new performance results yet.
+**Status:** required static baselines, video comparisons, fusion ablations, synthetic controls, and repeated runtime measurements are complete. The demo is **provisional**: the linked official rollercoaster source contains 70 real frames, while the brief requests 100. No exported frames were duplicated or invented. Obtain a longer course copy or TA clarification before claiming submission compliance.
 
-This checkout lives beside `MMDEVC`, on `feat/independent-direction-a`. It shares the GitHub repository's history for eventual integration, but only `independent/` is checked out. No groupmate implementation or historical result is used as our implementation or baseline.
+This separate checkout lives beside the original `MMDEVC` folder on `feat/independent-direction-a`. Only `independent/` is checked out. No groupmate implementation, parameter choices, caches, or historical results were used as our code or baseline. Common Git ancestry exists for eventual integration by pull request.
 
-## Start here
+## Our measured results
 
-- [Proposed design and exact assignment requirements](docs/superpowers/specs/2026-11-08-direction-a-design.md)
-- [Implementation and experiment plan](docs/superpowers/plans/2026-11-08-direction-a.md)
+| Experiment | Result |
+| --- | --- |
+| Middlebury, all 15 quarter-resolution pairs | 1.895 px mean pair disparity MAE; 75.69% mean valid coverage |
+| NYU, all 654 test images, raw metric scale | AbsRel 0.11455; RMSE 0.39889 m; delta1 0.89222 |
+| Primary frozen fusion | 18.23% lower temporal proxy; 97.58% baseline-edge strength retained |
+| Original full pipeline | 2.77 median FPS, three synchronized trials |
+| Secondary efficient configuration | 4.34 median FPS; 16.82% lower temporal proxy; 97.64% edge strength retained |
 
-## Local machine and compute
+Video scores measure **stability diagnostics, not metric-depth accuracy**. Aggressive smoothing can lower temporal change while erasing boundaries or delaying true changes. The efficient variant is a disclosed follow-up selected on development data after the initial primary evaluation; both configurations/results remain preserved.
 
-The detected GPU is an NVIDIA GeForce RTX 4070 Laptop GPU with 8,188 MiB VRAM. The revised instructions require Small depth models and recommend the video repository's default FP16. The course GPU is optional; the assignment specifies no bonus for using it. Use it only if a measured memory or runtime limit makes it useful. Course data can also be downloaded from the official links; server access is not required to begin.
+![Same-frame comparison](results/figures/video-comparison.png)
+
+Displays use fixed whole-clip ranges. VDA and DA V2 do not share metric units; fusion shares the unchanged DA V2 display range.
+
+## Read and learn
+
+- [CVPR report PDF](report/independent-report.pdf), [source](report/main.tex), [measured values](report/results.tex), and [template attribution](report/TEMPLATE-SOURCE.md)
+- [Results, runtime table, and artifact guide](docs/experiments.md)
+- [Experiment and decision ledger](docs/execution-ledger.md)
+- [Design and exact course protocol](docs/superpowers/specs/2026-11-08-direction-a-design.md) and [implementation plan](docs/superpowers/plans/2026-11-08-direction-a.md)
+- Learning stages: [video](docs/learning/01-video.md), [depth inputs/weights/predictions](docs/learning/02-depth.md), [geometry and metrics](docs/learning/03-geometry-metrics.md), [flow/warping](docs/learning/04-flow-warp.md), [fusion/lag](docs/learning/05-fusion.md)
+
+Local deliverables are `report/independent-report.pdf`, `runs/final/comparison.mp4`, `runs/final/background-blur.mp4`, the faster variant under `runs/efficient/`, and an explicitly provisional ZIP under `outputs/`. Large datasets, checkpoints, caches, videos, and archives stay outside Git. Source, summaries, per-image metrics, report, and selected figures are tracked.
+
+## Environment
+
+Run commands from **this `independent/` directory**. Tested: Python 3.12.6, torch 2.8.0+cu128, torchvision 0.23.0+cu128, NumPy 2.2.6, OpenCV 4.11.0.86. The exact environment is in `requirements.lock.txt`.
+
+```powershell
+uv venv --python 3.12 .venv
+uv pip install --python .venv/Scripts/python.exe torch==2.8.0 torchvision==0.23.0 --index-url https://download.pytorch.org/whl/cu128
+uv pip install --python .venv/Scripts/python.exe --no-deps -r requirements.lock.txt
+uv pip install --python .venv/Scripts/python.exe --no-build-isolation --no-deps -e .
+./.venv/Scripts/python.exe -c 'import torch; print(torch.cuda.is_available(), torch.cuda.get_device_name())'
+./.venv/Scripts/python.exe -m pytest -q
+```
+
+Install CUDA wheels from the official PyTorch index. No foundation-model training is required. UniDepth's optional point-cloud/training CUDA extensions are not needed for our RGB-only inference or course metrics. Its imported visualization utilities require the pinned wandb dependency, but no external tracking service is initialized.
+
+The course GPU is optional and has no documented assessment bonus. Use it for a measured compute constraint or access to a longer course-provided clip.
+
+## Official sources and inputs
+
+Clone these repositories under `third_party/`, then check out the exact revisions in [sources.json](manifests/sources.json):
+
+```powershell
+git clone https://github.com/DepthAnything/Depth-Anything-V2 third_party/Depth-Anything-V2
+git clone https://github.com/DepthAnything/Video-Depth-Anything third_party/Video-Depth-Anything
+git clone https://github.com/lpiccinelli-eth/UniDepth third_party/UniDepth
+```
+
+Do not silently modify or update upstream checkouts between runs. Automatic enforcement of clean matching upstream revisions is a documented deferred guard; current checkouts match the recorded revisions. Upstream code and weights retain their licenses and attribution.
+
+| Input | Destination | Official source |
+| --- | --- | --- |
+| Middlebury input and left GT ZIPs | Extract both into `data/middlebury/`; pairs appear in `MiddEval3/trainingQ/` | [Inputs](https://vision.middlebury.edu/stereo/submit3/zip/MiddEval3-data-Q.zip), [GT](https://vision.middlebury.edu/stereo/submit3/zip/MiddEval3-GT0-Q.zip) |
+| NYU labeled MAT | `data/nyu/nyu_depth_v2_labeled.mat` | [Labeled file](https://horatio.cs.nyu.edu/mit/silberman/nyu_depth_v2/nyu_depth_v2_labeled.mat) |
+| NYU split | `data/nyu/splits.mat` | [Official split](https://horatio.cs.nyu.edu/mit/silberman/indoor_seg_sup/splits.mat) |
+| DA V2 relative Small | `checkpoints/depth_anything_v2_vits.pth` | [Checkpoint](https://huggingface.co/depth-anything/Depth-Anything-V2-Small/resolve/main/depth_anything_v2_vits.pth) |
+| VDA relative Small | `checkpoints/video_depth_anything_vits.pth` | [Checkpoint](https://huggingface.co/depth-anything/Video-Depth-Anything-Small/resolve/main/video_depth_anything_vits.pth) |
+| UniDepthV2 ViT-S config and safetensors | `checkpoints/unidepth-v2-vits14/config.json` and `model.safetensors` | [Official files](https://huggingface.co/lpiccinelli/unidepth-v2-vits14/tree/main) |
+| Videos | VDA's `assets/example_videos/` | [Official examples](https://github.com/DepthAnything/Video-Depth-Anything/tree/main/assets/example_videos) |
+
+Validate files against [assets.json](manifests/assets.json). Direct Hugging Face connections reset, so a mirror served the same official model bytes; all three weight SHA-256 values match published official pointers/file pages. NYU's original-format MAT was obtained through a transport mirror, with its hash, official split, dataset shapes, and first 1 MiB against the university download checked. No preprocessed replacement or groupmate cache was used.
+
+## Reproduce
+
+Use fresh output names: completed baseline caches, final evaluations, benchmarks, and archives refuse to overwrite their files. Existing local results are already present.
+
+```powershell
+# Actual source inspection; exit 2 intentionally reports the 70-frame shortfall.
+./.venv/Scripts/python.exe -m depth_project.cli inspect-video --input third_party/Video-Depth-Anything/assets/example_videos/davis_rollercoaster.mp4
+
+# Required static baselines.
+./.venv/Scripts/python.exe -m depth_project.cli stereo --output runs/stereo-new
+./.venv/Scripts/python.exe -m depth_project.cli nyu --output runs/nyu-new
+
+# Unchanged frame-wise and official offline video baselines.
+./.venv/Scripts/python.exe -m depth_project.cli baseline --model dav2 --input third_party/Video-Depth-Anything/assets/example_videos/davis_rollercoaster.mp4 --output runs/new/rollercoaster-dav2.npz
+./.venv/Scripts/python.exe -m depth_project.cli baseline --model vda --input-size 392 --input third_party/Video-Depth-Anything/assets/example_videos/davis_rollercoaster.mp4 --output runs/new/rollercoaster-vda.npz
+
+# Separate development predictions and bounded search.
+./.venv/Scripts/python.exe -m depth_project.cli baseline --model dav2 --input third_party/Video-Depth-Anything/assets/example_videos/Tokyo-Walk_rgb.mp4 --output runs/new/tokyo-dav2.npz
+./.venv/Scripts/python.exe -m depth_project.cli sweep --input third_party/Video-Depth-Anything/assets/example_videos/Tokyo-Walk_rgb.mp4 --baseline runs/new/tokyo-dav2.npz --output runs/new/development
+
+# Frozen primary configuration: do not tune it using the final clip.
+./.venv/Scripts/python.exe -m depth_project.cli evaluate-video --input third_party/Video-Depth-Anything/assets/example_videos/davis_rollercoaster.mp4 --baseline runs/new/rollercoaster-dav2.npz --video-reference runs/new/rollercoaster-vda.npz --config configs/final.json --output runs/new/final
+
+# Faster flow configuration; all inference/flow/fusion is recomputed.
+./.venv/Scripts/python.exe -m depth_project.cli benchmark --input third_party/Video-Depth-Anything/assets/example_videos/davis_rollercoaster.mp4 --config configs/efficient.json --output runs/new/runtime-efficient.json --repeats 3
+
+# Explicitly provisional preview with raw floats and checksums.
+./.venv/Scripts/python.exe -m depth_project.cli package --run-dir runs/new/final --output outputs/depth_results_preview_new.zip --allow-short --report report/independent-report.pdf
+```
+
+`configs/final.json` is the primary frozen selection. `configs/efficient.json` is the separate follow-up, computing flow at width 320 and rescaling displacements to the output canvas. Preserve its chronology. [The resolution study](scripts/flow_resolution_study.py) reproduces that engineering comparison from the original local development caches; review and commit any newly generated configuration before a secondary evaluation.
+
+Timing includes actual depth inference, both flow directions, and fusion, with two warmups and CUDA synchronization. Decode/resize and disk encoding are excluded. Cached replay is labeled separately. See [original runtime trials](results/runtime.json) and [efficient trials](results/runtime-efficient.json).
+
+## Report and evidence
+
+```powershell
+./.venv/Scripts/python.exe scripts/make_figures.py
+./.venv/Scripts/python.exe scripts/write_report_values.py
+# From report/, use a standard LaTeX toolchain or portable Tectonic:
+tectonic main.tex
+```
+
+The report uses the official CVPR template. The independent draft uses the configured Git name, Eugene; confirm the final group author line before submission. ArXiv upload is optional under the revised brief.
+
+Summaries are under `results/`; raw floating-point predictions are under ignored `runs/`. [NYU per-image metrics](results/nyu-per-image.csv) include all 654 images. Failure examples are selected automatically as the three highest test AbsRel images, IDs 468, 87, and 516. Video temporal residuals and edge retention remain proxies because the supplied clip has no depth ground truth.
 
 ## Safe Git workflow
 
-Run Git commands from `CV_Project3_Independent`, not from the parent Project folder or `MMDEVC`.
+Run Git commands inside `CV_Project3_Independent`, not the parent vault or sibling checkout. Stage explicit paths under `independent/` and work on independent feature branches.
 
 ```powershell
 git branch --show-current
 git status --short
 git add -- independent/<specific-file>
 git diff --cached --stat
-git commit -m "feat: describe one independent contribution"
-# When publishing is intended, explicitly name this branch:
+git commit -m 'feat: describe one independent contribution'
 git push -u origin HEAD:refs/heads/feat/independent-direction-a
 ```
 
-Local hooks reject commits outside the independent branch prefixes, staged changes outside `independent/`, and pushes to other remote branches, including `main`. Hook enforcement is local and can be bypassed; it does not install GitHub branch protection. The initial setup enables these hooks only in this checkout. It does not alter global Git configuration.
-
-Future feature branches should use `feat/independent-*`, `fix/independent-*`, `docs/independent-*`, or `experiment/independent-*`. Use pull requests for integration; do not push to `main` or overwrite the group's existing paths.
-
-Large inputs, checkpoints, upstream repositories, prediction caches, and rendered videos stay ignored. Track small manifests, source, configurations, reproducible summaries, and selected report figures when implemented.
-
-## Independence and learning
-
-Our own runs will establish the baselines. Each stage follows: worked example -> explanation -> implementation -> meaningful checks -> a short explanation in the user's own words. Official model components will be attributed and pinned; independently written glue, fusion, evaluation, and analysis will be identified clearly.
+Local hooks reject commits outside independent branch prefixes, staged changes outside `independent/`, and pushes to shared branches including `main`. They use local `core.hooksPath=independent/.githooks`; they do not install GitHub branch protection and can be bypassed. Use pull requests for eventual integration, without a force push or automatic merge into `main`.
