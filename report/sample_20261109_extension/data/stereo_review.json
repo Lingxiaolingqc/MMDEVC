@@ -1,0 +1,46 @@
+{
+  "status": "complete_for_declared_quantitative_and_visual_scope",
+  "date": "2026-11-09",
+  "reviewer": "assistant",
+  "quantitative_source": "quantitative_review.json",
+  "quantitative_source_sha256": "e6ade98930ef0aa1232b8500425ac63abc2aab100c05bbcc6eee24ccdcd2d61b",
+  "analysis_markdown_sha256": "c0fb97e54c2ea4c6b936b3669b5e86830f810e6b19ab0f3bf0ccdfeb70e6967f",
+  "roi_recheck_sha256": "05ec9ad0dac6de2ccff2aa5e8d81304f35e56c40afe711999dd6b87be9e8cc2f",
+  "inspection_method": "Directly inspected all 15 scenes in three six-column overview sheets, four saved eight-panel scene diagnostics, two full LR comparisons, five rectangular LR crops and both statistical charts plus expanded Pipes Z display.",
+  "scope_limit": "Overview review is not a native-resolution examination of every pixel. Detailed scene selection covers long tails, poor coverage, distant geometry and a comparatively strong baseline example.",
+  "inspected_artifact_sha256": {
+    "outputs/part1_baseline/stereo/all/analysis/figures/depth_bins.png": "98a977f5dbc93381a398278931e84098203a1b8a2bc512ec830a9c08fd69f641",
+    "outputs/part1_baseline/stereo/all/analysis/figures/Pipes_depth_geometry.png": "4a5f731fcf8351bc265a1e14bf585c84cc9c3a71ab1e4321161a53c775599459",
+    "outputs/part1_baseline/stereo/all/analysis/figures/scenes_01_05.png": "e63976275a8ec77dd376e6a27246d5924801a180765f676fe0839cde73cfddf6",
+    "outputs/part1_baseline/stereo/all/analysis/figures/scenes_06_10.png": "a017342912f52a78b5d2211d42fc36b01cd1a0c9879b0b292139f61bf45c68c3",
+    "outputs/part1_baseline/stereo/all/analysis/figures/scenes_11_15.png": "da33ecdca56dcb7ed4286b3994c4ed92dbdc64ebe14412bbc87685c970e08bb1",
+    "outputs/part1_baseline/stereo/all/analysis/figures/scene_errors_and_coverage.png": "7371e39f2799830fa39f8c73fcd42c373549304f8327b00fa4b8b38f34ab1258",
+    "outputs/part1_baseline/stereo/all/PianoL/visualizations/PianoL.png": "8f3b535eec7238cf91f823adc247685587f901898864e551bf866e9d6a53fb8f",
+    "outputs/part1_baseline/stereo/all/Pipes/visualizations/Pipes.png": "7661b37e95114fc9a0d1eb2cc2765938a918534b518cf76f74b9aafafb025626",
+    "outputs/part1_baseline/stereo/all/Teddy/visualizations/Teddy.png": "f295069df5fcbbfe97203cb0ef6875d84d8b7be87910357e2596e6aef12f73ca",
+    "outputs/part1_baseline/stereo/all/Jadeplant/visualizations/Jadeplant.png": "8dcf4a0cc27f15e2f5487ab5b0ff20ed191ba799454714197d1944d058931c44",
+    "outputs/part1_baseline/stereo/lr_analysis/visualizations/Jadeplant.png": "18aada8f3be33e1fd9f5d030ae29f38975365abeb2c9a57aa4b7ee40e358c17b",
+    "outputs/part1_baseline/stereo/lr_analysis/visualizations/Shelves.png": "ee85e8e71b68f335ff57130aa5c67223082a522a943d62ad29e3f29a8d77a069",
+    "outputs/part1_baseline/stereo/lr_analysis/review_crops/Jadeplant_branches.png": "fd9e35b81d8f2e166ba223e9a075e5b1481ba8c26cf36cfd7600ebbba072d038",
+    "outputs/part1_baseline/stereo/lr_analysis/review_crops/Jadeplant_grid.png": "bef88af4989d18516ddb8cf2dfe912c7d365f9f1be2f2d798c99390b8d424c1b",
+    "outputs/part1_baseline/stereo/lr_analysis/review_crops/Jadeplant_right_border.png": "5128b59a50bf77785e03a1270bfa582088c726fb01f36bf1add33cbbda9feddd",
+    "outputs/part1_baseline/stereo/lr_analysis/review_crops/Shelves_hanger.png": "c4703c0cba3c97f52eb6583b59556de45c8913493575941d96ae5e4a21e9ba7a",
+    "outputs/part1_baseline/stereo/lr_analysis/review_crops/Shelves_cane_and_bottles.png": "bc26f480d8db370bbbdbf7cefe82bc5b3a2e986041bdf208c0e92c133ba550b7"
+  },
+  "findings": [
+    "Large structures recover in several scenes; fine structures, clutter boundaries and some variants remain fragmented.",
+    "Custom LR lowers conditional mean disparity error but loses coverage; retained values are unchanged and invalid-as-bad failure fraction rises.",
+    "Rejected pixels include many within 1 px of GT, especially where no right-side comparison is available; right-border loss must not be called proof of bad left prediction.",
+    "PianoL and Jadeplant have long disparity error tails and low coverage. Pipes has larger metric errors despite moderate disparity MAE.",
+    "GT depth derives from GT disparity. Distance-bin trends also reflect scene/calibration changes; 6+ m only contains dev Pipes."
+  ],
+  "prior_user_observations": "Kept as preliminary history; this review independently reexamined current evidence.",
+  "checks": {
+    "full_script_fresh_output": "outputs/test-temp/stereo-analysis-20261109",
+    "repeat_result": "Six CSVs and five existing figures reproduced byte-for-byte; added Pipes display also checked.",
+    "targeted_existing_tests": 22,
+    "targeted_test_status": "passed",
+    "original_scene_predictions_modified": false
+  },
+  "implementation_history": "git diff from baseline commit shows evaluation/stereo.py only gained compare_lr_rejection; main evaluator unchanged. Current code hashes match the later saved LR analysis."
+}

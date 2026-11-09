@@ -1,0 +1,89 @@
+{
+  "status": "complete",
+  "split": "dev",
+  "clip": "dev_tokyo_100",
+  "setting": {
+    "schema_version": 1,
+    "status": "bounded_posthoc_candidate",
+    "representation": "inverse_depth_like",
+    "hypothesis": "In RGB/flow-consistent interiors, depth disagreement can suppress useful history; selectively relax it while retaining hard gates and edge protection.",
+    "depth_sigma_factor": 2,
+    "reliable_photo_max": 0.05,
+    "reliable_fb_max_px": 0.5,
+    "edge_guard_normalized": 0.02,
+    "edge_guard_radius_px": 2,
+    "selection_basis": "One factor and one guard rule specified before candidate generation; half existing photo/flow sigmas and an explicit 2%-of-span edge band. Heuristic, not calibrated probabilities or optimized values.",
+    "candidate_modes": [
+      "original",
+      "global",
+      "selective"
+    ],
+    "stop_rule": "One comparison; do not tune on rollercoaster. Keep original E4 if dev has no clear visible gain. Always report negative results.",
+    "notes": "The fixed spatial guard uses only current raw DA, RGB and flow, never improved history, future frames or GT. Recursive history differs across modes. Outside guard, the original rule is retained for that mode's own history; sequence outputs need not equal original E4."
+  },
+  "setting_sha256": "cc134e6b029bc2fe1e559c95c493a5adea36b97212765645f4c57be52cfaa40c",
+  "dev_decision": null,
+  "source_suite_sha256": "36657e999f2ace206490add0efa947a929143899f4058be89c113366e65558ad",
+  "source_verification_sha256": "3215501706b3749d1f1a57f438460888c3391e83309da6f3f7ffdd2ed427addf",
+  "timing_protocol": "CPU only, OpenCV threads=8; two-frame warmup per mode; three repeats with rotated mode order; excludes I/O/render/scoring. Includes allocation and per-mode implementation overhead, not optimized theoretical complexity.",
+  "interpretation": "One predeclared factor and guard; current-DA-derived fixed masks; no GT; all modes recursive. Outside guard retains the original rule for the candidate's own history, not necessarily identical output to original. No test retuning.",
+  "visual_sampling": {
+    "uniform_full_frames": 6,
+    "roi": [
+      200,
+      60,
+      390,
+      350
+    ],
+    "starts": [
+      28,
+      73
+    ],
+    "max_change_frame": 75,
+    "max_change_selection": "largest whole-frame selective-versus-original normalized absolute difference"
+  },
+  "implementation_sha256": {
+    "scripts/part3_improvement/run_confidence_refinement.py": "0d0b1860629c002175bb8471a519ea95bfe5e30a4ebac779e291e53c75c277b2",
+    "src/p3_depth/temporal/refinement.py": "a48b19c98b396dec0012f32f0ba13b41219a48afe457723a22a29c5e68dba4cb",
+    "src/p3_depth/temporal/fusion.py": "98a2a1ca28c2f1e4cfb49c58a43af7d1ef8128ecb2ac52c20cabc20c13f66beb"
+  },
+  "artifacts_sha256": {
+    "comparison.csv": "3821571eba2e5c183721eaba9a0ed0f804195175b6e5112bcde5b3049fb21b19",
+    "per_frame_change.csv": "c5639abb6dd29ab677515f71ef192a62cc9f5396ba33b1ee65277433e59f7b9b",
+    "regions.csv": "fcc3f0772a1df6390b0b56436d03e96878007989115506c5349ed573abb3303a",
+    "timings.csv": "061300ec2b672631836caca3487a18aab654091f132e6c5fd6fbc160884ab3cf",
+    "figures/overview.png": "9296fd4723c170ff45a29c5a7428aff0b8ccd6f3065f81de9a8aac1f010062d1",
+    "figures/roi_28_33.png": "e24544514187f4ddcd6bd35c4a7dd5d129ee195be6ad0d73694ce24e0e0d47bc",
+    "figures/roi_73_78.png": "19e0e36a2dbabb6474d40a999a13a4c1d830e45b7c8822344667dec356e21f46",
+    "global/depths.npy": "e2977e5e8a8ad405f32162c94648bcf58fec834538eb5ee8dc653cf79d36be41",
+    "global/history_weight.npy": "6454f1e58e23f19ddd1b410c2f5d0c5d8f423cef34f9ccc28b4aa11d77646572",
+    "global/metadata.json": "dceb7b7b3fe42b1207d5d0a9e6e4044ce6176e410a01e5afb282ebaa694b9839",
+    "global/metrics.json": "2b1909273229b458a65b7fd6fd0a355a4c4a61579a3d7489ba1842bcd089beff",
+    "global/per_pair.csv": "4c4c6917c3e67223bdfae1a4b633c72653a94d35f63870a417670800e94ec181",
+    "global/valid.npy": "1c841e055e5a824be42783986c3abd23a0cdb7216894c61ce6026987b008baed",
+    "original/depths.npy": "3b59976d73a265c574b7edcddae6db360b081661af26a8e5828d772efc105f4f",
+    "original/history_weight.npy": "3cdef97b284a3d1af93e53e648694cfbe2a97af4f0c2193308a0669f56cda59d",
+    "original/metadata.json": "879edf07e23d07e81bacbe8abb9d7a678dce7c216eea40c8e9fd5cf6e377fdbd",
+    "original/metrics.json": "27f05d8c57646db4866be83790ef2f4342ad0b338ed96e17974b9c50f352b600",
+    "original/per_pair.csv": "0dc162b387799a91bb2e4f1d0bce2d6c806235568e78aa78f013f8604d93dd11",
+    "original/valid.npy": "1c841e055e5a824be42783986c3abd23a0cdb7216894c61ce6026987b008baed",
+    "selective/depths.npy": "254e137195668098040a9869ab04dc427695c72e863b017e2ee03b32218c413c",
+    "selective/history_weight.npy": "202bd5d8de72ed17fa13aa77aa7d93dad9a531e093f0206cd5e0b1b2879f105d",
+    "selective/metadata.json": "6f177a51a8584381af9bd948914e27764292ecd5da655d8f3a818c9b3617e1e7",
+    "selective/metrics.json": "8a62ff3c6423bc1028a001e092ccade584c74417b6f68451cdb3a24bf4501810",
+    "selective/per_pair.csv": "961fdc05f4c0d6d6fa4defd33e4c85fb8477ac9393b032563bb46e9d266feb0d",
+    "selective/valid.npy": "1c841e055e5a824be42783986c3abd23a0cdb7216894c61ce6026987b008baed",
+    "visualizations/comparison.mp4": "04287420fce744181442cda6c8f701c59d59e6f55106dd17f6260fed605c06cf",
+    "visualizations/metadata.json": "a8e54c6843c76d7180f8928e06debfd4ce6545085c036bb6c821c474801af1d1",
+    "visualizations/preview.png": "7cd141ad61f534592b6038cc35e02d124584eb889a2d786d6e1948f12bed92ce",
+    "selective/visualizations/comparison.mp4": "46abfeff7c1994e16ce0dd30df414c1c18b71b47dac1a44c276a51bad5d5a1e9",
+    "selective/visualizations/metadata.json": "26a74bb8b1f97c1a6fa58c063964af4e7d2a021f42a629194beae55918bf0f6d",
+    "selective/visualizations/preview.png": "465e26b06be78eb1437b4027ca2e628949dd2db34823d6900a8065f12e263578",
+    "original/visualizations/comparison.mp4": "eec8c2858cdb95cf06f7f00181aa10263ec8c8ed4ed147ebeaaf4a13de82caca",
+    "original/visualizations/metadata.json": "1f25410d43f48f7c9894032ff932df0cebdd99d42a5c7f7391d8be4f51ec9156",
+    "original/visualizations/preview.png": "6e4133bf428a0d027a13d91cc61ee92ac0d5ad2acf5c183bed8b7d62871c972c",
+    "global/visualizations/comparison.mp4": "e89bc6d35c8f845b9ab2601e288dd92fda3da4b2a816ee4c24b4d8b9ec404504",
+    "global/visualizations/metadata.json": "23449714aed871d15ac8a2d0cd6b431b6b9824a3460ac73db635bb196561b71c",
+    "global/visualizations/preview.png": "a02530e3d1f8264bda48f5664239969aba4313cddd0cf6070c75edf236c2f040"
+  }
+}

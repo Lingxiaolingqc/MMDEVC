@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "status": "bounded_posthoc_candidate",
+  "representation": "inverse_depth_like",
+  "hypothesis": "In RGB/flow-consistent interiors, depth disagreement can suppress useful history; selectively relax it while retaining hard gates and edge protection.",
+  "depth_sigma_factor": 2,
+  "reliable_photo_max": 0.05,
+  "reliable_fb_max_px": 0.5,
+  "edge_guard_normalized": 0.02,
+  "edge_guard_radius_px": 2,
+  "selection_basis": "One factor and one guard rule specified before candidate generation; half existing photo/flow sigmas and an explicit 2%-of-span edge band. Heuristic, not calibrated probabilities or optimized values.",
+  "candidate_modes": [
+    "original",
+    "global",
+    "selective"
+  ],
+  "stop_rule": "One comparison; do not tune on rollercoaster. Keep original E4 if dev has no clear visible gain. Always report negative results.",
+  "notes": "The fixed spatial guard uses only current raw DA, RGB and flow, never improved history, future frames or GT. Recursive history differs across modes. Outside guard, the original rule is retained for that mode's own history; sequence outputs need not equal original E4."
+}
+

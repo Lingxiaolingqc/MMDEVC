@@ -1,0 +1,188 @@
+{
+  "status": "completed_with_scope_limits",
+  "review_date": "2026-11-09",
+  "reviewer": "assistant",
+  "user_observations_used_as_proof": false,
+  "independent_reanalysis": true,
+  "quantitative_review_sha256": "3c001845f26c416c5fb18040b1477d45debf028080c7d2a128e619cebb9025e6",
+  "analysis_sha256": "0f178db9f8fbf86b8303c40d8834f4fcc6fb02ff90bcf23edaf14449d10ae1e2",
+  "original_outputs_modified": false,
+  "frozen_mainline_changed": false,
+  "visual_evidence": {
+    "E4_no_photo": {
+      "source_video_sha256": "566c682326717467dd4d15dff2a63a1af570cc729108fb7e4fc4062579c957f4",
+      "decoded_frames": 70,
+      "timestamps_verified": true,
+      "overview_frames": [
+        0,
+        14,
+        28,
+        41,
+        55,
+        69
+      ],
+      "consecutive_windows": [
+        [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        [
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ]
+      ],
+      "roi_xyxy": [
+        100,
+        60,
+        450,
+        260
+      ],
+      "selection": "Uniform overview; six-frame windows around the largest absolute per-pair T difference and largest mean raw prediction difference from full E4. Diagnostic selection, not random.",
+      "images_sha256": {
+        "consecutive_10_15.png": "cfeb50533e5b592666e280e8a5324224d15fc0007dce0d50aaeaf0ad87bcf886",
+        "consecutive_11_16.png": "8b88a5629013c59669f49144bd88add3a61354ae34d8bf0aa950ed2d9bbcb7c6",
+        "overview.png": "3ff5b3713cfbf4294297e94d6ba7e89f382cccf2163557f6e3df84f22f47eaab"
+      },
+      "visual_inspection_status": "inspected_by_assistant"
+    },
+    "E4_no_flow": {
+      "source_video_sha256": "6650a1688ab81340a6c3380e2d12a306877caf92d8bcb798c502fbcf9073db62",
+      "decoded_frames": 70,
+      "timestamps_verified": true,
+      "overview_frames": [
+        0,
+        14,
+        28,
+        41,
+        55,
+        69
+      ],
+      "consecutive_windows": [
+        [
+          64,
+          65,
+          66,
+          67,
+          68,
+          69
+        ]
+      ],
+      "roi_xyxy": [
+        100,
+        60,
+        450,
+        260
+      ],
+      "selection": "Uniform overview; six-frame windows around the largest absolute per-pair T difference and largest mean raw prediction difference from full E4. Diagnostic selection, not random.",
+      "images_sha256": {
+        "consecutive_64_69.png": "f181e2c4d16eec2c07cdbfa278c675ddd46c6da633bd9d43d88a105f6e9968a8",
+        "overview.png": "47af9814dd0b35decf4c198474c8577c77d93400cc3ae1424b0db5ad1d863b74"
+      },
+      "visual_inspection_status": "inspected_by_assistant"
+    },
+    "E4_no_depth": {
+      "source_video_sha256": "d91989e93892935d5ec83d9fad95a9e2df538fea27126751e38a09871254019f",
+      "decoded_frames": 70,
+      "timestamps_verified": true,
+      "overview_frames": [
+        0,
+        14,
+        28,
+        41,
+        55,
+        69
+      ],
+      "consecutive_windows": [
+        [
+          14,
+          15,
+          16,
+          17,
+          18,
+          19
+        ]
+      ],
+      "roi_xyxy": [
+        100,
+        60,
+        450,
+        260
+      ],
+      "selection": "Uniform overview; six-frame windows around the largest absolute per-pair T difference and largest mean raw prediction difference from full E4. Diagnostic selection, not random.",
+      "images_sha256": {
+        "consecutive_14_19.png": "4c1061e70a0f7914c5c54540f5db035c329f8fb772f28d3a0d7852b0c5a08a77",
+        "overview.png": "f4673a440abbd46e4934882315299a842b49928ec8b7cf070ac1f4b393745de2"
+      },
+      "visual_inspection_status": "inspected_by_assistant"
+    },
+    "E4_no_edge": {
+      "source_video_sha256": "f9a66e54418b1f706904c39b7261d4d147889a5963f53dea7c1c9bae1a30c8ed",
+      "decoded_frames": 70,
+      "timestamps_verified": true,
+      "overview_frames": [
+        0,
+        14,
+        28,
+        41,
+        55,
+        69
+      ],
+      "consecutive_windows": [
+        [
+          55,
+          56,
+          57,
+          58,
+          59,
+          60
+        ],
+        [
+          62,
+          63,
+          64,
+          65,
+          66,
+          67
+        ]
+      ],
+      "roi_xyxy": [
+        100,
+        60,
+        450,
+        260
+      ],
+      "selection": "Uniform overview; six-frame windows around the largest absolute per-pair T difference and largest mean raw prediction difference from full E4. Diagnostic selection, not random.",
+      "images_sha256": {
+        "consecutive_55_60.png": "d094344e5b750729f6c5941cb9cc8acd89e49569988e2d8198324b11f7dfc8e7",
+        "consecutive_62_67.png": "ad03a7125067863c1f889501651421953a5cc6fc2d5bf080de60435dcf34fa67",
+        "overview.png": "3b65c8da41876552e1d4ac01d0d3c5503d2cf517cd661c88f64796c5ecbe4d8a"
+      },
+      "visual_inspection_status": "inspected_by_assistant"
+    }
+  },
+  "conclusions": [
+    "All four removals lower T and raise departure from DA; depth and edge have the largest effects here.",
+    "The relative influence of factors differs from Tokyo; this is descriptive evidence from two clips.",
+    "Full E4 and leave-one-out outputs show subtle local changes but no established overall perceptual winner.",
+    "E3 shows more mottled/smoothed local train and passenger structure in the inspected early windows.",
+    "Retain frozen full E4; report the smoothing tradeoff and limited visual evidence."
+  ],
+  "limitations": [
+    "Fixed RGB/flow reference excludes some occlusion and boundary regions.",
+    "No depth GT; lower T is not accuracy or perceptual quality.",
+    "Departure from DA is not error; DA is not ground truth.",
+    "Frame pairs are correlated; no significance test.",
+    "Removing a soft term preserves hard gates and optical flow warping.",
+    "Historical and new runtime measurements are not a shared benchmark.",
+    "Post-hoc study; frozen main result is unchanged.",
+    "Decoded still sequences, not real-time playback; diagnostic windows are not random; the fixed crop does not cover every moving object position."
+  ]
+}

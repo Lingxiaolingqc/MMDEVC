@@ -1,0 +1,111 @@
+{
+  "status": "complete",
+  "model": {
+    "model": "vda_relative_offline",
+    "asset": {
+      "source_directory": "Video-Depth-Anything",
+      "source_repository": "https://github.com/DepthAnything/Video-Depth-Anything",
+      "source_commit": "4f5ae23172ba60fd7bc11ef671cca678842c7072",
+      "repository": "depth-anything/Video-Depth-Anything-Small",
+      "revision": "256875362cff76724b920335dfb4b29dd611f66e",
+      "filename": "video_depth_anything_vits.pth",
+      "bytes": 116440756,
+      "sha256": "13379300b739e659f076a59d52e9801bd8d38c541a7e71f73bbca4dcfb013609",
+      "prediction_type": "inverse_depth_like",
+      "unit": "arbitrary",
+      "alignment": "none"
+    },
+    "mode": "official_offline",
+    "device": "cuda",
+    "precision": "fp16",
+    "input_size": 364,
+    "threads": 8,
+    "parameters": 29035137,
+    "weight_bytes": 116440756,
+    "gt_used_by_model": false,
+    "torch_version": "2.10.0+cu128",
+    "cuda_version": "12.8",
+    "device_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "temporal_windows": "official INFER_LEN=32, OVERLAP=10, padding/keyframes/interpolation unchanged",
+    "alignment": "official relative window stitching; no GT or test scale fitting",
+    "encoder_shapes_nchw": [
+      [
+        32,
+        3,
+        364,
+        644
+      ]
+    ]
+  },
+  "cache_metadata": {
+    "source_fps_nominal": 15.0,
+    "source_duration_s": 13.0,
+    "source_size_hw": [
+      720,
+      1280
+    ],
+    "output_size_hw": [
+      360,
+      640
+    ],
+    "requested_fps": 15.0,
+    "original_frame_rate": true,
+    "display_rotation_degrees": 0,
+    "effective_fps": 15.0,
+    "sampled_duration_s": 6.6,
+    "max_frames": 100,
+    "requested_frame_limit_reached": true,
+    "timestamp_rule": "all consecutive decoded frames; original PTS retained",
+    "spatial_resize": "aspect-preserving INTER_AREA, even dimensions, no upsampling",
+    "orientation": "apply source display rotation before spatial resize",
+    "clip_id": "dev_tokyo_100",
+    "scene_group": "tokyo_walk",
+    "split": "dev",
+    "scene_type": "camera_motion",
+    "source_path": "D:\\Documents\\OneDrive\\OneDrive - HKUST (Guangzhou)\\桌面\\大三上\\AIAA3201(L01)Intro2CV\\Projects\\MMDEVC\\data\\videos\\raw\\dev_tokyo_100.mp4",
+    "source_sha256": "097f16c33dd8c8d1d2a24d9ea31a90b76bd0ee324b958a47385183e3547a63a8",
+    "frames_sha256": "0901a884008143f7de1849773e3d590aa2c4f13956c9d0f483cbc466532d6154",
+    "index_sha256": "2ad9749f3a19c9f9c4802c2fa6b090dece7e231879ffee1c96ab0ba791c5a141",
+    "frames": 100,
+    "color": "RGB uint8",
+    "self_recorded": false,
+    "source_kind": "public_example",
+    "source_url": "https://github.com/DepthAnything/Video-Depth-Anything/blob/4f5ae23172ba60fd7bc11ef671cca678842c7072/assets/example_videos/Tokyo-Walk_rgb.mp4",
+    "expected_frames": 100,
+    "scope": "public_example_project"
+  },
+  "prediction_type": "inverse_depth_like",
+  "unit": "arbitrary",
+  "alignment": "none",
+  "gt_used": false,
+  "frames": 100,
+  "depths_sha256": "61ee97660a0128e80c41cab14c0120ccc81b83289cc2eb1ad0bd5ca51430aa5c",
+  "valid_sha256": "1c841e055e5a824be42783986c3abd23a0cdb7216894c61ce6026987b008baed",
+  "saved_repeat": 0,
+  "inference_seconds": 7.686742299993057,
+  "repetitions": 3,
+  "load_seconds_diagnostic": 9.68900430004578,
+  "timing_scope": "resident uint8 RGB through official preprocessing/inference/CPU float32 return; synchronized CUDA; excludes load/decode/disk/render",
+  "first_return_definition": "all input frames already resident; offline official API returns full clip, streaming API returns first frame. Not intrinsic lookahead or live capture waiting time.",
+  "warmup": "offline one 32-frame window; streaming first two calls followed by complete temporal-state reset; no weights updated",
+  "repetition_policy": "same loaded model, streaming state reset and CUDA allocator cache cleared before every measured sequence",
+  "prefix_reset_max_absolute_error": null,
+  "repeat_max_absolute_errors": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "visualization_note": "full-clip fixed normalization is an offline review display, not an online color-scale algorithm",
+  "code_commit": "cb12117f21f2916a0490dc7e56a5c742a2e69895",
+  "implementation_sha256": {
+    "scripts/part2_models/run_vda_mode.py": "874e66c7763ecc15214109d3a5f222da6f0135014a4d24c106669aef3433521e",
+    "src/p3_depth/models/streaming.py": "1ac6a8c295b98e9e4a5c4b357d335c98141d136e0351416327eb790a12cf678b",
+    "src/p3_depth/models/video.py": "bfa6cfe29c7ba591867d302e70f1325603f388edeb7c91c14f5d9e35f330f879",
+    "src/p3_depth/models/runtime.py": "2d93b6074a2b524e5c3a96cb0034d7fd5cd26599d7b9d1b2d34860381325eb99"
+  },
+  "artifacts_sha256": {
+    "depths.npy": "61ee97660a0128e80c41cab14c0120ccc81b83289cc2eb1ad0bd5ca51430aa5c",
+    "timing_repeats.csv": "3ee6ceadd3aa56c33cf7a045a73cd0f453d732585cfa98ee5afeac698d31e2a7",
+    "valid.npy": "1c841e055e5a824be42783986c3abd23a0cdb7216894c61ce6026987b008baed"
+  }
+}
