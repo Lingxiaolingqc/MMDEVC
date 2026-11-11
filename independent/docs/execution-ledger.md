@@ -1,5 +1,11 @@
 # Execution ledger - plan: docs/superpowers/plans/2026-11-08-direction-a.md
 
+## Objective revision on 2026-11-11
+
+The user prioritizes strongest measurable performance, with freedom to change direction. docs/performance-search.md supersedes the initial fixed Direction A choice and blanket exclusion of adaptation. Main quantitative target is improvement over our unchanged UniDepthV2-S NYU reference under the teacher's exact protocol. A named SOTA comparison requires a matched rerun. New accuracy experiments remain proposed.
+
+The user observed no visible demo difference. Direct comparison of all 70 saved maps found mean absolute change of 0.2215% of the frozen display range, median zero, 95th percentile 1.6329%, and 8.9145% of pixels changing by more than 1% of that range. These are prediction differences, with unknown video depth accuracy. A separate six-FPS diagnostic retains all frames and adds a fixed 0-2%-range absolute-change display. Its 70 decoded frames and rate were verified. The preview is selected by maximum mean frame change, and its layout was visually inspected. The main video and preview archive retain their original measured outputs.
+
 User approved implementation on 2026-11-08. Base: `965a5e6`. Spec: `docs/superpowers/specs/2026-11-08-direction-a-design.md`.
 
 ## Pre-flight

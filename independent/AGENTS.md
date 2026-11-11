@@ -30,4 +30,6 @@ Start each learning stage with one concrete example and a familiar analogy. Trac
 
 ## Current phase
 
+On 2026-11-11 the user clarified that measurable performance takes priority over retaining Direction A. Follow docs/performance-search.md for the revised objective. Explore competing techniques within the course rules and select by development evidence. Earlier restrictions choosing only flow fusion or excluding adaptation are superseded. Preserve the existing measured reference runs and use independent feature branches.
+
 The user approved implementation with "go" on 2026-11-08. Execute the design and implementation plan in `docs/superpowers/`, maintaining the execution ledger and reporting actual verification evidence.

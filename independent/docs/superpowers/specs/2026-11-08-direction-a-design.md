@@ -1,5 +1,7 @@
 # Independent Direction A: approved design
 
+Updated objective on 2026-11-11 supersedes this document's fixed direction and exclusion of adaptation. Explore competing approaches for the strongest course-protocol performance. See [performance search](../../performance-search.md). The design below records the completed initial study.
+
 Date: 2026-11-08, Asia/Hong_Kong. Approved by the user's "go". Implementation and measured experiments are complete; the external 70-versus-100-frame submission issue remains. See the execution ledger and implementation-plan completion record.
 
 ## Intent and success

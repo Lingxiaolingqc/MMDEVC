@@ -1,5 +1,9 @@
 # Independent Computer Vision Project 3
 
+**Updated objective, 2026-11-11.** The user prioritizes the strongest measurable performance and permits changing direction. [The performance-search plan](docs/performance-search.md) supersedes the initial commitment to Direction A. The report and results below describe the completed initial study. New metric-accuracy candidates have not yet been evaluated.
+
+The local runs/diagnostics/fusion-difference-slow.mp4 shows a quarter-speed comparison with an amplified absolute prediction-change panel. [Measured change statistics](results/fusion-difference-diagnostic.json) explain why the original comparison appears similar.
+
 An independently developed implementation of the revised AIAA3201 assignment, using official Small pretrained models and **Direction A: flow-guided temporal fusion**. All experiments ran locally on an RTX 4070 Laptop GPU with 8 GB VRAM.
 
 **Status:** required static baselines, video comparisons, fusion ablations, synthetic controls, and repeated runtime measurements are complete. The demo is **provisional**: the linked official rollercoaster source contains 70 real frames, while the brief requests 100. No exported frames were duplicated or invented. Obtain a longer course copy or TA clarification before claiming submission compliance.
