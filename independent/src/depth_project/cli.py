@@ -30,6 +30,9 @@ def main(argv=None):
     baseline.add_argument('--precision',choices=['fp16','fp32'],default='fp16')
     nyu=commands.add_parser('nyu')
     nyu.add_argument('--output',type=Path,default=Path('runs/nyu'))
+    metric = commands.add_parser('metric-improvement')
+    metric.add_argument('--config', type=Path, required=True)
+    metric.add_argument('--output', type=Path, required=True)
     sweep=commands.add_parser('sweep')
     sweep.add_argument('--input',type=Path,required=True)
     sweep.add_argument('--baseline',type=Path,required=True)
@@ -71,6 +74,9 @@ def main(argv=None):
     elif args.command=='nyu':
         from .experiments import run_nyu
         run_nyu(root,args.output)
+    elif args.command == 'metric-improvement':
+        from .metric_experiments import run_metric_evaluation
+        run_metric_evaluation(root, args.config, args.output)
     elif args.command=='sweep':
         from .evaluation import run_development_sweep
         result=run_development_sweep(args.input,args.baseline,args.output)

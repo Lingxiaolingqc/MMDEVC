@@ -2,6 +2,16 @@
 
 ## Objective revision on 2026-11-11
 
+## Metric execution on 2026-11-12
+
+User authorized strongest course-compliant performance search. Implementation plan docs/superpowers/plans/2026-11-12-metric-performance.md executes the approved performance-search design. Ruling: reuse this isolated feature checkout and execute inline, with native Windows bookkeeping. Previous bash bookkeeping incompatibility remains applicable. Ruling: keep foundation input resolution fixed and exclude multi-resolution candidates from this comparison to respect the course resource rule.
+
+All 795 NYU development images have original and horizontal-flip predictions. Whole scene split using seed 320112 gives 577 fitting images and 218 validation images in 62 reserved scenes, with no test overlap. Exact identities and IDs are saved. Five numerical calibration/filter tests and three residual-refiner identity/finite/multiplicative tests were observed RED then GREEN. CLI integration regression was observed RED then GREEN. Complete suite 86 passing.
+
+The 28 simple candidates select flip weight 0.25 and global scale 0.9413383. Validation AbsRel falls from 0.1206857 to 0.1082135. Guided filtering and additional flip weights remain recorded as negative/alternative findings. A 388,001-parameter RGB-guided residual CNN trained for 50 epochs before the declared 20-epoch patience rule stopped training. Best validation checkpoint is epoch 30, AbsRel 0.1027521, 14.86% below the validation baseline. Only fitting images supplied gradients; full-resolution validation selected the checkpoint. The foundation checkpoint remained frozen. This is supervised NYU development adaptation.
+
+Ruling: distribute the small independently trained refiner as safetensors under artifacts/ so reproduction does not depend on ignored run caches or unsafe pickle loading. Foundation checkpoints remain external. The method configuration and refiner digest are being committed before the 654-image test evaluation. Earlier baseline/failure examples have already been examined, and this history will be disclosed. No improved test score has yet been inspected.
+
 The user prioritizes strongest measurable performance, with freedom to change direction. docs/performance-search.md supersedes the initial fixed Direction A choice and blanket exclusion of adaptation. Main quantitative target is improvement over our unchanged UniDepthV2-S NYU reference under the teacher's exact protocol. A named SOTA comparison requires a matched rerun. New accuracy experiments remain proposed.
 
 The user observed no visible demo difference. Direct comparison of all 70 saved maps found mean absolute change of 0.2215% of the frozen display range, median zero, 95th percentile 1.6329%, and 8.9145% of pixels changing by more than 1% of that range. These are prediction differences, with unknown video depth accuracy. A separate six-FPS diagnostic retains all frames and adds a fixed 0-2%-range absolute-change display. Its 70 decoded frames and rate were verified. The preview is selected by maximum mean frame change, and its layout was visually inspected. The main video and preview archive retain their original measured outputs.
