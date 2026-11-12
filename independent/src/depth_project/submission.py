@@ -1,7 +1,7 @@
 """Explicit submission inventory with frame-count and compliance checks."""
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import tempfile
 import zipfile
 
@@ -11,7 +11,7 @@ from .video import inspect_video
 from .render import comparison_canvas_hw
 
 
-def build_submission(run_dir,output_zip,allow_short=False,report_path=None):
+def build_submission(run_dir,output_zip,allow_short=False,report_path=None,supplemental_files=None):
     run_dir=Path(run_dir);output_zip=Path(output_zip)
     if output_zip.exists():
         raise FileExistsError("Refusing to overwrite an existing submission archive")
@@ -68,6 +68,19 @@ def build_submission(run_dir,output_zip,allow_short=False,report_path=None):
         if not report.is_file() or report.suffix.lower()!='.pdf':
             raise ValueError("Report must be an existing PDF")
         files.append((report,'report/independent-report.pdf'))
+    names = {name.casefold() for _, name in files} | {'manifest.json'}
+    for name, source in (supplemental_files or {}).items():
+        archive_path = PurePosixPath(name)
+        if not name or archive_path.is_absolute() or '..' in archive_path.parts or '\\' in name or ':' in name:
+            raise ValueError('Supplemental archive path must be a safe relative path')
+        canonical = archive_path.as_posix()
+        if canonical.casefold() in names:
+            raise ValueError('Duplicate supplemental archive path')
+        source = Path(source)
+        if not source.is_file():
+            raise ValueError('Supplemental file must exist')
+        files.append((source, canonical))
+        names.add(canonical.casefold())
     inventory={'submission_ready':compliant,'processed_frames':count,'requested_frames':summary['requested_frames'],'fps':summary['fps'],'warning':None if compliant else 'Provisional: the official source is shorter than the required 100 frames. Obtain a longer course copy or TA clarification.','files':[{'path':name,'bytes':path.stat().st_size,'sha256':sha256_file(path)} for path,name in files]}
     output_zip.parent.mkdir(parents=True,exist_ok=True)
     with tempfile.NamedTemporaryFile(dir=output_zip.parent,suffix='.zip',delete=False) as stream:

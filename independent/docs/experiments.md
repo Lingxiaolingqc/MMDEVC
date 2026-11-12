@@ -1,5 +1,23 @@
 # Measured experiments and deliverables
 
+## Final metric improvement on 2026-11-12
+
+The selected final improvement is development-calibrated RGB-guided residual refinement of frozen UniDepthV2 ViT-S. The 28 simple candidates and a 388,001-parameter learned refiner were selected using a whole-scene development split of 577 fitting and 218 validation images. Best checkpoint epoch 30 and configuration/weight digest were committed at ad3b536 before the 654-image test run.
+
+| Method | AbsRel | RMSE (m) | Delta1 |
+| --- | ---: | ---: | ---: |
+| Unchanged UniDepthV2-S | 0.11455 | 0.39889 | 0.89222 |
+| Global scale | 0.10151 | 0.39484 | 0.89714 |
+| Flip averaging | 0.11427 | 0.39640 | 0.89432 |
+| Selected flip + scale | 0.10109 | 0.39251 | 0.89939 |
+| Learned residual refinement | **0.09564** | **0.37080** | **0.91374** |
+
+This is a 16.50% reduction in actual metric-depth AbsRel, with a scene-cluster bootstrap 95% interval of 12.89%-19.94%. 431 images improve and 223 worsen. Median synchronized compute rises from 48.8 to 127.3 ms/image, with about 512 MiB peak allocated. Baseline predictions reproduce exactly, with maximum pixel discrepancy zero. The unchanged foundation input/checkpoint and exact course output/crop/masks/aggregation are shared. This is supervised NYU development adaptation. It establishes improvement over the named course reference under this setting; broader published SOTA comparisons remain unmeasured.
+
+See [complete metric results](../results/metric-improvement.json), [paired image scores](../results/metric-residual_refiner-per-image.csv), [development search](../results/metric-development-search.json), [training curve records](../results/metric-refiner-training.json), and [GT/error comparisons](../results/figures/metric-comparison.png). Figure rows use largest gain, median change, and largest regression. Metric application blur uses a manually chosen shared 3 m focus threshold and 0.4 m transition, showing near/far regions in the same selected example.
+
+The remaining sections preserve the initial required baselines and temporal study.
+
 All results below are our own local runs on an RTX 4070 Laptop GPU. The [execution ledger](execution-ledger.md) records configuration freezes, review findings, fixes, and decisions. The [README](../README.md) gives setup and reproduction commands.
 
 ## Static baselines

@@ -1,5 +1,7 @@
 # Performance objective updated on 2026-11-11
 
+Completed on 2026-11-12. The selected 388,001-parameter refiner reduces test AbsRel from 0.11454576 to 0.09564452 (16.50%), RMSE from 0.39888770 to 0.37080295 m, and raises delta1 from 0.89221783 to 0.91374112. Selection used the scene-disjoint development split, and configuration/checkpoint commit ad3b536 predates test inference. See results/metric-improvement.json and report/metric-main.tex. The candidate list below records the original search plan.
+
 The user clarified that the objective is the strongest measurable performance within the course rules. Explore competing directions and select using development results. The existing Direction A implementation is an initial experiment. Its 18.23% temporal-proxy reduction leaves the mandatory NYU metric-depth accuracy unchanged. Its normal-speed visual effect is subtle.
 
 This instruction supersedes the earlier design's choice to retain Direction A and its blanket exclusion of model adaptation. Preserve the completed reference runs and compare each new candidate with its own unchanged model. Continue using independent feature branches.
@@ -28,4 +30,4 @@ For each comparison, record the task, input modality, checkpoint/model size, dat
 
 The script scripts/diagnose_fusion_difference.py creates a separate six-FPS, quarter-speed diagnostic. It preserves all 70 source frames and displays original RGB, DA V2, fusion, and a fixed-scale absolute prediction-change map. The change map is magnified with saturation at 2% of the original display range. The preview uses the frame with largest mean absolute change. It supports inspection of where the method acts. True depth accuracy on this video remains unknown.
 
-The next model-comparison experiments are proposed here and have not yet run. This update does not claim a new NYU accuracy gain or a reproduced SOTA result.
+The main metric experiment is complete. It improves the named course reference under NYU development adaptation. Other published models have not been rerun under this protocol, so a universal SOTA ranking remains unestablished.

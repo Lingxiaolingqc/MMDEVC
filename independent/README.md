@@ -1,16 +1,31 @@
 # Independent Computer Vision Project 3
 
-**Updated objective, 2026-11-11.** The user prioritizes the strongest measurable performance and permits changing direction. [The performance-search plan](docs/performance-search.md) supersedes the initial commitment to Direction A. The report and results below describe the completed initial study. New metric-accuracy candidates have not yet been evaluated.
+**Metric improvement completed, 2026-11-12.** The selected development-calibrated residual refiner reduces NYU AbsRel by **16.50%** against unchanged UniDepthV2 ViT-S on all 654 test images under the same course protocol. It uses 577 development images for fitting and 218 scene-disjoint images for selection. This is supervised NYU adaptation with frozen foundation weights. [Complete results](results/metric-improvement.json), [selected configuration](configs/metric-final.json), and [small trained checkpoint](artifacts/metric-refiner.safetensors).
 
 The local runs/diagnostics/fusion-difference-slow.mp4 shows a quarter-speed comparison with an amplified absolute prediction-change panel. [Measured change statistics](results/fusion-difference-diagnostic.json) explain why the original comparison appears similar.
 
-An independently developed implementation of the revised AIAA3201 assignment, using official Small pretrained models and **Direction A: flow-guided temporal fusion**. All experiments ran locally on an RTX 4070 Laptop GPU with 8 GB VRAM.
+An independent implementation of the revised AIAA3201 assignment using official Small pretrained models. The final improvement is **RGB-guided metric residual refinement**. The earlier Direction A study remains as historical evidence. All experiments ran locally on an RTX 4070 Laptop GPU with 8 GB VRAM.
 
 **Status:** required static baselines, video comparisons, fusion ablations, synthetic controls, and repeated runtime measurements are complete. The demo is **provisional**: the linked official rollercoaster source contains 70 real frames, while the brief requests 100. No exported frames were duplicated or invented. Obtain a longer course copy or TA clarification before claiming submission compliance.
 
-This separate checkout lives beside the original `MMDEVC` folder on `feat/independent-direction-a`. Only `independent/` is checked out. No groupmate implementation, parameter choices, caches, or historical results were used as our code or baseline. Common Git ancestry exists for eventual integration by pull request.
+This separate checkout lives beside the original `MMDEVC` folder on `feat/independent-performance-search`. Only `independent/` is checked out. No groupmate implementation, parameter choices, caches, or historical results were used as our code or baseline. Common Git ancestry exists for eventual integration by pull request.
 
 ## Our measured results
+
+| NYU test metric | Unchanged UniDepthV2-S | Selected refinement |
+| --- | ---: | ---: |
+| AbsRel | 0.11455 | **0.09564** |
+| RMSE (m) | 0.39889 | **0.37080** |
+| Delta1 | 0.89222 | **0.91374** |
+| Median compute per image | 48.8 ms | 127.3 ms |
+
+The scene-cluster bootstrap 95% interval for relative AbsRel reduction is 12.89%-19.94%. 431 images improve and 223 worsen. The selected method uses the same checkpoint/input resolution and adds 388,001 trained parameters. Its two foundation passes and refinement cost more computation. [Paired image scores](results/metric-residual_refiner-per-image.csv) expose individual regressions. The final configuration/checkpoint were committed at ad3b536 before test evaluation. Earlier baseline results had already been inspected, and this history is disclosed.
+
+![NYU ground-truth and error comparison](results/figures/metric-comparison.png)
+
+Depth colors share 0-10 meters. The final two columns show pixel AbsRel, where darker means lower error. Rows show the largest gain, median change, and largest regression by a fixed automatic rule.
+
+## Initial required baselines and historical temporal study
 
 | Experiment | Result |
 | --- | --- |
@@ -28,13 +43,31 @@ Displays use fixed whole-clip ranges. VDA and DA V2 do not share metric units; f
 
 ## Read and learn
 
-- [CVPR report PDF](report/independent-report.pdf), [source](report/main.tex), [measured values](report/results.tex), and [template attribution](report/TEMPLATE-SOURCE.md)
+- [Updated CVPR report PDF](report/independent-report.pdf), [metric source](report/metric-main.tex), [measured values](report/metric-results.tex), and [template attribution](report/TEMPLATE-SOURCE.md)
 - [Results, runtime table, and artifact guide](docs/experiments.md)
 - [Experiment and decision ledger](docs/execution-ledger.md)
 - [Design and exact course protocol](docs/superpowers/specs/2026-11-08-direction-a-design.md) and [implementation plan](docs/superpowers/plans/2026-11-08-direction-a.md)
 - Learning stages: [video](docs/learning/01-video.md), [depth inputs/weights/predictions](docs/learning/02-depth.md), [geometry and metrics](docs/learning/03-geometry-metrics.md), [flow/warping](docs/learning/04-flow-warp.md), [fusion/lag](docs/learning/05-fusion.md)
 
-Local deliverables are `report/independent-report.pdf`, `runs/final/comparison.mp4`, `runs/final/background-blur.mp4`, the faster variant under `runs/efficient/`, and an explicitly provisional ZIP under `outputs/`. Large datasets, checkpoints, caches, videos, and archives stay outside Git. Source, summaries, per-image metrics, report, and selected figures are tracked.
+Local deliverables are the updated report, `results/figures/metric-comparison.png`, `results/figures/metric-application.png`, the required videos under `runs/final/`, and `outputs/depth_results_metric_preview.zip`. Raw refined predictions are under `runs/metric-final/`. Foundation weights, datasets, raw caches, videos, and archives stay outside Git. The small independently trained refiner, source, summaries, per-image metrics, report, and figures are tracked.
+
+## Reproduce the metric improvement
+
+Complete the environment and official NYU/UniDepth preparation below, then use the included refiner checkpoint and frozen configuration. A historical baseline cache is optional. This command computes both the baseline and all selected ablations.
+
+```powershell
+./.venv/Scripts/python.exe -m depth_project.cli metric-improvement --config configs/metric-final.json --output runs/reproduced-metric
+```
+
+Development fitting and selection are implemented by these scripts. They use only the 795 development images and fixed scene split.
+
+```powershell
+./.venv/Scripts/python.exe scripts/cache_nyu_development.py
+./.venv/Scripts/python.exe scripts/search_metric_refinement.py
+./.venv/Scripts/python.exe scripts/train_metric_refiner.py
+```
+
+The included configuration and refiner reproduce the reported selection. The training script saves a fresh checkpoint in runs/metric-refiner/ and refuses to overwrite a completed training record. Training kernels can vary across hardware. The complete training curve and development candidate table are tracked.
 
 ## Environment
 
@@ -117,10 +150,12 @@ Timing includes actual depth inference, both flow directions, and fusion, with t
 ./.venv/Scripts/python.exe scripts/make_figures.py
 ./.venv/Scripts/python.exe scripts/write_report_values.py
 # From report/, use a standard LaTeX toolchain or portable Tectonic:
-tectonic main.tex
+tectonic metric-main.tex
 ```
 
 The report uses the official CVPR template. The independent draft uses the configured Git name, Eugene; confirm the final group author line before submission. ArXiv upload is optional under the revised brief.
+
+To regenerate the metric figures and report numbers from a completed run under runs/metric-final/, run scripts/write_metric_report_values.py and scripts/make_metric_figures.py before compilation. The older scripts above preserve the historical baseline/temporal figures. To package the updated metric evidence with the required videos, run scripts/package_metric_preview.py with an unused --output path. The archive retains its explicit 70-frame provisional warning.
 
 Summaries are under `results/`; raw floating-point predictions are under ignored `runs/`. [NYU per-image metrics](results/nyu-per-image.csv) include all 654 images. Failure examples are selected automatically as the three highest test AbsRel images, IDs 468, 87, and 516. Video temporal residuals and edge retention remain proxies because the supplied clip has no depth ground truth.
 
@@ -134,7 +169,7 @@ git status --short
 git add -- independent/<specific-file>
 git diff --cached --stat
 git commit -m 'feat: describe one independent contribution'
-git push -u origin HEAD:refs/heads/feat/independent-direction-a
+git push -u origin HEAD:refs/heads/feat/independent-performance-search
 ```
 
 Local hooks reject commits outside independent branch prefixes, staged changes outside `independent/`, and pushes to shared branches including `main`. They use local `core.hooksPath=independent/.githooks`; they do not install GitHub branch protection and can be bypassed. Use pull requests for eventual integration, without a force push or automatic merge into `main`.

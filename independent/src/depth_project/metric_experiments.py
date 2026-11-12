@@ -17,6 +17,25 @@ from .refinement import blend_flip, refine_metric
 from .residual_refiner import ResidualRefiner, make_features, apply_residual
 
 
+def verify_frozen_dataset(root, config):
+    root = Path(root)
+    paths = {'dataset_sha256': root / 'data/nyu/nyu_depth_v2_labeled.mat', 'split_sha256': root / 'data/nyu/splits.mat'}
+    for name, path in paths.items():
+        if sha256_file(path) != config[name]:
+            raise ValueError(f'Frozen {name} identity differs from the evaluation input')
+
+
+def historical_baseline_difference(path, prediction):
+    path = Path(path)
+    if not path.exists():
+        return None
+    with np.load(path, allow_pickle=False) as source:
+        previous = source['depth_m']
+        if previous.shape != prediction.shape or not np.isfinite(previous).all():
+            raise ValueError('Historical baseline prediction has incompatible values')
+        return float(np.max(np.abs(previous - prediction)))
+
+
 def run_metric_evaluation(root, config_path, output):
     root, output = Path(root), Path(output)
     config = json.loads(Path(config_path).read_text())
@@ -24,6 +43,7 @@ def run_metric_evaluation(root, config_path, output):
         raise ValueError('Freeze development selection before test evaluation')
     if (output / 'summary.json').exists():
         raise FileExistsError('Final metric evaluation already exists')
+    verify_frozen_dataset(root, config)
     output.mkdir(parents=True, exist_ok=True)
     config_hash = sha256_file(config_path)
     checkpoint = root / config['refiner_checkpoint']
@@ -45,6 +65,7 @@ def run_metric_evaluation(root, config_path, output):
     latencies = []
     baseline_latencies = []
     maximum_baseline_discrepancy = 0.
+    historical_comparison_count = 0
     scenes = []
     with h5py.File(root / 'data/nyu/nyu_depth_v2_labeled.mat') as dataset:
         warm = dataset['images'][int(split['development'][0])].transpose(2, 1, 0).copy()
@@ -76,8 +97,10 @@ def run_metric_evaluation(root, config_path, output):
                 improved = apply_residual(simple, residual)
             torch.cuda.synchronize()
             latencies.append(time.perf_counter() - start)
-            with np.load(root / f'runs/nyu/prediction_{index:04d}.npz') as old:
-                maximum_baseline_discrepancy = max(maximum_baseline_discrepancy, float(np.max(np.abs(old['depth_m'] - original))))
+            historical_difference = historical_baseline_difference(root / f'runs/nyu/prediction_{index:04d}.npz', original)
+            if historical_difference is not None:
+                maximum_baseline_discrepancy = max(maximum_baseline_discrepancy, historical_difference)
+                historical_comparison_count += 1
             predictions = {
                 'baseline': original,
                 'global_scale': original * config['original_global_scale'],
@@ -104,7 +127,8 @@ def run_metric_evaluation(root, config_path, output):
         'abs_rel_reduction_percent': 100 * (1 - metrics['residual_refiner']['abs_rel'] / metrics['baseline']['abs_rel']),
         'scene_cluster_bootstrap_95_percent_reduction_interval': np.percentile(gains, [2.5, 97.5]).tolist(),
         'per_image_improved_count': int((delta > 0).sum()), 'per_image_worsened_count': int((delta < 0).sum()),
-        'maximum_reproduced_baseline_pixel_difference_m': maximum_baseline_discrepancy,
+        'maximum_reproduced_baseline_pixel_difference_m': maximum_baseline_discrepancy if historical_comparison_count else None,
+        'historical_baseline_comparison_count': historical_comparison_count,
         'timing': {'baseline_median_s': float(np.median(baseline_latencies)), 'improved_median_s': float(np.median(latencies)), 'peak_allocated_mib': torch.cuda.max_memory_allocated()/1024**2, 'peak_reserved_mib': torch.cuda.max_memory_reserved()/1024**2, 'scope': 'synchronized original+flip inference, feature preparation, refinement and residual resize; excludes file I/O and evaluation; two original-model warmups'},
         'hardware': torch.cuda.get_device_name(), 'provenance': provenance,
         'protocol': json.loads((root / 'configs/nyu-course.json').read_text()),

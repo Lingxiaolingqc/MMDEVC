@@ -31,7 +31,7 @@ def records(name):
 def pipeline():
     fig, ax = plt.subplots(figsize=(7.2, 2.1))
     ax.set_xlim(0, 10); ax.set_ylim(0, 3); ax.axis('off')
-    boxes = [(.1, 1.1, 1.3, .8, 'RGB image\n480 x 640'), (2., 1.1, 2., .8, 'Frozen UniDepthV2-S\nOriginal + flipped RGB'), (4.6, 1.1, 1.5, .8, 'Flip blend\nGlobal scale'), (6.7, 1.1, 1.5, .8, 'Small residual\nrefinement CNN'), (8.8, 1.1, 1., .8, 'Metric depth\nin meters')]
+    boxes = [(.1, 1.1, 1.3, .8, 'RGB image\n480 x 640'), (2., 1.1, 2., .8, 'Frozen UniDepthV2-S\nOriginal + flip'), (4.6, 1.1, 1.5, .8, 'Flip blend\nGlobal scale'), (6.7, 1.1, 1.5, .8, 'Small residual\nrefinement CNN'), (8.8, 1.1, 1., .8, 'Metric depth\nin meters')]
     for x, y, w, h, label in boxes:
         ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle='round,pad=.06', fc='#eef0f5', ec='#687383', lw=.8))
         ax.text(x+w/2, y+h/2, label, ha='center', va='center', fontsize=8)
@@ -90,7 +90,7 @@ def comparisons():
     blurred = cv2.GaussianBlur(rgb, (0, 0), 8)
     panels = []
     for depth in depths:
-        alpha = np.clip((2.2-depth)/.4, 0, 1)[:, :, None]
+        alpha = np.clip((3.2-depth)/.4, 0, 1)[:, :, None]
         panels.append(np.rint(alpha*rgb+(1-alpha)*blurred).astype(np.uint8))
     fig, axes = plt.subplots(1, 3, figsize=(7.2, 2.1))
     for ax, image, title in zip(axes, [rgb, *panels], ['RGB', 'Baseline depth blur', 'Improved depth blur']):

@@ -82,3 +82,21 @@ def test_wrong_rendered_dimensions_are_rejected(run,tmp_path):
     writer.release()
     with pytest.raises(ValueError,match='size|dimension|shape'):
         submission.build_submission(run,tmp_path/'preview.zip',allow_short=True)
+
+
+def test_explicit_metric_supplements_have_inventory_checksums(run, tmp_path):
+    supplement = tmp_path / 'metric.json'
+    supplement.write_text('{"abs_rel":0.1}')
+    target = tmp_path / 'preview.zip'
+    inventory = submission.build_submission(run, target, allow_short=True, supplemental_files={'metric/result.json': supplement})
+    assert inventory['submission_ready'] is False
+    with zipfile.ZipFile(target) as archive:
+        assert archive.read('metric/result.json') == supplement.read_bytes()
+        assert any(row['path'] == 'metric/result.json' for row in inventory['files'])
+
+
+def test_metric_supplements_reject_archive_path_traversal(run, tmp_path):
+    source = tmp_path / 'source.json'
+    source.write_text('{}')
+    with pytest.raises(ValueError, match='supplement|path'):
+        submission.build_submission(run, tmp_path / 'preview.zip', allow_short=True, supplemental_files={'../bad.json': source})

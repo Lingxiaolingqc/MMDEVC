@@ -30,6 +30,8 @@ Start each learning stage with one concrete example and a familiar analogy. Trac
 
 ## Current phase
 
+The 2026-11-12 metric improvement is selected and evaluated. Frozen config configs/metric-final.json and small learned artifacts/metric-refiner.safetensors were committed at ad3b536 before the 654-image test. NYU AbsRel improves from 0.11454576 to 0.09564452. The setting is supervised development adaptation with 577 fitting and 218 scene-disjoint validation images. Use report/metric-main.tex for the updated report, and keep later experimentation separate from this recorded final result.
+
 On 2026-11-11 the user clarified that measurable performance takes priority over retaining Direction A. Follow docs/performance-search.md for the revised objective. Explore competing techniques within the course rules and select by development evidence. Earlier restrictions choosing only flow fusion or excluding adaptation are superseded. Preserve the existing measured reference runs and use independent feature branches.
 
 The user approved implementation with "go" on 2026-11-08. Execute the design and implementation plan in `docs/superpowers/`, maintaining the execution ledger and reporting actual verification evidence.
