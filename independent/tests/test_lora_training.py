@@ -5,6 +5,7 @@ import numpy as np
 import pytest
 import torch
 from torch import nn
+from safetensors.torch import load_file
 
 from depth_project import lora_training
 
@@ -20,9 +21,11 @@ class TinyFoundation(nn.Module):
 
 
 def tiny_prediction(model, rgb):
-    values = rgb.float().mean(dim=(1, 2))[None] / 255
-    update = model.pixel_encoder.block.attn.qkv(values).mean() * 0.1
-    return (model.constant + update).expand(1, 1, 480, 640)
+    if rgb.ndim == 3:
+        rgb = rgb[None]
+    values = rgb.float().mean(dim=(-2, -1)) / 255
+    update = model.pixel_encoder.block.attn.qkv(values).mean(dim=-1) * 0.1
+    return (model.constant + update)[:, None, None, None].expand(-1, 1, 480, 640)
 
 
 @pytest.fixture
@@ -133,3 +136,35 @@ def test_unscaled_nonfinite_or_missing_gradients_still_fail():
     parameter.grad = torch.tensor([float("inf")])
     with pytest.raises(RuntimeError, match="non-finite"):
         lora_training.scaled_optimizer_step([parameter], optimizer, scaler)
+
+
+def test_microbatches_preserve_effective_batch_and_partial_batch_weighting(experiment, monkeypatch):
+    root, pack, config = experiment
+    observed_sizes = []
+
+    def record_batch(model, rgb):
+        observed_sizes.append(len(rgb) if rgb.ndim == 4 else 1)
+        return tiny_prediction(model, rgb)
+
+    monkeypatch.setattr(lora_training, "infer_differentiable", record_batch)
+    config = {**config, "micro_batch_size": 4, "accumulation": 8}
+    result = lora_training.train_lora_candidate(root, pack, config, root / "microbatch", device="cpu")
+    assert 2 in observed_sizes
+    assert result["optimizer_updates"] == 2
+    assert result["amp_skipped_updates"] == 0
+
+
+def test_unequal_microbatches_match_single_image_gradients(experiment, monkeypatch):
+    root, pack, config = experiment
+    monkeypatch.setattr(lora_training.torch.optim, "AdamW",
+                        lambda parameters, lr, weight_decay: torch.optim.SGD(parameters, lr=lr, weight_decay=weight_decay))
+    pack["truth"][3, :240] = 0
+    config = {**config, "fit_ids": pack["ids"], "validation_ids": [], "max_epochs": 1,
+              "learning_rate": 0.01, "accumulation": 8}
+    for size in [1, 3]:
+        lora_training.train_lora_candidate(root, pack, {**config, "micro_batch_size": size},
+                                           root / f"batch{size}", device="cpu")
+    first = load_file(str(root / "batch1/best.safetensors"))
+    second = load_file(str(root / "batch3/best.safetensors"))
+    for name in first:
+        torch.testing.assert_close(first[name], second[name], rtol=1e-6, atol=1e-8)

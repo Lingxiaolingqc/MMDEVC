@@ -110,9 +110,10 @@ def _train(root, pack, config, output, device):
         images = {index: torch.from_numpy(np.ascontiguousarray(dataset["images"][index].transpose(0, 2, 1))).to(device)
                   for index in fitting + validation}
 
-    def predict(index):
+    def predict(indices):
+        batch = torch.stack([images[int(index)] for index in indices])
         with torch.autocast(device, dtype=torch.float16, enabled=device == "cuda"):
-            return infer_differentiable(model, images[index]) * scale
+            return infer_differentiable(model, batch) * scale
 
     with torch.no_grad(), torch.autocast(device, dtype=torch.float16, enabled=device == "cuda"):
         initial = infer_differentiable(model, images[fitting[0]])
@@ -124,7 +125,7 @@ def _train(root, pack, config, output, device):
         rows, predictions = [], []
         with torch.no_grad():
             for index in indices:
-                prediction = predict(index)
+                prediction = predict([index])
                 scores = torch_nyu_metrics(prediction, truth[index])[0].cpu().tolist()
                 rows.append({"image_id": index, "scene": pack["scenes"][index], "abs_rel": scores[0],
                              "rmse": scores[1], "delta1": scores[2]})
@@ -171,6 +172,9 @@ def _train(root, pack, config, output, device):
     patience = config.get("patience", 20)
     minimum_epochs = config.get("minimum_epochs", 24)
     accumulation = config.get("accumulation", 8)
+    micro_batch_size = config.get("micro_batch_size", 1)
+    if not 1 <= micro_batch_size <= accumulation:
+        raise ValueError("Microbatch size must be between one and the effective batch size")
     stopped = bool(validation and completed >= minimum_epochs and completed - best_epoch >= patience)
     for epoch in range(completed + 1, config["max_epochs"] + 1):
         if stopped:
@@ -181,18 +185,19 @@ def _train(root, pack, config, output, device):
         for offset in range(0, len(order), accumulation):
             indices = order[offset:offset + accumulation]
             optimizer.zero_grad(set_to_none=True)
-            for index in indices:
-                index = int(index)
-                prediction = predict(index).clamp(0.001, 10)[:, :, 45:471, 41:601]
-                target = truth[index][:, :, 45:471, 41:601]
+            for micro_start in range(0, len(indices), micro_batch_size):
+                micro_indices = indices[micro_start:micro_start + micro_batch_size]
+                prediction = predict(micro_indices).clamp(0.001, 10)[:, :, 45:471, 41:601]
+                target = torch.cat([truth[int(index)] for index in micro_indices])[:, :, 45:471, 41:601]
                 valid = torch.isfinite(target) & (target > 0.001) & (target < 10)
                 denominator = torch.where(valid, target, 1)
                 errors = torch.where(valid, (prediction - denominator).abs() / denominator, 0)
-                loss = errors.sum() / valid.sum()
+                per_image_loss = errors.sum(dim=(1, 2, 3)) / valid.sum(dim=(1, 2, 3))
+                loss = per_image_loss.mean()
                 if not bool(torch.isfinite(loss)):
                     raise ValueError("LoRA produced a non-finite training loss")
-                scaler.scale(loss / len(indices)).backward()
-                losses.append(float(loss.detach()))
+                scaler.scale(loss * len(micro_indices) / len(indices)).backward()
+                losses.extend(per_image_loss.detach().cpu().tolist())
             optimizer_updates += int(scaled_optimizer_step(parameters, optimizer, scaler))
         scheduler.step()
         rows, _ = evaluate(validation or fitting)
