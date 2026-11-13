@@ -72,3 +72,23 @@ def test_inference_checks_foundation_and_adapter_hashes(setup):
     specification["members"][0]["sha256"] = "wrong"
     with pytest.raises(ValueError, match="checkpoint"):
         lora_inference.LoRADepthPredictor(root, specification, "foundation")
+
+
+def test_flip_average_restores_coordinates_and_uses_the_frozen_weight(setup):
+    root, specification, rgb, expected = setup
+    specification = {**specification, "flip_weight": 0.25}
+    predictor = lora_inference.LoRADepthPredictor(root, specification, "foundation")
+    calls = []
+
+    def spatial_inference(tensor):
+        calls.append(1)
+        position = torch.arange(tensor.shape[-1], dtype=torch.float32)[None] / 10
+        depth = 2 + tensor[0].float() / 100 + position
+        return {"depth": depth[None, None]}
+
+    predictor.model.infer = spatial_inference
+    rgb[:, :, 0] = np.arange(rgb.shape[1], dtype=np.uint8)[None] * 20
+    actual = predictor.predict_rgb(rgb).values
+    expected = np.broadcast_to(2.175 + 0.25 * np.arange(rgb.shape[1]), rgb.shape[:2])
+    np.testing.assert_allclose(actual, expected, rtol=1e-6, atol=1e-6)
+    assert len(calls) == 6
