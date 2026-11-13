@@ -27,3 +27,27 @@ def test_residual_is_multiplicative_and_uses_full_resolution_base():
     depth = np.array([[1., 2.], [3., 4.]], np.float32)
     output = apply_residual(depth, np.full((1, 1), np.log(1.2), np.float32))
     np.testing.assert_allclose(output, depth * 1.2, rtol=1e-6)
+
+
+def test_optional_feature_refiner_and_gate_preserve_zero_update_identity():
+    model = ResidualRefiner(feature_channels=12, gated=True, dropout=0.1).eval()
+    with torch.inference_mode():
+        residual = model(torch.randn(2, 9, 49, 65), torch.randn(2, 12, 7, 9))
+    assert residual.shape == (2, 1, 49, 65)
+    assert torch.count_nonzero(residual) == 0
+
+
+def test_narrow_refiner_keeps_legacy_state_names_and_reduces_parameters():
+    original = ResidualRefiner()
+    narrow = ResidualRefiner(widths=(8, 16, 32, 48), dropout=0.1)
+    assert set(original.state_dict()) == set(narrow.state_dict())
+    assert sum(parameter.numel() for parameter in narrow.parameters()) < 120000
+    assert sum(parameter.numel() for parameter in original.parameters()) == 388001
+
+
+def test_optional_modules_receive_gradients_after_residual_head_initialization():
+    model = ResidualRefiner(feature_channels=12, gated=True)
+    torch.nn.init.normal_(model.output.weight, std=0.01)
+    model(torch.randn(1, 9, 32, 40), torch.randn(1, 12, 4, 5)).square().mean().backward()
+    assert model.feature_projection.weight.grad.abs().sum() > 0
+    assert model.gate.weight.grad.abs().sum() > 0

@@ -29,26 +29,40 @@ def conv_block(inputs, outputs):
 
 
 class ResidualRefiner(nn.Module):
-    def __init__(self):
+    def __init__(self, widths=(16, 32, 64, 96), dropout=0.0, feature_channels=0, gated=False):
         super().__init__()
-        self.encoder0 = conv_block(9, 16)
-        self.encoder1 = conv_block(16, 32)
-        self.encoder2 = conv_block(32, 64)
-        self.encoder3 = conv_block(64, 96)
-        self.decoder2 = conv_block(96 + 64, 64)
-        self.decoder1 = conv_block(64 + 32, 32)
-        self.decoder0 = conv_block(32 + 16, 16)
-        self.output = nn.Conv2d(16, 1, 1)
+        if len(widths) != 4 or any(width < 4 or width % 4 for width in widths):
+            raise ValueError("Four refiner widths must be positive multiples of four")
+        self.feature_projection = nn.Conv2d(feature_channels, 16, 1) if feature_channels else None
+        self.encoder0 = conv_block(25 if feature_channels else 9, widths[0])
+        self.encoder1 = conv_block(widths[0], widths[1])
+        self.encoder2 = conv_block(widths[1], widths[2])
+        self.encoder3 = conv_block(widths[2], widths[3])
+        self.bottleneck_dropout = nn.Dropout2d(dropout)
+        self.decoder2 = conv_block(widths[3] + widths[2], widths[2])
+        self.decoder1 = conv_block(widths[2] + widths[1], widths[1])
+        self.decoder0 = conv_block(widths[1] + widths[0], widths[0])
+        self.output = nn.Conv2d(widths[0], 1, 1)
+        self.gate = nn.Conv2d(widths[0], 1, 1) if gated else None
         nn.init.zeros_(self.output.weight)
         nn.init.zeros_(self.output.bias)
 
-    def forward(self, features):
+    def forward(self, features, depth_features=None):
+        if self.feature_projection is not None:
+            if depth_features is None:
+                raise ValueError("This refiner requires frozen depth features")
+            projected = self.feature_projection(depth_features)
+            projected = F.interpolate(projected, size=features.shape[-2:], mode='bilinear', align_corners=False)
+            features = torch.cat([features, projected], dim=1)
         level0 = self.encoder0(features)
         level1 = self.encoder1(F.avg_pool2d(level0, 2))
         level2 = self.encoder2(F.avg_pool2d(level1, 2))
-        level3 = self.encoder3(F.avg_pool2d(level2, 2))
+        level3 = self.bottleneck_dropout(self.encoder3(F.avg_pool2d(level2, 2)))
         upsample = lambda value, reference: F.interpolate(value, size=reference.shape[-2:], mode='bilinear', align_corners=False)
         decoded2 = self.decoder2(torch.cat([upsample(level3, level2), level2], dim=1))
         decoded1 = self.decoder1(torch.cat([upsample(decoded2, level1), level1], dim=1))
         decoded0 = self.decoder0(torch.cat([upsample(decoded1, level0), level0], dim=1))
-        return .5 * torch.tanh(self.output(decoded0))
+        residual = .5 * torch.tanh(self.output(decoded0))
+        if self.gate is not None:
+            residual = residual * torch.sigmoid(self.gate(decoded0))
+        return residual
