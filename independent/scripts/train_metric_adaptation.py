@@ -163,6 +163,8 @@ def main():
     parser.add_argument("--probe", action="store_true")
     parser.add_argument("--epochs", type=int, default=8)
     parser.add_argument("--learning-rate", type=float, default=1e-5)
+    parser.add_argument("--learning-rates", type=float, nargs="+")
+    parser.add_argument("--shared-gpu", action="store_true")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     torch.set_num_threads(4)
@@ -170,9 +172,14 @@ def main():
         torch.cuda.set_per_process_memory_fraction(0.125)
         probe(root)
         return
+    if args.shared_gpu:
+        torch.cuda.set_per_process_memory_fraction(0.25)
     pack = load_development_pack(root)
     arrays = prepare_projection_arrays(root, pack["ids"])
-    print(json.dumps(train_projection(root, pack, arrays, args.learning_rate, args.epochs), indent=2), flush=True)
+    for learning_rate in args.learning_rates or [args.learning_rate]:
+        result = train_projection(root, pack, arrays, learning_rate, args.epochs)
+        print(json.dumps(result, indent=2), flush=True)
+        torch.cuda.empty_cache()
 
 
 if __name__ == "__main__":
