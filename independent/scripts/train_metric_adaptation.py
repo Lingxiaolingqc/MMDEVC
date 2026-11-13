@@ -70,11 +70,9 @@ def probe(root):
     print(json.dumps(record), flush=True)
 
 
-def train_projection(root, pack, arrays, learning_rate, epochs):
-    output = root / f"runs/metric-research/projection-lr{learning_rate:g}-epochs{epochs}"
+def train_projection(root, pack, arrays, learning_rate, epochs, batch_size):
+    output = root / f"runs/metric-research/projection-lr{learning_rate:g}-epochs{epochs}-b{batch_size}"
     output.mkdir(exist_ok=True)
-    if (output / "summary.json").exists():
-        return json.loads((output / "summary.json").read_text())
     fitting_ids = pack["fit_ids"]
     validation_ids = pack["validation_ids"]
     validate_partition(fitting_ids, validation_ids, pack["test_ids"], pack["scenes"])
@@ -87,8 +85,13 @@ def train_projection(root, pack, arrays, learning_rate, epochs):
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, max(epochs, 1), eta_min=1e-6)
     scaler = torch.amp.GradScaler("cuda")
     config = {"type": "projection", "learning_rate": learning_rate, "epochs": epochs,
-              "fit_ids": fitting_ids, "validation_ids": validation_ids, "seed": 320112,
+              "fit_ids": fitting_ids, "validation_ids": validation_ids, "seed": 320112, "batch_size": batch_size,
               "foundation_sha256": pack["identities"]["checkpoint_sha256"]}
+    if (output / "summary.json").exists():
+        previous = json.loads((output / "summary.json").read_text())
+        if previous["config"] != config or sha256_file(output / "best.safetensors") != previous["checkpoint_sha256"]:
+            raise ValueError("Completed projection run identity differs")
+        return previous
     write_json(output / "config.json", {**config, "provenance": run_provenance(root)})
 
     def predict(indices):
@@ -101,8 +104,8 @@ def train_projection(root, pack, arrays, learning_rate, epochs):
         model.eval()
         values = []
         with torch.inference_mode():
-            for offset in range(0, len(validation), 4):
-                indices = validation[offset:offset + 4]
+            for offset in range(0, len(validation), batch_size):
+                indices = validation[offset:offset + batch_size]
                 truth = torch.from_numpy(pack["truth"][indices, None]).cuda()
                 values.append(torch_nyu_metrics(predict(indices), truth).cpu())
         return torch.cat(values).mean(dim=0).tolist()
@@ -121,8 +124,8 @@ def train_projection(root, pack, arrays, learning_rate, epochs):
         model.train()
         order = np.random.default_rng(320112 + epoch).permutation(fitting)
         losses = []
-        for offset in range(0, len(order), 4):
-            indices = order[offset:offset + 4].tolist()
+        for offset in range(0, len(order), batch_size):
+            indices = order[offset:offset + batch_size].tolist()
             optimizer.zero_grad(set_to_none=True)
             prediction = predict(indices).clamp(0.001, 10)
             truth = torch.from_numpy(pack["truth"][indices, None]).cuda()
@@ -165,6 +168,7 @@ def main():
     parser.add_argument("--learning-rate", type=float, default=1e-5)
     parser.add_argument("--learning-rates", type=float, nargs="+")
     parser.add_argument("--shared-gpu", action="store_true")
+    parser.add_argument("--batch-size", type=int, default=4)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     torch.set_num_threads(4)
@@ -175,9 +179,11 @@ def main():
     if args.shared_gpu:
         torch.cuda.set_per_process_memory_fraction(0.25)
     pack = load_development_pack(root)
+    if sha256_file(root / "checkpoints/unidepth-v2-vits14/model.safetensors") != pack["identities"]["checkpoint_sha256"]:
+        raise ValueError("Projection foundation checkpoint identity differs")
     arrays = prepare_projection_arrays(root, pack["ids"])
     for learning_rate in args.learning_rates or [args.learning_rate]:
-        result = train_projection(root, pack, arrays, learning_rate, args.epochs)
+        result = train_projection(root, pack, arrays, learning_rate, args.epochs, args.batch_size)
         print(json.dumps(result, indent=2), flush=True)
         torch.cuda.empty_cache()
 

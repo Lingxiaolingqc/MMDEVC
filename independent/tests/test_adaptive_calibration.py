@@ -29,3 +29,10 @@ def test_global_features_are_fixed_length_and_finite():
     assert np.isfinite(result).all()
     with pytest.raises(ValueError):
         calibration.fit_ridge_scale(np.array([[float("nan")]]), [1], alpha=1)
+
+
+def test_metric_global_adjustment_is_applied_to_predicted_scale():
+    features = np.array([[0, 1], [1, 0], [2, 1]], np.float64)
+    model = calibration.fit_ridge_scale(features, np.ones(3), alpha=1)
+    model["metric_global_scale"] = 0.94
+    np.testing.assert_allclose(calibration.predict_ridge_scale(model, features), 0.94)

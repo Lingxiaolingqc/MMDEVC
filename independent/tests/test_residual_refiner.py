@@ -51,3 +51,12 @@ def test_optional_modules_receive_gradients_after_residual_head_initialization()
     model(torch.randn(1, 9, 32, 40), torch.randn(1, 12, 4, 5)).square().mean().backward()
     assert model.feature_projection.weight.grad.abs().sum() > 0
     assert model.gate.weight.grad.abs().sum() > 0
+
+
+def test_larger_residual_bound_is_explicit_and_keeps_identity_start():
+    model = ResidualRefiner(residual_bound=1.0).eval()
+    values = torch.zeros(1, 9, 32, 40)
+    with torch.inference_mode():
+        assert torch.count_nonzero(model(values)) == 0
+        model.output.bias.fill_(100)
+        torch.testing.assert_close(model(values), torch.ones(1, 1, 32, 40))

@@ -7,6 +7,7 @@ import h5py
 import numpy as np
 import torch
 
+from depth_project.atomic_io import replace_file
 from depth_project.data import load_nyu_split
 from depth_project.metric_adaptation import infer_differentiable
 from depth_project.metric_training import write_json
@@ -97,7 +98,7 @@ def main():
                     raise ValueError("Official default predictions differ from the recorded baseline")
             temporary = path.with_suffix(".pending.npz")
             np.savez_compressed(temporary, **values)
-            temporary.replace(path)
+            replace_file(temporary, path)
             manifest["feature_shape"] = list(values["depth_features"].shape)
             manifest["processed_hw"] = values["processed_hw"].tolist()
             if args.projection:

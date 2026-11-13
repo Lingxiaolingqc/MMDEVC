@@ -53,16 +53,22 @@ def main():
     parser.add_argument("--config", type=Path)
     parser.add_argument("--only", help="Run names containing this exact text")
     args = parser.parse_args()
+    if args.stage == "config" and args.config is None:
+        parser.error("The config stage requires --config")
     root = Path(__file__).resolve().parents[1]
     pack = load_development_pack(root)
     jobs = json.loads(args.config.read_text()) if args.config else candidate_jobs(pack, args.stage)
+    if any(job.get("model", {}).get("feature_channels") for job in jobs):
+        from depth_project.metric_feature_cache import attach_depth_features
+        pack = attach_depth_features(root, pack)
     if args.only:
         jobs = [job for job in jobs if args.only in job["name"]]
     if not jobs:
         raise ValueError("No candidate jobs matched")
     output = root / "runs/metric-research"
     output.mkdir(parents=True, exist_ok=True)
-    manifest = output / f"{args.stage}-jobs.json"
+    stage_name = f"config-{args.config.stem}" if args.stage == "config" else args.stage
+    manifest = output / f"{stage_name}-jobs.json"
     if manifest.exists() and json.loads(manifest.read_text()) != jobs:
         raise ValueError("Stage job manifest already exists with different settings")
     write_json(manifest, jobs)
@@ -74,7 +80,7 @@ def main():
                           "best_epoch": result["best_epoch"], "completed_steps": result["completed_steps"],
                           "fit_image_count": len(job["fit_ids"]), "fit_scene_count": len({pack['scenes'][index] for index in job['fit_ids']}),
                           "seed": job["seed"], "scale": result["scale"]})
-        write_json(output / f"{args.stage}-summary.json", summaries)
+        write_json(output / f"{stage_name}-summary.json", summaries)
         torch.cuda.empty_cache()
     print(json.dumps(summaries, indent=2), flush=True)
 

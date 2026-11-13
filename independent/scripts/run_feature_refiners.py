@@ -3,45 +3,10 @@ import argparse
 import json
 from pathlib import Path
 
-import numpy as np
 import torch
 
+from depth_project.metric_feature_cache import attach_depth_features
 from depth_project.metric_training import load_development_pack, train_candidate, write_json
-from depth_project.records import sha256_file
-
-
-def attach_depth_features(root, pack):
-    source = root / "runs/metric-research/foundation-default"
-    manifest = json.loads((source / "manifest.json").read_text())
-    if manifest.get("completed") != len(pack["ids"]) or manifest["identities"]["ids"] != pack["ids"]:
-        raise ValueError("Complete the frozen feature cache before refiner training")
-    for name in ["dataset_sha256", "split_sha256", "checkpoint_sha256"]:
-        if manifest["identities"][name] != pack["identities"][name]:
-            raise ValueError("Frozen feature source identities differ")
-    if manifest["processed_hw"] != [490, 644]:
-        raise ValueError("This feature cache expects the recorded default NYU preprocessing")
-    path = root / ".cache/metric-research/depth-features.npy"
-    complete = path.with_suffix(".json")
-    if complete.exists():
-        if json.loads(complete.read_text())["identities"] != manifest["identities"]:
-            raise ValueError("Prepared frozen feature identities differ")
-    else:
-        temporary = path.with_suffix(".pending.npy")
-        values = np.lib.format.open_memmap(temporary, mode="w+", dtype=np.float16,
-                                          shape=(len(pack["ids"]), *manifest["feature_shape"]))
-        for position, index in enumerate(pack["ids"]):
-            with np.load(source / f"prediction_{index:04d}.npz", allow_pickle=False) as packet:
-                feature = packet["depth_features"]
-                if int(packet["image_id"]) != index or not np.isfinite(feature).all():
-                    raise ValueError("Frozen feature image or finite-value check failed")
-                values[position] = feature
-        values.flush()
-        del values
-        temporary.replace(path)
-        write_json(complete, {"identities": manifest["identities"]})
-    pack = {**pack, "depth_features": np.load(path, mmap_mode="r"),
-            "identities": {**pack["identities"], "depth_features_sha256": sha256_file(path)}}
-    return pack
 
 
 def main():
@@ -59,6 +24,7 @@ def main():
         "features-full": {"full_resolution": True},
         "features-gradient": {"full_resolution": True, "gradient_weight": 0.05},
         "features-gate": {"full_resolution": True, "gradient_weight": 0.05, "gated": True},
+        "features-bound1": {"residual_bound": 1.0},
     }
     summaries = []
     jobs = []
@@ -66,9 +32,11 @@ def main():
         model = {**base.get("model", {}), "feature_channels": pack["depth_features"].shape[1]}
         if options.get("gated"):
             model["gated"] = True
+        if "residual_bound" in options:
+            model["residual_bound"] = options["residual_bound"]
         jobs.append({"name": name, "fit_ids": pack["fit_ids"], "validation_ids": pack["validation_ids"],
                      "seed": 320112, "max_epochs": 80, "patience": 10, "batch_size": 8,
-                     **base, **{key: value for key, value in options.items() if key != "gated"}, "model": model})
+                     **base, **{key: value for key, value in options.items() if key not in {"gated", "residual_bound"}}, "model": model})
     output = root / "runs/metric-research"
     path = output / "feature-jobs.json"
     if path.exists() and json.loads(path.read_text()) != jobs:

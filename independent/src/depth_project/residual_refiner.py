@@ -1,5 +1,6 @@
 """Small residual network that adapts frozen metric predictions using RGB."""
 import cv2
+import math
 import numpy as np
 import torch
 from torch import nn
@@ -29,10 +30,13 @@ def conv_block(inputs, outputs):
 
 
 class ResidualRefiner(nn.Module):
-    def __init__(self, widths=(16, 32, 64, 96), dropout=0.0, feature_channels=0, gated=False):
+    def __init__(self, widths=(16, 32, 64, 96), dropout=0.0, feature_channels=0, gated=False, residual_bound=0.5):
         super().__init__()
         if len(widths) != 4 or any(width < 4 or width % 4 for width in widths):
             raise ValueError("Four refiner widths must be positive multiples of four")
+        if not math.isfinite(residual_bound) or residual_bound <= 0:
+            raise ValueError("Residual bound must be finite and positive")
+        self.residual_bound = residual_bound
         self.feature_projection = nn.Conv2d(feature_channels, 16, 1) if feature_channels else None
         self.encoder0 = conv_block(25 if feature_channels else 9, widths[0])
         self.encoder1 = conv_block(widths[0], widths[1])
@@ -62,7 +66,7 @@ class ResidualRefiner(nn.Module):
         decoded2 = self.decoder2(torch.cat([upsample(level3, level2), level2], dim=1))
         decoded1 = self.decoder1(torch.cat([upsample(decoded2, level1), level1], dim=1))
         decoded0 = self.decoder0(torch.cat([upsample(decoded1, level0), level0], dim=1))
-        residual = .5 * torch.tanh(self.output(decoded0))
+        residual = self.residual_bound * torch.tanh(self.output(decoded0))
         if self.gate is not None:
             residual = residual * torch.sigmoid(self.gate(decoded0))
         return residual

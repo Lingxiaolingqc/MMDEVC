@@ -78,6 +78,10 @@ def test_training_entrypoint_records_subset_and_rejects_overwrite(tmp_path):
     resumed = training.train_candidate(pack, config, tmp_path, device="cpu")
     assert resumed["checkpoint_sha256"] == result["checkpoint_sha256"]
     assert resumed["history"] == result["history"]
+    (tmp_path / "summary.json").unlink()
+    (tmp_path / "best.safetensors").write_bytes(b"interrupted external artifact")
+    repaired = training.train_candidate(pack, config, tmp_path, device="cpu")
+    assert repaired["checkpoint_sha256"] == result["checkpoint_sha256"]
     with FileLock(str(tmp_path / "run.lock"), timeout=0):
         with pytest.raises(Timeout):
             training.train_candidate(pack, config, tmp_path, device="cpu")

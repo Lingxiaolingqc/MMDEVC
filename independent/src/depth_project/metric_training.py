@@ -10,10 +10,11 @@ import h5py
 import numpy as np
 import torch
 from filelock import FileLock
-from safetensors.torch import save_file
+from safetensors.torch import load_file, save_file
 from torch.nn import functional as F
 
 from .data import load_nyu_split
+from .atomic_io import replace_file
 from .metric_research import fit_subset_scale, log_gradient_loss, torch_nyu_metrics, validate_partition, validate_refit
 from .records import run_provenance, sha256_file
 from .refinement import blend_flip
@@ -24,14 +25,7 @@ def write_json(path, value):
     path = Path(path)
     temporary = path.with_suffix(".pending.json")
     temporary.write_text(json.dumps(value, indent=2, allow_nan=False), encoding="utf-8")
-    for attempt in range(7):
-        try:
-            temporary.replace(path)
-            return
-        except PermissionError:
-            if attempt == 6:
-                raise
-            time.sleep(0.05 * 2 ** attempt)
+    replace_file(temporary, path)
 
 
 def load_development_pack(root):
@@ -191,10 +185,13 @@ def _train_candidate(pack, config, output, device):
                 scores.append(torch_nyu_metrics(bases[selected] * resized.exp(), full_truth[selected]).cpu())
         return torch.cat(scores).numpy()
 
-    def save_best():
+    def save_best(state):
         temporary = output / "best.pending.safetensors"
-        save_file({key: value.detach().cpu().contiguous() for key, value in model.state_dict().items()}, str(temporary))
-        temporary.replace(output / "best.safetensors")
+        save_file(state, str(temporary))
+        replace_file(temporary, output / "best.safetensors")
+
+    def capture_model():
+        return {key: value.detach().cpu().clone().contiguous() for key, value in model.state_dict().items()}
 
     latest = output / "latest.pt"
     if latest.exists():
@@ -206,18 +203,25 @@ def _train_candidate(pack, config, output, device):
         step, exposures, cursor = state["step"], state["exposures"], state["cursor"]
         order = state["order"].to(device)
         best_score, best_step, history = state["best_score"], state["best_step"], state["history"]
+        best_state = {key: value.cpu().contiguous() for key, value in state["best_model"].items()} if "best_model" in state else load_file(str(output / "best.safetensors"))
+        save_best(best_state)
         torch.set_rng_state(state["cpu_rng"].cpu())
         if device == "cuda":
             torch.cuda.set_rng_state(state["cuda_rng"].cpu())
     else:
         initial_scores = evaluate(validation or fitting)
         best_score = float(initial_scores[:, 0].mean())
-        save_best()
+        best_state = capture_model()
+        save_best(best_state)
     if not run_path.exists():
         root = Path(__file__).resolve().parents[2]
+        provenance = run_provenance(root)
+        provenance["randomness"] = {"seed": seed, "cudnn_benchmark": bool(torch.backends.cudnn.benchmark),
+                                    "deterministic_algorithms": torch.are_deterministic_algorithms_enabled()}
         write_json(run_path, {"config": config, "configuration_sha256": identity, "data_identities": pack["identities"],
-                              "scale": scale, "provenance": run_provenance(root)})
+                              "scale": scale, "provenance": provenance})
     losses = []
+    elapsed_before_resume = history[-1]["elapsed_s"] if history else 0
     interval = config.get("evaluate_every", steps_per_epoch * 2)
     minimum_steps = config.get("minimum_steps", steps_per_epoch * 24)
     patience_steps = config.get("patience", 10) * interval
@@ -264,10 +268,11 @@ def _train_candidate(pack, config, output, device):
         score = float(scores[:, 0].mean())
         if score < best_score or not validation:
             best_score, best_step = score, step
-            save_best()
+            best_state = capture_model()
+            save_best(best_state)
         row = {"step": step, "epoch": exposures / len(fitting), "optimization_loss": float(np.mean(losses)),
                "abs_rel": score, "rmse": float(scores[:, 1].mean()), "delta1": float(scores[:, 2].mean()),
-               "best_step": best_step, "elapsed_s": time.perf_counter() - start}
+               "best_step": best_step, "elapsed_s": elapsed_before_resume + time.perf_counter() - start}
         if config.get("measure_fitting", False):
             row["fitting_full_resolution_abs_rel"] = float(evaluate(fitting)[:, 0].mean())
         history.append(row)
@@ -278,13 +283,14 @@ def _train_candidate(pack, config, output, device):
         torch.save({"model": model.state_dict(), "optimizer": optimizer.state_dict(), "scheduler": scheduler.state_dict(),
                     "scaler": scaler.state_dict(), "step": step, "exposures": exposures, "cursor": cursor, "order": order,
                     "best_score": best_score, "best_step": best_step, "history": history, "cpu_rng": torch.get_rng_state(),
+                    "best_model": best_state,
                     "cuda_rng": torch.cuda.get_rng_state() if device == "cuda" else torch.empty(0, dtype=torch.uint8)}, temporary)
-        temporary.replace(latest)
+        replace_file(temporary, latest)
         early_stopped = bool(validation and step >= minimum_steps and step - best_step >= patience_steps)
     result = {"configuration_sha256": identity, "config": config, "fit_ids": fitting_ids, "validation_ids": validation_ids,
               "scale": scale, "completed_steps": step, "best_step": best_step, "best_epoch": best_step / steps_per_epoch,
               "best_abs_rel": best_score, "parameter_count": sum(parameter.numel() for parameter in model.parameters()),
-              "history": history, "training_s": time.perf_counter() - start, "checkpoint_sha256": sha256_file(output / "best.safetensors"),
+              "history": history, "training_s": elapsed_before_resume + time.perf_counter() - start, "checkpoint_sha256": sha256_file(output / "best.safetensors"),
               "peak_allocated_mib": torch.cuda.max_memory_allocated() / 1024 ** 2 if device == "cuda" else None}
     write_json(summary_path, result)
     return result

@@ -39,4 +39,4 @@ def predict_ridge_scale(model, features):
         raise ValueError("Calibration inference feature dimensions or values differ")
     normalized = (features - np.asarray(model["mean"])) / np.asarray(model["standard_deviation"])
     log_scale = normalized @ np.asarray(model["weights"]) + model["target_mean"]
-    return np.exp(np.clip(log_scale, *model["log_scale_bounds"]))
+    return np.exp(np.clip(log_scale, *model["log_scale_bounds"])) * model.get("metric_global_scale", 1.0)
