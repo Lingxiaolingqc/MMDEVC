@@ -43,6 +43,17 @@ def frozen_digest(model):
     return digest.hexdigest()
 
 
+def scaled_optimizer_step(parameters, optimizer, scaler):
+    scaler.unscale_(optimizer)
+    if any(parameter.grad is None for parameter in parameters):
+        raise ValueError("LoRA gradients are missing")
+    torch.nn.utils.clip_grad_norm_(parameters, 1, error_if_nonfinite=not scaler.is_enabled())
+    previous_scale = scaler.get_scale()
+    scaler.step(optimizer)
+    scaler.update()
+    return scaler.get_scale() >= previous_scale
+
+
 def train_lora_candidate(root, pack, config, output, device="cuda"):
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
@@ -166,6 +177,7 @@ def _train(root, pack, config, output, device):
             break
         order = np.random.default_rng(seed + epoch).permutation(fitting)
         losses = []
+        optimizer_updates = 0
         for offset in range(0, len(order), accumulation):
             indices = order[offset:offset + accumulation]
             optimizer.zero_grad(set_to_none=True)
@@ -181,12 +193,7 @@ def _train(root, pack, config, output, device):
                     raise ValueError("LoRA produced a non-finite training loss")
                 scaler.scale(loss / len(indices)).backward()
                 losses.append(float(loss.detach()))
-            scaler.unscale_(optimizer)
-            if any(parameter.grad is None or not torch.isfinite(parameter.grad).all() for parameter in parameters):
-                raise ValueError("LoRA gradients are missing or non-finite")
-            torch.nn.utils.clip_grad_norm_(parameters, 1)
-            scaler.step(optimizer)
-            scaler.update()
+            optimizer_updates += int(scaled_optimizer_step(parameters, optimizer, scaler))
         scheduler.step()
         rows, _ = evaluate(validation or fitting)
         score = float(np.mean([row["abs_rel"] for row in rows]))
@@ -197,6 +204,8 @@ def _train(root, pack, config, output, device):
         row = {"epoch": epoch, "optimization_abs_rel": float(np.mean(losses)), "abs_rel": score,
                "rmse": float(np.mean([item["rmse"] for item in rows])),
                "delta1": float(np.mean([item["delta1"] for item in rows])), "best_epoch": best_epoch,
+               "optimizer_updates": optimizer_updates,
+               "amp_skipped_updates": len(range(0, len(order), accumulation)) - optimizer_updates,
                "elapsed_s": elapsed_before + time.perf_counter() - start}
         history.append(row)
         completed = epoch
@@ -227,6 +236,8 @@ def _train(root, pack, config, output, device):
               "frozen_parameters_unchanged": True, "initial_maximum_baseline_difference_m": difference,
               "checkpoint_sha256": sha256_file(output / "best.safetensors"),
               "hardware": hardware,
+              "optimizer_updates": sum(row.get("optimizer_updates", len(range(0, len(fitting), accumulation))) for row in history[1:]),
+              "amp_skipped_updates": sum(row.get("amp_skipped_updates", 0) for row in history[1:]),
               "training_s": elapsed_before + time.perf_counter() - start,
               "peak_allocated_mib": torch.cuda.max_memory_allocated() / 1024 ** 2 if device == "cuda" else None}
     write_json(summary_path, result)

@@ -107,3 +107,29 @@ def test_adapter_reload_rejects_missing_or_extra_weights():
         lora_training.load_adapter_state(model, {**state, "constant": torch.tensor(2.0)})
     with pytest.raises(ValueError, match="names"):
         lora_training.load_adapter_state(model, {})
+
+
+def test_amp_overflow_skips_update_and_reduces_scale_before_recovery():
+    parameter = nn.Parameter(torch.tensor([1.0]))
+    optimizer = torch.optim.SGD([parameter], lr=0.1)
+    scaler = torch.amp.GradScaler("cpu", init_scale=8)
+    scaler.scale(parameter.sum()).backward()
+    parameter.grad.fill_(float("inf"))
+    assert not lora_training.scaled_optimizer_step([parameter], optimizer, scaler)
+    assert parameter.item() == 1.0
+    assert scaler.get_scale() == 4
+    optimizer.zero_grad(set_to_none=True)
+    scaler.scale(parameter.sum()).backward()
+    assert lora_training.scaled_optimizer_step([parameter], optimizer, scaler)
+    assert parameter.item() < 1.0
+
+
+def test_unscaled_nonfinite_or_missing_gradients_still_fail():
+    parameter = nn.Parameter(torch.tensor([1.0]))
+    optimizer = torch.optim.SGD([parameter], lr=0.1)
+    scaler = torch.amp.GradScaler("cpu", enabled=False)
+    with pytest.raises(ValueError, match="missing"):
+        lora_training.scaled_optimizer_step([parameter], optimizer, scaler)
+    parameter.grad = torch.tensor([float("inf")])
+    with pytest.raises(RuntimeError, match="non-finite"):
+        lora_training.scaled_optimizer_step([parameter], optimizer, scaler)
