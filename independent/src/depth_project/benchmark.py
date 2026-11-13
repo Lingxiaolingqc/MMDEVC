@@ -13,6 +13,41 @@ from .records import sha256_file,run_provenance
 from .video import inspect_video,iter_rgb_frames
 
 
+def benchmark_metric_images(images, adapter, repeats=3, torch_module=None):
+    images = list(images)
+    if not images or repeats < 1:
+        raise ValueError("Metric benchmarking requires images and positive repeats")
+    if torch_module is None:
+        import torch as torch_module
+    gpu = str(adapter.device).startswith("cuda") and torch_module.cuda.is_available()
+
+    def synchronize():
+        if gpu:
+            torch_module.cuda.synchronize()
+
+    for _ in range(2):
+        adapter.predict_rgb(images[0])
+    synchronize()
+    timings, allocated, reserved = [], [], []
+    for _ in range(repeats):
+        if gpu:
+            torch_module.cuda.reset_peak_memory_stats()
+        for rgb in images:
+            synchronize()
+            start = time.perf_counter()
+            adapter.predict_rgb(rgb)
+            synchronize()
+            timings.append(time.perf_counter() - start)
+        if gpu:
+            allocated.append(torch_module.cuda.max_memory_allocated() / 1024 ** 2)
+            reserved.append(torch_module.cuda.max_memory_reserved() / 1024 ** 2)
+    return {"median_image_s": float(np.median(timings)), "mean_image_s": float(np.mean(timings)),
+            "p10_image_s": float(np.percentile(timings, 10)), "p90_image_s": float(np.percentile(timings, 90)),
+            "peak_allocated_mib": max(allocated, default=None), "peak_reserved_mib": max(reserved, default=None),
+            "image_count": len(images), "repeats": repeats, "warmup_calls": 2, "image_times_s": timings,
+            "scope": "Synchronized CPU RGB input to CPU metric-depth output, including preprocessing, transfers and all selected model passes"}
+
+
 def benchmark_frames(frames,adapter,config,repeats=3,torch_module=None):
     if not frames or repeats<1:
         raise ValueError("Benchmark requires frames and positive repeats")
