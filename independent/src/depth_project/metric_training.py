@@ -24,7 +24,14 @@ def write_json(path, value):
     path = Path(path)
     temporary = path.with_suffix(".pending.json")
     temporary.write_text(json.dumps(value, indent=2, allow_nan=False), encoding="utf-8")
-    temporary.replace(path)
+    for attempt in range(7):
+        try:
+            temporary.replace(path)
+            return
+        except PermissionError:
+            if attempt == 6:
+                raise
+            time.sleep(0.05 * 2 ** attempt)
 
 
 def load_development_pack(root):
@@ -211,7 +218,11 @@ def _train_candidate(pack, config, output, device):
         write_json(run_path, {"config": config, "configuration_sha256": identity, "data_identities": pack["identities"],
                               "scale": scale, "provenance": run_provenance(root)})
     losses = []
-    while step < maximum_steps:
+    interval = config.get("evaluate_every", steps_per_epoch * 2)
+    minimum_steps = config.get("minimum_steps", steps_per_epoch * 24)
+    patience_steps = config.get("patience", 10) * interval
+    early_stopped = bool(validation and history and step >= minimum_steps and step - best_step >= patience_steps)
+    while step < maximum_steps and not early_stopped:
         if cursor >= len(fitting):
             order = fitting_tensor[torch.randperm(len(fitting), device=device)]
             cursor = 0
@@ -247,7 +258,6 @@ def _train_candidate(pack, config, output, device):
         scheduler.step()
         step += 1
         losses.append(float(loss.detach()))
-        interval = config.get("evaluate_every", steps_per_epoch * 2)
         if step % interval and step != maximum_steps:
             continue
         scores = evaluate(validation or fitting)
@@ -270,8 +280,7 @@ def _train_candidate(pack, config, output, device):
                     "best_score": best_score, "best_step": best_step, "history": history, "cpu_rng": torch.get_rng_state(),
                     "cuda_rng": torch.cuda.get_rng_state() if device == "cuda" else torch.empty(0, dtype=torch.uint8)}, temporary)
         temporary.replace(latest)
-        if validation and step >= config.get("minimum_steps", steps_per_epoch * 24) and step - best_step >= config.get("patience", 10) * interval:
-            break
+        early_stopped = bool(validation and step >= minimum_steps and step - best_step >= patience_steps)
     result = {"configuration_sha256": identity, "config": config, "fit_ids": fitting_ids, "validation_ids": validation_ids,
               "scale": scale, "completed_steps": step, "best_step": best_step, "best_epoch": best_step / steps_per_epoch,
               "best_abs_rel": best_score, "parameter_count": sum(parameter.numel() for parameter in model.parameters()),

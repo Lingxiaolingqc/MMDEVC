@@ -31,6 +31,27 @@ def test_refiner_rgb_augmentation_preserves_geometry_channels_and_input():
     assert output[:, :3].abs().max() <= 1
 
 
+def test_atomic_json_retries_a_transient_windows_reader_lock(tmp_path, monkeypatch):
+    from pathlib import Path
+    import json
+
+    original = Path.replace
+    calls = []
+
+    def temporarily_locked(path, target):
+        calls.append(target)
+        if len(calls) == 1:
+            raise PermissionError("file is temporarily held by a reader")
+        return original(path, target)
+
+    monkeypatch.setattr(Path, "replace", temporarily_locked)
+    monkeypatch.setattr(training.time, "sleep", lambda seconds: None)
+    target = tmp_path / "summary.json"
+    training.write_json(target, {"complete": True})
+    assert json.loads(target.read_text()) == {"complete": True}
+    assert len(calls) == 2
+
+
 def test_training_entrypoint_records_subset_and_rejects_overwrite(tmp_path):
     torch.set_num_threads(4)
     base = np.full((3, 480, 640), 2, np.float32)
@@ -63,3 +84,10 @@ def test_training_entrypoint_records_subset_and_rejects_overwrite(tmp_path):
     (tmp_path / "best.safetensors").write_bytes(b"damaged checkpoint")
     with pytest.raises(ValueError, match="checkpoint"):
         training.train_candidate(pack, config, tmp_path, device="cpu")
+    early_folder = tmp_path / "early"
+    early_config = {**config, "max_steps": 4, "patience": 0}
+    early = training.train_candidate(pack, early_config, early_folder, device="cpu")
+    assert early["completed_steps"] == 1
+    (early_folder / "summary.json").unlink()
+    early_resumed = training.train_candidate(pack, early_config, early_folder, device="cpu")
+    assert early_resumed["completed_steps"] == early["completed_steps"]
