@@ -11,13 +11,14 @@ import torch
 from safetensors.torch import load_file
 from torch.nn import functional as F
 
+from depth_project.atomic_io import replace_file
 from depth_project.metric_research import torch_nyu_metrics
 from depth_project.metric_training import load_development_pack, scaled_features, write_json
 from depth_project.records import sha256_file
 from depth_project.residual_refiner import ResidualRefiner
 
 
-def evaluate_refiner(pack, summary, checkpoint, device="cuda"):
+def evaluate_refiner(pack, summary, checkpoint, device="cuda", prediction_output=None):
     if sha256_file(checkpoint) != summary["checkpoint_sha256"]:
         raise ValueError("Selected candidate checkpoint identity differs")
     config = summary["config"]
@@ -29,38 +30,52 @@ def evaluate_refiner(pack, summary, checkpoint, device="cuda"):
     model = ResidualRefiner(**config.get("model", {})).to(device).eval()
     model.load_state_dict(load_file(str(checkpoint), device=device))
     rows = []
+    predictions = []
     with torch.inference_mode():
         for start in range(0, len(ids), 8):
             end = min(start + 8, len(ids))
             values = torch.from_numpy(features[start:end]).to(device).float()
             frozen = None
             if config.get("model", {}).get("feature_channels"):
-                frozen = torch.from_numpy(pack["depth_features"][indices[start:end]]).to(device)
+                frozen = torch.from_numpy(pack["depth_features"][indices[start:end]]).to(device).float()
             with torch.autocast(device, dtype=torch.float16, enabled=device == "cuda"):
                 residual = model(values, frozen)
             residual = F.interpolate(residual.float(), size=(480, 640), mode="bilinear", align_corners=False)
             prediction = torch.from_numpy(base[start:end, None]).to(device) * residual.exp()
+            if prediction_output is not None:
+                predictions.append(prediction[:, 0].float().cpu().numpy())
             truth = torch.from_numpy(pack["truth"][indices[start:end], None]).to(device)
             scores = torch_nyu_metrics(prediction, truth).cpu().numpy()
             for index, score in zip(ids[start:end], scores):
                 rows.append({"image_id": index, "scene": pack["scenes"][index], "abs_rel": float(score[0]),
                              "rmse": float(score[1]), "delta1": float(score[2])})
+    if prediction_output is not None:
+        destination = Path(prediction_output)
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        temporary = destination.with_suffix(".pending.npz")
+        np.savez_compressed(temporary, image_ids=np.array(ids), depth_m=np.concatenate(predictions))
+        replace_file(temporary, destination)
     return rows
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--stage", default="curves")
+    parser.add_argument("--save-predictions", action="store_true")
     args = parser.parse_args()
     torch.set_num_threads(4)
     root = Path(__file__).resolve().parents[1]
     pack = load_development_pack(root)
     jobs = json.loads((root / f"runs/metric-research/{args.stage}-jobs.json").read_text())
+    if any(job.get("model", {}).get("feature_channels") for job in jobs):
+        from depth_project.metric_feature_cache import attach_depth_features
+        pack = attach_depth_features(root, pack)
     summaries = []
     for job in jobs:
         folder = root / "runs/metric-research" / job["name"]
         summary = json.loads((folder / "summary.json").read_text())
-        rows = evaluate_refiner(pack, summary, folder / "best.safetensors")
+        rows = evaluate_refiner(pack, summary, folder / "best.safetensors",
+                                prediction_output=folder / "validation.npz" if args.save_predictions else None)
         replay = float(np.mean([row["abs_rel"] for row in rows]))
         if abs(replay - summary["best_abs_rel"]) > 1e-7:
             raise ValueError("Saved checkpoint does not reproduce its selection score")
