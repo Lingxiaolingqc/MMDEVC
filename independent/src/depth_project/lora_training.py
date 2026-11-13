@@ -71,6 +71,11 @@ def _train(root, pack, config, output, device):
     seed = int(config["seed"])
     torch.manual_seed(seed)
     torch.set_num_threads(4)
+    hardware = {"device": device, "torch_version": str(torch.__version__), "cuda_runtime": torch.version.cuda,
+                "precision": "fp16 autocast" if device == "cuda" else "float32"}
+    if device == "cuda":
+        torch.cuda.reset_peak_memory_stats()
+        hardware["gpu"] = torch.cuda.get_device_name()
     adapter = load_image_adapter("unidepth", root)
     if adapter.metadata["checkpoint_sha256"] != pack["identities"]["checkpoint_sha256"]:
         raise ValueError("LoRA foundation checkpoint differs")
@@ -149,7 +154,7 @@ def _train(root, pack, config, output, device):
         provenance["randomness"] = {"seed": seed, "cudnn_benchmark": bool(torch.backends.cudnn.benchmark),
                                     "deterministic_algorithms": torch.are_deterministic_algorithms_enabled()}
         write_json(run_path, {"config": config, "configuration_sha256": identity, "data_identities": pack["identities"],
-                              "scale": scale, "trainable_names": names, "provenance": provenance})
+                              "scale": scale, "trainable_names": names, "provenance": provenance, "hardware": hardware})
     start = time.perf_counter()
     elapsed_before = history[-1]["elapsed_s"]
     patience = config.get("patience", 20)
@@ -221,6 +226,7 @@ def _train(root, pack, config, output, device):
               "trainable_parameters": sum(parameter.numel() for parameter in parameters),
               "frozen_parameters_unchanged": True, "initial_maximum_baseline_difference_m": difference,
               "checkpoint_sha256": sha256_file(output / "best.safetensors"),
+              "hardware": hardware,
               "training_s": elapsed_before + time.perf_counter() - start,
               "peak_allocated_mib": torch.cuda.max_memory_allocated() / 1024 ** 2 if device == "cuda" else None}
     write_json(summary_path, result)

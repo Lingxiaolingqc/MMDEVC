@@ -65,6 +65,8 @@ def test_training_checks_frozen_weights_and_reuses_verified_completion(experimen
     assert result["frozen_parameters_unchanged"]
     assert result["completed_epochs"] == 2
     assert result["initial_maximum_baseline_difference_m"] == 0
+    assert result["hardware"]["device"] == "cpu"
+    assert result["hardware"]["precision"] == "float32"
     assert len(result["rows"]) == 2
     assert result["rows"][0]["image_id"] == 2
     assert lora_training.train_lora_candidate(root, pack, config, output, device="cpu") == result
