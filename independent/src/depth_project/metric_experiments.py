@@ -39,6 +39,9 @@ def historical_baseline_difference(path, prediction):
 def run_metric_evaluation(root, config_path, output):
     root, output = Path(root), Path(output)
     config = json.loads(Path(config_path).read_text())
+    if config.get('format_version') == 2:
+        from .research_evaluation import run_research_evaluation
+        return run_research_evaluation(root, config_path, output)
     if config['selection_status'] != 'frozen on scene-held-out development before final test':
         raise ValueError('Freeze development selection before test evaluation')
     if (output / 'summary.json').exists():
