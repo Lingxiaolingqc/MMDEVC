@@ -71,6 +71,8 @@ def _train(root, pack, config, output, device):
             raise ValueError("Completed LoRA configuration differs")
         if sha256_file(output / "best.safetensors") != previous["checkpoint_sha256"]:
             raise ValueError("Completed LoRA checkpoint differs")
+        if previous.get("validation_predictions_sha256") and sha256_file(output / "validation.npz") != previous["validation_predictions_sha256"]:
+            raise ValueError("Completed LoRA validation predictions differ")
         return previous
     run_path = output / "run.json"
     if run_path.exists() and json.loads(run_path.read_text())["configuration_sha256"] != identity:
@@ -110,10 +112,13 @@ def _train(root, pack, config, output, device):
         images = {index: torch.from_numpy(np.ascontiguousarray(dataset["images"][index].transpose(0, 2, 1))).to(device)
                   for index in fitting + validation}
 
-    def predict(indices):
+    def predict(indices, horizontal_flip=False):
         batch = torch.stack([images[int(index)] for index in indices])
+        if horizontal_flip:
+            batch = torch.flip(batch, [-1])
         with torch.autocast(device, dtype=torch.float16, enabled=device == "cuda"):
-            return infer_differentiable(model, batch) * scale
+            depth = infer_differentiable(model, batch) * scale
+        return torch.flip(depth, [-1]) if horizontal_flip else depth
 
     with torch.no_grad(), torch.autocast(device, dtype=torch.float16, enabled=device == "cuda"):
         initial = infer_differentiable(model, images[fitting[0]])
@@ -140,7 +145,7 @@ def _train(root, pack, config, output, device):
 
     latest = output / "latest.pt"
     if latest.exists():
-        state = torch.load(latest, map_location=device, weights_only=True)
+        state = torch.load(latest, map_location="cpu", weights_only=True)
         if state["configuration_sha256"] != identity:
             raise ValueError("Resume configuration differs")
         load_adapter_state(model, state["model"])
@@ -232,7 +237,12 @@ def _train(root, pack, config, output, device):
         raise ValueError("Reloaded LoRA checkpoint does not reproduce its score")
     if validation:
         temporary = output / "validation.pending.npz"
-        np.savez_compressed(temporary, image_ids=np.array(validation), depth_m=np.stack(predictions))
+        values = {"image_ids": np.array(validation), "depth_m": np.stack(predictions)}
+        if config.get("collect_flip", False):
+            with torch.no_grad():
+                values["flip_m"] = np.stack([predict([index], horizontal_flip=True)[0, 0].float().cpu().numpy()
+                                             for index in validation])
+        np.savez_compressed(temporary, **values)
         replace_file(temporary, output / "validation.npz")
     result = {"config": config, "configuration_sha256": identity, "scale": scale, "best_abs_rel": best_score,
               "best_epoch": best_epoch, "completed_epochs": completed, "history": history, "rows": rows,
@@ -240,6 +250,7 @@ def _train(root, pack, config, output, device):
               "trainable_parameters": sum(parameter.numel() for parameter in parameters),
               "frozen_parameters_unchanged": True, "initial_maximum_baseline_difference_m": difference,
               "checkpoint_sha256": sha256_file(output / "best.safetensors"),
+              "validation_predictions_sha256": sha256_file(output / "validation.npz") if validation else None,
               "hardware": hardware,
               "optimizer_updates": sum(row.get("optimizer_updates", len(range(0, len(fitting), accumulation))) for row in history[1:]),
               "amp_skipped_updates": sum(row.get("amp_skipped_updates", 0) for row in history[1:]),

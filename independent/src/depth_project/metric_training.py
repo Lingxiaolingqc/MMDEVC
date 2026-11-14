@@ -195,7 +195,7 @@ def _train_candidate(pack, config, output, device):
 
     latest = output / "latest.pt"
     if latest.exists():
-        state = torch.load(latest, map_location=device, weights_only=True)
+        state = torch.load(latest, map_location="cpu", weights_only=True)
         model.load_state_dict(state["model"])
         optimizer.load_state_dict(state["optimizer"])
         scheduler.load_state_dict(state["scheduler"])

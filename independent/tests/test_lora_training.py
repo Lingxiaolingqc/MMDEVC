@@ -7,7 +7,7 @@ import torch
 from torch import nn
 from safetensors.torch import load_file
 
-from depth_project import lora_training
+from depth_project import lora_training, metric_training
 
 
 class TinyFoundation(nn.Module):
@@ -168,3 +168,38 @@ def test_unequal_microbatches_match_single_image_gradients(experiment, monkeypat
     second = load_file(str(root / "batch3/best.safetensors"))
     for name in first:
         torch.testing.assert_close(first[name], second[name], rtol=1e-6, atol=1e-8)
+
+
+def test_optional_flip_cache_restores_validation_coordinates(experiment, monkeypatch):
+    root, pack, config = experiment
+    with h5py.File(root / "data/nyu/nyu_depth_v2_labeled.mat", "r+") as source:
+        for index in config["validation_ids"]:
+            source["images"][index, 0] = np.broadcast_to((np.arange(640) % 256).astype(np.uint8)[:, None], (640, 480))
+
+    def spatial_prediction(model, rgb):
+        batch = rgb[None] if rgb.ndim == 3 else rgb
+        variable = (batch[:, 0].amax(dim=(-2, -1)) > batch[:, 0].amin(dim=(-2, -1)))[:, None, None, None]
+        position = torch.linspace(0, 1, batch.shape[-1], device=batch.device)[None, None, None]
+        return tiny_prediction(model, batch) + variable * (batch[:, :1].float() / 255 * 0.1 + position * 0.2)
+
+    monkeypatch.setattr(lora_training, "infer_differentiable", spatial_prediction)
+    output = root / "flips"
+    result = lora_training.train_lora_candidate(root, pack, {**config, "collect_flip": True}, output, device="cpu")
+    with np.load(output / "validation.npz") as packet:
+        difference = packet["flip_m"] - packet["depth_m"]
+        expected = 0.2 * (1 - 2 * np.linspace(0, 1, 640)) * result["scale"]
+        np.testing.assert_allclose(difference, np.broadcast_to(expected, difference.shape), rtol=1e-5, atol=1e-6)
+
+
+@pytest.mark.parametrize("module", [lora_training, metric_training])
+def test_resume_checkpoint_keeps_optimizer_step_counters_on_cpu(module):
+    import ast
+    from pathlib import Path
+
+    source = ast.parse(Path(module.__file__).read_text())
+    loads = [node for node in ast.walk(source) if isinstance(node, ast.Call)
+             and isinstance(node.func, ast.Attribute) and node.func.attr == "load"
+             and node.args and isinstance(node.args[0], ast.Name) and node.args[0].id == "latest"]
+    assert len(loads) == 1
+    location = next(keyword.value for keyword in loads[0].keywords if keyword.arg == "map_location")
+    assert isinstance(location, ast.Constant) and location.value == "cpu"
