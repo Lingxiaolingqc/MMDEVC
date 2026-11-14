@@ -6,6 +6,26 @@ import numpy as np
 from .metrics import evaluate_nyu
 
 
+def rank_fold_results(records):
+    """Rank candidates by the equal mean of three scene-fold evaluations."""
+    candidates = {}
+    for record in records:
+        candidates.setdefault(record["candidate"], []).append(record)
+    ranking = []
+    for name, folds in candidates.items():
+        if sorted(record["fold"] for record in folds) != [0, 1, 2]:
+            raise ValueError("Each candidate requires exactly three distinct scene folds")
+        folds = sorted(folds, key=lambda record: record["fold"])
+        metrics = np.array([[record["metrics"][key] for key in ("abs_rel", "rmse", "delta1")]
+                            for record in folds], dtype=float)
+        if not np.isfinite(metrics).all() or (metrics < 0).any():
+            raise ValueError("Fold metrics must be finite and nonnegative")
+        ranking.append({"candidate": name, "folds": folds,
+                        "mean_fold_metrics": dict(zip(("abs_rel", "rmse", "delta1"),
+                                                       metrics.mean(axis=0).tolist()))})
+    return sorted(ranking, key=lambda item: (item["mean_fold_metrics"]["abs_rel"], item["candidate"]))
+
+
 def fixed_refit_epochs(best_epochs):
     values = np.asarray(best_epochs, dtype=float)
     if values.shape != (3,) or not np.isfinite(values).all() or (values < 0).any():
