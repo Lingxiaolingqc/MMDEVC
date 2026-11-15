@@ -11,6 +11,8 @@ The final rank-8 Q/V LoRA model with fixed flip averaging and a three-seed predi
 | Selected model, 577 fitting images | 0.08231 | 0.33517 | 0.93979 |
 | Final model, all 795 development images | **0.08112** | **0.33135** | **0.94236** |
 
+The chosen custom Part 3 direction is LoRA-based metric-depth adaptation. The main report compares one selected setting per method family and gives a cumulative component ablation. All completed LoRA training uses a fitted global scale, so the reported LoRA effects are conditional on calibration. The 29.18% test reduction belongs to the full calibration/LoRA/view-and-seed-averaging recipe. A calibration-free LoRA training control is an unmeasured variant.
+
 The model learns 147,456 additional Q/V parameters per seed. The pretrained weights stay frozen. Each seed blends 75% original-view and 25% restored-flip metric depth, using a development-fitted global scale. The three seed predictions receive equal weights. Scene-separated comparisons fix the final 19-epoch fitting duration. The final model uses 795 development images, with RGB-only test inference and fixed metric output. Original reference and previous-refiner test outcomes were known before this study.
 
 The matching 218-image development comparison is 0.12069 to 0.08525. Development scores and final test scores use their respective image sets. The dedicated synchronized benchmark measures **37.4 ms/image** for the raw reference and **235.8 ms/image** for the final method, including all selected model passes. Final peak allocated memory is 438 MiB on the RTX 4070 Laptop GPU.

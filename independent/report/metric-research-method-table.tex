@@ -1,0 +1,17 @@
+\begin{table*}[t]
+\centering\small
+\caption{Candidate pipelines on the same 218 development images, with one selected learning rate per family. Per-seed results give mean and SD across three training seeds. A LoRA/feature pipeline pairs both models within each seed. The prediction average combines three pipeline outputs before scoring. Every learned candidate includes a fitting-only global scale. Residual refiners also use original/flip depth features.}
+\begin{tabular}{lrr}
+\toprule
+Pipeline & Per-seed pipeline AbsRel & Three-seed average AbsRel\\
+\midrule
+Unchanged UniDepthV2-S & 0.12069 & ---\\
+Global scale calibration & 0.10843 & ---\\
+RGB residual refiner & 0.10221 $\pm$ 0.00059 & 0.10141\\
+Native-feature refiner & 0.09336 $\pm$ 0.00090 & 0.09236\\
+LoRA + calibration & 0.08740 $\pm$ 0.00156 & 0.08628\\
+LoRA + feature-refiner average & 0.08734 $\pm$ 0.00102 & 0.08678\\
+\textbf{LoRA + calibration + flip} & 0.08630 $\pm$ 0.00158 & \textbf{0.08525}\\
+\bottomrule
+\end{tabular}
+\end{table*}

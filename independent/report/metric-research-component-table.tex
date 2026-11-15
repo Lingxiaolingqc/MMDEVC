@@ -1,0 +1,15 @@
+\begin{table}[t]
+\centering\small
+\caption{Cumulative ablation on 218 development images. The two single-adapter rows use the same preselected seed 320113. LoRA is evaluated on top of frozen calibration. The last row averages three seed models. The full recipe receives the final test comparison.}
+\begin{tabular}{lr}
+\toprule
+Components included & AbsRel\\
+\midrule
+Raw UniDepthV2-S & 0.12069\\
++ global scale calibration & 0.10843\\
++ LoRA adaptation & 0.08662\\
++ fixed flip averaging & 0.08548\\
++ three-seed averaging & 0.08525\\
+\bottomrule
+\end{tabular}
+\end{table}

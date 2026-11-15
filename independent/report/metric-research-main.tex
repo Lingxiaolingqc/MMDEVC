@@ -9,18 +9,18 @@
 \input{metric-research-values}
 \def\confName{CVPR}
 \def\confYear{2027}
-\title{Data-Efficient Adaptation of Small-Model Metric Depth\\with Scene-Separated Selection and Frozen Evaluation}
+\title{LoRA-Based Adaptation for Indoor Metric Depth\\with Controlled Component Ablations}
 \author{Eugene\\HKUST (Guangzhou)\\AIAA 3201 Computer Vision Project}
 \begin{document}
 \maketitle
 \begin{abstract}
-We reproduce the course's UniDepthV2 ViT-S metric-depth reference and investigate lightweight improvements using the permitted NYU development split. A controlled search compares residual refinement, native-feature conditioning, image-dependent calibration, input resolution, and low-rank internal adaptation. Whole-scene cross-validation and three training seeds select \ResearchMethod{}. The final model is refitted on all 795 development images for a duration fixed from cross-validation. On all 654 test images, AbsRel changes from \ResearchBaseAbs{} to \ResearchFinalAbs{}, a \ResearchGain\% reduction. Against our previously completed residual refiner, the reduction is \ResearchPreviousGain\%. These measurements use RGB-only inference and the same raw-metric evaluation support. Development supervision and additional inference cost are stated explicitly. We retain per-image regressions and show shared-scale depth, ground-truth error, runtime, and a depth-based application. The mandatory 15-pair stereo exercise and relative DA V2/VDA comparison are also included. The linked video supplies 70 genuine frames. Code and results are available at \url{https://github.com/Lingxiaolingqc/MMDEVC/tree/experiment/independent-metric-optimization-20261113/independent}.
+Our chosen Part 3 direction is low-rank adaptation of UniDepthV2 ViT-S attention projections to indoor metric depth. The pretrained parameters remain frozen while each seed learns 147,456 additional Q/V parameters. The evaluated recipe also includes a development-fitted global scale, fixed flip averaging, and a three-seed prediction average. We report their component effects explicitly and compare alternative refiners using the same development images. The final model is refitted on all 795 NYU development images for a duration chosen before testing. On all 654 test images, AbsRel changes from \ResearchBaseAbs{} to \ResearchFinalAbs{}, a \ResearchGain\% reduction for the full recipe. The reduction against our previous residual refiner is \ResearchPreviousGain\%. Development supervision, additional inference cost, and per-image regressions are disclosed. We also complete the 15-pair stereo exercise, required relative DA V2/VDA comparison, and a depth-aware application. The linked video supplies 70 genuine frames. Code and results are available at \url{https://github.com/Lingxiaolingqc/MMDEVC/tree/experiment/independent-metric-optimization-20261113/independent}.
 \end{abstract}
 
 \section{Introduction}
 Suppose a table is 2 m from the camera. Predicting 1.6 m gives proportional error $|1.6-2|/2=0.2$. Multiplying every prediction by 1.25 fixes this simplified example. It also moves a correctly predicted 4 m wall to 5 m. This illustrates why useful refinement must be tested against measured distances across held-out scenes.
 
-Our research question is whether limited labeled development data can adapt a pretrained Small model to indoor metric depth through a small trainable parameter set and controlled prediction averaging. We examine global distance bias, domain-specific prediction errors, and variation across views and training runs.
+Our chosen Part 3 direction is parameter-efficient metric-depth adaptation through LoRA. The brief permits a custom technically sound method. Our research question is whether a small trainable update can improve indoor distance predictions with limited labels. Calibration and prediction averaging are explicit components of the evaluated recipe. Component ablations quantify their effects, and the reported 29.18\% test reduction is attributed to the complete recipe.
 
 The assignment names UniDepthV2 and Depth Pro as single-image metric references and Video Depth Anything as the video reference. We select UniDepthV2 ViT-S for quantitative improvement. Its pretrained checkpoint predicts distances in meters from RGB. NYU supplies the target depth labels used for development adaptation and final evaluation. We preserve the original reference prediction and compare every method with the same crop, valid-depth mask, units, and aggregation.
 
@@ -53,28 +53,34 @@ We report 5,000-replicate paired scene-cluster bootstrap intervals, which resamp
 \subsection{Other Required Inputs}
 Stereo uses all 15 Middlebury quarter-resolution pairs with their calibration and \texttt{disp0GT.pfm}. The official archive uses the folder name \texttt{trainingQ}. The linked rollercoaster video decodes to 70 genuine frames at $960\times540$, 24 FPS. Both relative models process exactly those frames and display $640\times360$ outputs. The source cannot supply frames 70--99. The archive records the actual count.
 
-\section{Competing Lightweight Methods}
-\subsection{Calibration and Residual Refinement}
-The official pretrained UniDepthV2 ViT-S is the raw metric reference. Default preprocessing rounds NYU input to an internal $490\times644$. Original and horizontally flipped RGB predictions are restored to matching coordinates. The previous method uses a fixed 0.25 flip weight, development-fitted scale 0.9413383, and a 388,001-parameter residual network.
-
-The refiner consumes RGB, log original/flip/base depth, transformed model confidence, and normalized coordinates at $240\times320$. It predicts bounded log corrections applied multiplicatively to the base map. Encoder widths are 16, 32, 64, and 96 with skip-connected bilinear decoding. We retain the previous weights and use an explicit control trainer for the new study.
-
-New candidates test RGB augmentation, dropout, narrower layers, full-resolution supervision, and a log-depth gradient loss. Native-feature variants add 256-channel frozen depth features through a learned projection, with an optional gate. A wider residual bound is another ablation. These interventions share the same test-time information available from RGB and the foundation model.
-
-An additional ridge-regression candidate predicts an image-specific log scale from 256 globally pooled native features and seven log-depth statistics. Its regularization is chosen in fitting-scene folds. This follows the metric-calibration motivation while allowing the multiplier to depend on the image.
-
-\subsection{Limited Internal Adaptation}
+\section{LoRA-Based Metric-Depth Adaptation}
+\subsection{Low-Rank Parameter Updates}
 LoRA preserves a pretrained weight matrix $W$ and learns two smaller matrices,
 \begin{equation}
 W'=W+BA, \quad A\in\mathbb{R}^{r\times d},\quad B\in\mathbb{R}^{d\times r}.
 \end{equation}
-The input RGB is independent of these learned parameters. The prediction is the resulting metric-depth map, and NYU depth is the training target. Initializing $B$ to zero makes the initial prediction exactly match the pretrained model.
+The input is an RGB image, the learned parameters are the adapter matrices, the prediction is a metric-depth map, and NYU depth supplies the training target. Initializing $B$ to zero makes the initial prediction exactly match the pretrained model.
 
-We add independent updates to the query and value projections in each of the 12 ViT-S blocks. Rank 4 trains 73,728 parameters and rank 8 trains 147,456. Pretrained attention weights, keys, normalization, camera prediction, and decoder parameters remain frozen. Frozen tensor digests are checked before and after training. The official model stays in evaluation mode while gradients update the adapters.
+We add independent updates to the query and value projections in the 12 ViT-S blocks. Rank 8 trains 147,456 parameters per seed. Pretrained attention weights, keys, normalization, camera prediction, and decoder parameters remain frozen. Frozen tensor digests are checked before and after training. The model stays in evaluation mode while gradients update the adapters.
 
-Training uses the official differentiable RGB-only preprocessing and geometry, a fitting-only global scale, full-resolution course-protocol AbsRel, AdamW, FP16 scaling, and gradient clipping at 1. An effective batch of 8 is accumulated through microbatches of 2. The learning-rate schedule has an 80-epoch horizon. Scene-fold and repeated-seed runs allow at most 80 epochs with patience 20 after epoch 24.
+The loss is full-resolution course-protocol AbsRel. Training uses AdamW with learning rate $10^{-4}$, FP16 scaling, gradient clipping at 1, and effective batch 8 accumulated through microbatches of 2. The learning-rate schedule has an 80-epoch horizon. Development runs allow at most 80 epochs with patience 20 after epoch 24. Search settings and fold histories are retained in the experiment records.
 
-A fixed 0.25 restored-flip average is evaluated as an inference variant. A fixed equal prediction mean with the best feature refiner is another declared contender. Their trained component weights are reused. New weights are trained for each fitting-scene partition, and validation labels select among the resulting candidates.
+\subsection{Calibration and Prediction Averaging}
+The official raw UniDepthV2 ViT-S is the unchanged reference. RGB-only preprocessing maps NYU input to an internal $490\times644$. Our calibration coefficient is fitted from the fitting images and frozen for each held-out partition. The 577-image LoRA fitting runs all use $s=0.94162592696$.
+
+For seed $k$, let $F_k(I)$ be the adapter's prediction and let $F_k^f(I)$ be the restored prediction from horizontally flipped RGB. The full recipe forms
+\begin{equation}
+y_k=s\bigl(0.75F_k(I)+0.25F_k^f(I)\bigr),\qquad
+\hat d=\frac{y_1+y_2+y_3}{3}.
+\end{equation}
+Both views describe the same image geometry after coordinate restoration. The three seed models receive equal prediction weights. The final refit recomputes $s$ using all 795 development images.
+
+All completed LoRA training runs condition on fitted calibration. The ablation therefore measures LoRA added to a calibrated reference. A calibration-free LoRA training control is an unmeasured variant. The full test gain combines this training recipe with the declared inference averaging.
+
+\subsection{Compared Approaches}
+The previous RGB-guided residual network has 388,001 parameters and uses RGB, log original/flip/base depth, transformed confidence, and coordinates at $240\times320$. It predicts bounded multiplicative corrections. A native-feature variant adds a projection of 256-channel frozen depth features and a learned gate, giving 394,434 parameters. We compare these approaches with the selected LoRA family.
+
+An image-dependent ridge model predicts log scale from 256 pooled features and seven log-depth statistics. Additional comparisons test RGB augmentation, dropout, refiner width, gradient supervision, residual bound, and foundation input resolution. These experiments establish alternatives and component choices for the one selected metric-depth study. Their full configurations and lower-performing learning-rate settings are retained in the repository records.
 
 \begin{figure*}[t]
 \centering
@@ -83,15 +89,11 @@ A fixed 0.25 restored-flip average is evaluated as an inference variant. A fixed
 \label{fig:pipeline}
 \end{figure*}
 
-\subsection{Data Efficiency and Selection}
+\subsection{Development Selection and Ablation}
 The data-size study uses three seeds and nested whole-scene subsets near 100, 200, 400, and 577 images. Every run has the same maximum update budget. Mean selection AbsRel is 0.10840, 0.10676, 0.10305, and 0.10305. For this architecture, increasing from about 400 to 577 images supplies no demonstrated additional gain. This motivates improving how pretrained representations are adapted.
 
-\begin{figure*}[t]
-\centering
-\includegraphics[width=.95\textwidth]{learning-curves.png}
-\caption{Fixed 218-image selection split. Each point averages three seeds, with standard deviation shown. Image counts and distinct scene counts are both retained. The result concerns the residual-refiner family used in this study.}
-\label{fig:curves}
-\end{figure*}
+The full learning-curve plot and search histories are retained in the experiment records.
+
 
 The first pilot stage establishes which families warrant scene-fold evaluation. The plain control reaches selection AbsRel 0.10189. The best gated native-feature refiner reaches 0.09226. Image-dependent ridge calibration reaches 0.09662. Rank-8 LoRA reaches 0.08629, and its fixed flip variant reaches 0.08504. These pilot scores guide further development comparisons.
 
@@ -101,7 +103,7 @@ Larger-input studies use actual internal sizes $532\times700$ and $658\times868$
 
 The two lowest mean-AbsRel configurations across all three scene folds advance to three seeds on the 577/218 partition. After these training runs, we evaluate all raw, flip-averaged, and combined inference variants sharing the trained weights. This expanded comparison is recorded before any new test metrics are inspected. Family selection uses mean seed error. Within the winning family, we compare the median-scoring single seed with the equal three-seed prediction average. We use the average only when its selection error is strictly lower. The final seed set is \ResearchSeeds{}, and the chosen family is \ResearchMethod{}. Each selected seed uses 147,456 learned rank-8 LoRA parameters. Each prediction blends 75\% original-view depth and 25\% restored-flip depth, followed by an equal average over three seeds. The fixed all-development refit duration is 19 epochs. The selected three-seed prediction mean reaches development AbsRel 0.08525.
 
-The final fitting duration is the median best epoch from the three scene folds, rounded half up. It is fixed before the all-795 refit and uses the same 80-epoch schedule horizon. We predeclare the all-development model as final regardless of its later ordering against the pre-refit model on test.
+The three selected LoRA fold checkpoints occur at epochs 5, 19, and 49. Their median fixes the final duration at 19 epochs before the all-795 refit. The schedule horizon remains 80 epochs. This choice uses fitting-scene validation and is independent of test outcomes. The original search also refitted a feature-network alternative for 40 epochs, derived from fold checkpoints 50, 40, and 40. Each model has its own duration. We retain the all-development model as final according to the predeclared rule.
 
 \section{Results}
 \subsection{Frozen Metric Comparison}
@@ -177,7 +179,7 @@ The original baseline and previous refiner test outcomes had already been inspec
 The source video supplies 70 frames, and the archive records this limit. The report retains a draft author line for group confirmation. Model code, pretrained sources, papers, dataset sources, and CVPR template remain attributed.
 
 \section{Discussion}
-The methods address different sources of prediction error. A global multiplier corrects a systematic distance bias shared across images. LoRA changes the internal representation through small learned attention updates, allowing the model to adapt to the NYU indoor distribution. The feature-guided refiner instead learns spatial corrections from RGB and frozen geometric features. These are hypotheses about useful mechanisms, evaluated through their complete prediction pipelines.
+The chosen research direction is low-rank adaptation of single-image metric depth. The candidate table compares complete pipelines at their selected settings. The component table shows the effects of global calibration, the same LoRA checkpoint, fixed flip averaging, and seed averaging on one development split. These comparisons make the dependencies of each result explicit.
 
 On the same 218 selection images, the native-feature refiner has three-seed mean AbsRel 0.09336 and rank-8 high-rate LoRA has 0.08740. The development data-size curve concerns the earlier residual architecture, so its saturation provides motivation for changing the adaptation mechanism. It does not establish a universal data requirement for every model family.
 
