@@ -24,6 +24,7 @@ def main():
     winner = config["winner"]
     recipe = winner.removesuffix("-flip").removesuffix("-feature-mean")
     combined = config["pre_refit"].get("type") == "lora-feature-mean"
+    depth_tolerance = 0.001 if combined else 1e-5
     specification = config["pre_refit"]["lora"] if combined else config["pre_refit"]
     validation = config["selection_validation_ids"]
     saved = []
@@ -60,12 +61,12 @@ def main():
     result = {"metrics": metrics, "selection_abs_rel": score, "maximum_saved_prediction_difference_m": maximum_difference,
               "image_ids": validation, "configuration_sha256": sha256_file(path), "metadata": predictor.metadata,
               "scope": "Actual frozen pre-refit predictor, RGB-only input, all 218 scene-disjoint selection images",
-              "tolerances": {"maximum_depth_difference_m": 0.001, "abs_rel_difference": 1e-7,
-                             "reason": "FP16 convolution batch-8 saved validation versus batch-1 RGB-only inference"},
+              "tolerances": {"maximum_depth_difference_m": depth_tolerance, "abs_rel_difference": 1e-7,
+                             "reason": "FP16 convolution batch-8 versus batch-1" if combined else "Official RGB inference versus differentiable saved validation"},
               "provenance": run_provenance(root)}
     write_json(root / "results/metric-research/normal-entry-development-replay.json", result)
     print(json.dumps({"metrics": metrics, "maximum_saved_prediction_difference_m": maximum_difference}, indent=2))
-    if maximum_difference > 0.001 or abs(metrics["abs_rel"] - score) > 1e-7:
+    if maximum_difference > depth_tolerance or abs(metrics["abs_rel"] - score) > 1e-7:
         raise ValueError("Frozen RGB-only inference does not reproduce development selection")
 
 

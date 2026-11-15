@@ -69,7 +69,7 @@ def main():
     write_table(report / "metric-research-fold-table.tex", "Equal means over three fitting-scene folds. Refit durations use median best fold epochs. Combined rows list LoRA/refiner durations.",
                 "lrr", "Candidate & Mean AbsRel & Epochs", rows)
     seeds = json.loads((ROOT / "results/metric-research/seed-selection.json").read_text())
-    candidates = [seeds["control"], *seeds["ranking"]]
+    candidates = [seeds["control"], *(item for item in seeds["ranking"] if item["candidate"] != "control")]
     rows = [f"{LABELS[item['candidate']]} & {item['mean_seed_metrics']['abs_rel']:.5f} & {item['seed_abs_rel_standard_deviation']:.5f}"
             for item in candidates]
     write_table(report / "metric-research-seed-table.tex", "Three-seed selection results on the same 218 development images. SD describes training-seed variability.",

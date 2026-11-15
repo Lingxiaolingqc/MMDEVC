@@ -12,6 +12,7 @@ def main():
     paths = ["configs/metric-research-final.json", "results/metric-research/final-test.json",
              "results/metric-research/scene-fold-selection.json", "results/metric-research/seed-selection.json",
              "results/metric-research/refit-decision.json", "results/metric-research/isolated-benchmark.json",
+             "results/metric-research/normal-entry-development-replay.json", "results/metric-research/independent-metric-check.json",
              "results/metric-research/figure-selection.json", "results/metric-research/learning-curves.png",
              "results/metric-research/curves-analysis.json", "results/metric-research/lora-pilots.json"]
     for specification in [config["pre_refit"], config["selected"]]:

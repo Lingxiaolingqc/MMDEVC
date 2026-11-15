@@ -1,4 +1,5 @@
 """Apply the fixed three-seed family and ensemble selection rules."""
+import argparse
 import json
 from pathlib import Path
 
@@ -13,6 +14,9 @@ from depth_project.refinement import blend_flip
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--all-available", action="store_true", help="Compare inference variants sharing the already-trained seed recipes")
+    args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     folds = json.loads((root / "results/metric-research/scene-fold-selection.json").read_text())
     pack = load_development_pack(root)
@@ -21,7 +25,8 @@ def main():
     truth = pack["truth"][[positions[index] for index in validation]]
     results = []
     sources = {}
-    for candidate in ["control", *folds["advanced_candidates"]]:
+    eligible = [item["candidate"] for item in folds["ranking"]] if args.all_available else folds["advanced_candidates"]
+    for candidate in ["control", *eligible]:
         if any(result["candidate"] == candidate for result in results):
             continue
         recipe = candidate.removesuffix("-flip").removesuffix("-feature-mean")
@@ -55,7 +60,7 @@ def main():
                         "ensemble_selection": selection})
         print(json.dumps({"candidate": candidate, "mean_abs_rel": results[-1]["mean_seed_metrics"]["abs_rel"],
                           "chosen_seeds": selection["chosen_seeds"]}), flush=True)
-    ranking = sorted((item for item in results if item["candidate"] in folds["advanced_candidates"]),
+    ranking = sorted((item for item in results if item["candidate"] in eligible),
                      key=lambda item: (item["mean_seed_metrics"]["abs_rel"], item["candidate"]))
     control = next(item for item in results if item["candidate"] == "control")
     winner = ranking[0]
@@ -64,10 +69,12 @@ def main():
               "winner": winner["candidate"], "chosen_seeds": winner["ensemble_selection"]["chosen_seeds"],
               "ranking": ranking, "control": control, "sources": sources,
               "winner_vs_control": paired_scene_comparison(control["mean_seed_rows"], winner["mean_seed_rows"]),
-              "data_identities": pack["identities"], "provenance": run_provenance(root)}
+              "data_identities": pack["identities"], "provenance": run_provenance(root),
+              "candidate_policy": "All inference variants of the trained scene-CV recipes" if args.all_available else "Two scene-CV finalists"}
     if len(ranking) > 1:
         result["winner_vs_runner_up"] = paired_scene_comparison(ranking[1]["mean_seed_rows"], winner["mean_seed_rows"])
-    write_json(root / "results/metric-research/seed-selection.json", result)
+    filename = "seed-variant-selection.json" if args.all_available else "seed-selection.json"
+    write_json(root / "results/metric-research" / filename, result)
 
 
 if __name__ == "__main__":
