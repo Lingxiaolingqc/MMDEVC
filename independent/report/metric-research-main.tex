@@ -97,7 +97,7 @@ Larger-input studies use actual internal sizes $532\times700$ and $658\times868$
 
 \input{metric-research-selection-tables}
 
-The two lowest mean-AbsRel configurations across all three scene folds advance to three seeds on the 577/218 partition. Family selection uses mean seed error. Within the winning family, we compare the median-scoring single seed with the equal three-seed prediction average. We use the average only when its selection error is strictly lower. The final seed set is \ResearchSeeds{}, and the chosen family is \ResearchMethod{}.
+The two lowest mean-AbsRel configurations across all three scene folds advance to three seeds on the 577/218 partition. Family selection uses mean seed error. Within the winning family, we compare the median-scoring single seed with the equal three-seed prediction average. We use the average only when its selection error is strictly lower. The final seed set is \ResearchSeeds{}, and the chosen family is \ResearchMethod{}. Each seed pairs one rank-8 LoRA branch with one 394,434-parameter gated feature refiner. Predictions are averaged within each pair and then across the three pairs. The fixed refit durations are 19 epochs for LoRA and 40 for the feature refiner.
 
 The final fitting duration is the median best epoch from the three scene folds, rounded half up. It is fixed before the all-795 refit and uses the same 80-epoch schedule horizon. We predeclare the all-development model as final regardless of its later ordering against the pre-refit model on test.
 
@@ -106,12 +106,12 @@ The final fitting duration is the median best epoch from the three scene folds, 
 \input{metric-research-test-table}
 All four methods share the same 654 test images and evaluation arithmetic. The raw foundation is the course-named reference. The previous method uses its preserved weights. The pre-refit model uses the selected 577-image checkpoint(s), while the final model uses the complete 795-image development refit.
 
-The final AbsRel reduction relative to the raw reference is \ResearchGain\%, with paired-scene 95\% interval \ResearchGainCI{}. Against the previous residual refiner, the reduction is \ResearchPreviousGain\%. The final model improves \ResearchImproved{} images and worsens \ResearchWorsened{} relative to the raw reference. The pre-refit/full-refit comparison is \ResearchRefitComparison{}.
+The final AbsRel reduction relative to the raw reference is \ResearchGain\%, with paired-scene 95\% interval \ResearchGainCI{}. Against the previous residual refiner, the reduction is \ResearchPreviousGain\%. The final model improves \ResearchImproved{} images and worsens \ResearchWorsened{} relative to the raw reference. In the pre-refit/full-refit comparison, \ResearchRefitComparison{}.
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{research-comparison.png}
-\caption{RGB, measured depth, raw reference, and selected improvement with common 0--10 m colors. Ground-truth error maps share a fixed scale. Rows follow the declared largest gain, median change, and largest regression selection rule. Per-image scores expose differences that can be hard to see in colored depth alone.}
+\caption{RGB, measured depth, raw reference, and selected improvement with common 0--10 m colors. Ground-truth error maps share a fixed scale, with darker pixels indicating smaller errors. Rows follow the declared largest gain, median change, and largest regression selection rule. Per-image scores expose differences that can be hard to see in colored depth alone.}
 \label{fig:comparison}
 \end{figure*}
 

@@ -51,7 +51,7 @@ class LoRADepthPredictor:
         if self.flip_weight:
             self.metadata["model_id"] += f"-flip{self.flip_weight:g}"
 
-    def predict_rgb(self, rgb):
+    def predict_members(self, rgb):
         validate_rgb(rgb)
         tensor = torch.from_numpy(np.ascontiguousarray(rgb.transpose(2, 0, 1))).to(self.device)
         predictions = []
@@ -66,5 +66,8 @@ class LoRADepthPredictor:
                     restored = torch.flip(output["depth"], [-1])[0, 0].float() * scale
                     prediction = blend_flip(prediction, restored.cpu().numpy(), self.flip_weight)
                 predictions.append(prediction)
-        values = np.mean(np.stack(predictions), axis=0, dtype=np.float64).astype(np.float32)
+        return predictions
+
+    def predict_rgb(self, rgb):
+        values = np.mean(np.stack(self.predict_members(rgb)), axis=0, dtype=np.float64).astype(np.float32)
         return DepthPrediction(values, **self.metadata)

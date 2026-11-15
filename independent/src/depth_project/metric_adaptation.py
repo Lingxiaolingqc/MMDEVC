@@ -58,12 +58,6 @@ class ProjectionDepth(nn.Module):
         return self
 
 
-def configure_projections(model):
-    model.requires_grad_(False)
-    layer = model.pixel_decoder.depth_layer
-    layer.to_depth_lr.requires_grad_(True)
-    layer.to_depth_hr.requires_grad_(True)
-    return [name for name, parameter in model.named_parameters() if parameter.requires_grad]
 
 
 def configure_lora(model, rank):
@@ -79,25 +73,8 @@ def configure_lora(model, rank):
     return [name for name, parameter in model.named_parameters() if parameter.requires_grad]
 
 
-def align_depth_features(features, padded_hw, padding, output_hw):
-    left, right, top, bottom = padding
-    padded_height, padded_width = padded_hw
-    height = padded_height - top - bottom
-    width = padded_width - left - right
-    target_height, target_width = output_hw
-    y = top + (torch.arange(target_height, device=features.device, dtype=torch.float32) + 0.5) * height / target_height
-    x = left + (torch.arange(target_width, device=features.device, dtype=torch.float32) + 0.5) * width / target_width
-    yy, xx = torch.meshgrid(2 * y / padded_height - 1, 2 * x / padded_width - 1, indexing="ij")
-    grid = torch.stack([xx, yy], dim=-1)[None].expand(len(features), -1, -1, -1)
-    return F.grid_sample(features.float(), grid, mode="bilinear", padding_mode="border", align_corners=False)
 
 
-def radius_to_z(radius, rays, output_hw, padding):
-    points = radius * rays
-    points = F.interpolate(points, size=output_hw, mode="bilinear", align_corners=False)
-    left, right, top, bottom = padding
-    height, width = output_hw
-    return points[:, -1:, top:height - bottom, left:width - right]
 
 
 def infer_differentiable(model, rgb):

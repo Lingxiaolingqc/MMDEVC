@@ -10,7 +10,7 @@ import torch
 
 from .atomic_io import replace_file
 from .data import load_nyu_split
-from .lora_inference import LoRADepthPredictor
+from .research_inference import load_research_predictor
 from .metric_experiments import verify_frozen_dataset
 from .metric_packet_evaluation import VARIANTS, evaluate_metric_packets
 from .metric_reference import MetricRefinerReference
@@ -73,7 +73,7 @@ def _run(root, config_path, config, split, output):
     write_json(run_path, run)
     torch.set_num_threads(4)
     foundation_hash = config["foundation_checkpoint_sha256"]
-    predictors = {name: LoRADepthPredictor(root, config[name], foundation_hash) for name in ["pre_refit", "selected"]}
+    predictors = {name: load_research_predictor(root, config[name], foundation_hash) for name in ["pre_refit", "selected"]}
     reference = MetricRefinerReference(root)
     cuda = predictors["selected"].device == "cuda"
     reused, written = 0, 0

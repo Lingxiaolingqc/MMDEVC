@@ -9,7 +9,7 @@ import numpy as np
 import torch
 
 from depth_project.benchmark import benchmark_metric_images
-from depth_project.lora_inference import LoRADepthPredictor
+from depth_project.research_inference import load_research_predictor
 from depth_project.metric_reference import MetricRefinerReference
 from depth_project.metric_training import write_json
 from depth_project.models import load_image_adapter
@@ -54,7 +54,7 @@ def main():
             return adapter
         if name == "previous_refiner":
             return MetricRefinerReference(root)
-        return LoRADepthPredictor(root, config[name], config["foundation_checkpoint_sha256"])
+        return load_research_predictor(root, config[name], config["foundation_checkpoint_sha256"])
 
     methods = {}
     for name in ["baseline_default", "baseline_4", "baseline_9", "previous_refiner", "pre_refit", "selected"]:
@@ -65,13 +65,14 @@ def main():
         def record_input(module, inputs):
             processed.add(tuple(inputs[0].shape[-2:]))
 
-        handle = model.pixel_encoder.register_forward_pre_hook(record_input)
+        handles = [item.pixel_encoder.register_forward_pre_hook(record_input) for item in getattr(adapter, "models", [model])]
         result = benchmark_metric_images(images, adapter, args.repeats, torch)
-        handle.remove()
+        for handle in handles:
+            handle.remove()
         methods[name] = {**result, "metadata": adapter.metadata, "processed_hw": [list(shape) for shape in sorted(processed)]}
         print(json.dumps({"method": name, "median_image_s": result["median_image_s"],
                           "peak_allocated_mib": result["peak_allocated_mib"], "processed_hw": methods[name]["processed_hw"]}), flush=True)
-        del adapter, model, handle
+        del adapter, model, handles
         gc.collect()
         if torch.cuda.is_available():
             torch.cuda.empty_cache()

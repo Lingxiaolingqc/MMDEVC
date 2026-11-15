@@ -63,7 +63,7 @@ def setup(tmp_path, monkeypatch):
                 np.testing.assert_array_equal(packet["selected_m"], np.full((480, 640), 1.8, np.float32))
         return {"image_count": 2, "metrics": {}}
 
-    monkeypatch.setattr(research_evaluation, "LoRADepthPredictor", Predictor)
+    monkeypatch.setattr(research_evaluation, "load_research_predictor", Predictor)
     monkeypatch.setattr(research_evaluation, "MetricRefinerReference", Reference)
     monkeypatch.setattr(research_evaluation, "load_nyu_split", lambda path: {"development": np.array([0, 1]), "test": np.array([2, 3])})
     monkeypatch.setattr(research_evaluation, "run_provenance", lambda root: {})

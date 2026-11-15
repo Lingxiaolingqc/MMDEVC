@@ -15,7 +15,9 @@ def main():
              "results/metric-research/figure-selection.json", "results/metric-research/learning-curves.png",
              "results/metric-research/curves-analysis.json", "results/metric-research/lora-pilots.json"]
     for specification in [config["pre_refit"], config["selected"]]:
-        paths.extend(member["checkpoint"] for member in specification["members"])
+        components = [specification["lora"], specification["refiner"]] if specification.get("type") == "lora-feature-mean" else [specification]
+        for component in components:
+            paths.extend(member["checkpoint"] for member in component["members"])
     paths.extend(str(path.relative_to(root)).replace("\\", "/")
                  for path in sorted((root / "results/metric-research/figures").glob("*.png")))
     paths.extend(f"results/metric-research/{name}-test-per-image.csv"

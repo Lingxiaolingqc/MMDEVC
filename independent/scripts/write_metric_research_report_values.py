@@ -59,9 +59,14 @@ def main():
     write_table(report / "metric-research-test-table.tex", "Complete 654-image NYU test comparison. Lower AbsRel/RMSE and higher $\\delta_1$ are better.",
                 "lrrr", r"Method & AbsRel & RMSE (m) & $\delta_1$", rows)
     folds = json.loads((ROOT / "results/metric-research/scene-fold-selection.json").read_text())
-    rows = [f"{LABELS[item['candidate']]} & {item['mean_fold_metrics']['abs_rel']:.5f} & {item['fixed_refit_epochs']}"
-            for item in folds["ranking"]]
-    write_table(report / "metric-research-fold-table.tex", "Equal means over all three fitting-scene folds. The last column fixes final refit duration from the median best fold epoch.",
+    feature_epochs = next(item["fixed_refit_epochs"] for item in folds["ranking"] if item["candidate"] == "features-gate")
+    rows = []
+    for item in folds["ranking"]:
+        epochs = str(item["fixed_refit_epochs"])
+        if item["candidate"].endswith("-feature-mean"):
+            epochs += f"/{feature_epochs}"
+        rows.append(f"{LABELS[item['candidate']]} & {item['mean_fold_metrics']['abs_rel']:.5f} & {epochs}")
+    write_table(report / "metric-research-fold-table.tex", "Equal means over three fitting-scene folds. Refit durations use median best fold epochs. Combined rows list LoRA/refiner durations.",
                 "lrr", "Candidate & Mean AbsRel & Epochs", rows)
     seeds = json.loads((ROOT / "results/metric-research/seed-selection.json").read_text())
     candidates = [seeds["control"], *seeds["ranking"]]
