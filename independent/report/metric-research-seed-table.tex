@@ -1,0 +1,18 @@
+\begin{table}[t]
+\centering\small
+\caption{Three-seed selection results on the same 218 development images. SD describes training-seed variability.}
+\begin{tabular}{lrr}
+\toprule
+Candidate & Mean AbsRel & SD\\
+\midrule
+RGB residual control & 0.10221 & 0.00059\\
+LoRA + flip, LR $10^{-4}$ & 0.08630 & 0.00158\\
+LoRA/feature mean, high LR & 0.08734 & 0.00102\\
+LoRA, LR $10^{-4}$ & 0.08740 & 0.00156\\
+LoRA + flip, LR $3\times10^{-5}$ & 0.08757 & 0.00077\\
+LoRA/feature mean, low LR & 0.08818 & 0.00076\\
+LoRA, LR $3\times10^{-5}$ & 0.08890 & 0.00076\\
+Native features + gate & 0.09336 & 0.00090\\
+\bottomrule
+\end{tabular}
+\end{table}

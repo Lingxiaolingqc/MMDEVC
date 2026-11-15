@@ -52,8 +52,8 @@ def pipeline():
     axis.set(xlim=(0, 10), ylim=(0, 3))
     axis.axis("off")
     boxes = [(0.1, 1.1, 1.2, "RGB image\n480 x 640"),
-             (1.8, 1.1, 2.4, "UniDepthV2-S\nLightweight adaptation"),
-             (4.7, 1.1, 2.2, "Frozen calibration\nSelected averaging"),
+             (1.8, 1.1, 2.4, "UniDepthV2-S\n147,456-parameter LoRA"),
+             (4.7, 1.1, 2.2, "Frozen scale\nFlip + seed averaging"),
              (7.5, 1.1, 2.3, "Metric prediction\nDepth in meters")]
     for left, bottom, width, label in boxes:
         axis.add_patch(FancyBboxPatch((left, bottom), width, 0.8, boxstyle="round,pad=.05",
@@ -64,7 +64,7 @@ def pipeline():
                                       mutation_scale=12, color="#536b7a"))
     axis.text(5, 2.55, "Whole-scene CV → three seeds → fixed all-795 refit → frozen 654-image test",
               ha="center", fontsize=9)
-    axis.text(5, 0.55, f"Selected development family   {selection['winner']}   |   {len(selection['chosen_seeds'])} seed(s)",
+    axis.text(5, 0.55, f"Rank-8 Q/V adapters   |   25% restored-flip weight   |   {len(selection['chosen_seeds'])} seeds",
               ha="center", fontsize=8)
     axis.text(5, 0.1, "Development uses RGB and measured depth. Test prediction consumes RGB.", ha="center")
     save(figure, "research-pipeline.png")
@@ -85,20 +85,23 @@ def comparisons(baseline, final):
             depth_plot = axes[row, column].imshow(depth, cmap="inferno", vmin=0, vmax=10)
         for column, error in enumerate(errors, 4):
             error_plot = axes[row, column].imshow(np.ma.masked_invalid(error), cmap="magma", vmin=0, vmax=0.5)
-        axes[row, 0].set_title(f"{rule}\nNYU {index}", fontsize=8)
-        axes[row, 4].set_title(f"AbsRel {baseline[position]['abs_rel']:.3f}", fontsize=8)
-        axes[row, 5].set_title(f"AbsRel {final[position]['abs_rel']:.3f}", fontsize=8)
+        axes[row, 0].set_title(f"{rule}\nNYU {index}", fontsize=11)
+        axes[row, 4].set_title(f"AbsRel {baseline[position]['abs_rel']:.3f}", fontsize=11)
+        axes[row, 5].set_title(f"AbsRel {final[position]['abs_rel']:.3f}", fontsize=11)
         selected.append({"rule": rule, "image_id": index, "scene": final[position]["scene"],
                          "baseline_abs_rel": baseline[position]["abs_rel"], "selected_abs_rel": final[position]["abs_rel"]})
     for axis, label in zip(axes[0], ["RGB", "Ground truth", "UniDepthV2-S", "Final", "Baseline error", "Final error"]):
-        axis.text(0.5, 1.37, label, transform=axis.transAxes, ha="center", fontsize=9)
+        axis.text(0.5, 1.37, label, transform=axis.transAxes, ha="center", fontsize=12)
     for axis in axes.flat:
         axis.axis("off")
     figure.subplots_adjust(left=0.01, right=0.99, top=0.85, bottom=0.1, hspace=0.36, wspace=0.025)
     figure.colorbar(depth_plot, cax=figure.add_axes([0.22, 0.035, 0.38, 0.015]), orientation="horizontal",
-                    label="Depth in meters, shared 0–10 range")
+                    label="Depth in meters, shared 0-10 range")
     figure.colorbar(error_plot, cax=figure.add_axes([0.69, 0.035, 0.28, 0.015]), orientation="horizontal",
                     label="Pixel AbsRel, capped at 0.5")
+    for axis in figure.axes[-2:]:
+        axis.tick_params(labelsize=11)
+        axis.xaxis.label.set_size(11)
     save(figure, "research-comparison.png")
     return selected
 
@@ -114,7 +117,7 @@ def hard_cases(final):
         axes[row, 3].imshow(np.ma.masked_invalid(errors[1]), cmap="magma", vmin=0, vmax=0.5)
         axes[row, 0].set_title(f"NYU {record['image_id']}", fontsize=8)
         axes[row, 3].set_title(f"AbsRel {record['abs_rel']:.3f}", fontsize=8)
-    for axis, label in zip(axes[0], ["RGB", "Ground truth", "Final depth", "Final error"]):
+    for axis, label in zip(axes[0], ["RGB", "Ground truth (m)", "Final depth (m)", "Pixel AbsRel"]):
         axis.text(0.5, 1.22, label, transform=axis.transAxes, ha="center", fontsize=9)
     for axis in axes.flat:
         axis.axis("off")

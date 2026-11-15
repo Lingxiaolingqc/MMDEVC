@@ -1,16 +1,71 @@
 # Independent Computer Vision Project 3
 
+## Metric-depth research result, November 15
+
+The final rank-8 Q/V LoRA model with fixed flip averaging and a three-seed prediction average reaches **0.08112 AbsRel on all 654 NYU test images**. The same-protocol UniDepthV2-S reference reaches 0.11455, giving **29.18% lower AbsRel** with a paired-scene 95% interval of 25.93–32.41%. The previous residual refiner reaches 0.09564, giving a further **15.19% error reduction**.
+
+| Method | Test AbsRel | RMSE (m) | Delta1 |
+| --- | ---: | ---: | ---: |
+| Raw UniDepthV2-S | 0.11455 | 0.39889 | 0.89222 |
+| Previous residual refiner | 0.09564 | 0.37080 | 0.91374 |
+| Selected model, 577 fitting images | 0.08231 | 0.33517 | 0.93979 |
+| Final model, all 795 development images | **0.08112** | **0.33135** | **0.94236** |
+
+The model learns 147,456 additional Q/V parameters per seed. The pretrained weights stay frozen. Each seed blends 75% original-view and 25% restored-flip metric depth, using a development-fitted global scale. The three seed predictions receive equal weights. Scene-separated comparisons fix the final 19-epoch fitting duration. The final model uses 795 development images, with RGB-only test inference and fixed metric output. Original reference and previous-refiner test outcomes were known before this study.
+
+The matching 218-image development comparison is 0.12069 to 0.08525. Development scores and final test scores use their respective image sets. The dedicated synchronized benchmark measures **37.4 ms/image** for the raw reference and **235.8 ms/image** for the final method, including all selected model passes. Final peak allocated memory is 438 MiB on the RTX 4070 Laptop GPU.
+
+[Final results](results/metric-research/final-test.json), [frozen recipe](configs/metric-research-final.json), [three-seed selection](results/metric-research/seed-selection.json), [independent metric check](results/metric-research/independent-metric-check.json), [isolated benchmark](results/metric-research/isolated-benchmark.json), and [new CVPR report](report/metric-research-report.pdf).
+
+### Reproduce the frozen model
+
+Complete the environment and official source/data preparation below. Included small adapters and the frozen recipe support normal RGB-only evaluation. Use an unused output directory for a new run.
+
+```powershell
+./.venv/Scripts/python.exe -m depth_project.cli metric-improvement --config configs/metric-research-final.json --output runs/metric-research-reproduced
+./.venv/Scripts/python.exe scripts/check_metric_research_packets.py --run-dir runs/metric-research-reproduced --output runs/metric-research-reproduced/independent-metric-check.json
+./.venv/Scripts/python.exe scripts/benchmark_metric_research.py --config configs/metric-research-final.json --output results/metric-research/benchmark-reproduced.json
+```
+
+The packet checker defaults to a result file inside its selected run directory. To refresh the recorded historical comparison, explicitly select --previous-run-dir runs/metric-final and --output results/metric-research/independent-metric-check.json.
+
+The expanded development search compares all inference variants sharing the already-trained three-seed recipes. Its output needs explicit promotion before refit preparation. These commands use the completed local development-training caches. The checked-in initial-* records preserve the earlier two-finalist selection.
+
+```powershell
+./.venv/Scripts/python.exe scripts/analyze_metric_seeds.py --all-available
+Copy-Item results/metric-research/seed-variant-selection.json results/metric-research/seed-selection.json
+./.venv/Scripts/python.exe scripts/prepare_metric_refits.py
+```
+
+The final recipe and selected weights were committed at da81ed8 before their test predictions. The all-795 refit improved test AbsRel by 1.44% over the pre-refit model. Model selection was completed before inspecting the new test scores.
+
+### Regenerate the recorded report and archive
+
+These generators read the completed recorded run in runs/metric-research-final/ and the isolated benchmark. The hard-case discussion in the report refers to the automatically selected images in figure-selection.json.
+
+```powershell
+./.venv/Scripts/python.exe scripts/write_metric_research_report_values.py
+./.venv/Scripts/python.exe scripts/make_metric_research_figures.py
+tectonic report/metric-research-main.tex --outdir report
+Copy-Item report/metric-research-main.pdf report/metric-research-report.pdf
+./.venv/Scripts/python.exe scripts/package_metric_research.py
+```
+
+The archive is outputs/metric-research/depth_results.zip. It includes the final model evidence, report, required relative-depth comparison, raw video predictions, application and checksums. The supplied video has 70 genuine frames, recorded in the manifest. The report uses Eugene as its draft author line.
+
+## Earlier November 12 study
+
 **Metric improvement completed, 2026-11-12.** The selected development-calibrated residual refiner reduces NYU AbsRel by **16.50%** against unchanged UniDepthV2 ViT-S on all 654 test images under the same course protocol. It uses 577 development images for fitting and 218 scene-disjoint images for selection. This is supervised NYU adaptation with frozen foundation weights. [Complete results](results/metric-improvement.json), [selected configuration](configs/metric-final.json), and [small trained checkpoint](artifacts/metric-refiner.safetensors).
 
 The local runs/diagnostics/fusion-difference-slow.mp4 shows a quarter-speed comparison with an amplified absolute prediction-change panel. [Measured change statistics](results/fusion-difference-diagnostic.json) explain why the original comparison appears similar.
 
-An independent implementation of the revised AIAA3201 assignment using official Small pretrained models. The final improvement is **RGB-guided metric residual refinement**. The earlier Direction A study remains as historical evidence. All experiments ran locally on an RTX 4070 Laptop GPU with 8 GB VRAM.
+An independent implementation of the revised AIAA3201 assignment using official Small pretrained models. The November 12 improvement is **RGB-guided metric residual refinement**. The earlier Direction A study remains as historical evidence. All experiments ran locally on an RTX 4070 Laptop GPU with 8 GB VRAM.
 
 **Status:** required static baselines, video comparisons, fusion ablations, synthetic controls, and repeated runtime measurements are complete. The demo is **provisional**: the linked official rollercoaster source contains 70 real frames, while the brief requests 100. No exported frames were duplicated or invented. Obtain a longer course copy or TA clarification before claiming submission compliance.
 
-This separate checkout lives beside the original `MMDEVC` folder on `feat/independent-performance-search`. Only `independent/` is checked out. No groupmate implementation, parameter choices, caches, or historical results were used as our code or baseline. Common Git ancestry exists for eventual integration by pull request.
+This separate checkout lives beside the original `MMDEVC` folder on `experiment/independent-metric-optimization-20261113`. Only `independent/` is checked out. No groupmate implementation, parameter choices, caches, or historical results were used as our code or baseline. Common Git ancestry exists for eventual integration by pull request.
 
-## Our measured results
+## Earlier measured results
 
 | NYU test metric | Unchanged UniDepthV2-S | Selected refinement |
 | --- | ---: | ---: |
@@ -169,7 +224,7 @@ git status --short
 git add -- independent/<specific-file>
 git diff --cached --stat
 git commit -m 'feat: describe one independent contribution'
-git push -u origin HEAD:refs/heads/feat/independent-performance-search
+git push -u origin HEAD:refs/heads/experiment/independent-metric-optimization-20261113
 ```
 
 Local hooks reject commits outside independent branch prefixes, staged changes outside `independent/`, and pushes to shared branches including `main`. They use local `core.hooksPath=independent/.githooks`; they do not install GitHub branch protection and can be bypassed. Use pull requests for eventual integration, without a force push or automatic merge into `main`.

@@ -20,6 +20,8 @@ We reproduce the course's UniDepthV2 ViT-S metric-depth reference and investigat
 \section{Introduction}
 Suppose a table is 2 m from the camera. Predicting 1.6 m gives proportional error $|1.6-2|/2=0.2$. Multiplying every prediction by 1.25 fixes this simplified example. It also moves a correctly predicted 4 m wall to 5 m. This illustrates why useful refinement must be tested against measured distances across held-out scenes.
 
+Our research question is whether limited labeled development data can adapt a pretrained Small model to indoor metric depth through a small trainable parameter set and controlled prediction averaging. We examine global distance bias, domain-specific prediction errors, and variation across views and training runs.
+
 The assignment names UniDepthV2 and Depth Pro as single-image metric references and Video Depth Anything as the video reference. We select UniDepthV2 ViT-S for quantitative improvement. Its pretrained checkpoint predicts distances in meters from RGB. NYU supplies the target depth labels used for development adaptation and final evaluation. We preserve the original reference prediction and compare every method with the same crop, valid-depth mask, units, and aggregation.
 
 Our initial residual refinement already reduced test AbsRel by 16.50\%. The present study preserves that result and asks whether limited development data can support a stronger method. We first measure how performance changes with the number of fitting scenes. We then compare interventions at calibration, output refinement, frozen representation, internal adaptation, and input resolution. Selection uses development evidence before the final weights and recipe are frozen.
@@ -84,12 +86,12 @@ A fixed 0.25 restored-flip average is evaluated as an inference variant. A fixed
 \subsection{Data Efficiency and Selection}
 The data-size study uses three seeds and nested whole-scene subsets near 100, 200, 400, and 577 images. Every run has the same maximum update budget. Mean selection AbsRel is 0.10840, 0.10676, 0.10305, and 0.10305. For this architecture, increasing from about 400 to 577 images supplies no demonstrated additional gain. This motivates improving how pretrained representations are adapted.
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=\linewidth]{learning-curves.png}
+\includegraphics[width=.95\textwidth]{learning-curves.png}
 \caption{Fixed 218-image selection split. Each point averages three seeds, with standard deviation shown. Image counts and distinct scene counts are both retained. The result concerns the residual-refiner family used in this study.}
 \label{fig:curves}
-\end{figure}
+\end{figure*}
 
 The first pilot stage establishes which families warrant scene-fold evaluation. The plain control reaches selection AbsRel 0.10189. The best gated native-feature refiner reaches 0.09226. Image-dependent ridge calibration reaches 0.09662. Rank-8 LoRA reaches 0.08629, and its fixed flip variant reaches 0.08504. These pilot scores guide further development comparisons.
 
@@ -97,7 +99,7 @@ Larger-input studies use actual internal sizes $532\times700$ and $658\times868$
 
 \input{metric-research-selection-tables}
 
-The two lowest mean-AbsRel configurations across all three scene folds advance to three seeds on the 577/218 partition. After these training runs, we evaluate all raw, flip-averaged, and combined inference variants sharing the trained weights. This expanded comparison is recorded before any new test metrics are inspected. Family selection uses mean seed error. Within the winning family, we compare the median-scoring single seed with the equal three-seed prediction average. We use the average only when its selection error is strictly lower. The final seed set is \ResearchSeeds{}, and the chosen family is \ResearchMethod{}. Each selected seed uses 147,456 learned rank-8 LoRA parameters. Each prediction blends 75\% original-view depth and 25\% restored-flip depth, followed by an equal average over three seeds. The fixed all-development refit duration is 19 epochs.
+The two lowest mean-AbsRel configurations across all three scene folds advance to three seeds on the 577/218 partition. After these training runs, we evaluate all raw, flip-averaged, and combined inference variants sharing the trained weights. This expanded comparison is recorded before any new test metrics are inspected. Family selection uses mean seed error. Within the winning family, we compare the median-scoring single seed with the equal three-seed prediction average. We use the average only when its selection error is strictly lower. The final seed set is \ResearchSeeds{}, and the chosen family is \ResearchMethod{}. Each selected seed uses 147,456 learned rank-8 LoRA parameters. Each prediction blends 75\% original-view depth and 25\% restored-flip depth, followed by an equal average over three seeds. The fixed all-development refit duration is 19 epochs. The selected three-seed prediction mean reaches development AbsRel 0.08525.
 
 The final fitting duration is the median best epoch from the three scene folds, rounded half up. It is fixed before the all-795 refit and uses the same 80-epoch schedule horizon. We predeclare the all-development model as final regardless of its later ordering against the pre-refit model on test.
 
@@ -119,7 +121,7 @@ The final AbsRel reduction relative to the raw reference is \ResearchGain\%, wit
 \begin{figure*}[t]
 \centering
 \includegraphics[width=.94\textwidth]{research-hard-cases.png}
-\caption{Three actual hardest final-model test images, chosen by final AbsRel. Depth predictions share the GT display range. Boundary and absolute-scale errors remain visible despite the aggregate gain.}
+\caption{Three actual hardest final-model test images, chosen by final AbsRel. Depth predictions share the GT 0--10 m display range. Error colors are capped at pixel AbsRel 0.5. Boundary and absolute-scale errors remain visible despite the aggregate gain.}
 \label{fig:hard}
 \end{figure*}
 \input{metric-research-hard-cases}
@@ -153,6 +155,8 @@ The models recover the large track structure, with remaining changes around supp
 
 \subsection{Runtime and Application}
 \input{metric-research-runtime-table}
+The three final all-development refits take 7,190 s in total, with maximum peak allocated memory 3,447 MiB. This duration includes epoch-loop training, fitting-score passes, checkpoint writes, and the final reload check. Model and data setup are excluded. AdamW, gradient-scaler, optimizer, and RNG states are retained for resumption.
+
 The isolated benchmark uses an RTX 4070 Laptop GPU with 8,188 MiB VRAM, PyTorch 2.8.0/CUDA 12.8, FP16 foundation inference, 30 development images from different scenes, two warmups, and three repeats. Each timed call covers CPU RGB to CPU metric depth, including preprocessing, all model passes, refinement or seed averaging, and postprocessing. GPU synchronization brackets calls. File I/O, metrics, and compression are excluded.
 
 The raw reference median is \ResearchBaseMS{} ms/image and final median is \ResearchFinalMS{} ms/image. Peak allocated/reserved memory is reported separately for each method. Larger-input references use the same real adapter entry point, with actual internal dimensions recorded. Training runs are stopped during the benchmark.
@@ -166,11 +170,22 @@ The raw reference median is \ResearchBaseMS{} ms/image and final median is \Rese
 VDA's reduced input run takes 6.94 s for 70 frames and reports 3,072/4,194 MiB allocated/reserved, compared with 73.49 s and 8,014/11,858 MiB at input 518. These are earlier recorded video-run measurements. Logical CUDA counters under Windows do not establish physical residency by themselves.
 
 \section{Reproducibility and Limitations}
-The implementation occupies an independent directory on an experiment branch. Foundation weights and data remain external. The small learned adapter weights, frozen recipe, data identities, source hashes, selection results, per-image test CSVs, and benchmark summaries accompany the report. Raw float prediction packets support independent metric recomputation. The final recipe and weights are committed before new test inference.
+The implementation occupies an independent directory on an experiment branch. Foundation weights and data remain external. The small learned adapter weights, frozen recipe, data identities, source hashes, selection results, per-image test CSVs, and benchmark summaries accompany the report. Raw float prediction packets support independent metric recomputation. An independent NumPy implementation recomputes all 654-image metrics with maximum difference $1.9\times10^{-15}$. Raw-reference and previous-refiner pixels exactly match their preserved test packets. The final recipe and weights are committed before new test inference.
 
 The original baseline and previous refiner test outcomes had already been inspected before this new study. The new selection search uses development images, but the reported result inherits that prior test-history exposure. The scene bootstrap omits search uncertainty, and three seeds provide a limited estimate of training variability. Additional supervision and inference passes change the operating setting relative to the original pretrained reference. The final all-development refit is retained according to its predeclared rule even if a test metric regresses.
 
 The source video supplies 70 frames, and the archive records this limit. The report retains a draft author line for group confirmation. Model code, pretrained sources, papers, dataset sources, and CVPR template remain attributed.
+
+\section{Discussion}
+The methods address different sources of prediction error. A global multiplier corrects a systematic distance bias shared across images. LoRA changes the internal representation through small learned attention updates, allowing the model to adapt to the NYU indoor distribution. The feature-guided refiner instead learns spatial corrections from RGB and frozen geometric features. These are hypotheses about useful mechanisms, evaluated through their complete prediction pipelines.
+
+On the same 218 selection images, the native-feature refiner has three-seed mean AbsRel 0.09336 and rank-8 high-rate LoRA has 0.08740. The development data-size curve concerns the earlier residual architecture, so its saturation provides motivation for changing the adaptation mechanism. It does not establish a universal data requirement for every model family.
+
+Flip averaging tests sensitivity to an equivalent image view. Horizontal mirroring preserves the scene's distances, and restoring output coordinates permits pixelwise fusion. In a simplified example, a surface at 3 m receives predictions 2.7 m and 3.1 m from the original and restored-flip views. The fixed 75/25 blend gives 2.8 m, reducing its proportional error from 10\% to 6.7\%. The actual benefit is measured across held-out images, since correlated or systematically wrong predictions can also reinforce errors.
+
+Across the three trained LoRA seeds, fixed flip averaging changes mean single-seed selection AbsRel from 0.08740 to 0.08630. Averaging the three seed predictions then gives 0.08525, compared with 0.08548 for the median-scoring individual seed. The latter comparison evaluates prediction averaging, while the three-seed mean evaluates the training recipe. The two statistics answer different selection questions.
+
+The supported thesis is that a small amount of supervised adaptation plus fixed view/seed averaging improves this reproduced metric-depth reference on NYU. The raw reference and final model share the same test images, units, crop, and metric arithmetic. Development labels and additional inference passes are explicit parts of the improvement. Detailed claims about boundary accuracy, calibration transfer, or other datasets require their own measurements.
 
 \section{Conclusion}
 The selected \ResearchMethod{} yields test AbsRel \ResearchFinalAbs{} under the course's metric-depth protocol, a \ResearchGain\% reduction against reproduced UniDepthV2-S. Scene-separated comparisons, repeated seeds, and a fixed all-development refit make the selection path reproducible. Shared-scale GT error figures and per-image regressions qualify the aggregate result. Required stereo, relative-video comparison, and the depth application remain included with their units and source limitations.

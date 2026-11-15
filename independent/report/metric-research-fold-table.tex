@@ -1,0 +1,18 @@
+\begin{table}[t]
+\centering\small
+\caption{Equal means over three fitting-scene folds. Refit durations use median best fold epochs. Combined rows list LoRA/refiner durations.}
+\begin{tabular}{lrr}
+\toprule
+Candidate & Mean AbsRel & Epochs\\
+\midrule
+LoRA/feature mean, high LR & 0.08652 & 19/40\\
+LoRA/feature mean, low LR & 0.08739 & 18/40\\
+LoRA + flip, LR $10^{-4}$ & 0.08792 & 19\\
+LoRA, LR $10^{-4}$ & 0.08845 & 19\\
+LoRA + flip, LR $3\times10^{-5}$ & 0.08935 & 18\\
+LoRA, LR $3\times10^{-5}$ & 0.08970 & 18\\
+Native features + gate & 0.09075 & 40\\
+RGB residual control & 0.09817 & 28\\
+\bottomrule
+\end{tabular}
+\end{table}
