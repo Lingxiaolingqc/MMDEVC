@@ -6,7 +6,7 @@ import shutil
 from depth_project.atomic_io import replace_file
 from depth_project.data import load_nyu_split
 from depth_project.metric_training import write_json
-from depth_project.records import run_provenance, sha256_file
+from depth_project.records import run_provenance, sha256_file, sha256_source
 
 
 def main():
@@ -83,7 +83,7 @@ def main():
     source_names = ["cli", "research_evaluation", "research_inference", "lora_inference", "lora_training", "metric_adaptation", "models",
                     "metric_experiments", "metric_packet_evaluation", "metric_reference", "metric_research",
                     "metric_selection", "metric_training", "metrics", "refinement", "residual_refiner", "data", "records", "atomic_io"]
-    source_hashes = {f"src/depth_project/{name}.py": sha256_file(root / f"src/depth_project/{name}.py") for name in source_names}
+    source_hashes = {f"src/depth_project/{name}.py": sha256_source(root / f"src/depth_project/{name}.py") for name in source_names}
     rank = (specifications["selected"]["lora"] if combined else specifications["selected"])["rank"]
     method = f"rank-{rank} Q/V LoRA"
     if combined:
@@ -100,7 +100,7 @@ def main():
               "previous_config_sha256": sha256_file(root / "configs/metric-final.json"),
               "selection_evidence_sha256": {name: sha256_file(root / "results/metric-research" / name)
                                              for name in ["scene-fold-selection.json", "seed-selection.json", "refit-decision.json"]},
-              "inference_source_sha256": source_hashes, "provenance": run_provenance(root),
+              "inference_source_sha256": source_hashes, "source_hash_newlines": "LF", "provenance": run_provenance(root),
               "supervision": "NYU development adaptation, RGB-only test inference, raw metric output, no test scale fitting",
               "test_history": "Original reference and previous refiner test results were inspected before this study",
               "refit_test_order_rule": decision["test_order_rule"]}

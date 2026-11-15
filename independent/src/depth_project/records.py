@@ -43,6 +43,14 @@ class DepthPrediction:
             raise ValueError("Depth kind must be relative or metric_m")
 
 
+def sha256_source(path) -> str:
+    """Identify UTF-8 source consistently across Git's LF/CRLF conversion."""
+    import hashlib
+    from pathlib import Path
+
+    return hashlib.sha256(Path(path).read_text(encoding="utf-8").encode("utf-8")).hexdigest()
+
+
 def sha256_file(path) -> str:
     import hashlib
 

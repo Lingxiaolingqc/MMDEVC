@@ -16,7 +16,7 @@ from .metric_packet_evaluation import VARIANTS, evaluate_metric_packets
 from .metric_reference import MetricRefinerReference
 from .metric_research import validate_refit
 from .metric_training import write_json
-from .records import run_provenance, sha256_file
+from .records import run_provenance, sha256_file, sha256_source
 
 
 def verify_recipe(root, config):
@@ -37,7 +37,8 @@ def verify_recipe(root, config):
     if sha256_file(root / "configs/metric-final.json") != config["previous_config_sha256"]:
         raise ValueError("Previous comparison configuration identity differs")
     for relative, expected in config["inference_source_sha256"].items():
-        if sha256_file(root / relative) != expected:
+        digest = sha256_source(root / relative) if config.get("source_hash_newlines") == "LF" else sha256_file(root / relative)
+        if digest != expected:
             raise ValueError(f"Frozen inference source identity differs for {relative}")
     return split
 
