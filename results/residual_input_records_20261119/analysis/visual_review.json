@@ -1,0 +1,184 @@
+{
+  "status": "inspected",
+  "reviewer": "assistant; direct inspection of saved local figures",
+  "scope": "Validation only; detailed figures use seed320112, not a seed-averaged prediction. Extremes were selected by paired metrics and are not representative examples of the mean. Not all21 detailed figures were manually inspected.",
+  "fixed_case_overview": "逐一查看S0及六个候选的nyuv2_0598固定预览：整体结构相近，茶几边缘仍较GT圆滑，未见新增输入恢复缺失细轮廓；修正图的区域和边缘响应不同，但修正幅度本身不是准确度证据。",
+  "observations": [
+    {
+      "run": "screen_M2_two_stage_seed320112",
+      "reason": "largest_boundary_regression",
+      "observation": "置物架 nyuv2_0080：整体 AbsRel 0.09338→0.08910，但预测边缘从304像素降到50，匹配GT边缘330→58，F1 0.33651→0.06870。叠加图中原先可见的架子中部竖边减少；这是固定10%跳变阈值下边界检出减少，不能只凭整体误差说轮廓改善。",
+      "figure": "analysis/visuals/screen_M2_two_stage_seed320112/largest_boundary_regression_nyuv2_0080.png",
+      "figure_sha256": "563816946562cea9120aa1d792cea3161317d8552a683514cbb3ee1714349dbd",
+      "measured_case": {
+        "reason": "largest_boundary_regression",
+        "source_index": 79,
+        "s0_absrel": 0.09338143612030528,
+        "candidate_absrel": 0.0890975873409544,
+        "s0_boundary_f1": 0.3365133785496013,
+        "candidate_boundary_f1": 0.06870342036424658,
+        "saved_score_abs_difference": [
+          0.0,
+          1.3670734197446244e-08
+        ],
+        "figure": "largest_boundary_regression_nyuv2_0080.png",
+        "sha256": "563816946562cea9120aa1d792cea3161317d8552a683514cbb3ee1714349dbd"
+      }
+    },
+    {
+      "run": "screen_M2_two_stage_seed320112",
+      "reason": "largest_gain",
+      "observation": "餐厅 nyuv2_0226：远处墙面大片误差明显减小，AbsRel 0.46021→0.30466；近处家具、树枝/人物轮廓附近仍有明显误差，局部出现带状变化。不是细结构被普遍恢复。",
+      "figure": "analysis/visuals/screen_M2_two_stage_seed320112/largest_gain_nyuv2_0226.png",
+      "figure_sha256": "80ada2ab14ca9e728f061b3f462e1ecb5c725a91279992625866614773c1fc03",
+      "measured_case": {
+        "reason": "largest_gain",
+        "source_index": 225,
+        "s0_absrel": 0.46020660014947157,
+        "candidate_absrel": 0.30465513379146725,
+        "s0_boundary_f1": 0.5120443967788738,
+        "candidate_boundary_f1": 0.49602834177376925,
+        "saved_score_abs_difference": [
+          0.0,
+          1.4549433158261849e-08
+        ],
+        "figure": "largest_gain_nyuv2_0226.png",
+        "sha256": "80ada2ab14ca9e728f061b3f462e1ecb5c725a91279992625866614773c1fc03"
+      }
+    },
+    {
+      "run": "screen_M2_two_stage_seed320112",
+      "reason": "largest_regression",
+      "observation": "器材房 nyuv2_0349：相对S0，左后墙/器材和部分前景区域误差增大，AbsRel 0.09434→0.11748；没有可见的新结构恢复。",
+      "figure": "analysis/visuals/screen_M2_two_stage_seed320112/largest_regression_nyuv2_0349.png",
+      "figure_sha256": "bd3eee1c6ccc7718cf61675810d8a62f35307c1f39f348de433660f57e0ae5ac",
+      "measured_case": {
+        "reason": "largest_regression",
+        "source_index": 348,
+        "s0_absrel": 0.0943435768222891,
+        "candidate_absrel": 0.11748236516444231,
+        "s0_boundary_f1": 0.4008531411732127,
+        "candidate_boundary_f1": 0.39042146986944626,
+        "saved_score_abs_difference": [
+          0.0,
+          3.268742747308817e-08
+        ],
+        "figure": "largest_regression_nyuv2_0349.png",
+        "sha256": "bd3eee1c6ccc7718cf61675810d8a62f35307c1f39f348de433660f57e0ae5ac"
+      }
+    },
+    {
+      "run": "screen_I3_joint_edges_seed320112",
+      "reason": "largest_gain",
+      "observation": "餐厅 nyuv2_0226：墙面区域深度值更接近GT，AbsRel 0.46021→0.37135，但桌椅/树枝边界仍有错位或缺失，F1没有改善。",
+      "figure": "analysis/visuals/screen_I3_joint_edges_seed320112/largest_gain_nyuv2_0226.png",
+      "figure_sha256": "80504adfe74e2edba9e3920113a23e9861e51c915ec0de4387d6df527d4f9f5a",
+      "measured_case": {
+        "reason": "largest_gain",
+        "source_index": 225,
+        "s0_absrel": 0.46020660014947157,
+        "candidate_absrel": 0.37135089941495547,
+        "s0_boundary_f1": 0.5120443967788738,
+        "candidate_boundary_f1": 0.5104812308621935,
+        "saved_score_abs_difference": [
+          0.0,
+          0.0
+        ],
+        "figure": "largest_gain_nyuv2_0226.png",
+        "sha256": "80504adfe74e2edba9e3920113a23e9861e51c915ec0de4387d6df527d4f9f5a"
+      }
+    },
+    {
+      "run": "screen_I2_depth_edge_seed320112",
+      "reason": "largest_gain",
+      "observation": "餐厅 nyuv2_0226：墙面误差减小，AbsRel 0.46021→0.38924；近处家具和枝条误差仍明显。",
+      "figure": "analysis/visuals/screen_I2_depth_edge_seed320112/largest_gain_nyuv2_0226.png",
+      "figure_sha256": "6c33aaac4d89800faed37052d08c0d526fe948151f9aabfa62f2c6db656db42d",
+      "measured_case": {
+        "reason": "largest_gain",
+        "source_index": 225,
+        "s0_absrel": 0.46020660014947157,
+        "candidate_absrel": 0.38924202492831234,
+        "s0_boundary_f1": 0.5120443967788738,
+        "candidate_boundary_f1": 0.5101228394425187,
+        "saved_score_abs_difference": [
+          0.0,
+          0.0
+        ],
+        "figure": "largest_gain_nyuv2_0226.png",
+        "sha256": "6c33aaac4d89800faed37052d08c0d526fe948151f9aabfa62f2c6db656db42d"
+      }
+    },
+    {
+      "run": "screen_I3_joint_edges_seed320112",
+      "reason": "largest_regression",
+      "observation": "浴室 nyuv2_0503：左侧近处门板等区域误差增加，AbsRel 0.13068→0.14932；原先不准确的深度区域没有因边缘输入自动修复。",
+      "figure": "analysis/visuals/screen_I3_joint_edges_seed320112/largest_regression_nyuv2_0503.png",
+      "figure_sha256": "31e47b183cd8f7db68cb2293917ebac5ec0224ff7e5013f7039a7a94d4ab5f3f",
+      "measured_case": {
+        "reason": "largest_regression",
+        "source_index": 502,
+        "s0_absrel": 0.1306793904370212,
+        "candidate_absrel": 0.14932110876607063,
+        "s0_boundary_f1": 0.7815074248696454,
+        "candidate_boundary_f1": 0.7642815325838659,
+        "saved_score_abs_difference": [
+          0.0,
+          0.0
+        ],
+        "figure": "largest_regression_nyuv2_0503.png",
+        "sha256": "31e47b183cd8f7db68cb2293917ebac5ec0224ff7e5013f7039a7a94d4ab5f3f"
+      }
+    },
+    {
+      "run": "screen_I2_depth_edge_seed320112",
+      "reason": "largest_regression",
+      "observation": "餐桌 nyuv2_0748：椅背、椅腿附近和部分地面误差增加，AbsRel 0.07888→0.09507，尽管F1 0.58276→0.59863。边界得分提升同样不保证区域深度值更准。",
+      "figure": "analysis/visuals/screen_I2_depth_edge_seed320112/largest_regression_nyuv2_0748.png",
+      "figure_sha256": "2e14466da076371fd15a2be39eb066ae9e054dff117151f4755d8b02f6e83b0c",
+      "measured_case": {
+        "reason": "largest_regression",
+        "source_index": 747,
+        "s0_absrel": 0.07888154265097276,
+        "candidate_absrel": 0.09507491772045759,
+        "s0_boundary_f1": 0.5827626321944082,
+        "candidate_boundary_f1": 0.5986343062791504,
+        "saved_score_abs_difference": [
+          0.0,
+          0.0
+        ],
+        "figure": "largest_regression_nyuv2_0748.png",
+        "sha256": "2e14466da076371fd15a2be39eb066ae9e054dff117151f4755d8b02f6e83b0c"
+      }
+    },
+    {
+      "run": "screen_I3_joint_edges_seed320112",
+      "reason": "largest_boundary_regression",
+      "observation": "卧室 nyuv2_0921：主要床沿整体外观相近，未观察到明显细节恢复；AbsRel 0.04438→0.03904，但F1 0.90899→0.84954。此例不能凭视觉近似判定边界指标相同。",
+      "figure": "analysis/visuals/screen_I3_joint_edges_seed320112/largest_boundary_regression_nyuv2_0921.png",
+      "figure_sha256": "a1e07ea84d7854b0b83f413080e36f48f4671d4036b1ab36b933cb5b97fd91b0",
+      "measured_case": {
+        "reason": "largest_boundary_regression",
+        "source_index": 920,
+        "s0_absrel": 0.044380144774098844,
+        "candidate_absrel": 0.03904071911618056,
+        "s0_boundary_f1": 0.9089918420521755,
+        "candidate_boundary_f1": 0.849539406345957,
+        "saved_score_abs_difference": [
+          0.0,
+          0.0
+        ],
+        "figure": "largest_boundary_regression_nyuv2_0921.png",
+        "sha256": "a1e07ea84d7854b0b83f413080e36f48f4671d4036b1ab36b933cb5b97fd91b0"
+      }
+    }
+  ],
+  "fixed_preview_sha256": {
+    "followups\\screen_I1_no_rgb_seed320112\\visualizations\\nyuv2_0598.png": "910e337d36c30f1729a7450aa71fc00b1f4b88fdef13f8f5c0f30933e7bf2930",
+    "followups\\screen_I2_depth_edge_seed320112\\visualizations\\nyuv2_0598.png": "01fda1a42e0d7dd017c7006bf1ae16daaa60591ac6b463af1731ba9372935618",
+    "followups\\screen_I3_joint_edges_seed320112\\visualizations\\nyuv2_0598.png": "625221779e5353bc7b3615186f63c720c29e1eef46f0d4d57ec4297c4b9f53a7",
+    "followups\\screen_I4_confidence_seed320112\\visualizations\\nyuv2_0598.png": "fcca2e23867130b4d3744bc6299dfadff22ea3b1d9b26f2ac0de6dd3784c95e0",
+    "followups\\screen_M1_late_seed320112\\visualizations\\nyuv2_0598.png": "f075295b75fe7afb059dc55dc62ba04b2b36898605d452ee1b3fa04cea624738",
+    "followups\\screen_M2_two_stage_seed320112\\visualizations\\nyuv2_0598.png": "25bef224ccd5ea54e2ca5d9b67a930fdf4012583ad7aef9616bce033b10d51f3"
+  }
+}

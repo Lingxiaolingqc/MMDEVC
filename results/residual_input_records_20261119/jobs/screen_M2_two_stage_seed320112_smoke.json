@@ -1,0 +1,72 @@
+{
+  "job": {
+    "run_id": "screen_M2_two_stage_seed320112_smoke",
+    "phase": "screen",
+    "seed": 320112,
+    "candidate": {
+      "name": "M2_two_stage",
+      "base": "original",
+      "inputs": "frozen_features",
+      "architecture": "cnn",
+      "output": "additive",
+      "loss": "abs_rel",
+      "branches": [
+        "init",
+        "late"
+      ],
+      "widths": [
+        8,
+        8
+      ],
+      "drop_rgb": false,
+      "extra_inputs": []
+    },
+    "training": {
+      "batch_size": 8,
+      "max_epochs": 2,
+      "learning_rate": 0.0003,
+      "minimum_learning_rate": 1e-05,
+      "weight_decay": 0.001,
+      "evaluate_every_epochs": 1,
+      "minimum_epochs": 2,
+      "patience_evaluations": 5,
+      "clip_gradient_norm": 1.0,
+      "gradient_loss_weight": 0.1,
+      "boundary_loss_weight": 2.0,
+      "amp": true,
+      "augmentation": "none"
+    },
+    "fit_ids": [
+      2,
+      3,
+      9,
+      10,
+      11,
+      12,
+      18,
+      19,
+      25,
+      26,
+      47,
+      63,
+      64,
+      65,
+      66,
+      67
+    ],
+    "validation_ids": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "selection_point": "best_validation",
+    "feature_hw": [
+      240,
+      320
+    ],
+    "smoke": true,
+    "split_sha256": "eba0794f81eaf80a34f1b3c358a298a4ac032357e58c1ce212b5201fcf14cb2d"
+  },
+  "job_sha256": "d2aa5b326a44f94c8147fb9496f07d57376fecf0c2d465248eb749d1607d02ed"
+}

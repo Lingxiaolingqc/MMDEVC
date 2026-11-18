@@ -1,0 +1,79 @@
+{
+  "status": "complete",
+  "spec": {
+    "ids": [
+      2,
+      3
+    ],
+    "parent_cache_sha256": "339b1238bcc17c16ea6bf5aad9a1fa14da46ac0089b28102cd3bc01e1fd66ac2",
+    "stage_modules": [
+      "depth_layer.ups[-2]",
+      "depth_layer.ups[-1]"
+    ],
+    "grid": "native; project then bilinear to240x320; no padding supported in this fixed NYU study",
+    "dtype": "float16",
+    "gt_used_in_features": false
+  },
+  "paddings": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "padded_hw": [
+    480,
+    640
+  ],
+  "model": {
+    "model": "unidepth",
+    "asset": {
+      "source_commit": "8d8cfe4c7ee15297099983607febf0d4f32eb3d6",
+      "filename": "model.safetensors",
+      "sha256": "93705cb3295dd7476b44911b8a55f5215bf74e8d5eccd27cecdb1b338270a648",
+      "prediction_type": "metric_depth",
+      "unit": "m",
+      "alignment": "none",
+      "config_sha256": "ecc1f898690debe387d10329cca5d9d66a0a447ce83c3a2a7ae3673c7ce43cfe",
+      "resolution_level": 0
+    },
+    "device": "cuda",
+    "requested_precision": "fp16",
+    "parameters": 34184323,
+    "weight_bytes": 136777580,
+    "gt_used_by_model": false,
+    "camera_input": "predicted intrinsics",
+    "torch_version": "2.10.0+cu128",
+    "cuda_version": "12.8",
+    "device_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "input_size": "official resolution_level=0",
+    "threads": 4
+  },
+  "shapes": {
+    "init": [
+      2,
+      256,
+      31,
+      41
+    ],
+    "mid": [
+      2,
+      128,
+      124,
+      164
+    ],
+    "late": [
+      2,
+      64,
+      248,
+      328
+    ]
+  },
+  "parent_depth_max_abs_difference": 0.0,
+  "init_bitwise_equal_all_images": true,
+  "seconds": 1.761764499999117,
+  "sha256": {
+    "init.npy": "a8e04365fde760950ba62fa1506c6a3856f1bca5de12906f2d7ff315c99a7eb0",
+    "mid.npy": "ee488c8490e7b47d8b16cd5e0e8484af061ab2e6149e965e71a65f1fdafa4c05",
+    "late.npy": "c4fc8a1c5c728ffa8706a0c8f92e5956e22ec8c4ad7c7f2b97df8a09a48157e0"
+  }
+}

@@ -1,0 +1,193 @@
+{
+  "study_id": "residual_inputs_20261119",
+  "split": "configs/edge_association_split.json",
+  "data": "data/nyuv2/nyu_depth_v2_labeled.mat",
+  "output": "outputs/part3_improvement/residual_inputs_20261119",
+  "feature_hw": [
+    240,
+    320
+  ],
+  "screening_seed": 320112,
+  "confirmation_seeds": [
+    320112,
+    320113,
+    320114
+  ],
+  "baseline_flip_weight": 0.25,
+  "training": {
+    "batch_size": 8,
+    "max_epochs": 80,
+    "learning_rate": 0.0003,
+    "minimum_learning_rate": 1e-05,
+    "weight_decay": 0.001,
+    "evaluate_every_epochs": 2,
+    "minimum_epochs": 24,
+    "patience_evaluations": 5,
+    "clip_gradient_norm": 1.0,
+    "gradient_loss_weight": 0.1,
+    "boundary_loss_weight": 2.0,
+    "amp": true,
+    "augmentation": "none"
+  },
+  "protocol": {
+    "crop_yx_half_open": [
+      45,
+      471,
+      41,
+      601
+    ],
+    "depth_range_m_inclusive": [
+      0.001,
+      10.0
+    ],
+    "selection_metric": "image_macro_abs_rel",
+    "boundary_relative_jump": 0.1,
+    "boundary_tolerance_px": 2,
+    "boundary_distance_cap_px": 10,
+    "boundary_band_radius_px": 2,
+    "test_history": "Test results were inspected in earlier project experiments; not a never-seen blind test."
+  },
+  "screening": [
+    "I1_no_rgb",
+    "I2_depth_edge",
+    "I3_joint_edges",
+    "I4_confidence",
+    "M1_late",
+    "M2_two_stage"
+  ],
+  "retention": {
+    "best_checkpoint": "keep",
+    "final_weights": "keep",
+    "all_run_records": "keep",
+    "completed_resume_checkpoint": "remove only after verified completion and logged hash",
+    "shared_cache": "keep until all dependent runs complete"
+  },
+  "parent_config": "configs/residual_study.json",
+  "parent_output": "outputs/part3_improvement/residual_study_20261118",
+  "candidates": {
+    "S0": {
+      "branches": [
+        "init"
+      ],
+      "widths": [
+        16
+      ],
+      "drop_rgb": false,
+      "extra_inputs": []
+    },
+    "I1_no_rgb": {
+      "branches": [
+        "init"
+      ],
+      "widths": [
+        16
+      ],
+      "drop_rgb": true,
+      "extra_inputs": []
+    },
+    "I2_depth_edge": {
+      "branches": [
+        "init"
+      ],
+      "widths": [
+        16
+      ],
+      "drop_rgb": false,
+      "extra_inputs": [
+        "depth_sobel"
+      ]
+    },
+    "I3_joint_edges": {
+      "branches": [
+        "init"
+      ],
+      "widths": [
+        16
+      ],
+      "drop_rgb": false,
+      "extra_inputs": [
+        "joint_edges"
+      ]
+    },
+    "I4_confidence": {
+      "branches": [
+        "init"
+      ],
+      "widths": [
+        16
+      ],
+      "drop_rgb": false,
+      "extra_inputs": [
+        "confidence"
+      ]
+    },
+    "M1_late": {
+      "branches": [
+        "late"
+      ],
+      "widths": [
+        16
+      ],
+      "drop_rgb": false,
+      "extra_inputs": []
+    },
+    "M2_two_stage": {
+      "branches": [
+        "init",
+        "late"
+      ],
+      "widths": [
+        8,
+        8
+      ],
+      "drop_rgb": false,
+      "extra_inputs": []
+    },
+    "M2_zero_late": {
+      "branches": [
+        "init",
+        "late"
+      ],
+      "widths": [
+        8,
+        8
+      ],
+      "drop_rgb": false,
+      "extra_inputs": [],
+      "zero_branches": [
+        "late"
+      ]
+    },
+    "M3_three_stage": {
+      "branches": [
+        "init",
+        "mid",
+        "late"
+      ],
+      "widths": [
+        6,
+        5,
+        5
+      ],
+      "drop_rgb": false,
+      "extra_inputs": []
+    }
+  },
+  "promotion": {
+    "relative_absrel_gain_min": 0.01,
+    "maximum_f1_drop": 0.002,
+    "maximum_relative_band_error_increase": 0.01,
+    "max_confirmed_candidates": 2,
+    "boundary_only_secondary": {
+      "f1_gain_min": 0.002,
+      "maximum_relative_absrel_increase": 0.002
+    },
+    "primary_ranking": "lowest validation AbsRel among eligible; boundary-only candidate only if no primary eligible",
+    "conditional_three_stage": "only if M2 primary eligible in first seed",
+    "conditional_edge_multistage": "only if multistage and an edge input are both primary eligible; at most one combination",
+    "max_additional_conditional_candidates": 2,
+    "confirmation": "two additional seeds; retain main only if mean primary eligibility persists and paired scene-bootstrap AbsRel upper bound <0; secondary boundary result cannot replace accuracy model",
+    "final_duration": "median of best validation epochs across3 seeds, original80epoch cosine horizon",
+    "test_scope": "no test selection; disclose prior test and repeated validation exposure; new frozen comparison only for confirmed retained candidates"
+  }
+}

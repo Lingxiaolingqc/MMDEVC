@@ -1,0 +1,658 @@
+{
+  "summary": [
+    {
+      "method": "S0",
+      "seeds": [
+        320112
+      ],
+      "n_seeds": 1,
+      "abs_rel": 0.10064990545807254,
+      "abs_rel_sd": null,
+      "rmse_m": 0.44143182861116703,
+      "rmse_m_sd": null,
+      "delta1": 0.917825684996831,
+      "delta1_sd": null,
+      "boundary_f1": 0.46255193538245604,
+      "boundary_f1_sd": null,
+      "boundary_band_abs_rel": 0.16521472178205712,
+      "boundary_band_abs_rel_sd": null,
+      "parameters": 28689
+    },
+    {
+      "method": "I1_no_rgb",
+      "seeds": [
+        320112
+      ],
+      "n_seeds": 1,
+      "abs_rel": 0.09962634514737177,
+      "abs_rel_sd": null,
+      "rmse_m": 0.4380800296198324,
+      "rmse_m_sd": null,
+      "delta1": 0.9186518576289542,
+      "delta1_sd": null,
+      "boundary_f1": 0.4616311758653884,
+      "boundary_f1_sd": null,
+      "boundary_band_abs_rel": 0.1639570207088241,
+      "boundary_band_abs_rel_sd": null,
+      "parameters": 27825
+    },
+    {
+      "method": "I2_depth_edge",
+      "seeds": [
+        320112
+      ],
+      "n_seeds": 1,
+      "abs_rel": 0.09868801958578138,
+      "abs_rel_sd": null,
+      "rmse_m": 0.4302927593969154,
+      "rmse_m_sd": null,
+      "delta1": 0.9207032139319095,
+      "delta1_sd": null,
+      "boundary_f1": 0.4617284565217644,
+      "boundary_f1_sd": null,
+      "boundary_band_abs_rel": 0.15705005770027097,
+      "boundary_band_abs_rel_sd": null,
+      "parameters": 28977
+    },
+    {
+      "method": "I3_joint_edges",
+      "seeds": [
+        320112
+      ],
+      "n_seeds": 1,
+      "abs_rel": 0.09861479029728693,
+      "abs_rel_sd": null,
+      "rmse_m": 0.4301514684204083,
+      "rmse_m_sd": null,
+      "delta1": 0.9201444523409572,
+      "delta1_sd": null,
+      "boundary_f1": 0.4623319148573006,
+      "boundary_f1_sd": null,
+      "boundary_band_abs_rel": 0.15752607714772066,
+      "boundary_band_abs_rel_sd": null,
+      "parameters": 29265
+    },
+    {
+      "method": "I4_confidence",
+      "seeds": [
+        320112
+      ],
+      "n_seeds": 1,
+      "abs_rel": 0.09869404527384255,
+      "abs_rel_sd": null,
+      "rmse_m": 0.4333482000928553,
+      "rmse_m_sd": null,
+      "delta1": 0.9214914871491948,
+      "delta1_sd": null,
+      "boundary_f1": 0.46367073267430503,
+      "boundary_f1_sd": null,
+      "boundary_band_abs_rel": 0.16129590440354863,
+      "boundary_band_abs_rel_sd": null,
+      "parameters": 28977
+    },
+    {
+      "method": "M1_late",
+      "seeds": [
+        320112
+      ],
+      "n_seeds": 1,
+      "abs_rel": 0.11030837683940312,
+      "abs_rel_sd": null,
+      "rmse_m": 0.45691272862591686,
+      "rmse_m_sd": null,
+      "delta1": 0.8717764922870556,
+      "delta1_sd": null,
+      "boundary_f1": 0.4281725331305799,
+      "boundary_f1_sd": null,
+      "boundary_band_abs_rel": 0.1635869734506512,
+      "boundary_band_abs_rel_sd": null,
+      "parameters": 25617
+    },
+    {
+      "method": "M2_two_stage",
+      "seeds": [
+        320112
+      ],
+      "n_seeds": 1,
+      "abs_rel": 0.09485420506492379,
+      "abs_rel_sd": null,
+      "rmse_m": 0.4088855037604156,
+      "rmse_m_sd": null,
+      "delta1": 0.9238461925990191,
+      "delta1_sd": null,
+      "boundary_f1": 0.4452996363431757,
+      "boundary_f1_sd": null,
+      "boundary_band_abs_rel": 0.15467275012602447,
+      "boundary_band_abs_rel_sd": null,
+      "parameters": 27153
+    }
+  ],
+  "pairs": [
+    {
+      "candidate": "I1_no_rgb",
+      "reference": "S0",
+      "seeds": [
+        320112
+      ],
+      "metrics": {
+        "abs_rel": {
+          "metric": "abs_rel",
+          "candidate_minus_reference": -0.001023560310700771,
+          "scene_cluster_bootstrap_ci95": [
+            -0.0017974245751661972,
+            -0.00011487116570639662
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "rmse_m": {
+          "metric": "rmse_m",
+          "candidate_minus_reference": -0.003351798991334575,
+          "scene_cluster_bootstrap_ci95": [
+            -0.006596416161669109,
+            -0.000491507940273446
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "delta1": {
+          "metric": "delta1",
+          "candidate_minus_reference": 0.0008261726321230111,
+          "scene_cluster_bootstrap_ci95": [
+            -0.0006756247325582492,
+            0.002413300842641428
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "boundary_f1": {
+          "metric": "boundary_f1",
+          "candidate_minus_reference": -0.0009207595170676406,
+          "scene_cluster_bootstrap_ci95": [
+            -0.0017515436753523927,
+            -0.00015086540335597023
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "boundary_band_abs_rel": {
+          "metric": "boundary_band_abs_rel",
+          "candidate_minus_reference": -0.0012577010732330032,
+          "scene_cluster_bootstrap_ci95": [
+            -0.0023639000842698436,
+            -0.00022246553503097477
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        }
+      },
+      "distribution": {
+        "images": 218,
+        "mean_change": -0.001023560310700771,
+        "median_change": -0.0011176813320690343,
+        "images_lower_absrel": 131,
+        "images_higher_absrel": 87,
+        "unchanged_images": 0,
+        "change_quantiles": {
+          "min": -0.0265438599092912,
+          "q25": -0.0034180272698812186,
+          "median": -0.0011176813320690343,
+          "q75": 0.001481909757497516,
+          "max": 0.01472287856456643
+        },
+        "largest10_share_of_gross_improvement": 0.2589753277312693,
+        "scope": "paired image error changes; gross improvement denominator excludes worsened images; not a significance test"
+      }
+    },
+    {
+      "candidate": "I2_depth_edge",
+      "reference": "S0",
+      "seeds": [
+        320112
+      ],
+      "metrics": {
+        "abs_rel": {
+          "metric": "abs_rel",
+          "candidate_minus_reference": -0.001961885872291182,
+          "scene_cluster_bootstrap_ci95": [
+            -0.004958767767672796,
+            0.0007939867578331269
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "rmse_m": {
+          "metric": "rmse_m",
+          "candidate_minus_reference": -0.01113906921425156,
+          "scene_cluster_bootstrap_ci95": [
+            -0.02796837457026935,
+            0.0023648839044866435
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "delta1": {
+          "metric": "delta1",
+          "candidate_minus_reference": 0.002877528935078355,
+          "scene_cluster_bootstrap_ci95": [
+            -0.0018340685222365362,
+            0.008214330018048666
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "boundary_f1": {
+          "metric": "boundary_f1",
+          "candidate_minus_reference": -0.0008234788606916416,
+          "scene_cluster_bootstrap_ci95": [
+            -0.0038858125929177516,
+            0.0021933030551036167
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "boundary_band_abs_rel": {
+          "metric": "boundary_band_abs_rel",
+          "candidate_minus_reference": -0.008164664081786167,
+          "scene_cluster_bootstrap_ci95": [
+            -0.01281847129009135,
+            -0.0036016268132108885
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        }
+      },
+      "distribution": {
+        "images": 218,
+        "mean_change": -0.001961885872291182,
+        "median_change": -0.00039552878611206,
+        "images_lower_absrel": 113,
+        "images_higher_absrel": 105,
+        "unchanged_images": 0,
+        "change_quantiles": {
+          "min": -0.07096457522115923,
+          "q25": -0.004242345031892844,
+          "median": -0.00039552878611206,
+          "q75": 0.0039005427182467137,
+          "max": 0.01619337506948483
+        },
+        "largest10_share_of_gross_improvement": 0.44241701469904304,
+        "scope": "paired image error changes; gross improvement denominator excludes worsened images; not a significance test"
+      }
+    },
+    {
+      "candidate": "I3_joint_edges",
+      "reference": "S0",
+      "seeds": [
+        320112
+      ],
+      "metrics": {
+        "abs_rel": {
+          "metric": "abs_rel",
+          "candidate_minus_reference": -0.002035115160785613,
+          "scene_cluster_bootstrap_ci95": [
+            -0.005130387808290577,
+            0.0006673397146244824
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "rmse_m": {
+          "metric": "rmse_m",
+          "candidate_minus_reference": -0.011280360190758766,
+          "scene_cluster_bootstrap_ci95": [
+            -0.02838741333274406,
+            0.0023771223940266756
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "delta1": {
+          "metric": "delta1",
+          "candidate_minus_reference": 0.002318767344125917,
+          "scene_cluster_bootstrap_ci95": [
+            -0.0026307652913226775,
+            0.008207044786021897
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "boundary_f1": {
+          "metric": "boundary_f1",
+          "candidate_minus_reference": -0.00022002052515550496,
+          "scene_cluster_bootstrap_ci95": [
+            -0.0020897093738338145,
+            0.001627579543811543
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "boundary_band_abs_rel": {
+          "metric": "boundary_band_abs_rel",
+          "candidate_minus_reference": -0.007688644634336482,
+          "scene_cluster_bootstrap_ci95": [
+            -0.012490806377399051,
+            -0.0030343391775320572
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        }
+      },
+      "distribution": {
+        "images": 218,
+        "mean_change": -0.0020351151607856132,
+        "median_change": -0.00036360551680455697,
+        "images_lower_absrel": 115,
+        "images_higher_absrel": 103,
+        "unchanged_images": 0,
+        "change_quantiles": {
+          "min": -0.0888557007345161,
+          "q25": -0.0036612675657513253,
+          "median": -0.00036360551680455697,
+          "q75": 0.004042273801691708,
+          "max": 0.018641718329049428
+        },
+        "largest10_share_of_gross_improvement": 0.4791239612933102,
+        "scope": "paired image error changes; gross improvement denominator excludes worsened images; not a significance test"
+      }
+    },
+    {
+      "candidate": "I4_confidence",
+      "reference": "S0",
+      "seeds": [
+        320112
+      ],
+      "metrics": {
+        "abs_rel": {
+          "metric": "abs_rel",
+          "candidate_minus_reference": -0.001955860184230002,
+          "scene_cluster_bootstrap_ci95": [
+            -0.004393126312530721,
+            0.00020011285784485452
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "rmse_m": {
+          "metric": "rmse_m",
+          "candidate_minus_reference": -0.008083628518311774,
+          "scene_cluster_bootstrap_ci95": [
+            -0.021042837304533473,
+            0.0022494152640211737
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "delta1": {
+          "metric": "delta1",
+          "candidate_minus_reference": 0.0036658021523637186,
+          "scene_cluster_bootstrap_ci95": [
+            -0.0004161070292211479,
+            0.008243720674598547
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "boundary_f1": {
+          "metric": "boundary_f1",
+          "candidate_minus_reference": 0.0011187972918489757,
+          "scene_cluster_bootstrap_ci95": [
+            0.0002508668986649421,
+            0.0019779469174256766
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "boundary_band_abs_rel": {
+          "metric": "boundary_band_abs_rel",
+          "candidate_minus_reference": -0.003918817378508502,
+          "scene_cluster_bootstrap_ci95": [
+            -0.007448464199711082,
+            -0.0006821921602657385
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        }
+      },
+      "distribution": {
+        "images": 218,
+        "mean_change": -0.0019558601842300026,
+        "median_change": -0.0004277241450792099,
+        "images_lower_absrel": 114,
+        "images_higher_absrel": 104,
+        "unchanged_images": 0,
+        "change_quantiles": {
+          "min": -0.06636422091374866,
+          "q25": -0.00388198366387027,
+          "median": -0.0004277241450792099,
+          "q75": 0.003048320316363415,
+          "max": 0.019866025879282795
+        },
+        "largest10_share_of_gross_improvement": 0.421252746863888,
+        "scope": "paired image error changes; gross improvement denominator excludes worsened images; not a significance test"
+      }
+    },
+    {
+      "candidate": "M1_late",
+      "reference": "S0",
+      "seeds": [
+        320112
+      ],
+      "metrics": {
+        "abs_rel": {
+          "metric": "abs_rel",
+          "candidate_minus_reference": 0.009658471381330554,
+          "scene_cluster_bootstrap_ci95": [
+            0.00263161867356749,
+            0.018371819009517086
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "rmse_m": {
+          "metric": "rmse_m",
+          "candidate_minus_reference": 0.015480900014749915,
+          "scene_cluster_bootstrap_ci95": [
+            -0.016352271896849898,
+            0.05092858650291898
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "delta1": {
+          "metric": "delta1",
+          "candidate_minus_reference": -0.046049192709775456,
+          "scene_cluster_bootstrap_ci95": [
+            -0.08594350813008463,
+            -0.013952483410119931
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "boundary_f1": {
+          "metric": "boundary_f1",
+          "candidate_minus_reference": -0.03437940225187609,
+          "scene_cluster_bootstrap_ci95": [
+            -0.04274707361534541,
+            -0.02654612941096259
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "boundary_band_abs_rel": {
+          "metric": "boundary_band_abs_rel",
+          "candidate_minus_reference": -0.001627748331405896,
+          "scene_cluster_bootstrap_ci95": [
+            -0.008071493508991298,
+            0.005331995930627917
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        }
+      },
+      "distribution": {
+        "images": 218,
+        "mean_change": 0.009658471381330552,
+        "median_change": -0.0001766383960554868,
+        "images_lower_absrel": 110,
+        "images_higher_absrel": 108,
+        "unchanged_images": 0,
+        "change_quantiles": {
+          "min": -0.11532133439025943,
+          "q25": -0.006783952050309051,
+          "median": -0.0001766383960554868,
+          "q75": 0.01181266655102077,
+          "max": 0.18632394836570168
+        },
+        "largest10_share_of_gross_improvement": 0.32863312773552594,
+        "scope": "paired image error changes; gross improvement denominator excludes worsened images; not a significance test"
+      }
+    },
+    {
+      "candidate": "M2_two_stage",
+      "reference": "S0",
+      "seeds": [
+        320112
+      ],
+      "metrics": {
+        "abs_rel": {
+          "metric": "abs_rel",
+          "candidate_minus_reference": -0.005795700393148765,
+          "scene_cluster_bootstrap_ci95": [
+            -0.01071610755146147,
+            -0.0014112586785133038
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "rmse_m": {
+          "metric": "rmse_m",
+          "candidate_minus_reference": -0.03254632485075137,
+          "scene_cluster_bootstrap_ci95": [
+            -0.06691901940474523,
+            -0.003555622021535449
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "delta1": {
+          "metric": "delta1",
+          "candidate_minus_reference": 0.00602050760218805,
+          "scene_cluster_bootstrap_ci95": [
+            -0.0017353651679936355,
+            0.015193016018626711
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "boundary_f1": {
+          "metric": "boundary_f1",
+          "candidate_minus_reference": -0.017252299039280283,
+          "scene_cluster_bootstrap_ci95": [
+            -0.023750425992559304,
+            -0.010814413106426935
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        },
+        "boundary_band_abs_rel": {
+          "metric": "boundary_band_abs_rel",
+          "candidate_minus_reference": -0.010541971656032665,
+          "scene_cluster_bootstrap_ci95": [
+            -0.015708639778668827,
+            -0.005489525326818764
+          ],
+          "scenes": 62,
+          "images": 218,
+          "replicates": 5000,
+          "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+        }
+      },
+      "distribution": {
+        "images": 218,
+        "mean_change": -0.005795700393148764,
+        "median_change": -0.003027867913042895,
+        "images_lower_absrel": 133,
+        "images_higher_absrel": 85,
+        "unchanged_images": 0,
+        "change_quantiles": {
+          "min": -0.15555148090743748,
+          "q25": -0.0076995496261364,
+          "median": -0.003027867913042895,
+          "q75": 0.003637449629854076,
+          "max": 0.023138755654725743
+        },
+        "largest10_share_of_gross_improvement": 0.43995644905215264,
+        "scope": "paired image error changes; gross improvement denominator excludes worsened images; not a significance test"
+      }
+    }
+  ],
+  "source_sha256": {
+    "outputs/part3_improvement/residual_study_20261118/runs/frozen_features_seed320112/result.json": "55eb6c00562a63f7bcb9fd739078d1d02a2d1c97d295c48190a35ad20a223e51",
+    "outputs/part3_improvement/residual_inputs_20261119/followups/screen_I1_no_rgb_seed320112/result.json": "d2ae7377eafbea07f112d5060a2a4da7e038569ff1ae0600da2f5bfc0ea6d9d2",
+    "outputs/part3_improvement/residual_inputs_20261119/followups/screen_I2_depth_edge_seed320112/result.json": "34bb206ac2bbbd1850698a15325d3b8a107128b9f5f63f8669f8f5ae875c0c91",
+    "outputs/part3_improvement/residual_inputs_20261119/followups/screen_I3_joint_edges_seed320112/result.json": "0b84156fd2f86e9800583f605f3e6206f86b8c5b7c72bc0756d10dbe01244e7d",
+    "outputs/part3_improvement/residual_inputs_20261119/followups/screen_I4_confidence_seed320112/result.json": "56ea5d33e72ed53b7af7adf8949565379e7f9ab4352c028a691a363d75798fca",
+    "outputs/part3_improvement/residual_inputs_20261119/followups/screen_M1_late_seed320112/result.json": "ff0d0c69b73eab39e4e3a1f07eb3b804a2a3be98efd289417cea71fadb97f88d",
+    "outputs/part3_improvement/residual_inputs_20261119/followups/screen_M2_two_stage_seed320112/result.json": "30f4edfb85f05f31a26b64b7b5f9064c9324cbf09ec04aed724dbe8312bf381c"
+  },
+  "limits": "Exploratory repeated-validation comparisons; paired scene bootstrap is separate from training-seed uncertainty; mean scores are not an ensemble."
+}

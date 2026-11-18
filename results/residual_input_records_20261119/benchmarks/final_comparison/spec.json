@@ -1,0 +1,64 @@
+{
+  "batch_size": 1,
+  "image_ids": [
+    2,
+    3,
+    9,
+    10,
+    11
+  ],
+  "warmups_per_block": 5,
+  "measured_calls_per_block": 50,
+  "blocks": 2,
+  "orders": [
+    [
+      "B0",
+      "frozen_features_seed320112",
+      "screen_I2_depth_edge_seed320112",
+      "screen_I3_joint_edges_seed320112",
+      "screen_M1_late_seed320112",
+      "screen_M2_two_stage_seed320112"
+    ],
+    [
+      "screen_M2_two_stage_seed320112",
+      "screen_M1_late_seed320112",
+      "screen_I3_joint_edges_seed320112",
+      "screen_I2_depth_edge_seed320112",
+      "frozen_features_seed320112",
+      "B0"
+    ]
+  ],
+  "checkpoint_sha256": {
+    "outputs\\part3_improvement\\residual_study_20261118\\runs\\frozen_features_seed320112\\best.pt": "7cce86676c7b9f662a9b97c96fe90212002dc8e0b649f22f00aed9c3185b46d7",
+    "outputs\\part3_improvement\\residual_inputs_20261119\\followups\\screen_I2_depth_edge_seed320112\\best.pt": "3dc389301ba756573460709c02994e1798cb9643551df1716fe12e6a58338ceb",
+    "outputs\\part3_improvement\\residual_inputs_20261119\\followups\\screen_I3_joint_edges_seed320112\\best.pt": "8188e3712f6f2d49b4dc9f7a0fcb86d3506694c1e63f8d9bea4a56920f1f77ef",
+    "outputs\\part3_improvement\\residual_inputs_20261119\\followups\\screen_M1_late_seed320112\\best.pt": "97e09abcb5be77ec85d6a5ceecd10263ee41e35514df147a4383911ba018e570",
+    "outputs\\part3_improvement\\residual_inputs_20261119\\followups\\screen_M2_two_stage_seed320112\\best.pt": "69fcd8d425d0cad95b1dddcea6556c3c3511b62e0985a69c3a74a69e840635ef"
+  },
+  "scope": "decoded RGB resident in CPU memory to full-resolution float32 CPU depth; includes foundation, required native-stage capture, CPU feature preparation/transfers and refiner; excludes file IO, visualization and model loading",
+  "foundation": {
+    "model": "unidepth",
+    "asset": {
+      "source_commit": "8d8cfe4c7ee15297099983607febf0d4f32eb3d6",
+      "filename": "model.safetensors",
+      "sha256": "93705cb3295dd7476b44911b8a55f5215bf74e8d5eccd27cecdb1b338270a648",
+      "prediction_type": "metric_depth",
+      "unit": "m",
+      "alignment": "none",
+      "config_sha256": "ecc1f898690debe387d10329cca5d9d66a0a447ce83c3a2a7ae3673c7ce43cfe",
+      "resolution_level": 0
+    },
+    "device": "cuda",
+    "requested_precision": "fp16",
+    "parameters": 34184323,
+    "weight_bytes": 136777580,
+    "gt_used_by_model": false,
+    "camera_input": "predicted intrinsics",
+    "torch_version": "2.10.0+cu128",
+    "cuda_version": "12.8",
+    "device_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "input_size": "official resolution_level=0",
+    "threads": 4
+  },
+  "selection": "first five fitting IDs; supplied checkpoints; no GT values used"
+}

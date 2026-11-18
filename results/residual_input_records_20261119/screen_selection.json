@@ -1,0 +1,81 @@
+{
+  "rules": {
+    "relative_absrel_gain_min": 0.01,
+    "maximum_f1_drop": 0.002,
+    "maximum_relative_band_error_increase": 0.01,
+    "max_confirmed_candidates": 2,
+    "boundary_only_secondary": {
+      "f1_gain_min": 0.002,
+      "maximum_relative_absrel_increase": 0.002
+    },
+    "primary_ranking": "lowest validation AbsRel among eligible; boundary-only candidate only if no primary eligible",
+    "conditional_three_stage": "only if M2 primary eligible in first seed",
+    "conditional_edge_multistage": "only if multistage and an edge input are both primary eligible; at most one combination",
+    "max_additional_conditional_candidates": 2,
+    "confirmation": "two additional seeds; retain main only if mean primary eligibility persists and paired scene-bootstrap AbsRel upper bound <0; secondary boundary result cannot replace accuracy model",
+    "final_duration": "median of best validation epochs across3 seeds, original80epoch cosine horizon",
+    "test_scope": "no test selection; disclose prior test and repeated validation exposure; new frozen comparison only for confirmed retained candidates"
+  },
+  "rows": [
+    {
+      "method": "I1_no_rgb",
+      "relative_absrel_gain": 0.01016951090060532,
+      "f1_change": -0.0009207595170676597,
+      "relative_band_error_change": -0.007612524233113649,
+      "primary_eligible": true,
+      "secondary_eligible": false,
+      "abs_rel": 0.09962634514737177
+    },
+    {
+      "method": "I2_depth_edge",
+      "relative_absrel_gain": 0.019492177994229812,
+      "f1_change": -0.0008234788606916177,
+      "relative_band_error_change": -0.04941850213903187,
+      "primary_eligible": true,
+      "secondary_eligible": false,
+      "abs_rel": 0.09868801958578138
+    },
+    {
+      "method": "I3_joint_edges",
+      "relative_absrel_gain": 0.020219742398400697,
+      "f1_change": -0.0002200205251554621,
+      "relative_band_error_change": -0.04653728524555423,
+      "primary_eligible": true,
+      "secondary_eligible": false,
+      "abs_rel": 0.09861479029728693
+    },
+    {
+      "method": "I4_confidence",
+      "relative_absrel_gain": 0.019432310197695413,
+      "f1_change": 0.0011187972918489941,
+      "relative_band_error_change": -0.023719541068973227,
+      "primary_eligible": true,
+      "secondary_eligible": false,
+      "abs_rel": 0.09869404527384255
+    },
+    {
+      "method": "M1_late",
+      "relative_absrel_gain": -0.09596105766193674,
+      "f1_change": -0.034379402251876134,
+      "relative_band_error_change": -0.009852320143438287,
+      "primary_eligible": false,
+      "secondary_eligible": false,
+      "abs_rel": 0.11030837683940312
+    },
+    {
+      "method": "M2_two_stage",
+      "relative_absrel_gain": 0.057582770363982606,
+      "f1_change": -0.017252299039280328,
+      "relative_band_error_change": -0.06380770153121762,
+      "primary_eligible": false,
+      "secondary_eligible": false,
+      "abs_rel": 0.09485420506492379
+    }
+  ],
+  "initial_confirmation_shortlist": [
+    "I3_joint_edges",
+    "I2_depth_edge"
+  ],
+  "conditional_three_stage": false,
+  "evidence_sha256": "3dbdea4e45ce3f8cf702e2d28d6acb81dc1ccc15f3366b6e39c937cf8450095c"
+}
