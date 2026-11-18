@@ -1,6 +1,6 @@
 # 按 Part 阅读代码与结果
 
-本导航更新于 2026-11-08，对应 2026-11-02 收到的新版 Project 3。主线重跑已有输出；后续按 [补充实验指南](docs/supplementary_experiments.md)运行 LR 分析、边缘评价和两组消融。代码验证不等于正式实验或成员视觉验收。旧输出已归档，暂不删除。
+本导航更新于 2026-11-18，对应 2026-11-02 收到的新版 Project 3。新增 Part 3 的 UniDepthV2 Residual 控制实验：从[实验计划](docs/residual_research_plan.md)、[实测进度](results/residual_study_status.md)和[报告章节](results/residual_report_section.md)进入。基础实验及此前的光流融合结果仍保留；两条改进路线分别记录。代码验证不等于正式实验或视觉结论。旧输出已归档，暂不删除。
 
 ## 新运行入口
 
@@ -11,6 +11,7 @@
 | Part 1 | `outputs/part1_baseline/stereo/`、`outputs/part1_baseline/dav2_relative/` |
 | Part 2 | `outputs/part2_models/unidepth/`、`outputs/part2_models/vda_relative/` |
 | Part 3 | `outputs/part3_improvement/flow/`、`dev_candidates/`、`selection/`、`test/` |
+| Part 3：米制 Residual 控制实验 | `outputs/part3_improvement/residual_study_20261118/`；运行入口见 [Part 3 README](scripts/part3_improvement/README.md) |
 | Application | `outputs/application/{clip}/` |
 | Delivery | `outputs/submission/` |
 
@@ -49,10 +50,11 @@ $py = ".\.venv-cuda\Scripts\python.exe"
 | VDA 网络、时间窗口和拼接 | Video Depth Anything 作者 | 准备相同视频帧、调用官方离线接口、计时/显存与结果保存 |
 | Farneback 光流内核 | OpenCV | 在连续 RGB 帧上调用，缓存并复用光流 |
 | E1–E4 融合、可靠性过滤、自适应权重、公共评测区域 | 本项目由助手编写 | 实现课程给出的改进方向，进行冻结、控制消融与复算 |
+| UniDepthV2 Residual refiner、分组对照与训练流程 | 本项目由助手编写，使用 PyTorch | 冻结基础模型，以固定 NYUv2 fitting/validation 划分训练小型修正网络；记录输入、架构、输出、损失及数据量等对照 |
 | 背景虚化、图表、视频导出 | 本项目由助手编写，使用 OpenCV/NumPy 等库 | 从保存的预测生成应用与交付材料 |
 | CVPR 模板 | 官方 author-kit | 保留模板来源，撰写本项目方法、结果和限制 |
 
-“本项目实现”不表示原创发明了 SGBM、光流或融合思想。三种网络都使用官方预训练权重，本项目没有训练/微调网络。官方版本见 [model_sources.yaml](environments/model_sources.yaml)，权重记录见 [model_assets.json](environments/model_assets.json)。
+“本项目实现”不表示原创发明了 SGBM、光流或融合思想。基础深度网络使用官方预训练权重；新增 Residual 实验训练独立的小型修正网络，保持 UniDepthV2 冻结，不包含 LoRA。官方版本见 [model_sources.yaml](environments/model_sources.yaml)，权重记录见 [model_assets.json](environments/model_assets.json)。Residual 的训练及验证状态以[实测记录](results/residual_study_status.md)为准。
 
 ## 结果与历史版本
 

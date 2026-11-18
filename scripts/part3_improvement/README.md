@@ -1,4 +1,28 @@
-# Part 3：Flow-Guided Fusion
+# Part 3：改进实验
+
+## UniDepthV2 Residual 控制实验（2026-11-18）
+
+计划：[Residual research plan](../../docs/residual_research_plan.md)。进度：[当前实测状态](../../results/residual_study_status.md)。这条米制单图路线与下面的历史视频融合实验分开。
+
+```powershell
+python scripts/part3_improvement/prepare_residual_cache.py
+python scripts/part3_improvement/run_residual_study.py --action bases
+python scripts/part3_improvement/run_residual_study.py --action edges
+python scripts/part3_improvement/run_residual_study.py --action train --candidate R0 --smoke
+python scripts/part3_improvement/run_residual_study.py --action screen --resume
+python scripts/part3_improvement/run_residual_study.py --action confirm --resume
+python scripts/part3_improvement/analyze_residual_study.py
+```
+
+完整的开发、冻结、重训和测试命令见[复现指南](../../docs/residual_results_guide.md)。`render_refiner_cases.py` 从已保存的测试预测生成固定与排名案例，不进行模型训练。已有 `bases` 结果应跳过，入口会拒绝覆盖。
+
+运行前使用已配置 CUDA 的 Python 环境。`screen` 仅运行记录在配置里的第一轮单因素筛选，不自动选择组合或读取 test。每次训练保存源码、配置、完整曲线、逐图指标、最优权重和预览；已完成运行用 `--resume` 验证后跳过。训练中断则从最近一轮完整 checkpoint 继续，要求源码和配置未变。自动清理仅限已完成运行的冗余 resume checkpoint，删除前后均写清单。默认输出在 `outputs/part3_improvement/residual_study_20261118/`。
+
+`confirm` 使用 `configs/residual_confirmation.json` 中已经确定的三组候选、R0 和三个种子，不自动改选。后续组合、消融、数据量与重训运行使用 `run_residual_jobs.py --jobs <预先保存的配置.json> --resume`；配置明确训练/验证样本、预算、输出形式和选择规则。数据量实验评分固定最终迭代，最终全开发集重训不使用验证/测试选 checkpoint。后续运行同时保留最优与最后迭代权重，并通过同一个本地锁阻止重复训练。
+
+组合配置见 `configs/residual_combinations.json`，后续选择与任务清单见 `configs/residual_followup_selection.json`；具体不可变任务位于 `configs/residual_jobs/`。运行后用 `analyze_residual_followups.py --section combination`（或 `data_size`、`resolution`、`test`）生成对应阶段的匹配对照、场景重采样区间和图表。`benchmark_residual.py --checkpoints <权重路径...> --tag <新名称>` 单独测量含基础模型、必要翻转和修正网络的推理成本，不能与训练同时运行。最终用 `run_residual_final.py` 冻结已选方法后再执行全开发集重训和正式测试。
+
+## 历史 Flow-Guided Fusion 实验
 
 [总导航](../../PARTS.md) · [结果与消融](../../results/by_part/part3_improvement/README.md)
 

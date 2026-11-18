@@ -1,0 +1,44 @@
+{
+  "study_id": "residual_study_20261118",
+  "split": "configs/edge_association_split.json",
+  "data": "data/nyuv2/nyu_depth_v2_labeled.mat",
+  "output": "outputs/part3_improvement/residual_study_20261118",
+  "feature_hw": [240, 320],
+  "screening_seed": 320112,
+  "confirmation_seeds": [320112, 320113, 320114],
+  "baseline_flip_weight": 0.25,
+  "training": {
+    "batch_size": 8,
+    "max_epochs": 80,
+    "learning_rate": 0.0003,
+    "minimum_learning_rate": 0.00001,
+    "weight_decay": 0.001,
+    "evaluate_every_epochs": 2,
+    "minimum_epochs": 24,
+    "patience_evaluations": 5,
+    "clip_gradient_norm": 1.0,
+    "gradient_loss_weight": 0.1,
+    "boundary_loss_weight": 2.0,
+    "amp": true,
+    "augmentation": "none"
+  },
+  "protocol": {
+    "crop_yx_half_open": [45, 471, 41, 601],
+    "depth_range_m_inclusive": [0.001, 10.0],
+    "selection_metric": "image_macro_abs_rel",
+    "boundary_relative_jump": 0.1,
+    "boundary_tolerance_px": 2,
+    "boundary_distance_cap_px": 10,
+    "boundary_band_radius_px": 2,
+    "test_history": "Test results were inspected in earlier project experiments; not a never-seen blind test."
+  },
+  "screening": [
+    "R0", "base_scale", "base_flip", "base_flip_scale",
+    "depth_only", "flip", "confidence", "coordinates", "frozen_features",
+    "rgb_sobel", "rgb_canny", "depth_sobel", "depth_canny",
+    "flip_disagreement", "joint_edges", "mlp", "unet",
+    "log_output", "bounded_log_output", "gradient_loss", "boundary_loss", "legacy_bundle"
+  ],
+  "selection": {"max_shortlisted_candidates": 3, "max_combined_revisions": 1},
+  "retention": {"best_checkpoint": "keep", "final_weights": "keep", "all_run_records": "keep", "completed_resume_checkpoint": "remove only after verified completion and logged hash", "shared_cache": "keep until all dependent runs complete"}
+}

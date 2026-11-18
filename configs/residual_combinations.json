@@ -1,0 +1,112 @@
+{
+  "recorded_at": "2026-11-18T06:38:36.600641+00:00",
+  "status": "preregistered before any combination training",
+  "design": "C1 = frozen internal features plus small U-Net",
+  "question": "Can multiscale spatial context improve the strong feature-informed residual and reduce patch-like corrections without sacrificing boundaries?",
+  "parent_evidence": {
+    "R0_seed320112": {
+      "sha256": "2fa529d5ff4ad11bf1f215d2cd0d55d2aebd102ef80f6f7446e352ed90221ada",
+      "abs_rel": 0.11321817723046565,
+      "boundary_f1": 0.4607241890930489
+    },
+    "R0_seed320113": {
+      "sha256": "f3ff8776a313849c4c03279816da1b3753d598ad44d488b2911421ed109873db",
+      "abs_rel": 0.11343481513639284,
+      "boundary_f1": 0.46048276086157536
+    },
+    "R0_seed320114": {
+      "sha256": "7433ff3dfd853460adeccbbb4b78bbb21acc07ffc61a6cae898ba813f7fb59d8",
+      "abs_rel": 0.11316367291731311,
+      "boundary_f1": 0.46125853088510865
+    },
+    "frozen_features_seed320112": {
+      "sha256": "55eb6c00562a63f7bcb9fd739078d1d02a2d1c97d295c48190a35ad20a223e51",
+      "abs_rel": 0.10064990545807254,
+      "boundary_f1": 0.46255193538245604
+    },
+    "frozen_features_seed320113": {
+      "sha256": "338458ca7a647ce60468ffeb373568bf370bb5e6e37e0f68d9afc379c299d3e6",
+      "abs_rel": 0.09997969066490377,
+      "boundary_f1": 0.46296278024051774
+    },
+    "frozen_features_seed320114": {
+      "sha256": "ed1f304cc6c8ca5cbec542768b66b70bd2d6072361815e7a338f38233444687a",
+      "abs_rel": 0.09891470573145311,
+      "boundary_f1": 0.46254974259533593
+    },
+    "unet_seed320112": {
+      "sha256": "6abed430bae5cd2bab7daf1e5724c02af9727b62ae6fc4a847c3208ce7eb92fb",
+      "abs_rel": 0.11081652758519249,
+      "boundary_f1": 0.46332343329846576
+    },
+    "unet_seed320113": {
+      "sha256": "aff1d818148a7e8e82f3f0d41ca413a3faf2a694fbfb6f20228d47d1ab87ac0a",
+      "abs_rel": 0.11005433393600082,
+      "boundary_f1": 0.4645711816912701
+    },
+    "unet_seed320114": {
+      "sha256": "a2f5d2c9fef7db9f527ccfc1184f19c0417f858adf01f0520f28afbf82b31d80",
+      "abs_rel": 0.11021725867300451,
+      "boundary_f1": 0.46345044901654836
+    }
+  },
+  "reference_scope": "R0, frozen_features and unet have complete three-seed results. Historical bundle seed320114 is still running independently; final method selection waits for all experiments.",
+  "fixed": [
+    "577 fitting / 218 scene-separated validation",
+    "original D0 base; no flip/scale preprocessing",
+    "RGB + logD0 + learned 256-to16 internal projection",
+    "240x320 refiner; 480x640 supervision",
+    "additive meters and AbsRel loss",
+    "same optimizer/schedule/early-stop protocol as screening"
+  ],
+  "runs": [
+    {
+      "run_id": "C1_features_unet_seed320112",
+      "kind": "combination",
+      "seed": 320112
+    },
+    {
+      "run_id": "C1_features_unet_seed320113",
+      "kind": "combination",
+      "seed": 320113
+    },
+    {
+      "run_id": "C1_features_unet_seed320114",
+      "kind": "combination",
+      "seed": 320114
+    },
+    {
+      "run_id": "C1_zero_features_seed320112",
+      "kind": "ablation",
+      "seed": 320112
+    },
+    {
+      "run_id": "C1_no_rgb_seed320112",
+      "kind": "ablation",
+      "seed": 320112
+    }
+  ],
+  "reused_controls": {
+    "remove_internal_features": [
+      "unet_seed320112",
+      "unet_seed320113",
+      "unet_seed320114"
+    ],
+    "replace_unet_with_plain_cnn": [
+      "frozen_features_seed320112",
+      "frozen_features_seed320113",
+      "frozen_features_seed320114"
+    ]
+  },
+  "additional_controls": {
+    "C1_zero_features": "Same architecture and parameter count, replace internal feature tensor with zeros. This removes observable information; projection weights receive no input-dependent gradient, so it is not equal effective functional capacity.",
+    "C1_no_rgb": "Remove RGB channels; retain original predicted log depth and frozen features. Motivated by depth-only screening and possible texture leakage. Single-seed diagnostic initially."
+  },
+  "bounded_revision": "At most one revised combination may be promoted. If removing RGB improves AbsRel and does not lower boundary F1 vs matched-seed C1, it may receive seeds320113/320114 as the single allowed revision. Otherwise retain this as a negative/ambiguous ablation and do not open an unbounded architecture/input search. No automatic edge/ensemble expansion.",
+  "selection_rule": "Final selection uses completed development evidence, primary mean AbsRel with scene/seed uncertainty, boundary tradeoffs and cost; no new test results. One-seed ablation results are labeled exploratory.",
+  "parameters": {
+    "C1": 35945,
+    "zero_features": 35945,
+    "no_rgb": 35729
+  }
+}

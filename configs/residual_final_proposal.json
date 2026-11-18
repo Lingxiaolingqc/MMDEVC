@@ -1,0 +1,201 @@
+{
+  "recorded_at": "2026-11-18T07:58:10.097349+00:00",
+  "development_evidence": [
+    "outputs/part3_improvement/residual_study_20261118/runs/base_flip_scale_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/base_flip_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/base_scale_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/boundary_loss_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/bounded_log_output_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/confidence_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/coordinates_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/depth_canny_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/depth_only_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/depth_sobel_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/flip_disagreement_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/flip_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/frozen_features_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/frozen_features_seed320113/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/frozen_features_seed320114/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/gradient_loss_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/joint_edges_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/legacy_bundle_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/legacy_bundle_seed320113/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/legacy_bundle_seed320114/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/log_output_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/mlp_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/R0_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/R0_seed320113/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/R0_seed320114/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/rgb_canny_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/rgb_sobel_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/unet_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/unet_seed320113/result.json",
+    "outputs/part3_improvement/residual_study_20261118/runs/unet_seed320114/result.json",
+    "outputs/part3_improvement/residual_study_20261118/followups/C1_features_unet_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/followups/C1_features_unet_seed320113/result.json",
+    "outputs/part3_improvement/residual_study_20261118/followups/C1_features_unet_seed320114/result.json",
+    "outputs/part3_improvement/residual_study_20261118/followups/C1_no_rgb_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/followups/C1_zero_features_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/followups/resolution_frozen_features_480_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/followups/resolution_R0_480_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/followups/size_frozen_features_n145_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/followups/size_frozen_features_n289_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/followups/size_frozen_features_n577_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/followups/size_frozen_features_n58_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/followups/size_R0_n145_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/followups/size_R0_n289_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/followups/size_R0_n577_seed320112/result.json",
+    "outputs/part3_improvement/residual_study_20261118/followups/size_R0_n58_seed320112/result.json"
+  ],
+  "refits": [
+    {
+      "run_id": "final_R0_seed320112",
+      "method": "R0",
+      "seed": 320112,
+      "candidate": {
+        "name": "R0",
+        "base": "original",
+        "inputs": "rgb_depth",
+        "architecture": "cnn",
+        "output": "additive",
+        "loss": "abs_rel"
+      },
+      "feature_hw": [
+        240,
+        320
+      ],
+      "training": {
+        "max_epochs": 2,
+        "schedule_epochs": 80
+      }
+    },
+    {
+      "run_id": "final_R0_seed320113",
+      "method": "R0",
+      "seed": 320113,
+      "candidate": {
+        "name": "R0",
+        "base": "original",
+        "inputs": "rgb_depth",
+        "architecture": "cnn",
+        "output": "additive",
+        "loss": "abs_rel"
+      },
+      "feature_hw": [
+        240,
+        320
+      ],
+      "training": {
+        "max_epochs": 2,
+        "schedule_epochs": 80
+      }
+    },
+    {
+      "run_id": "final_R0_seed320114",
+      "method": "R0",
+      "seed": 320114,
+      "candidate": {
+        "name": "R0",
+        "base": "original",
+        "inputs": "rgb_depth",
+        "architecture": "cnn",
+        "output": "additive",
+        "loss": "abs_rel"
+      },
+      "feature_hw": [
+        240,
+        320
+      ],
+      "training": {
+        "max_epochs": 2,
+        "schedule_epochs": 80
+      }
+    },
+    {
+      "run_id": "final_frozen_features_seed320112",
+      "method": "frozen_features",
+      "seed": 320112,
+      "candidate": {
+        "name": "frozen_features",
+        "base": "original",
+        "inputs": "frozen_features",
+        "architecture": "cnn",
+        "output": "additive",
+        "loss": "abs_rel"
+      },
+      "feature_hw": [
+        240,
+        320
+      ],
+      "training": {
+        "max_epochs": 76,
+        "schedule_epochs": 80
+      }
+    },
+    {
+      "run_id": "final_frozen_features_seed320113",
+      "method": "frozen_features",
+      "seed": 320113,
+      "candidate": {
+        "name": "frozen_features",
+        "base": "original",
+        "inputs": "frozen_features",
+        "architecture": "cnn",
+        "output": "additive",
+        "loss": "abs_rel"
+      },
+      "feature_hw": [
+        240,
+        320
+      ],
+      "training": {
+        "max_epochs": 76,
+        "schedule_epochs": 80
+      }
+    },
+    {
+      "run_id": "final_frozen_features_seed320114",
+      "method": "frozen_features",
+      "seed": 320114,
+      "candidate": {
+        "name": "frozen_features",
+        "base": "original",
+        "inputs": "frozen_features",
+        "architecture": "cnn",
+        "output": "additive",
+        "loss": "abs_rel"
+      },
+      "feature_hw": [
+        240,
+        320
+      ],
+      "training": {
+        "max_epochs": 76,
+        "schedule_epochs": 80
+      }
+    }
+  ],
+  "rationale": "Internal-featureCNN selected by three-seed development accuracy; C1 did not establish added accuracy and had lower boundary-F1 point estimate and higher cost. No-RGB failed its recorded promotion condition.480 failed both resolution promotion thresholds. R0 retained as basic residual control, with B0-B3 foundation/scalar/flip references. No new test inference has been performed.",
+  "duration_rule": {
+    "rule": "Median of selected epochs across three declared development seeds, transferred as fixed epochs to all795; keep original80-epoch cosine horizon. No validation/test early stopping or checkpoint selection during refit. This is development-selected training duration, not matched training compute between final methods.",
+    "methods": {
+      "R0": {
+        "development_best_epochs": [
+          2,
+          6,
+          2
+        ],
+        "refit_epochs": 2
+      },
+      "frozen_features": {
+        "development_best_epochs": [
+          76,
+          74,
+          80
+        ],
+        "refit_epochs": 76
+      }
+    }
+  },
+  "display_rule": "Show each test seed and seed mean metrics separately. Representative qualitative/deployment checkpoint is fixed to seed320112 before new test inference; score averaging is not prediction ensembling. Retain fixed first/middle/last test cases and equally disclose ranked best/worst cases after evaluation."
+}

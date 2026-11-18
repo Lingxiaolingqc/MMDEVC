@@ -1,0 +1,32 @@
+{
+  "recorded_at": "2026-11-18T07:08:27.538563+00:00",
+  "status": "development_method_selected_before_size_resolution_and_new_test",
+  "selected": "frozen_features",
+  "reference": "R0",
+  "rationale": "Across three seeds C1 U-Net has nearly identical AbsRel, slightly lower boundary F1 and more parameters than the internal-feature CNN. No-RGB single-seed control fails the predeclared non-decreasing F1 promotion criterion. Retain both as measured controls, do not expand combinations.",
+  "no_rgb_promotion": false,
+  "combination_record_sha256": "ab013cba0298599a34b9b94850988a7c866e3944aab083be3a137850e89835d0",
+  "development_results": {
+    "outputs/part3_improvement/residual_study_20261118/followups/C1_features_unet_seed320112/result.json": "95c97da82189981baffd6002437b1c7bd686250e0f97f546fbaab0e52ef8a04e",
+    "outputs/part3_improvement/residual_study_20261118/followups/C1_features_unet_seed320113/result.json": "2e17667bc4e789789a924890c00be62c905faef387827e189e46e0f5ae67e191",
+    "outputs/part3_improvement/residual_study_20261118/followups/C1_features_unet_seed320114/result.json": "da5421ff9ea4c18b7295c96dc60df7e4e73eab4c8deeecbbd5545cdb018adc79",
+    "outputs/part3_improvement/residual_study_20261118/followups/C1_no_rgb_seed320112/result.json": "e6ec22957858faf38c4a4f0fc750f548887a78759d375d3b52af4fc344a3b109",
+    "outputs/part3_improvement/residual_study_20261118/followups/C1_zero_features_seed320112/result.json": "23ab8c4a803dbec1d5fca2c6b001d8fc77b86bc0a78f5f884415df33ec8be426"
+  },
+  "data_size_jobs": [
+    "configs/residual_jobs/size_R0_n58_seed320112.json",
+    "configs/residual_jobs/size_frozen_features_n58_seed320112.json",
+    "configs/residual_jobs/size_R0_n145_seed320112.json",
+    "configs/residual_jobs/size_frozen_features_n145_seed320112.json",
+    "configs/residual_jobs/size_R0_n289_seed320112.json",
+    "configs/residual_jobs/size_frozen_features_n289_seed320112.json",
+    "configs/residual_jobs/size_R0_n577_seed320112.json",
+    "configs/residual_jobs/size_frozen_features_n577_seed320112.json"
+  ],
+  "resolution_jobs": [
+    "configs/residual_jobs/resolution_R0_480_seed320112.json",
+    "configs/residual_jobs/resolution_frozen_features_480_seed320112.json"
+  ],
+  "resolution_scope": "One-seed sensitivity comparison of spatial input resolution, holding epoch protocol and architecture fixed. Primary confirmed method remains 240x320 unless resolution delivers clear improvements and is independently confirmed; no final test selection.",
+  "resolution_promotion_rule": "For the selected internal-feature method only: if 480 achieves at least 1% relative lower validation AbsRel AND at least +0.002 absolute boundary F1 over matching 240 seed320112, confirm480 with the other two declared seeds before considering it as final resolution. Otherwise retain one-seed diagnostic and240 primary. No extra architecture/loss search."
+}
