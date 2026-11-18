@@ -1,0 +1,15 @@
+{
+  "at": "2026-11-18T08:50:54.545502+00:00",
+  "inspection": "Eight overview/crop panels, error panels0088/1207/0327/0086/0770, comparison and paired-distribution charts actually viewed",
+  "observations": {
+    "nyuv2_0001": "Broad depth values improve over B0, but the scalar B1 is better than the CNN on this fixed kitchen case. The close-up retains the base object silhouette; no new fine structure is established.",
+    "nyuv2_0770": "A real fixed-case regression: the original prediction is already close to GT. The refiner shifts broad regions and adds spatially varying error across cabinets/counter areas. Its silhouette remains plausible despite worse metric accuracy.",
+    "nyuv2_1449": "Overall accuracy improves modestly. The chair/table opening in the crop remains shaped much like B0 and does not recover the detailed GT boundary.",
+    "nyuv2_0475": "The median-change case improves broad depth values. Table-leg boundaries largely retain their base positions and blur; the crop does not demonstrate newly recovered fine geometry.",
+    "nyuv2_0088": "Large foreground depth errors decrease over books/display surfaces. The central background/person region remains grossly wrong and saturated in the depth/error display; parts of the ceiling worsen. A large mean gain does not make this a solved scene.",
+    "nyuv2_1207": "Broad errors over the sofa and floor decrease substantially, and background depth moves toward GT. Fine objects/curtain transitions behind the sofa remain missing; narrow sofa/plant boundary regions can worsen.",
+    "nyuv2_0327": "Major regression: the refiner increases depth over broad classroom regions already overestimated by B0; the error-change map is predominantly worse across the room and foreground. Existing silhouettes remain plausible and cannot reveal accuracy alone.",
+    "nyuv2_0086": "Major regression: errors grow over the nearby shelves and floor while only limited far areas improve. This is the same named bookstore scene as successful image0088, so success cannot be generalized even to every view of that scene."
+  },
+  "selection_sha256": "f3bddf341017c9e37330da1d126f1a9763f88187a93217b183e98cb89ecdf966"
+}

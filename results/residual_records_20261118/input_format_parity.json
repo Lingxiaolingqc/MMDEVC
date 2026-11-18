@@ -1,0 +1,31 @@
+{
+  "at": "2026-11-18T06:06:22.185270+00:00",
+  "status": "pass",
+  "checks": [
+    {
+      "candidate": "R0",
+      "ids": [
+        2,
+        4
+      ],
+      "training_vs_memmap_vs_single_image": "bitwise_equal",
+      "derived_cache_sha256": {
+        "features.npy": "a2b92c4b74d4b283637c741f3c3fc8a730256522a0d692584be32b4afa0ffded"
+      }
+    },
+    {
+      "candidate": "frozen_features",
+      "ids": [
+        2,
+        4
+      ],
+      "training_vs_memmap_vs_single_image": "bitwise_equal",
+      "derived_cache_sha256": {
+        "features.npy": "a2b92c4b74d4b283637c741f3c3fc8a730256522a0d692584be32b4afa0ffded",
+        "internal.npy": "5c2ef9065a3e2d9284f6420214caaab3764c109dd225c3721845093a457f4855"
+      }
+    }
+  ],
+  "gt_in_input_construction": false,
+  "scope": "Two real development samples (one fitting, one validation), R0 and frozen internal features; synthetic tests cover all additional feature formats."
+}

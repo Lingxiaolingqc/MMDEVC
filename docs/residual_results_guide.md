@@ -4,6 +4,8 @@
 
 ## 先看什么
 
+[中文阶段汇总](../results/residual_stage_summary_20261118.md)与[可直接拉取的实验记录](../results/residual_records_20261118/README.md)已保存。后者包含训练曲线、逐图指标和源码身份；大型权重与预测数组保留本地。
+
 1. [报告段落](../results/residual_report_section.md)和[最终测试分析](../results/residual_final_test.md)：研究问题、模型、实验设计、三个种子的结果与成功/失败案例。正式训练和测试已完成。
 2. [单因素筛选](../results/residual_study_screening.md)：输入、架构、输出、损失和历史组合，包含失败与无变化结果。
 3. [三个种子](../results/residual_seed_confirmation.md) 与 [组合/去除对照](../results/residual_combinations.md)：判断收益是否稳定、组件组合是否还有价值。
