@@ -1,0 +1,25 @@
+{
+  "status": "aborted_numerical_failure",
+  "run": "lora_search_L_D_r4_lr1e4_seed320112",
+  "at": "2026-11-19T19:37:16.809059+00:00",
+  "reason": "Repeated nonfinite gradients drove AMP scale toward zero and validation stopped changing. Interrupted verified worker PID99792 under venv launcher70220/orchestrator62916. This trial is excluded from selection.",
+  "last_progress": {
+    "run": "lora_search_L_D_r4_lr1e4_seed320112",
+    "updates": 650,
+    "image_exposures": 5200,
+    "amp_skipped": 90,
+    "elapsed_seconds": 220.90322099998593
+  },
+  "recorded_nonfinite_events": 90,
+  "last_event": {
+    "recorded_at": "2026-11-19T19:33:44.419412+00:00",
+    "event": "AMP nonfinite gradients; optimizer step skipped",
+    "update": 645,
+    "scale": 2.0679515313825692e-25
+  },
+  "preserved_checkpoints": {
+    "best.pt": "6ab121187cdb5f8b4a222d7268155fb32590ac77212c7b739d12302d88c24b04",
+    "resume.pt": "7338af127f2cdb7ca0f81edd4476e5ac1b2b35f3f67e435aff2e3c16819c1fdd"
+  },
+  "next": "Diagnose fitting batches, declare a uniform numerical revision, then restart all eight LoRA configurations. Residual freeze remains unchanged."
+}

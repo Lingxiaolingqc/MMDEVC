@@ -1,0 +1,101 @@
+{
+  "status": "pass",
+  "at": "2026-11-19T05:21:05.843106+00:00",
+  "ids": [
+    2
+  ],
+  "split_sha256": "eba0794f81eaf80a34f1b3c358a298a4ac032357e58c1ce212b5201fcf14cb2d",
+  "scope": "engineering only; five updates do not select a method",
+  "rows": [
+    {
+      "target": "decoder_attention",
+      "rank": 8,
+      "target_paths": [
+        "pixel_decoder.camera_layer.aggregate1.kv",
+        "pixel_decoder.camera_layer.aggregate1.out",
+        "pixel_decoder.camera_layer.aggregate1.q",
+        "pixel_decoder.camera_layer.aggregate2.kv",
+        "pixel_decoder.camera_layer.aggregate2.out",
+        "pixel_decoder.camera_layer.aggregate2.q",
+        "pixel_decoder.depth_layer.prompt_camera.0.layers.0.kv",
+        "pixel_decoder.depth_layer.prompt_camera.0.layers.0.out",
+        "pixel_decoder.depth_layer.prompt_camera.0.layers.0.q",
+        "pixel_decoder.depth_layer.prompt_camera.1.layers.0.kv",
+        "pixel_decoder.depth_layer.prompt_camera.1.layers.0.out",
+        "pixel_decoder.depth_layer.prompt_camera.1.layers.0.q",
+        "pixel_decoder.depth_layer.prompt_camera.2.layers.0.kv",
+        "pixel_decoder.depth_layer.prompt_camera.2.layers.0.out",
+        "pixel_decoder.depth_layer.prompt_camera.2.layers.0.q",
+        "pixel_decoder.depth_layer.prompt_camera.3.layers.0.kv",
+        "pixel_decoder.depth_layer.prompt_camera.3.layers.0.out",
+        "pixel_decoder.depth_layer.prompt_camera.3.layers.0.q"
+      ],
+      "parameters": 86016,
+      "initial_amp_scale": 128.0,
+      "zero_adapter_max_abs_difference": 0.0,
+      "microbatch": 1,
+      "seconds_per_microstep": [
+        0.23270679998677224,
+        0.053900400060229,
+        0.0540919000050053,
+        0.054632200044579804,
+        0.05103390000294894
+      ],
+      "losses": [
+        0.16260580718517303,
+        0.1615765541791916,
+        0.16044823825359344,
+        0.15988732874393463,
+        0.1589745730161667
+      ],
+      "nonzero_gradient_counts": [
+        18,
+        36,
+        36,
+        36,
+        36
+      ],
+      "peak_allocated_mib": 613.33251953125
+    },
+    {
+      "target": "encoder_last4_attention",
+      "rank": 8,
+      "target_paths": [
+        "pixel_encoder.blocks.10.attn.proj",
+        "pixel_encoder.blocks.10.attn.qkv",
+        "pixel_encoder.blocks.11.attn.proj",
+        "pixel_encoder.blocks.11.attn.qkv",
+        "pixel_encoder.blocks.8.attn.proj",
+        "pixel_encoder.blocks.8.attn.qkv",
+        "pixel_encoder.blocks.9.attn.proj",
+        "pixel_encoder.blocks.9.attn.qkv"
+      ],
+      "parameters": 73728,
+      "initial_amp_scale": 128.0,
+      "zero_adapter_max_abs_difference": 0.0,
+      "microbatch": 1,
+      "seconds_per_microstep": [
+        0.053917699959129095,
+        0.04947379999794066,
+        0.05133020004723221,
+        0.04979759990237653,
+        0.04921879991889
+      ],
+      "losses": [
+        0.16260580718517303,
+        0.14586490392684937,
+        0.12895090878009796,
+        0.11168830841779709,
+        0.093885637819767
+      ],
+      "nonzero_gradient_counts": [
+        8,
+        16,
+        16,
+        16,
+        16
+      ],
+      "peak_allocated_mib": 675.9404296875
+    }
+  ]
+}

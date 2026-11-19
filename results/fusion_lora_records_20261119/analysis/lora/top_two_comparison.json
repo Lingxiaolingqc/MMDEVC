@@ -1,0 +1,98 @@
+{
+  "selected": "L_E_r8_lr3e4",
+  "reference": "L_E_r8_lr1e4",
+  "seeds": [
+    320112,
+    320113,
+    320114
+  ],
+  "metrics": {
+    "abs_rel": {
+      "metric": "abs_rel",
+      "candidate_minus_reference": -0.0019415132870372468,
+      "scene_cluster_bootstrap_ci95": [
+        -0.0039079200909410364,
+        0.00018455998494149674
+      ],
+      "scenes": 62,
+      "images": 218,
+      "replicates": 5000,
+      "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+    },
+    "rmse_m": {
+      "metric": "rmse_m",
+      "candidate_minus_reference": -0.007561928945300323,
+      "scene_cluster_bootstrap_ci95": [
+        -0.015430872861639543,
+        0.00041936654778936054
+      ],
+      "scenes": 62,
+      "images": 218,
+      "replicates": 5000,
+      "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+    },
+    "delta1": {
+      "metric": "delta1",
+      "candidate_minus_reference": 0.0041071415752414586,
+      "scene_cluster_bootstrap_ci95": [
+        -0.0020079267872760796,
+        0.009635966019606946
+      ],
+      "scenes": 62,
+      "images": 218,
+      "replicates": 5000,
+      "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+    },
+    "boundary_f1": {
+      "metric": "boundary_f1",
+      "candidate_minus_reference": 0.000879238645016348,
+      "scene_cluster_bootstrap_ci95": [
+        -0.001969614947779664,
+        0.0035596052420982177
+      ],
+      "scenes": 62,
+      "images": 218,
+      "replicates": 5000,
+      "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+    },
+    "boundary_band_abs_rel": {
+      "metric": "boundary_band_abs_rel",
+      "candidate_minus_reference": -0.0027278406532941783,
+      "scene_cluster_bootstrap_ci95": [
+        -0.004274067554559359,
+        -0.0010531708369472645
+      ],
+      "scenes": 62,
+      "images": 218,
+      "replicates": 5000,
+      "scope": "paired image difference with scene-cluster resampling; does not measure training-seed uncertainty"
+    }
+  },
+  "distribution": {
+    "images": 218,
+    "mean_change": -0.0019415132870372464,
+    "median_change": -0.0005402024403348346,
+    "images_lower_absrel": 120,
+    "images_higher_absrel": 98,
+    "unchanged_images": 0,
+    "change_quantiles": {
+      "min": -0.06667962914940294,
+      "q25": -0.00530415122265945,
+      "median": -0.0005402024403348346,
+      "q75": 0.004256142660642797,
+      "max": 0.028471453707721986
+    },
+    "largest10_share_of_gross_improvement": 0.37632047649066935,
+    "scope": "paired image error changes; gross improvement denominator excludes worsened images; not a significance test"
+  },
+  "source_sha256": {
+    "outputs/part3_improvement/fusion_lora_20261119/followups/lora_confirm_L_E_r8_lr3e4_seed320113_finite_rays_v2/validation/per_image.csv": "53964d5d8c44f350249be54815b595cb6725b8871d720053e122b2ea5a89e037",
+    "outputs/part3_improvement/fusion_lora_20261119/followups/lora_confirm_L_E_r8_lr3e4_seed320114_finite_rays_v2/validation/per_image.csv": "924aeaeacd37a4b06d1020cc7b1b89ea74e1ae611a82ce85ba91416bd40587c7",
+    "outputs/part3_improvement/fusion_lora_20261119/followups/lora_search_L_E_r8_lr3e4_seed320112_finite_rays_v2/validation/per_image.csv": "d99924e21c4bc5e5d3b209f33912a9aabedc7485ffc8785a4cf3541d52716c93",
+    "outputs/part3_improvement/fusion_lora_20261119/followups/lora_confirm_L_E_r8_lr1e4_seed320113_finite_rays_v2/validation/per_image.csv": "19f46e40d9a6a13c05bcacd589e79981728071f0024dfd6659830b37ac835840",
+    "outputs/part3_improvement/fusion_lora_20261119/followups/lora_confirm_L_E_r8_lr1e4_seed320114_finite_rays_v2/validation/per_image.csv": "4e57ea3457bf4d25cfe242fd6286a1fc5c9ffe55355916c84694b5483b57a063",
+    "outputs/part3_improvement/fusion_lora_20261119/followups/lora_search_L_E_r8_lr1e4_seed320112_finite_rays_v2/validation/per_image.csv": "d80fdcecb313509722baa82781a912bb180a186b24ce9621ef969c24ba9d6a60"
+  },
+  "helper_sha256": "9329919c53df25d757af50d08402a3dd03cdd1f35b4832a025e58080abac0137",
+  "scope": "Selection uncertainty within LoRA only. Scene intervals are exploratory, not adjusted for selection or multiple comparisons and not training-seed intervals. No change to frozen choice."
+}

@@ -1,0 +1,79 @@
+{
+  "status": "failure_reproduced",
+  "step": 3,
+  "ids": [
+    1251,
+    160,
+    285,
+    1403,
+    735,
+    1029,
+    402,
+    824
+  ],
+  "records": [
+    {
+      "step": 1,
+      "ids": [
+        287,
+        1137,
+        1073,
+        986,
+        112,
+        418,
+        420,
+        428
+      ],
+      "loss": 0.08663329482078552,
+      "nonfinite_parameters": []
+    },
+    {
+      "step": 2,
+      "ids": [
+        483,
+        273,
+        1067,
+        1317,
+        1242,
+        904,
+        1427,
+        319
+      ],
+      "loss": 0.0928565189242363,
+      "nonfinite_parameters": []
+    }
+  ],
+  "error": "RuntimeError(\"Function 'CloneBackward0' returned nan values in its 0th output.\")",
+  "traceback": "Traceback (most recent call last):\n  File \"D:\\Documents\\OneDrive\\OneDrive - HKUST (Guangzhou)\\桌面\\大三上\\AIAA3201(L01)Intro2CV\\Projects\\MMDEVC\\outputs\\part3_improvement\\fusion_lora_20261119\\diagnose_lora_gradients.py\", line 84, in main\n    scaler.scale(loss).backward()\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^\n  File \"D:\\Documents\\OneDrive\\OneDrive - HKUST (Guangzhou)\\桌面\\大三上\\AIAA3201(L01)Intro2CV\\Projects\\MMDEVC\\.venv-cuda\\Lib\\site-packages\\torch\\_tensor.py\", line 630, in backward\n    torch.autograd.backward(\n    ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, gradient, retain_graph, create_graph, inputs=inputs\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"D:\\Documents\\OneDrive\\OneDrive - HKUST (Guangzhou)\\桌面\\大三上\\AIAA3201(L01)Intro2CV\\Projects\\MMDEVC\\.venv-cuda\\Lib\\site-packages\\torch\\autograd\\__init__.py\", line 364, in backward\n    _engine_run_backward(\n    ~~~~~~~~~~~~~~~~~~~~^\n        tensors,\n        ^^^^^^^^\n    ...<5 lines>...\n        accumulate_grad=True,\n        ^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"D:\\Documents\\OneDrive\\OneDrive - HKUST (Guangzhou)\\桌面\\大三上\\AIAA3201(L01)Intro2CV\\Projects\\MMDEVC\\.venv-cuda\\Lib\\site-packages\\torch\\autograd\\graph.py\", line 865, in _engine_run_backward\n    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass\n           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        t_outputs, *args, **kwargs\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )  # Calls into the C++ engine to run the backward pass\n    ^\nRuntimeError: Function 'CloneBackward0' returned nan values in its 0th output.\n",
+  "scope": "Exact fitting sequence, first original decoder-r4 run; no validation-based decision.",
+  "angle_records": [
+    {
+      "step": 1,
+      "dtype": "torch.float32",
+      "ones": 0,
+      "min": 0.423362135887146,
+      "max": 0.9999983310699463,
+      "output_gradient_nonfinite": 0,
+      "input_gradient_nonfinite": 0
+    },
+    {
+      "step": 2,
+      "dtype": "torch.float32",
+      "ones": 0,
+      "min": 0.3711291253566742,
+      "max": 0.9999967813491821,
+      "output_gradient_nonfinite": 0,
+      "input_gradient_nonfinite": 0
+    },
+    {
+      "step": 3,
+      "dtype": "torch.float32",
+      "ones": 1,
+      "min": 0.6736241579055786,
+      "max": 1.0,
+      "output_gradient_nonfinite": 0,
+      "input_gradient_nonfinite": 1
+    }
+  ],
+  "mode": "inspect"
+}

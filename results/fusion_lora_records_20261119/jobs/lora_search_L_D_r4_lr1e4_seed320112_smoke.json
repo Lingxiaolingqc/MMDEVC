@@ -1,0 +1,52 @@
+{
+  "job": {
+    "run_id": "lora_search_L_D_r4_lr1e4_seed320112_smoke",
+    "phase": "search",
+    "candidate": {
+      "name": "L_D_r4_lr1e4",
+      "target": "decoder_attention",
+      "rank": 4,
+      "learning_rate": 0.0001
+    },
+    "seed": 320112,
+    "fit_ids": [
+      2,
+      3,
+      9,
+      10,
+      11,
+      12,
+      18,
+      19,
+      25,
+      26,
+      47,
+      63,
+      64,
+      65,
+      66,
+      67
+    ],
+    "validation_ids": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "training": {
+      "max_steps": 2,
+      "evaluate_every_steps": 1,
+      "batch_size": 8,
+      "microbatch": 8,
+      "learning_rate": 0.0001,
+      "minimum_learning_rate": 3.3333333333333333e-06,
+      "weight_decay": 0.001,
+      "clip_gradient_norm": 1.0,
+      "initial_amp_scale": 128
+    },
+    "selection_point": "best_validation",
+    "smoke": true,
+    "split_sha256": "eba0794f81eaf80a34f1b3c358a298a4ac032357e58c1ce212b5201fcf14cb2d"
+  },
+  "job_sha256": "0798db23362ff0c2bf875e63df811f2ffe8df9db37bda3b717f2b6e1355edeb2"
+}

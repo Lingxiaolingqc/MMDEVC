@@ -26,3 +26,20 @@ report/sample_20261109_research/** -text whitespace=cr-at-eol
 
 # Preserve exact experiment-record hashes, including CSV line endings.
 results/residual_records_20261118/** -text whitespace=cr-at-eol
+
+# Selection-study snapshots freeze exact source bytes before publication.
+configs/fusion_lora_study.json -text whitespace=cr-at-eol
+docs/fusion_lora_study_plan.md -text whitespace=cr-at-eol
+src/p3_depth/adaptation_study/** -text whitespace=cr-at-eol
+# These existing sources were frozen with CRLF bytes; Python content is unchanged.
+src/p3_depth/residual_inputs/__init__.py -text whitespace=cr-at-eol
+src/p3_depth/residual_inputs/features.py -text whitespace=cr-at-eol
+src/p3_depth/residual_inputs/training.py -text whitespace=cr-at-eol
+scripts/part3_improvement/analyze_fusion_ablations.py -text whitespace=cr-at-eol
+scripts/part3_improvement/analyze_lora_study.py -text whitespace=cr-at-eol
+scripts/part3_improvement/plot_adaptation_study.py -text whitespace=cr-at-eol
+scripts/part3_improvement/preflight_lora_study.py -text whitespace=cr-at-eol
+scripts/part3_improvement/render_adaptation_cases.py -text whitespace=cr-at-eol
+scripts/part3_improvement/run_adaptation_selection.py -text whitespace=cr-at-eol
+scripts/part3_improvement/run_fusion_ablations.py -text whitespace=cr-at-eol
+scripts/part3_improvement/run_lora_study.py -text whitespace=cr-at-eol

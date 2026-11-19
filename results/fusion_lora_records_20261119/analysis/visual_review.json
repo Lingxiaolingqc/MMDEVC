@@ -1,0 +1,236 @@
+{
+  "status": "complete",
+  "scope": "Actual listed figure inspection; within-family comparisons only; validation, mostly seed320112; no head-to-head comparison or visual reselection.",
+  "reviews": [
+    {
+      "run": "factorial_F2_seed320112",
+      "images": [
+        "nyuv2_0005",
+        "nyuv2_0598",
+        "nyuv2_1440"
+      ],
+      "observations": [
+        "Large surfaces and object layout remain close to the foundation prediction. Corrections vary spatially rather than applying a single global scale.",
+        "On 0005, corrections concentrate around table/chair contours as well as wall regions; the refined view still has soft boundaries.",
+        "On 0598, the table and sofa layout is preserved; the fixed-scale overview does not establish sharper fine legs or recovery of missing structure.",
+        "On 1440, corrections around thin chair structures are visible, but the overview alone cannot establish more accurate depth edges."
+      ],
+      "limitations": "Correction colour is not an error map. Compare against GT using saved per-image scores and matched error/edge views before judging whether these changes help.",
+      "figure_sha256": {
+        "nyuv2_0005": "4f1b91cb3c376ea2a44cef71b44673df6d9608d3ca20b7eea2edd7b642f3fb07",
+        "nyuv2_0598": "e0ce82bb8be80d53b4f401c7479df56417f7be02ab884a85cd13b8810190f089",
+        "nyuv2_1440": "c69f63ba30046bdba885930f691ba9c327f6e540d453a324ea74c20e67a6225d"
+      }
+    },
+    {
+      "run": "factorial_F3_seed320112",
+      "images": [
+        "nyuv2_0005"
+      ],
+      "observations": [
+        "Room layout and table/chair contours remain similar to the base at the common 0-10m depth scale.",
+        "The correction field contains finer spatial variation around the shelving/wall region than the P3 correction on this same sample. This is a property of the correction, not evidence that its depth error is larger."
+      ],
+      "figure_sha256": {
+        "nyuv2_0005": "8ddd9c6d15ad1cde9ec4d1ad79536d2606391c1467a4589ae950219ed878f5d6"
+      }
+    },
+    {
+      "run": "factorial_P2_seed320112",
+      "images": [
+        "nyuv2_1440"
+      ],
+      "observations": [
+        "The chair/table layout is retained; corrections are spatially distributed around thin chair structures and large background surfaces.",
+        "The overview alone does not demonstrate recovery of all thin chair bars; use the matched GT-edge overlays and per-image metrics for that claim."
+      ],
+      "figure_sha256": {
+        "nyuv2_1440": "773214b2b68bc40bcf0cb7ff2dfb0d1aa9429e6866c340e1f149b3f3f93b9721"
+      }
+    },
+    {
+      "run": "factorial_P3_seed320112",
+      "images": [
+        "nyuv2_0005"
+      ],
+      "observations": [
+        "The correction field appears broader and smoother than F3 on this fixed sample, particularly around the shelving region.",
+        "At the common depth display scale, overall structure is similar to F3 and the base; this example cannot establish a meaningful accuracy winner."
+      ],
+      "figure_sha256": {
+        "nyuv2_0005": "37285d0bd98cae2ad024e4687eb1277aa20a1b97bddec9eb280c131ea16f6093"
+      }
+    },
+    {
+      "run": "factorial_F2_seed320114",
+      "images": [
+        "nyuv2_1440"
+      ],
+      "observations": [
+        "Compared directly with seed320112 on the same fixed sample. Both preserve similar room/chair layout at the 0-10m display scale.",
+        "The correction has a different spatial pattern across the wall and chair region; seed320114 shows more visibly block-like wall variation in this correction view.",
+        "The fixed-scale depth overview does not establish new thin-bar recovery or which seed is more accurate."
+      ],
+      "limitations": "Correction is not depth error; per-image error and edge overlays are still needed. This is one fixed validation example, not an average.",
+      "figure_sha256": {
+        "nyuv2_1440": "f44e433c696f544a2111ce7e8e4722da8853ff956e8ed170d2a06e71c68c8557"
+      }
+    }
+  ],
+  "updated_at": "2026-11-19T22:33:11.914549+00:00",
+  "quantitative_figure_review": {
+    "files": [
+      "analysis/factorial/figures/summary.png",
+      "analysis/factorial/figures/paired_changes.png"
+    ],
+    "observations": [
+      "Axes and seed counts readable; one-seed spatial controls distinguished from three-seed cells.",
+      "Seed SD explicitly separated from scene-bootstrap confidence intervals.",
+      "Most pairwise AbsRel intervals cross zero; zero-middle comparison favors full F3 on AbsRel; this does not establish better edge F1."
+    ],
+    "status": "viewed"
+  },
+  "reviewed_figures": [
+    {
+      "path": "analysis/factorial/figures/summary.png",
+      "observation": "Axes, seed counts and SD labels readable; F3 has lowest core mean AbsRel, while S0/G2/G3 retain higher boundary F1.",
+      "sha256": "08ff73e612a6a79e580c4291d50a39b54cf3934659d3c8cd7fe96b58026cb57e"
+    },
+    {
+      "path": "analysis/lora/figures/lora_search_L_D_r4_lr3e4_seed320112_finite_rays_v2_curve.png",
+      "observation": "Training loss and validation AbsRel both rise sharply after early best checkpoint; not merely validation-only overfitting.",
+      "sha256": "61206977b2a86c656e29a647c476c837be5f1310da061091414ee44b9ecaba4d"
+    },
+    {
+      "path": "analysis/lora/figures/lora_search_L_E_r8_lr3e4_seed320112_finite_rays_v2_curve.png",
+      "observation": "Training loss falls; validation plateaus around 0.089 with best at 1200 updates.",
+      "sha256": "19476b6a57b6608e3d03fd78f3df94c57bbd1b5087a540b8c4334e337f0f3ab2"
+    },
+    {
+      "path": "analysis/lora/figures/lora_confirm_L_E_r8_lr3e4_seed320114_finite_rays_v2_curve.png",
+      "observation": "This seed selects the 200-update checkpoint; later training loss continues falling but validation never beats it.",
+      "sha256": "bf42d7279e208f4118ee405231a8f69537552a1ce1a9197268b0907aa0fa8c78"
+    },
+    {
+      "path": "analysis/visuals/residual_S0_to_F3_seed320112/fixed_middle_nyuv2_0598.png",
+      "observation": "Living room: broad-surface error is reduced (AbsRel 0.05844 to 0.04018), but the table/sofa outlines remain soft or displaced and edge F1 falls from 0.55733 to 0.49453.",
+      "sha256": "08f834a09956d44b9c471c9564413ae3121e2e0001c5083e9e339d8f924e906f"
+    },
+    {
+      "path": "analysis/visuals/residual_S0_to_F3_seed320112/largest_gain_nyuv2_0226.png",
+      "observation": "Store interior: F3 reduces excessive background depth and broad wall/person-region errors (0.46021 to 0.21835). Errors on the left branches/foreground remain; this is not complete thin-structure recovery.",
+      "sha256": "d7a536e572bc7e6fc507f71fd5333d8876b98c18aed935c1c4fd167f39a007f7"
+    },
+    {
+      "path": "analysis/visuals/residual_S0_to_F3_seed320112/largest_regression_nyuv2_0246.png",
+      "observation": "Living room regression: F3 pulls broad background depth below GT, increasing wall/ceiling-region errors (0.08444 to 0.14330); outlines are similar, so this is not only an edge failure.",
+      "sha256": "bbe08d8f2c6023a85ad75fa2f12e4d066a3fd7fcee4c36be6c17e5aa833669f4"
+    },
+    {
+      "path": "analysis/visuals/residual_S0_to_F3_seed320112/largest_boundary_regression_nyuv2_0080.png",
+      "observation": "Shelf scene: fixed-scale depth maps look similar and AbsRel improves (0.09338 to 0.08564), but several predicted shelf-edge segments disappear under the fixed edge detector; F1 drops 0.33651 to 0.09360. Thresholded edge agreement and overall depth accuracy differ.",
+      "sha256": "9299caf79679a950ad4988d6961e2d4e8cb811b97693288ae8a859b873577b46"
+    },
+    {
+      "path": "analysis/visuals/residual_S0_to_F3_seed320112/fixed_first_nyuv2_0005.png",
+      "observation": "Office: both preserve table/chair layout; only a small depth-error change (0.05530 to 0.05244), with persistent bright error bands around foreground chairs. No obvious broad edge sharpening.",
+      "sha256": "b54eeea82c79cb0e1c84b320b672f1e1b1843aea2b24dc624f8d8c2134a0a008"
+    },
+    {
+      "path": "analysis/visuals/residual_S0_to_F3_seed320112/fixed_last_nyuv2_1440.png",
+      "observation": "Dining room: chair bars and counter remain difficult. F3 adds some predicted chair-edge strokes without consistently matching GT, while depth error changes little (0.13456 to 0.13105); F1 decreases.",
+      "sha256": "070aae3acb61cccc1794b80eaf9d4dae63a536cd086be47841f12006e9dcf55a"
+    },
+    {
+      "path": "analysis/visuals/residual_F2_to_P2_seed320112/fixed_middle_nyuv2_0598.png",
+      "observation": "Matched living-room case: global depth maps remain visually very similar; progressive fusion changes local table/sofa error patterns and raises this case's edge F1, without visibly recovering all thin legs. Small appearance differences do not establish overall accuracy superiority.",
+      "sha256": "fcb19cff18152a5dae52628133f9113868aeb1154ca72db3fd06fd63a8a810a2"
+    },
+    {
+      "path": "analysis/visuals/residual_F3_to_P3_seed320112/fixed_middle_nyuv2_0598.png",
+      "observation": "Matched living-room case: global depth maps remain visually very similar; progressive fusion changes local table/sofa error patterns and raises this case's edge F1, without visibly recovering all thin legs. Small appearance differences do not establish overall accuracy superiority.",
+      "sha256": "cc43693d8bc48bf506ad2fac3ad40e1c14049ce6da845978cc72bcc63b35f1d1"
+    },
+    {
+      "path": "analysis/visuals/residual_P2_to_G2_seed320112/fixed_middle_nyuv2_0598.png",
+      "observation": "Gate in two-stage living-room example modestly reduces AbsRel (0.04612 to 0.04312), with largely unchanged depth layout and persistent missing table-leg edges.",
+      "sha256": "12ad93c92f105a4ba15bcf9ff5512383573b3d7e77578394d834abcdb2e15538"
+    },
+    {
+      "path": "analysis/visuals/residual_P3_to_G3_seed320112/fixed_middle_nyuv2_0598.png",
+      "observation": "Gate in the three-stage version of the same example raises AbsRel (0.03968 to 0.04426); appearance stays similar and local table/wall errors change. A gate is not uniformly beneficial.",
+      "sha256": "13254c4c892b10cbad362c161b6ff1568ef5134f7c7fce7861c4243449e9d9a4"
+    },
+    {
+      "path": "analysis/visuals/residual_P3_to_G3_seed320112/largest_regression_nyuv2_0249.png",
+      "observation": "G3 regression at 0249: distant background is driven to much greater depth, with saturated error over a broad region (AbsRel 0.18285 to 0.22596), although many foreground outlines look similar.",
+      "sha256": "63b92556575bdc3f3a76433768cc5c015d3fefd2d38def93c90d9848585ec45c"
+    },
+    {
+      "path": "analysis/lora/figures/summary.png",
+      "observation": "Method names and n=1/n=3 counts readable; three-seed SD distinguished from confidence intervals. Screen-only candidates are not equally replicated finalists.",
+      "sha256": "8507a2b6f4a4a3d6ff16c00fabcf95b08764c5528287993ed7be21c181162015"
+    },
+    {
+      "path": "analysis/lora/figures/paired_changes.png",
+      "observation": "Intervals are explicitly scene-bootstrap comparisons to original UniDepth; all shown AbsRel intervals lie below zero. This plot is not a Residual-LoRA comparison.",
+      "sha256": "4e8a1c0ae057567e2b377d16951d6d2af5f81ac34bce1513910b14b2e7ce0582"
+    },
+    {
+      "path": "analysis/visuals/residual_C2_to_P2_seed320112/largest_gain_nyuv2_0050.png",
+      "observation": "Same-parameter C2/P2 control at 0050: P2 slightly reduces broad wall/sofa depth error (0.19801 to 0.18102); neither resolves the whole scene accurately.",
+      "sha256": "73926a6e54f300c02a5adb56cb28daada9f0b3febe6dda2c26a31456892ae014"
+    },
+    {
+      "path": "analysis/visuals/residual_C2_to_P2_seed320112/largest_regression_nyuv2_0249.png",
+      "observation": "Same-parameter control at 0249: P2 produces much larger distant-region depth/error than C2 (0.15628 to 0.22191). Native-resolution progressive processing is not uniformly helpful.",
+      "sha256": "165eea0c53e913c98dd61a17563aed4546d58be95d655ee09d1a8b4df2b38670"
+    },
+    {
+      "path": "analysis/visuals/residual_C3_to_P3_seed320112/fixed_middle_nyuv2_0598.png",
+      "observation": "C3/P3 fixed living room: P3 reduces table/background error (0.04595 to 0.03968), while most visible contours remain similar; this single example does not establish a general architectural advantage.",
+      "sha256": "6a1d3198c2998ccf9d8f3b8c3002ed6afa50ca3fb86e5bd5171beaaafd3f7b0c"
+    },
+    {
+      "path": "analysis/visuals/residual_F3_zero_mid_to_F3_seed320112/largest_gain_nyuv2_0226.png",
+      "observation": "Middle-information control at 0226: full F3 improves person/pillar/furniture depth compared with zero-middle (0.28689 to 0.21835), while branch errors remain.",
+      "sha256": "5f385246650e6723e2aad430fa858fc842aaee7ad1ad0eba7e60f62ad7bc5ead"
+    },
+    {
+      "path": "analysis/visuals/residual_F3_zero_mid_to_F3_seed320112/largest_regression_nyuv2_0246.png",
+      "observation": "Middle-information counterexample at 0246: full F3 worsens broad background error (0.10053 to 0.14330). Middle features help on average, not on every image.",
+      "sha256": "ef40b32a828ffc9d2237950e359f54c3455f3b596f9c21d8e789ce78fb7899ee"
+    },
+    {
+      "path": "analysis/visuals/lora_B0_to_L_E_r8_lr3e4_seed320112/largest_gain_nyuv2_0226.png",
+      "observation": "LoRA gain at 0226 vs original UniDepth: excessive room/person/furniture depth is reduced, AbsRel 0.58410 to 0.17996. Thin branches still disagree with GT; the benefit is largely broad depth correction.",
+      "sha256": "28c21c3b0f09a618e2cbc1774878d6a7178939dc6a22dcf6449cd385b22e1369"
+    },
+    {
+      "path": "analysis/visuals/lora_B0_to_L_E_r8_lr3e4_seed320112/largest_regression_nyuv2_0022.png",
+      "observation": "LoRA regression at 0022: background/ladder region and foreground are underestimated relative to GT, creating broad errors (0.07161 to 0.15242); most missed narrow crossbars remain missed.",
+      "sha256": "5fd75dab0a5c4733ffb683eaa3b003b4dfcdb1ddf8255536f9f0db1ab0c2d6a0"
+    },
+    {
+      "path": "analysis/visuals/lora_B0_to_L_E_r8_lr3e4_seed320112/largest_boundary_regression_nyuv2_0588.png",
+      "observation": "At 0588 LoRA strongly reduces broad wall/floor error (0.07537 to 0.01653), yet fewer lamp/chair boundary segments pass the fixed edge detector. Lower overall error can accompany lower boundary F1.",
+      "sha256": "1bb3aa82a329e35a82624b55164b1d3b5ee6f21ee6ed6e806e0cc00b483fe848"
+    },
+    {
+      "path": "analysis/visuals/lora_B0_to_L_E_r8_lr3e4_seed320112/fixed_first_nyuv2_0005.png",
+      "observation": "Fixed office: whiteboard/background changes reduce some error while table/chair areas worsen; mean AbsRel only improves 0.07831 to 0.07135. No universal sharpening.",
+      "sha256": "27e4259a2ac89bbd2411cfe54ca9b981a0296002db9a53b7f9cc5c92cd8898f8"
+    },
+    {
+      "path": "analysis/visuals/lora_B0_to_L_E_r8_lr3e4_seed320112/fixed_middle_nyuv2_0598.png",
+      "observation": "Fixed living room: AbsRel is almost unchanged (0.04813 to 0.04789); table and sofa layout remains similar with local gains/losses. Not a strong visible improvement example.",
+      "sha256": "ea282ef978e313b9dfafb9e213324b03a8917db2a241a54716c505c2d2df8fe9"
+    },
+    {
+      "path": "analysis/visuals/lora_B0_to_L_E_r8_lr3e4_seed320112/fixed_last_nyuv2_1440.png",
+      "observation": "Fixed dining room: broad wall error is modestly lower (0.08818 to 0.08118), but chair bars and counter boundaries remain inaccurate.",
+      "sha256": "1f2fb8542244b3d8a614a64a029aa985c2473c8823a9e8800836845593f72758"
+    }
+  ],
+  "final_summary_markdown": "实际检查了所列定量图、学习曲线，以及 Residual 与 LoRA 各自的匹配 GT/误差/边界图；逐幅清单和 SHA256 见 analysis/visual_review.json。所有匹配图均为 seed320112，三种子均值只用于表格与配对统计，图像不是 ensemble。不是所有生成的案例都经过人工逐幅查看。\n\n- **Residual 相对原单阶段参考 S0：** 固定样例 0598 的大区域误差下降（AbsRel 0.05844→0.04018），但桌椅边界没有全面变锐；0226 的背景深度明显更接近 GT（0.46021→0.21835），枝条等细结构仍有错配。0246 是反例，F3 把背景预测得偏近，误差由 0.08444 升至 0.14330。0080 的整体误差降低，固定边缘判定下却丢失部分架子边缘，F1 从 0.33651 降至 0.09360。\n- **融合与门控：** 在共同样例 0598 上，F/P/G 的整体深度图很接近，局部误差和边缘匹配有变化，肉眼不能据此宣布某种融合普遍更好。G3 在 0249 上把远处背景预测得更远，AbsRel 从 P3 的 0.18285 升至 0.22596，说明轮廓相似也可能伴随明显的区域深度退步。\n- **控制实验：** 同参数 C2/P2 在 0050 上有小幅收益，在 0249 上有明显退步（0.15628→0.22191）；C3/P3 的固定样例有收益，但不改变单种子控制的证据限制。保留 middle 特征在 0226 上改善人物、柱子和家具深度（0.28689→0.21835），在 0246 上则退步（0.10053→0.14330）。平均收益不是逐图保证。\n- **LoRA 相对原始 UniDepth B0：** 0226 的大面积深度高估显著缓解（0.58410→0.17996），但枝条错配仍在。固定样例 0598 几乎不变（0.04813→0.04789），1440 的细椅杆仍然困难。0022 是反例：背景/梯架及部分前景被预测得偏近，AbsRel 从 0.07161 升至 0.15242。0588 的整体误差明显降低（0.07537→0.01653），边缘 F1 却下降，说明两项指标确实衡量不同性质。\n- **训练曲线：** decoder 高学习率示例的训练与验证误差同时上升，属于后期优化退化，不能只说“验证集过拟合”。选中的 encoder 配置训练误差继续下降、验证误差进入平台；seed320114 的最佳检查点早至 200 updates，另两次为 1200，完整曲线与末步结果均保留。\n\n以上是对保存产物的观察及其与逐图分数的对应，不把彩色图更平滑、边缘更多或更好看直接当成更准确，也不据此改动已经冻结的选择。"
+}

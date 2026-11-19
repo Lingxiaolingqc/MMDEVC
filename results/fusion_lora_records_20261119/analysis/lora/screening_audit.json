@@ -1,0 +1,80 @@
+{
+  "status": "pass",
+  "at": "2026-11-19T21:35:39.884072+00:00",
+  "checks": [
+    "eight complete v2 search jobs",
+    "same 577/218 split and 2000 attempted updates/16000 exposures",
+    "zero-adapter full-validation parity exactly zero",
+    "base parameters unchanged",
+    "best/final checkpoint hashes verified",
+    "same adapter initialization across the two learning rates for each fixed target/rank/seed"
+  ],
+  "rows": [
+    {
+      "method": "L_D_r4_lr1e4",
+      "parameters": 43008,
+      "amp_skipped": 4,
+      "result_sha256": "299f4d20f805c398917374ebea16acd1d7ece2d40750cf16f27543a4cc5aefaa"
+    },
+    {
+      "method": "L_D_r4_lr3e4",
+      "parameters": 43008,
+      "amp_skipped": 5,
+      "result_sha256": "e637651c3be75fe5a93ec552855886ccfddaa632f7355e5440c2abbff503b41a"
+    },
+    {
+      "method": "L_D_r8_lr1e4",
+      "parameters": 86016,
+      "amp_skipped": 5,
+      "result_sha256": "038aaf6b0da460ace8ccc67fc0258cdb6d4df65830bc9aa168ca3d295efb0d8e"
+    },
+    {
+      "method": "L_D_r8_lr3e4",
+      "parameters": 86016,
+      "amp_skipped": 7,
+      "result_sha256": "0fbba30fc88b270ff352a92610b02eab15f0a7fcecae951bda3c502b463601a5"
+    },
+    {
+      "method": "L_E_r4_lr1e4",
+      "parameters": 36864,
+      "amp_skipped": 2,
+      "result_sha256": "3a8c9cdcd2d31a4629588217263030402319b0c2c290513b1edefb29ee2802a0"
+    },
+    {
+      "method": "L_E_r4_lr3e4",
+      "parameters": 36864,
+      "amp_skipped": 3,
+      "result_sha256": "f3b8aca241364e642485a27d1a3b3b9a9f994c863da470fd277108e4be536663"
+    },
+    {
+      "method": "L_E_r8_lr1e4",
+      "parameters": 73728,
+      "amp_skipped": 3,
+      "result_sha256": "4f34cd441a0f07bdbf13f13c131fe0d17b3fa8451c72f0904f94dc41b672fedd"
+    },
+    {
+      "method": "L_E_r8_lr3e4",
+      "parameters": 73728,
+      "amp_skipped": 1,
+      "result_sha256": "ed1282972c7b843e459e75c8b5438cbf177b9b0056248414d5d96c5acb4d0760"
+    }
+  ],
+  "initialization_hashes": {
+    "decoder_attention_r4": [
+      "3750b91e10f5442acf788e2c870012a10b8b1e45e2674f1316cd50649cca4a43",
+      "3750b91e10f5442acf788e2c870012a10b8b1e45e2674f1316cd50649cca4a43"
+    ],
+    "decoder_attention_r8": [
+      "82806b3f12c6e7778904f064649c7071f1472396445de5db346738fd3b3d5460",
+      "82806b3f12c6e7778904f064649c7071f1472396445de5db346738fd3b3d5460"
+    ],
+    "encoder_last4_attention_r4": [
+      "38367d5e816286da276b62876422326135e63dffbadad69bfef0b901aff254be",
+      "38367d5e816286da276b62876422326135e63dffbadad69bfef0b901aff254be"
+    ],
+    "encoder_last4_attention_r8": [
+      "b506b4205bf33fb36dcb1bb842320a97e58f5af4b329df2d39f295f738b658ac",
+      "b506b4205bf33fb36dcb1bb842320a97e58f5af4b329df2d39f295f738b658ac"
+    ]
+  }
+}

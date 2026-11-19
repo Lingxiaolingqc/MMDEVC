@@ -1,0 +1,49 @@
+LOAD 100/795 study images
+LOAD 200/795 study images
+LOAD 300/795 study images
+LOAD 400/795 study images
+LOAD 500/795 study images
+LOAD 600/795 study images
+LOAD 700/795 study images
+LOAD 795/795 study images
+D:\Documents\OneDrive\OneDrive - HKUST (Guangzhou)\桌面\大三上\AIAA3201(L01)Intro2CV\Projects\MMDEVC\.venv-cuda\Lib\site-packages\timm\models\layers\__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+D:\Documents\OneDrive\OneDrive - HKUST (Guangzhou)\桌面\大三上\AIAA3201(L01)Intro2CV\Projects\MMDEVC\third_party\UniDepth\unidepth\utils\chamfer_distance.py:9: UserWarning: !! To run evaluation you need KNN. Please compile KNN: `cd unidepth/ops/knn with && bash compile.sh`.
+  warnings.warn(
+xFormers not available
+xFormers not available
+D:\Documents\OneDrive\OneDrive - HKUST (Guangzhou)\桌面\大三上\AIAA3201(L01)Intro2CV\Projects\MMDEVC\outputs\part3_improvement\fusion_lora_20261119\diagnose_lora_gradients.py:47: UserWarning: Anomaly Detection has been enabled. This mode will increase the runtime and should only be enabled for debugging.
+  with torch.autograd.detect_anomaly(check_nan=True):
+Cannot import NystromAttention, you can not run original UniDepth. UniDepthV2 is available.
+Not loading pretrained weights for backbone
+EdgeGuidedLocalSSI reverts to a non cuda-optimized operation, you will experince large slowdown, please install it:  `cd ./unidepth/ops/extract_patches && bash compile.sh`
+{"step": 1, "ids": [287, 1137, 1073, 986, 112, 418, 420, 428], "loss": 0.08663329482078552, "nonfinite_parameters": []}
+{"step": 2, "ids": [483, 273, 1067, 1317, 1242, 904, 1427, 319], "loss": 0.09285721182823181, "nonfinite_parameters": []}
+D:\Documents\OneDrive\OneDrive - HKUST (Guangzhou)\桌面\大三上\AIAA3201(L01)Intro2CV\Projects\MMDEVC\.venv-cuda\Lib\site-packages\torch\autograd\graph.py:865: UserWarning: Error detected in CloneBackward0. Traceback of forward call that caused the error:
+  File "D:\Documents\OneDrive\OneDrive - HKUST (Guangzhou)\桌面\大三上\AIAA3201(L01)Intro2CV\Projects\MMDEVC\outputs\part3_improvement\fusion_lora_20261119\diagnose_lora_gradients.py", line 66, in <module>
+    if __name__=='__main__':main()
+  File "D:\Documents\OneDrive\OneDrive - HKUST (Guangzhou)\桌面\大三上\AIAA3201(L01)Intro2CV\Projects\MMDEVC\outputs\part3_improvement\fusion_lora_20261119\diagnose_lora_gradients.py", line 48, in main
+    prediction=differentiable_infer(model,rgb)
+  File "D:\Documents\OneDrive\OneDrive - HKUST (Guangzhou)\桌面\大三上\AIAA3201(L01)Intro2CV\Projects\MMDEVC\src\p3_depth\adaptation_study\lora.py", line 80, in differentiable_infer
+    return body(model,rgb)['depth'].float()
+  File "D:\Documents\OneDrive\OneDrive - HKUST (Guangzhou)\桌面\大三上\AIAA3201(L01)Intro2CV\Projects\MMDEVC\third_party\UniDepth\unidepth\models\unidepthv2\unidepthv2.py", line 306, in infer
+    _, model_outputs = self.encode_decode(
+  File "D:\Documents\OneDrive\OneDrive - HKUST (Guangzhou)\桌面\大三上\AIAA3201(L01)Intro2CV\Projects\MMDEVC\third_party\UniDepth\unidepth\models\unidepthv2\unidepthv2.py", line 374, in encode_decode
+    outputs = self.pixel_decoder(inputs, image_metas)
+  File "D:\Documents\OneDrive\OneDrive - HKUST (Guangzhou)\桌面\大三上\AIAA3201(L01)Intro2CV\Projects\MMDEVC\.venv-cuda\Lib\site-packages\torch\nn\modules\module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "D:\Documents\OneDrive\OneDrive - HKUST (Guangzhou)\桌面\大三上\AIAA3201(L01)Intro2CV\Projects\MMDEVC\.venv-cuda\Lib\site-packages\torch\nn\modules\module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "D:\Documents\OneDrive\OneDrive - HKUST (Guangzhou)\桌面\大三上\AIAA3201(L01)Intro2CV\Projects\MMDEVC\third_party\UniDepth\unidepth\models\unidepthv2\decoder.py", line 449, in forward
+    logdepth, logconfidence, depth_features = self.depth_layer(
+  File "D:\Documents\OneDrive\OneDrive - HKUST (Guangzhou)\桌面\大三上\AIAA3201(L01)Intro2CV\Projects\MMDEVC\.venv-cuda\Lib\site-packages\torch\nn\modules\module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "D:\Documents\OneDrive\OneDrive - HKUST (Guangzhou)\桌面\大三上\AIAA3201(L01)Intro2CV\Projects\MMDEVC\.venv-cuda\Lib\site-packages\torch\nn\modules\module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "D:\Documents\OneDrive\OneDrive - HKUST (Guangzhou)\桌面\大三上\AIAA3201(L01)Intro2CV\Projects\MMDEVC\third_party\UniDepth\unidepth\models\unidepthv2\decoder.py", line 329, in forward
+    rays_embeddings = self.embed_rays(rays_hr)
+  File "D:\Documents\OneDrive\OneDrive - HKUST (Guangzhou)\桌面\大三上\AIAA3201(L01)Intro2CV\Projects\MMDEVC\third_party\UniDepth\unidepth\models\unidepthv2\decoder.py", line 235, in embed_rays
+    rays_embedding = flat_interpolate(
+ (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\autograd\python_anomaly_mode.cpp:127.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+{"status": "failure_reproduced", "step": 3, "ids": [1251, 160, 285, 1403, 735, 1029, 402, 824], "records": [{"step": 1, "ids": [287, 1137, 1073, 986, 112, 418, 420, 428], "loss": 0.08663329482078552, "nonfinite_parameters": []}, {"step": 2, "ids": [483, 273, 1067, 1317, 1242, 904, 1427, 319], "loss": 0.09285721182823181, "nonfinite_parameters": []}], "error": "RuntimeError(\"Function 'CloneBackward0' returned nan values in its 0th output.\")", "traceback": "Traceback (most recent call last):\n  File \"D:\\Documents\\OneDrive\\OneDrive - HKUST (Guangzhou)\\\u684c\u9762\\\u5927\u4e09\u4e0a\\AIAA3201(L01)Intro2CV\\Projects\\MMDEVC\\outputs\\part3_improvement\\fusion_lora_20261119\\diagnose_lora_gradients.py\", line 50, in main\n    scaler.scale(loss).backward()\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^\n  File \"D:\\Documents\\OneDrive\\OneDrive - HKUST (Guangzhou)\\\u684c\u9762\\\u5927\u4e09\u4e0a\\AIAA3201(L01)Intro2CV\\Projects\\MMDEVC\\.venv-cuda\\Lib\\site-packages\\torch\\_tensor.py\", line 630, in backward\n    torch.autograd.backward(\n    ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, gradient, retain_graph, create_graph, inputs=inputs\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"D:\\Documents\\OneDrive\\OneDrive - HKUST (Guangzhou)\\\u684c\u9762\\\u5927\u4e09\u4e0a\\AIAA3201(L01)Intro2CV\\Projects\\MMDEVC\\.venv-cuda\\Lib\\site-packages\\torch\\autograd\\__init__.py\", line 364, in backward\n    _engine_run_backward(\n    ~~~~~~~~~~~~~~~~~~~~^\n        tensors,\n        ^^^^^^^^\n    ...<5 lines>...\n        accumulate_grad=True,\n        ^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"D:\\Documents\\OneDrive\\OneDrive - HKUST (Guangzhou)\\\u684c\u9762\\\u5927\u4e09\u4e0a\\AIAA3201(L01)Intro2CV\\Projects\\MMDEVC\\.venv-cuda\\Lib\\site-packages\\torch\\autograd\\graph.py\", line 865, in _engine_run_backward\n    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass\n           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        t_outputs, *args, **kwargs\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )  # Calls into the C++ engine to run the backward pass\n    ^\nRuntimeError: Function 'CloneBackward0' returned nan values in its 0th output.\n", "scope": "Exact fitting sequence, first original decoder-r4 run; no validation-based decision."}

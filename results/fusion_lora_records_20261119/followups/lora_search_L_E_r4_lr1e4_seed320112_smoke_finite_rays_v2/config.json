@@ -1,0 +1,92 @@
+{
+  "run_id": "lora_search_L_E_r4_lr1e4_seed320112_smoke_finite_rays_v2",
+  "phase": "search",
+  "candidate": {
+    "name": "L_E_r4_lr1e4",
+    "target": "encoder_last4_attention",
+    "rank": 4,
+    "learning_rate": 0.0001
+  },
+  "seed": 320112,
+  "fit_ids": [
+    2,
+    3,
+    9,
+    10,
+    11,
+    12,
+    18,
+    19,
+    25,
+    26,
+    47,
+    63,
+    64,
+    65,
+    66,
+    67
+  ],
+  "validation_ids": [
+    4,
+    5,
+    6,
+    7
+  ],
+  "training": {
+    "max_steps": 2,
+    "evaluate_every_steps": 1,
+    "batch_size": 8,
+    "microbatch": 8,
+    "learning_rate": 0.0001,
+    "minimum_learning_rate": 3.3333333333333333e-06,
+    "weight_decay": 0.001,
+    "clip_gradient_norm": 1.0,
+    "initial_amp_scale": 128
+  },
+  "selection_point": "best_validation",
+  "smoke": true,
+  "split_sha256": "eba0794f81eaf80a34f1b3c358a298a4ac032357e58c1ce212b5201fcf14cb2d",
+  "numerical_protocol": "finite_rays_v2",
+  "job_sha256": "4b162a4a77f48dd1d399a9686ff3c4585c51d79a0fd0c98aa05b604a95427e58",
+  "parameters": 36864,
+  "target_paths": [
+    "pixel_encoder.blocks.10.attn.proj",
+    "pixel_encoder.blocks.10.attn.qkv",
+    "pixel_encoder.blocks.11.attn.proj",
+    "pixel_encoder.blocks.11.attn.qkv",
+    "pixel_encoder.blocks.8.attn.proj",
+    "pixel_encoder.blocks.8.attn.qkv",
+    "pixel_encoder.blocks.9.attn.proj",
+    "pixel_encoder.blocks.9.attn.qkv"
+  ],
+  "foundation": {
+    "model": "unidepth",
+    "asset": {
+      "source_commit": "8d8cfe4c7ee15297099983607febf0d4f32eb3d6",
+      "filename": "model.safetensors",
+      "sha256": "93705cb3295dd7476b44911b8a55f5215bf74e8d5eccd27cecdb1b338270a648",
+      "prediction_type": "metric_depth",
+      "unit": "m",
+      "alignment": "none",
+      "config_sha256": "ecc1f898690debe387d10329cca5d9d66a0a447ce83c3a2a7ae3673c7ce43cfe",
+      "resolution_level": 0
+    },
+    "device": "cuda",
+    "requested_precision": "fp16",
+    "parameters": 34184323,
+    "weight_bytes": 136777580,
+    "gt_used_by_model": false,
+    "camera_input": "predicted intrinsics",
+    "torch_version": "2.10.0+cu128",
+    "cuda_version": "12.8",
+    "device_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "input_size": "official resolution_level=0",
+    "threads": 4
+  },
+  "frozen_parameters_sha256": "9da9ecc234a9d7c6ffd1bcf1c53abf2cb7e4a5c70b2a22daf6f8a459208d439a",
+  "adapter_initialization_seed": 320112,
+  "initial_adapter_sha256": "38367d5e816286da276b62876422326135e63dffbadad69bfef0b901aff254be",
+  "evaluation_batch_size": 1,
+  "model_eval_mode_during_training": true,
+  "gt_in_inference": false
+}
