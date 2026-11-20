@@ -1,0 +1,107 @@
+{
+  "status": "pass",
+  "at": "2026-11-20T05:20:11.748543+00:00",
+  "official_module_parity": [
+    {
+      "module": "conv_block",
+      "training": true,
+      "max_output_difference": 0.0,
+      "max_input_gradient_difference": 0.0,
+      "parameter_gradient_parity": true
+    },
+    {
+      "module": "conv_block",
+      "training": false,
+      "max_output_difference": 0.0,
+      "max_input_gradient_difference": 0.0,
+      "parameter_gradient_parity": true
+    },
+    {
+      "module": "up_conv",
+      "training": true,
+      "max_output_difference": 0.0,
+      "max_input_gradient_difference": 0.0,
+      "parameter_gradient_parity": true
+    },
+    {
+      "module": "up_conv",
+      "training": false,
+      "max_output_difference": 0.0,
+      "max_input_gradient_difference": 0.0,
+      "parameter_gradient_parity": true
+    },
+    {
+      "module": "Attention_block",
+      "training": true,
+      "max_output_difference": 0.0,
+      "max_input_gradient_difference": 0.0,
+      "parameter_gradient_parity": true
+    },
+    {
+      "module": "Attention_block",
+      "training": false,
+      "max_output_difference": 0.0,
+      "max_input_gradient_difference": 0.0,
+      "parameter_gradient_parity": true
+    },
+    {
+      "module": "CBAM",
+      "training": true,
+      "max_output_difference": 0.0,
+      "max_input_gradient_difference": 0.0,
+      "parameter_gradient_parity": true
+    },
+    {
+      "module": "CBAM",
+      "training": false,
+      "max_output_difference": 0.0,
+      "max_input_gradient_difference": 0.0,
+      "parameter_gradient_parity": true
+    }
+  ],
+  "parameters": 111145,
+  "initial_residual_exact_zero": true,
+  "initial_depth_equals_original": true,
+  "gradient_groups_reached": {
+    "start": true,
+    "projections": true,
+    "ups": true,
+    "attentions": true,
+    "fusions": true,
+    "cbam": true,
+    "output_projection": true,
+    "body": true
+  },
+  "steps": [
+    {
+      "step": 1,
+      "fitting_loss": 0.13987788558006287,
+      "gradient_norm": 0.40956413745880127,
+      "amp_scale": 65536.0
+    },
+    {
+      "step": 2,
+      "fitting_loss": 0.1391555666923523,
+      "gradient_norm": 0.4083290994167328,
+      "amp_scale": 65536.0
+    },
+    {
+      "step": 3,
+      "fitting_loss": 0.13804128766059875,
+      "gradient_norm": 0.42427411675453186,
+      "amp_scale": 65536.0
+    }
+  ],
+  "validation_bn_buffers_unchanged": true,
+  "eval_batch_composition_max_difference": 7.62939453125e-06,
+  "feature_tensors_detached": true,
+  "foundation_state_unchanged": true,
+  "F3_P3_G3_shared_feature_files_byte_identical": {
+    "init": "e6a04f1719989b6eff4efc5952de7ba9e42c2c1daf0e362746c70cf5e6243eb4",
+    "mid": "2dc8b019fc3582bb0becf5c74718a9d7fd0cade2893f48b1f0c16fb3036e11ce",
+    "late": "011d53071f645e49b8adfcef5d138f2bb3caf72f4a35315a6610e8a386644b83"
+  },
+  "peak_allocated_mib": 1682.81103515625,
+  "engineering_weights_discarded": true,
+  "validation_not_used_for_architecture_selection": true
+}

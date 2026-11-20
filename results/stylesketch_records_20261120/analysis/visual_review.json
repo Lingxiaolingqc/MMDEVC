@@ -1,0 +1,217 @@
+{
+  "status": "complete",
+  "at": "2026-11-20T08:32:18.664767+00:00",
+  "scope": "Six predeclared fixed images and one disclosed post-hoc gain, all seed320112; not all218 images inspected manually.",
+  "display": "Shared 0-10m depth, 0-0.5 AbsRel and -1..1m difference scales; course mask explicit; no per-image normalization.",
+  "cases": [
+    {
+      "reason": "fixed_0005",
+      "sample_id": 5,
+      "figure": "outputs/part3_improvement/stylesketch_20261120/analysis/visuals/fixed_0005_nyuv2_0005.png",
+      "sha256": "d1e354334dfa7cb1379a074d92aed55e489a9cc317c1e0d873261ba98f084f43",
+      "observed_by": "assistant visual inspection",
+      "observation": "Large room structure and chair/table contours are very similar. Some curved chair outlines look more continuous in SS1, but bright errors along boundaries and missed background/whiteboard depth edges remain. AbsRel is effectively unchanged/slightly worse; the F1 increase is small.",
+      "seed": 320112,
+      "metrics": {
+        "F3": {
+          "abs_rel": 0.05244237124202981,
+          "rmse_m": 0.2695855271134269,
+          "delta1": 0.9896084842387659,
+          "boundary_f1": 0.36570869568789804,
+          "boundary_band_abs_rel": 0.1309286486715173
+        },
+        "SS1": {
+          "abs_rel": 0.052637384106976146,
+          "rmse_m": 0.2865459112324742,
+          "delta1": 0.9890048625083836,
+          "boundary_f1": 0.38224018739269977,
+          "boundary_band_abs_rel": 0.1380718457268756
+        }
+      }
+    },
+    {
+      "reason": "fixed_0598",
+      "sample_id": 598,
+      "figure": "outputs/part3_improvement/stylesketch_20261120/analysis/visuals/fixed_0598_nyuv2_0598.png",
+      "sha256": "d0a36132ae971a7e3baec51f16124e0f10b9e6455d6fefbe1714cb12b5d96bde",
+      "observed_by": "assistant visual inspection",
+      "observation": "SS1 makes part of the table outline more continuous in the thresholded edge map. Thin legs and sofa contours remain incomplete. Errors over the left foreground sofa become larger. This is a clear example of better edge detection F1 without better overall depth accuracy.",
+      "seed": 320112,
+      "metrics": {
+        "F3": {
+          "abs_rel": 0.040184785839891,
+          "rmse_m": 0.2329112598327268,
+          "delta1": 0.9951458752515091,
+          "boundary_f1": 0.49452703313934204,
+          "boundary_band_abs_rel": 0.09896386009832706
+        },
+        "SS1": {
+          "abs_rel": 0.04706135482451095,
+          "rmse_m": 0.21256390332167424,
+          "delta1": 0.995313547954393,
+          "boundary_f1": 0.541756100413459,
+          "boundary_band_abs_rel": 0.09087048009123609
+        }
+      }
+    },
+    {
+      "reason": "fixed_1440",
+      "sample_id": 1440,
+      "figure": "outputs/part3_improvement/stylesketch_20261120/analysis/visuals/fixed_1440_nyuv2_1440.png",
+      "sha256": "d1b9f5528d8329eb3a568c8feb1b6a512e81030c75b77cd51c8ee70d48b3518f",
+      "observed_by": "assistant visual inspection",
+      "observation": "SS1 reduces broad background/room depth error and changes some chair gaps/contours. Large errors on foreground chairs and the right countertop persist; neither model recovers all GT boundaries. Both AbsRel and F1 improve for this seed/image.",
+      "seed": 320112,
+      "metrics": {
+        "F3": {
+          "abs_rel": 0.13105495056355948,
+          "rmse_m": 0.49724318110535576,
+          "delta1": 0.8483400402414487,
+          "boundary_f1": 0.47279626112586837,
+          "boundary_band_abs_rel": 0.2586832227107373
+        },
+        "SS1": {
+          "abs_rel": 0.10160163158397549,
+          "rmse_m": 0.42372205110206224,
+          "delta1": 0.8916876257545272,
+          "boundary_f1": 0.5132160734396037,
+          "boundary_band_abs_rel": 0.22543652347742496
+        }
+      }
+    },
+    {
+      "reason": "fixed_0226",
+      "sample_id": 226,
+      "figure": "outputs/part3_improvement/stylesketch_20261120/analysis/visuals/fixed_0226_nyuv2_0226.png",
+      "sha256": "f38b08be260fdb77e3736c9a145fd6de21d7a695ad0b601ec27ddf41b1dfa71d",
+      "observed_by": "assistant visual inspection",
+      "observation": "SS1 pushes a large background wall/pillar/furniture region too far away, producing broad high errors. F3 is substantially closer to GT in those areas, while their gross outlines remain similar. Fine branches remain inaccurate in both. This is also the post-hoc largest three-seed-mean AbsRel regression; it is not an additional independent example.",
+      "seed": 320112,
+      "metrics": {
+        "F3": {
+          "abs_rel": 0.21835204007808212,
+          "rmse_m": 1.0127680090134659,
+          "delta1": 0.7639922870556674,
+          "boundary_f1": 0.5142347248683272,
+          "boundary_band_abs_rel": 0.3356438566830084
+        },
+        "SS1": {
+          "abs_rel": 0.4170113635526213,
+          "rmse_m": 1.710374188914281,
+          "delta1": 0.4018108651911469,
+          "boundary_f1": 0.511718218525087,
+          "boundary_band_abs_rel": 0.5402984676878358
+        }
+      }
+    },
+    {
+      "reason": "fixed_0246",
+      "sample_id": 246,
+      "figure": "outputs/part3_improvement/stylesketch_20261120/analysis/visuals/fixed_0246_nyuv2_0246.png",
+      "sha256": "41f9ad790580d905d64c210f10fee952cb4231b5ce2a709a1954f823ae24526b",
+      "observed_by": "assistant visual inspection",
+      "observation": "SS1 increases background depth and reduces F3 underestimation over much of the wall/room. Some foreground/lamp/ceiling errors remain. Depth accuracy improves while F1 is nearly unchanged/slightly lower: the gain is not simply sharper boundaries.",
+      "seed": 320112,
+      "metrics": {
+        "F3": {
+          "abs_rel": 0.1433016114272707,
+          "rmse_m": 1.1253048495915037,
+          "delta1": 0.8259934607645876,
+          "boundary_f1": 0.5123694148440064,
+          "boundary_band_abs_rel": 0.138310519572045
+        },
+        "SS1": {
+          "abs_rel": 0.09211340954198599,
+          "rmse_m": 0.9139238063127452,
+          "delta1": 0.9176810865191147,
+          "boundary_f1": 0.5106035756552917,
+          "boundary_band_abs_rel": 0.13961613124268035
+        }
+      }
+    },
+    {
+      "reason": "fixed_0080",
+      "sample_id": 80,
+      "figure": "outputs/part3_improvement/stylesketch_20261120/analysis/visuals/fixed_0080_nyuv2_0080.png",
+      "sha256": "13e8cd7c715660face1878757630aa07da20468ef8bbd3d40d84a38234513b62",
+      "observed_by": "assistant visual inspection",
+      "observation": "Both models miss most of the GT thin hanging-object boundary under the fixed edge threshold. SS1 recovers a few more line fragments, giving a large F1 increase from a very low base, but broad curtain/wall depth errors increase. The edge plot does not support a claim of complete thin-structure recovery.",
+      "seed": 320112,
+      "metrics": {
+        "F3": {
+          "abs_rel": 0.0856414273682014,
+          "rmse_m": 0.18860506986353115,
+          "delta1": 1.0,
+          "boundary_f1": 0.09360250664339824,
+          "boundary_band_abs_rel": 0.07449471515237094
+        },
+        "SS1": {
+          "abs_rel": 0.11008357378752492,
+          "rmse_m": 0.2757957249016119,
+          "delta1": 0.8447308853118712,
+          "boundary_f1": 0.35273356211057705,
+          "boundary_band_abs_rel": 0.08850570497357498
+        }
+      }
+    },
+    {
+      "reason": "largest_gain",
+      "sample_id": 244,
+      "figure": "outputs/part3_improvement/stylesketch_20261120/analysis/visuals/largest_gain_nyuv2_0244.png",
+      "sha256": "749d15d405c48d30a76559bcb88e3b566f121c27f5f587686d06c2bb99cbca0c",
+      "observed_by": "assistant visual inspection",
+      "observation": "SS1 corrects substantial underestimation across the background wall and much of the room. The left bright opening is overestimated and floor errors remain. Only a few additional depth-edge fragments are present. This is a disclosed post-hoc favorable case, not representative evidence alone.",
+      "seed": 320112,
+      "metrics": {
+        "F3": {
+          "abs_rel": 0.1328121153021419,
+          "rmse_m": 0.9689144460297813,
+          "delta1": 0.8715752850435949,
+          "boundary_f1": 0.5499797060451387,
+          "boundary_band_abs_rel": 0.08925535384475132
+        },
+        "SS1": {
+          "abs_rel": 0.07746608938014228,
+          "rmse_m": 0.8349743506308118,
+          "delta1": 0.8975100603621731,
+          "boundary_f1": 0.5689069512891282,
+          "boundary_band_abs_rel": 0.0893819740958405
+        }
+      }
+    }
+  ],
+  "other_inspected": [
+    {
+      "path": "outputs/part3_improvement/stylesketch_20261120/analysis/comparison.png",
+      "sha256": "003617f51ea5891acdb1fa462423e1e3b4a47282ce37f2dc9dd1f785410fdf7c"
+    },
+    {
+      "path": "outputs/part3_improvement/stylesketch_20261120/analysis/paired_distribution.png",
+      "sha256": "bc2f2b5b6d20458f720039df10f23318105b537d16b3474539d367b19d053c0f"
+    },
+    {
+      "path": "outputs/part3_improvement/stylesketch_20261120/analysis/curve_SS1_320112.png",
+      "sha256": "aad9a50d2742737ce8f15e766c1f3a75dbb5210daf49c0f8ad5e549412dd22a9"
+    },
+    {
+      "path": "outputs/part3_improvement/stylesketch_20261120/analysis/curve_SS1_320113.png",
+      "sha256": "225d55e816f0a3bf1185b6a851a678d38de8d8ea599fec164a5b871b02f16350"
+    },
+    {
+      "path": "outputs/part3_improvement/stylesketch_20261120/analysis/curve_SS1_320114.png",
+      "sha256": "6a11d0c6bded170cb5e834160f5f788d54f34dbd2d2d35b4acc64bcfc462e998"
+    },
+    {
+      "path": "outputs/part3_improvement/stylesketch_20261120/analysis/visuals/fixed_0598_all_methods.png",
+      "sha256": "7720ebfd4696473a09a6e83837f1dc0a999d2ffc9814d638d4957d00b3c49cb7"
+    }
+  ],
+  "curves": "All three fitting losses continue downward after the selected best point while validation fluctuates and fails to set a new minimum over five evaluations. This is consistent with a growing generalization gap, not proof that any particular attention/BN component caused it.",
+  "overall": "Evidence supports a modest depth-edge F1 improvement, not a consistent reduction in metric depth error. Complete SS1 changes both feature inputs and fusion/capacity, so no fusion-only causal claim is made.",
+  "limitations": [
+    "Thin structures remain incomplete in both methods.",
+    "Fixed examples use one seed, not an ensemble or seed average.",
+    "Fixed-threshold edge F1 and boundary-band AbsRel answer different questions.",
+    "The aggregate comparison figure has a slightly tight long title; data, axes and legend remain readable."
+  ]
+}

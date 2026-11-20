@@ -1,0 +1,134 @@
+{
+  "status": "pass",
+  "formal_runs": 3,
+  "seeds": [
+    320112,
+    320113,
+    320114
+  ],
+  "fitting_images": 577,
+  "validation_images": 218,
+  "shared_source_and_feature_identity_verified": true,
+  "new_test_refit_lora_or_sample_efficiency_runs": 0,
+  "prior_freezes_and_user_edits_unchanged": true,
+  "runs": [
+    {
+      "seed": 320112,
+      "best_epoch": 22,
+      "completed_epochs": 32,
+      "updates_attempted": 2336,
+      "skips": 2,
+      "optimizer_updates": 2334,
+      "checkpoints": [
+        {
+          "name": "best.pt",
+          "epoch": 22,
+          "sha256": "7c2a20aeaa4b8a4d7e57d5cd8cf353e7c0cdc89acb83844c525fdfe372408e5f",
+          "all_BN_update_counts": 1606,
+          "BN_layers": 17
+        },
+        {
+          "name": "final.pt",
+          "epoch": 32,
+          "sha256": "0c41cc6b130faca47724f550e3b87acc1bdc16d5513efa8a731576be7a9ace0a",
+          "all_BN_update_counts": 2336,
+          "BN_layers": 17
+        }
+      ],
+      "training_elapsed_minutes": 86.46893117833339,
+      "median_epoch_interval_seconds": 99.32971379999071,
+      "max_epoch_interval_seconds": 2111.114595100051,
+      "timing_limit": "Recorded wall intervals include validation/IO and host interruptions; do not infer pure GPU speed."
+    },
+    {
+      "seed": 320113,
+      "best_epoch": 14,
+      "completed_epochs": 24,
+      "updates_attempted": 1752,
+      "skips": 0,
+      "optimizer_updates": 1752,
+      "checkpoints": [
+        {
+          "name": "best.pt",
+          "epoch": 14,
+          "sha256": "904adc397520a312c742f03bef8dc85950c8c7b0852f408a08d84e4b26215588",
+          "all_BN_update_counts": 1022,
+          "BN_layers": 17
+        },
+        {
+          "name": "final.pt",
+          "epoch": 24,
+          "sha256": "0ea617b06c1897eaa2d10f88b4a12dedcaaaebed42f8776712327cc5150eac22",
+          "all_BN_update_counts": 1752,
+          "BN_layers": 17
+        }
+      ],
+      "training_elapsed_minutes": 43.45614700833297,
+      "median_epoch_interval_seconds": 101.80369510001037,
+      "max_epoch_interval_seconds": 202.27045770001132,
+      "timing_limit": "Recorded wall intervals include validation/IO and host interruptions; do not infer pure GPU speed."
+    },
+    {
+      "seed": 320114,
+      "best_epoch": 14,
+      "completed_epochs": 24,
+      "updates_attempted": 1752,
+      "skips": 0,
+      "optimizer_updates": 1752,
+      "checkpoints": [
+        {
+          "name": "best.pt",
+          "epoch": 14,
+          "sha256": "7f0a95e55272f25df9164edde362db8c5767018b363454da8f3065a62bdfdd5b",
+          "all_BN_update_counts": 1022,
+          "BN_layers": 17
+        },
+        {
+          "name": "final.pt",
+          "epoch": 24,
+          "sha256": "4c55c9d28d34960f3b5063b48185b14692e4b87690ca9d77bf186404253d5e50",
+          "all_BN_update_counts": 1752,
+          "BN_layers": 17
+        }
+      ],
+      "training_elapsed_minutes": 43.00670869166691,
+      "median_epoch_interval_seconds": 100.17588410002645,
+      "max_epoch_interval_seconds": 185.49748280004133,
+      "timing_limit": "Recorded wall intervals include validation/IO and host interruptions; do not infer pure GPU speed."
+    }
+  ],
+  "runtime_recovery": {
+    "at": "2026-11-20T06:06:24.630361+00:00",
+    "reason": "System RAM pressure, not CUDA OOM or changed candidate quality.",
+    "observed_free_physical_memory_mib": 121.5859375,
+    "resumed_from_epoch": 4,
+    "resumed_updates": 292,
+    "resume_sha256": "10ecfe16e3e77b4e43884fb2b6465ca054d0ba9d443f7a3c207570991becd521",
+    "best_checkpoint_sha256": "8cd3215d3a9db397433b4c6aff76f6a689be2b840e150c5eecd97898a8b4ba52",
+    "stored_validation_abs_rel": 0.10634412436827172,
+    "disk_reader_validation_abs_rel": 0.10634412436827172,
+    "all795_source_values_bitwise_equal_after_write": true,
+    "indexing_parity": [
+      "init.npy",
+      "early.npy",
+      "early_skip.npy",
+      "mid.npy",
+      "mid_skip.npy",
+      "late.npy",
+      "late_projected.npy",
+      "inputs.npy",
+      "original.npy",
+      "truth.npy",
+      "mask.npy",
+      "band.npy"
+    ],
+    "architecture_protocol_optimizer_batch_order_and_rng_unchanged": true,
+    "partial_incomplete_epoch_discarded": true,
+    "design_freeze_unchanged": "0393fc533acbd84ee9164dceeb81b6d629edd0069ce764d4f827a9118b1690bb",
+    "runtime_source_sha256": {
+      "src/p3_depth/stylesketch_residual/low_memory.py": "e52e97a465ffcfc98793737862a162d32409b7a3578cd12ec7be9d6a3d746585",
+      "scripts/part3_improvement/run_stylesketch_low_memory.py": "91c5386356502f88831c0725861672f5b732cbc5108510175f3b6139b98698af"
+    }
+  },
+  "audit_script_sha256": "d8250f5f045a3fcd5657c9bae5316b4c9f1b116a0910fb1bb2668fac9dafd3d1"
+}

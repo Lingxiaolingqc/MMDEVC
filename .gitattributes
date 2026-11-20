@@ -43,3 +43,11 @@ scripts/part3_improvement/render_adaptation_cases.py -text whitespace=cr-at-eol
 scripts/part3_improvement/run_adaptation_selection.py -text whitespace=cr-at-eol
 scripts/part3_improvement/run_fusion_ablations.py -text whitespace=cr-at-eol
 scripts/part3_improvement/run_lora_study.py -text whitespace=cr-at-eol
+
+# Independent StyleSketch candidate uses byte-exact pretraining source snapshots.
+src/p3_depth/stylesketch_residual/** -text whitespace=cr-at-eol
+configs/stylesketch_residual.json -text whitespace=cr-at-eol
+docs/stylesketch_residual_plan.md -text whitespace=cr-at-eol
+scripts/part3_improvement/run_stylesketch_residual.py -text whitespace=cr-at-eol
+scripts/part3_improvement/analyze_stylesketch_residual.py -text whitespace=cr-at-eol
+scripts/part3_improvement/run_stylesketch_low_memory.py -text whitespace=cr-at-eol

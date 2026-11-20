@@ -1,0 +1,158 @@
+{
+  "at": "2026-11-20T05:20:11.854256+00:00",
+  "status": "fixed_before_formal_training",
+  "study": {
+    "study_id": "stylesketch_20261120",
+    "output": "outputs/part3_improvement/stylesketch_20261120",
+    "reference_output": "outputs/part3_improvement/fusion_lora_20261119",
+    "parent_config": "configs/residual_study.json",
+    "parent_output": "outputs/part3_improvement/residual_study_20261118",
+    "data": "data/nyuv2/nyu_depth_v2_labeled.mat",
+    "split": "configs/edge_association_split.json",
+    "feature_hw": [
+      240,
+      320
+    ],
+    "seeds": [
+      320112,
+      320113,
+      320114
+    ],
+    "training": {
+      "batch_size": 8,
+      "max_epochs": 80,
+      "learning_rate": 0.0003,
+      "minimum_learning_rate": 1e-05,
+      "weight_decay": 0.001,
+      "evaluate_every_epochs": 2,
+      "minimum_epochs": 24,
+      "patience_evaluations": 5,
+      "clip_gradient_norm": 1.0,
+      "gradient_loss_weight": 0.1,
+      "boundary_loss_weight": 2.0,
+      "amp": true,
+      "augmentation": "none"
+    },
+    "protocol": {
+      "crop_yx_half_open": [
+        45,
+        471,
+        41,
+        601
+      ],
+      "depth_range_m_inclusive": [
+        0.001,
+        10.0
+      ],
+      "selection_metric": "image_macro_abs_rel",
+      "boundary_relative_jump": 0.1,
+      "boundary_tolerance_px": 2,
+      "boundary_distance_cap_px": 10,
+      "boundary_band_radius_px": 2,
+      "test_history": "Test results were inspected in earlier project experiments; not a never-seen blind test."
+    },
+    "selection": {
+      "primary": "three-seed mean validation AbsRel",
+      "relative_tie": 0.002,
+      "tie_break": [
+        "parameters",
+        "abs_rel"
+      ],
+      "f1_veto": false,
+      "zero_middle_control": "three seeds if selected method has three stages",
+      "scope": "bounded candidate set, not global optimum"
+    },
+    "official_commit": "0214b46d51a7cd6e50674b4e4461adb3f720aedc",
+    "candidate": {
+      "name": "SS1",
+      "output": "additive",
+      "loss": "abs_rel",
+      "start_width": 32,
+      "widths": [
+        32,
+        24,
+        16
+      ],
+      "pairs": [
+        [
+          "early",
+          "early_skip"
+        ],
+        [
+          "mid",
+          "mid_skip"
+        ],
+        [
+          "late",
+          "late_projected"
+        ]
+      ],
+      "channels": {
+        "init": 256,
+        "early": 256,
+        "early_skip": 256,
+        "mid": 128,
+        "mid_skip": 128,
+        "late": 64,
+        "late_projected": 64
+      }
+    },
+    "fixed_visual_sample_ids": [
+      5,
+      598,
+      1440,
+      226,
+      246,
+      80
+    ],
+    "selection_candidates": [
+      "F3",
+      "SS1"
+    ],
+    "references": [
+      "P3",
+      "G3",
+      "B0"
+    ],
+    "scope": "Only one full candidate, three seeds; no new component ablations, LoRA, sample-size, all795 refit or test runs."
+  },
+  "config_sha256": "173bef16a82791a81566bb1c59205b9819f27ffb52302d597d1e9666d88cf7e6",
+  "source_sha256": {
+    "configs/stylesketch_residual.json": "173bef16a82791a81566bb1c59205b9819f27ffb52302d597d1e9666d88cf7e6",
+    "configs/edge_association_split.json": "eba0794f81eaf80a34f1b3c358a298a4ac032357e58c1ce212b5201fcf14cb2d",
+    "docs/stylesketch_residual_plan.md": "fdfa10a858ead56b0bbe64b0dc8ad0c3cc362517bc2c0dcab6c2992be60d03ee",
+    "scripts/part3_improvement/run_stylesketch_residual.py": "e38c33f87e42d0cf2ad07b3381bd580d917e7a5d21cfff643ea93103c2fbabd8",
+    "src/p3_depth/models/runtime.py": "2d93b6074a2b524e5c3a96cb0034d7fd5cd26599d7b9d1b2d34860381325eb99",
+    "src/p3_depth/data/nyuv2.py": "712d14614738689ca3333d297894c620e27fb779e32f98ab282b228fac83f8c6",
+    "src/p3_depth/residual/model.py": "c4942301aa5c8b0a731b85f1452128cdec6a633bfd8f9ae2f93b5fa5e74ee828",
+    "src/p3_depth/residual/job_schedule.py": "d3c48eb7219bb7bf86cf3e3e7c735764af3f9278866c60ac210355b4fb9e4ec3",
+    "src/p3_depth/residual/evaluation.py": "55015617f65dd2de8cdc95e5c7ba92569b7f5bde1217c2e4966d3fe986fdc27e",
+    "src/p3_depth/residual/records.py": "4b86fbce54efa2ce916b9ad382b6256d6b3ce4bcc03e3e19604f1fa0138118ce",
+    "src/p3_depth/residual/training.py": "521eeac82e072680f39f78221d4b2eed23daadb9022e7b1f386325af1720f36b",
+    "src/p3_depth/residual_inputs/data.py": "b471d2ced6ced09434282a95abce9dca3fd3dd5e89f1efb698c6f36f1ca8a3cb",
+    "src/p3_depth/residual_inputs/evaluation.py": "c48694c890fc9beb448ba05908ad130f20ffacfa36d9a0039c1a440ba7cd00d9",
+    "src/p3_depth/evaluation/course.py": "dae680a3446415548b53c7a74f5424f2d22097ea40f72ee03898fae3df11ebaf",
+    "src/p3_depth/evaluation/boundary.py": "760c87008a82971de1b3de3e5b40d792b55b455749642994f32b72c71713ec08",
+    "src/p3_depth/evaluation/depth.py": "e2c0c1b533680f67077dd3dbcd9b00cd1cbdec8cf41b6fc0ce0b5ff3000f0433",
+    "src/p3_depth/evaluation/rgb_depth_edges.py": "1d67b1ed441005c29fe3878deed62fe6d7b37655459f0dc40288eab585e74e17",
+    "src/p3_depth/stylesketch_residual/__init__.py": "5e8a86fa9eb371fa0b0fa81edf8d889672f45ab4952fb30413ff590dddf307a0",
+    "src/p3_depth/stylesketch_residual/common.py": "f908a617e72dcb4bc48c5b67c7ec0f6055e940a1dbf43b0cc488ff3a8f80cb03",
+    "src/p3_depth/stylesketch_residual/data.py": "27b5bc6d851f4da79f08e4b8c0d73c1b886065b35200748348f2da0f3e9c7fda",
+    "src/p3_depth/stylesketch_residual/model.py": "c9e2abb0ef55eef782624a0a6a256805c722c6a45a4b3e5a3af32cacf874f01a",
+    "src/p3_depth/stylesketch_residual/preflight.py": "56aacc9f51c8f003b22a6a4e7e3ab5832a1720012be0b9b0104c79fa9e36cac9",
+    "src/p3_depth/stylesketch_residual/training.py": "2b2dfe305ff45bcb39e0df6f1f50aaa35a41fe03617be66012b549d55321b17f"
+  },
+  "official_source_sha256": "6155ceaa09ebe8db4431fc2b7d108281233ea390d55abcb6959d5596a9532f88",
+  "preflight_sha256": "5da30422068c4eded06d727734f254817b4662da1566ed3bf336df31937c52c7",
+  "feature_metadata_sha256": "f590c24c5081a05de39e00d026aadd787568c7b38ddae5121c301dd31e13d531",
+  "reference_audit_sha256": "046446c0e3ab8699051baf89b42f59a545a486a0eebd54fff9779938cb62ee9b",
+  "git_commit": "4e4d39511e073c2f70463a833db48b6abebd7fbd",
+  "python": "3.13.5",
+  "torch": "2.10.0+cu128",
+  "cuda": "12.8",
+  "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+  "parameters": 111145,
+  "architecture_search": false,
+  "three_seeds_only": true,
+  "source_archive_sha256": "75e7a9234636b0b1403616efd3e29dc0dc9c131b8b078e9d0091c28a62e77478"
+}

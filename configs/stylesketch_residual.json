@@ -1,0 +1,115 @@
+{
+  "study_id": "stylesketch_20261120",
+  "output": "outputs/part3_improvement/stylesketch_20261120",
+  "reference_output": "outputs/part3_improvement/fusion_lora_20261119",
+  "parent_config": "configs/residual_study.json",
+  "parent_output": "outputs/part3_improvement/residual_study_20261118",
+  "data": "data/nyuv2/nyu_depth_v2_labeled.mat",
+  "split": "configs/edge_association_split.json",
+  "feature_hw": [
+    240,
+    320
+  ],
+  "seeds": [
+    320112,
+    320113,
+    320114
+  ],
+  "training": {
+    "batch_size": 8,
+    "max_epochs": 80,
+    "learning_rate": 0.0003,
+    "minimum_learning_rate": 1e-05,
+    "weight_decay": 0.001,
+    "evaluate_every_epochs": 2,
+    "minimum_epochs": 24,
+    "patience_evaluations": 5,
+    "clip_gradient_norm": 1.0,
+    "gradient_loss_weight": 0.1,
+    "boundary_loss_weight": 2.0,
+    "amp": true,
+    "augmentation": "none"
+  },
+  "protocol": {
+    "crop_yx_half_open": [
+      45,
+      471,
+      41,
+      601
+    ],
+    "depth_range_m_inclusive": [
+      0.001,
+      10.0
+    ],
+    "selection_metric": "image_macro_abs_rel",
+    "boundary_relative_jump": 0.1,
+    "boundary_tolerance_px": 2,
+    "boundary_distance_cap_px": 10,
+    "boundary_band_radius_px": 2,
+    "test_history": "Test results were inspected in earlier project experiments; not a never-seen blind test."
+  },
+  "selection": {
+    "primary": "three-seed mean validation AbsRel",
+    "relative_tie": 0.002,
+    "tie_break": [
+      "parameters",
+      "abs_rel"
+    ],
+    "f1_veto": false,
+    "zero_middle_control": "three seeds if selected method has three stages",
+    "scope": "bounded candidate set, not global optimum"
+  },
+  "official_commit": "0214b46d51a7cd6e50674b4e4461adb3f720aedc",
+  "candidate": {
+    "name": "SS1",
+    "output": "additive",
+    "loss": "abs_rel",
+    "start_width": 32,
+    "widths": [
+      32,
+      24,
+      16
+    ],
+    "pairs": [
+      [
+        "early",
+        "early_skip"
+      ],
+      [
+        "mid",
+        "mid_skip"
+      ],
+      [
+        "late",
+        "late_projected"
+      ]
+    ],
+    "channels": {
+      "init": 256,
+      "early": 256,
+      "early_skip": 256,
+      "mid": 128,
+      "mid_skip": 128,
+      "late": 64,
+      "late_projected": 64
+    }
+  },
+  "fixed_visual_sample_ids": [
+    5,
+    598,
+    1440,
+    226,
+    246,
+    80
+  ],
+  "selection_candidates": [
+    "F3",
+    "SS1"
+  ],
+  "references": [
+    "P3",
+    "G3",
+    "B0"
+  ],
+  "scope": "Only one full candidate, three seeds; no new component ablations, LoRA, sample-size, all795 refit or test runs."
+}
