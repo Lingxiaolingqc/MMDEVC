@@ -1,0 +1,345 @@
+{
+  "at": "2026-11-25T02:03:23.865393+00:00",
+  "status": "fixed_before_formal_training",
+  "study": {
+    "reference_output": "outputs/part3_improvement/fusion_lora_20261119",
+    "parent_config": "configs/residual_study.json",
+    "parent_output": "outputs/part3_improvement/residual_study_20261118",
+    "data": "data/nyuv2/nyu_depth_v2_labeled.mat",
+    "split": "configs/edge_association_split.json",
+    "feature_hw": [
+      240,
+      320
+    ],
+    "seeds": [
+      320112,
+      320113,
+      320114
+    ],
+    "training": {
+      "batch_size": 8,
+      "max_epochs": 80,
+      "learning_rate": 0.0003,
+      "minimum_learning_rate": 1e-05,
+      "weight_decay": 0.001,
+      "evaluate_every_epochs": 2,
+      "minimum_epochs": 24,
+      "patience_evaluations": 5,
+      "clip_gradient_norm": 1.0,
+      "gradient_loss_weight": 0.1,
+      "boundary_loss_weight": 2.0,
+      "amp": true,
+      "augmentation": "none"
+    },
+    "protocol": {
+      "crop_yx_half_open": [
+        45,
+        471,
+        41,
+        601
+      ],
+      "depth_range_m_inclusive": [
+        0.001,
+        10.0
+      ],
+      "selection_metric": "image_macro_abs_rel",
+      "boundary_relative_jump": 0.1,
+      "boundary_tolerance_px": 2,
+      "boundary_distance_cap_px": 10,
+      "boundary_band_radius_px": 2,
+      "test_history": "Test results were inspected in earlier project experiments; not a never-seen blind test."
+    },
+    "fixed_visual_sample_ids": [
+      5,
+      598,
+      1440,
+      226,
+      246,
+      80
+    ],
+    "study_id": "encoder_residual_20261125",
+    "output": "outputs/part3_improvement/encoder_residual_20261125",
+    "disk_inputs": "outputs/part3_improvement/stylesketch_20261120/disk_inputs",
+    "queue": [
+      "ES0",
+      "EF2",
+      "EF3",
+      "ESS1",
+      "EP2",
+      "EP3"
+    ],
+    "encoder_blocks": [
+      2,
+      3,
+      4,
+      7,
+      8,
+      11,
+      12
+    ],
+    "selection": {
+      "primary": "three-seed mean validation AbsRel",
+      "relative_tie": 0.002,
+      "tie_break": [
+        "parameters",
+        "abs_rel"
+      ]
+    },
+    "candidates": {
+      "ES0": {
+        "name": "ES0",
+        "reference": "S0",
+        "base": "original",
+        "inputs": "frozen_features",
+        "architecture": "cnn",
+        "output": "additive",
+        "loss": "abs_rel",
+        "branches": [
+          "b12"
+        ],
+        "widths": [
+          16
+        ],
+        "drop_rgb": false,
+        "extra_inputs": [],
+        "fusion": "flat",
+        "grid_scales": [
+          1
+        ],
+        "source_map": {
+          "b12": "b12"
+        }
+      },
+      "EF2": {
+        "name": "EF2",
+        "reference": "F2",
+        "base": "original",
+        "inputs": "frozen_features",
+        "architecture": "cnn",
+        "output": "additive",
+        "loss": "abs_rel",
+        "branches": [
+          "b04",
+          "b12"
+        ],
+        "widths": [
+          8,
+          8
+        ],
+        "drop_rgb": false,
+        "extra_inputs": [],
+        "fusion": "flat",
+        "grid_scales": [
+          1,
+          1
+        ],
+        "source_map": {
+          "b04": "b04",
+          "b12": "b12"
+        }
+      },
+      "EF3": {
+        "name": "EF3",
+        "reference": "F3",
+        "base": "original",
+        "inputs": "frozen_features",
+        "architecture": "cnn",
+        "output": "additive",
+        "loss": "abs_rel",
+        "branches": [
+          "b04",
+          "b08",
+          "b12"
+        ],
+        "widths": [
+          6,
+          5,
+          5
+        ],
+        "drop_rgb": false,
+        "extra_inputs": [],
+        "fusion": "flat",
+        "grid_scales": [
+          1,
+          1,
+          1
+        ],
+        "source_map": {
+          "b04": "b04",
+          "b08": "b08",
+          "b12": "b12"
+        }
+      },
+      "EP2": {
+        "name": "EP2",
+        "reference": "P2",
+        "base": "original",
+        "inputs": "frozen_features",
+        "architecture": "cnn",
+        "output": "additive",
+        "loss": "abs_rel",
+        "branches": [
+          "b04",
+          "b12"
+        ],
+        "widths": [
+          8,
+          8
+        ],
+        "drop_rgb": false,
+        "extra_inputs": [],
+        "fusion": "progressive",
+        "grid_scales": [
+          1,
+          8
+        ],
+        "source_map": {
+          "b04": "b04",
+          "b12": "b12"
+        }
+      },
+      "EP3": {
+        "name": "EP3",
+        "reference": "P3",
+        "base": "original",
+        "inputs": "frozen_features",
+        "architecture": "cnn",
+        "output": "additive",
+        "loss": "abs_rel",
+        "branches": [
+          "b04",
+          "b08",
+          "b12"
+        ],
+        "widths": [
+          6,
+          5,
+          5
+        ],
+        "drop_rgb": false,
+        "extra_inputs": [],
+        "fusion": "progressive",
+        "grid_scales": [
+          1,
+          4,
+          8
+        ],
+        "source_map": {
+          "b04": "b04",
+          "b08": "b08",
+          "b12": "b12"
+        }
+      },
+      "ESS1": {
+        "name": "ESS1",
+        "reference": "SS1",
+        "fusion": "stylesketch",
+        "output": "additive",
+        "loss": "abs_rel",
+        "start_width": 32,
+        "widths": [
+          32,
+          24,
+          16
+        ],
+        "pairs": [
+          [
+            "b03",
+            "b04"
+          ],
+          [
+            "b07",
+            "b08"
+          ],
+          [
+            "b11",
+            "b12"
+          ]
+        ],
+        "channels": {
+          "init": 384,
+          "b03": 384,
+          "b04": 384,
+          "b07": 384,
+          "b08": 384,
+          "b11": 384,
+          "b12": 384
+        },
+        "source_map": {
+          "init": "b02",
+          "b03": "b03",
+          "b04": "b04",
+          "b07": "b07",
+          "b08": "b08",
+          "b11": "b11",
+          "b12": "b12"
+        }
+      }
+    }
+  },
+  "source_sha256": {
+    "configs/edge_association_split.json": "eba0794f81eaf80a34f1b3c358a298a4ac032357e58c1ce212b5201fcf14cb2d",
+    "configs/encoder_residual.json": "323b87b3462f8b81602ff601d52b422f5e83f0680e375d0d3b5de9a71e8efd00",
+    "docs/encoder_residual_plan.md": "f30d1f62cecb44366a36f7be556c2d60f494416bc361d3bfbebd615b09255072",
+    "scripts/part3_improvement/run_encoder_residual.py": "b3ef7d4644a93f4dcb1e29936b07b7e54481878901fa3122309d4f545483c851",
+    "src/p3_depth/adaptation_study/model.py": "e980b98e1f3761f5274d92822dfc69bce89a46527c5fc943f562feefcc27eddd",
+    "src/p3_depth/data/nyuv2.py": "712d14614738689ca3333d297894c620e27fb779e32f98ab282b228fac83f8c6",
+    "src/p3_depth/encoder_residual/__init__.py": "52fd01f008831243b2ce88dc530cb875e1c51cec660d2f5fbfe2101056a282e2",
+    "src/p3_depth/encoder_residual/common.py": "e86462d0f92c67e5159de8057dea7e359ef31f7c58e50e9a728dbf203f14dc0a",
+    "src/p3_depth/encoder_residual/data.py": "816301fdb8e2763fec22d679e9f3cf56bd88f28ad10f2258d10d5ed701a2469b",
+    "src/p3_depth/encoder_residual/model.py": "d9b00b2a96ca6310be557295663c3bbc2bee236a91c1142a5bcf0b6eee9b44da",
+    "src/p3_depth/encoder_residual/preflight.py": "acc3dafbcd4574ca61a958c91ba037e63a535844428a60f427dee47d8426dc3b",
+    "src/p3_depth/encoder_residual/training.py": "4401c8040aaad27470c591e8e2556eff059173f776962b830ec73e2618b05730",
+    "src/p3_depth/evaluation/__init__.py": "e1e48562c5d08b398a801b2ec52ba71bb5be4c3c26ff6b47c50f33dc96759810",
+    "src/p3_depth/evaluation/benchmark.py": "10a8b1657b76c06e8daea09fe6bf88277387294739e01c6326928df81b624193",
+    "src/p3_depth/evaluation/boundary.py": "760c87008a82971de1b3de3e5b40d792b55b455749642994f32b72c71713ec08",
+    "src/p3_depth/evaluation/course.py": "dae680a3446415548b53c7a74f5424f2d22097ea40f72ee03898fae3df11ebaf",
+    "src/p3_depth/evaluation/depth.py": "e2c0c1b533680f67077dd3dbcd9b00cd1cbdec8cf41b6fc0ce0b5ff3000f0433",
+    "src/p3_depth/evaluation/depth_edge_detectors.py": "0f48aeb368e487da0453e0b794444450345650641b8de3eb39b4a56c7391a4ea",
+    "src/p3_depth/evaluation/rgb_depth_edges.py": "1d67b1ed441005c29fe3878deed62fe6d7b37655459f0dc40288eab585e74e17",
+    "src/p3_depth/evaluation/stereo.py": "25179c54b6c0abf0a0e5f5371f908c4b7d7e91622a70aabb4f0e8c7511d258cc",
+    "src/p3_depth/evaluation/temporal.py": "10a1402d124a457173ae3ce62f2b66fc7c4c6042f056f636d7c54b87a53a27ee",
+    "src/p3_depth/models/runtime.py": "2d93b6074a2b524e5c3a96cb0034d7fd5cd26599d7b9d1b2d34860381325eb99",
+    "src/p3_depth/residual/__init__.py": "9a25f87fe0e69c0a353ecb858b8d9ffa08eeecd0b4a3dcc916870861e97bdaf6",
+    "src/p3_depth/residual/cache.py": "5af86d22282b99f86ab67af62ab71cb0d59c297b170b8cc21b18167bd99d5efd",
+    "src/p3_depth/residual/data.py": "d671f329e6148211c9b6e6f193a4284b6a7d2f4d1d17c9a8b41c293dc2709feb",
+    "src/p3_depth/residual/deployment.py": "0c424b006c03e339bcc7a0b2be824540e3eced2dda668bbb9b02adf7e88884d4",
+    "src/p3_depth/residual/edges.py": "b7d8853b656275bb72284d2b17af53cd33c8ac34ae621d978b247e0566b39ef0",
+    "src/p3_depth/residual/evaluation.py": "55015617f65dd2de8cdc95e5c7ba92569b7f5bde1217c2e4966d3fe986fdc27e",
+    "src/p3_depth/residual/final_evaluation.py": "842db143a6d08b5ac71dc4fc9c8c236c6ba86502ce446f46bb4772e4903eeb6d",
+    "src/p3_depth/residual/followup.py": "cfc4dce63c2f612f009a658cbcb4fbac22c073ba6224dbd138fa27cb0101fe19",
+    "src/p3_depth/residual/job_inputs.py": "ba6e5a99ddb26801943b9f521f3340e026a2eb5055d007a1365e16ea8596d811",
+    "src/p3_depth/residual/job_schedule.py": "d3c48eb7219bb7bf86cf3e3e7c735764af3f9278866c60ac210355b4fb9e4ec3",
+    "src/p3_depth/residual/jobs.py": "411e7cd9cc677489c0a1aebd12613c01ede87f729389bac8ea51ee462aa12937",
+    "src/p3_depth/residual/locking.py": "8745b86a25a2c10be806b3a248b77324739b239878f0ef6d8db45659d3811943",
+    "src/p3_depth/residual/model.py": "c4942301aa5c8b0a731b85f1452128cdec6a633bfd8f9ae2f93b5fa5e74ee828",
+    "src/p3_depth/residual/records.py": "4b86fbce54efa2ce916b9ad382b6256d6b3ce4bcc03e3e19604f1fa0138118ce",
+    "src/p3_depth/residual/selection.py": "cfe3325ebb9b9c3a57aa2fd4e5ece356a0ac5e322506cc1327dfbe2c8be5664a",
+    "src/p3_depth/residual/size_controls.py": "ecfc88c3915bdca9c571b9f6b248e2455856c0920f803a363d0efa520d3e4f09",
+    "src/p3_depth/residual/training.py": "521eeac82e072680f39f78221d4b2eed23daadb9022e7b1f386325af1720f36b",
+    "src/p3_depth/residual_inputs/evaluation.py": "c48694c890fc9beb448ba05908ad130f20ffacfa36d9a0039c1a440ba7cd00d9",
+    "src/p3_depth/residual_inputs/model.py": "ddd4288c79d57238426f7b7dce1cb12e416c73edbacebeddcc8880cd32423fd7",
+    "src/p3_depth/stylesketch_residual/common.py": "f908a617e72dcb4bc48c5b67c7ec0f6055e940a1dbf43b0cc488ff3a8f80cb03",
+    "src/p3_depth/stylesketch_residual/data.py": "27b5bc6d851f4da79f08e4b8c0d73c1b886065b35200748348f2da0f3e9c7fda",
+    "src/p3_depth/stylesketch_residual/low_memory.py": "e52e97a465ffcfc98793737862a162d32409b7a3578cd12ec7be9d6a3d746585",
+    "src/p3_depth/stylesketch_residual/model.py": "c9e2abb0ef55eef782624a0a6a256805c722c6a45a4b3e5a3af32cacf874f01a"
+  },
+  "source_archive_sha256": "6665100c6b791f192ebc7673f6bd2940ee1f3ecbb7b87e14c03e4d1b7261a9f9",
+  "feature_metadata_sha256": "138bbffd9e74ac3627d97ae0331fe1cf40049e8924d59aee9ea6f44630c5c478",
+  "reference_audit_sha256": "8c124ab0efc1b2eaa9adff7c6871702751de46c6c8a4201dc9a1788a1cab7a09",
+  "preflight_sha256": "f3fd40336847144b9cb743acf70898b0c855d4ad3c28bb1ea20208869afbbdea",
+  "parameters": {
+    "ES0": 30737,
+    "EF2": 30737,
+    "EF3": 30737,
+    "ESS1": 130601,
+    "EP2": 35377,
+    "EP3": 37697
+  },
+  "git_commit": "91866c7dc4c69bdaa1c492dbf1d452469523bea4",
+  "python": "3.13.5",
+  "torch": "2.10.0+cu128",
+  "cuda": "12.8",
+  "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+  "no_architecture_search": true
+}

@@ -1,0 +1,45 @@
+{
+  "scope": "ES0 vs S0; six predeclared validation images; seed320112; actual PNGs visually inspected",
+  "batch_note": "Batch1 replay for qualitative inspection; formal statistics use saved batch8 218-image scores.",
+  "cases": [
+    {
+      "sample_id": 5,
+      "observation": "桌面和部分背景的误差在 ES0 中比 S0 更高。轮廓大体保留原状，白板等缺失边界没有恢复；边界 F1 略升不能代替边界带深度误差。",
+      "figure": "visualizations/ES0_nyuv2_0005.png",
+      "figure_sha256": "1074f2c7a8822b8492c88ea00fcec8fe78714517ac51d75e277c392689a5ff83"
+    },
+    {
+      "sample_id": 598,
+      "observation": "ES0 的墙面、地面和桌面大区域误差低于 S0，但沙发与桌腿的细结构缺失仍存在；该图 AbsRel 改善而边界 F1 下降。",
+      "figure": "visualizations/ES0_nyuv2_0598.png",
+      "figure_sha256": "83bfcb8de02d0725649b576acb0a3cf86918429912250fd9e276a40ef620d09f"
+    },
+    {
+      "sample_id": 1440,
+      "observation": "ES0 比 S0 减轻墙面误差，但两者整体仍差于原始 B0。椅背和台面高误差保留，边界图变化很小。",
+      "figure": "visualizations/ES0_nyuv2_1440.png",
+      "figure_sha256": "4e65b2dd007946ab16a8933733fabfe5b5d5216cfd4d6aba62d66a08ca6f1884"
+    },
+    {
+      "sample_id": 226,
+      "observation": "ES0 减轻 S0 对远处背景的深度高估，人物和家具周围仍有大片高误差。枝条等细结构错配持续，边界 F1 基本不变。",
+      "figure": "visualizations/ES0_nyuv2_0226.png",
+      "figure_sha256": "8e0837ef882ef9f8186bb53af84bbc1cde0ca611651208af2e6aa1889c970fb2"
+    },
+    {
+      "sample_id": 246,
+      "observation": "ES0 将部分远处背景预测得更近，墙面、顶面和架子附近误差扩大；部分右侧区域改善不能抵消整体退步。",
+      "figure": "visualizations/ES0_nyuv2_0246.png",
+      "figure_sha256": "4dc261111640f410ba2743e6e91e8126ea7e80ad98e512344eb2e001b55aedad"
+    },
+    {
+      "sample_id": 80,
+      "observation": "ES0 的大区域误差略降，但按固定阈值检测到的架子边界比 S0 少，边界 F1 下降。三者均缺少大部分 GT 架子轮廓。",
+      "figure": "visualizations/ES0_nyuv2_0080.png",
+      "figure_sha256": "8a772c00142835f36d9286924825aeb4ce883d836471408c42e6f4f8d5f1339b"
+    }
+  ],
+  "conclusion": "整体均值退步，边界指标只有轻微均值收益且场景配对区间跨零；不以少量好图宣布改进。",
+  "causal_limit": "S0 init originates from encoder block3 branch plus decoder/camera conditioning; ES0 uses block12. Tap depth and capacity also differ.",
+  "review_data_sha256": "84621888a30d514e5845a4f1ddec4a22f68a5025bd3c91e454924ceb257c883f"
+}

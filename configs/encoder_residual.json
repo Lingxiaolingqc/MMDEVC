@@ -1,0 +1,276 @@
+{
+  "reference_output": "outputs/part3_improvement/fusion_lora_20261119",
+  "parent_config": "configs/residual_study.json",
+  "parent_output": "outputs/part3_improvement/residual_study_20261118",
+  "data": "data/nyuv2/nyu_depth_v2_labeled.mat",
+  "split": "configs/edge_association_split.json",
+  "feature_hw": [
+    240,
+    320
+  ],
+  "seeds": [
+    320112,
+    320113,
+    320114
+  ],
+  "training": {
+    "batch_size": 8,
+    "max_epochs": 80,
+    "learning_rate": 0.0003,
+    "minimum_learning_rate": 1e-05,
+    "weight_decay": 0.001,
+    "evaluate_every_epochs": 2,
+    "minimum_epochs": 24,
+    "patience_evaluations": 5,
+    "clip_gradient_norm": 1.0,
+    "gradient_loss_weight": 0.1,
+    "boundary_loss_weight": 2.0,
+    "amp": true,
+    "augmentation": "none"
+  },
+  "protocol": {
+    "crop_yx_half_open": [
+      45,
+      471,
+      41,
+      601
+    ],
+    "depth_range_m_inclusive": [
+      0.001,
+      10.0
+    ],
+    "selection_metric": "image_macro_abs_rel",
+    "boundary_relative_jump": 0.1,
+    "boundary_tolerance_px": 2,
+    "boundary_distance_cap_px": 10,
+    "boundary_band_radius_px": 2,
+    "test_history": "Test results were inspected in earlier project experiments; not a never-seen blind test."
+  },
+  "fixed_visual_sample_ids": [
+    5,
+    598,
+    1440,
+    226,
+    246,
+    80
+  ],
+  "study_id": "encoder_residual_20261125",
+  "output": "outputs/part3_improvement/encoder_residual_20261125",
+  "disk_inputs": "outputs/part3_improvement/stylesketch_20261120/disk_inputs",
+  "queue": [
+    "ES0",
+    "EF2",
+    "EF3",
+    "ESS1",
+    "EP2",
+    "EP3"
+  ],
+  "encoder_blocks": [
+    2,
+    3,
+    4,
+    7,
+    8,
+    11,
+    12
+  ],
+  "selection": {
+    "primary": "three-seed mean validation AbsRel",
+    "relative_tie": 0.002,
+    "tie_break": [
+      "parameters",
+      "abs_rel"
+    ]
+  },
+  "candidates": {
+    "ES0": {
+      "name": "ES0",
+      "reference": "S0",
+      "base": "original",
+      "inputs": "frozen_features",
+      "architecture": "cnn",
+      "output": "additive",
+      "loss": "abs_rel",
+      "branches": [
+        "b12"
+      ],
+      "widths": [
+        16
+      ],
+      "drop_rgb": false,
+      "extra_inputs": [],
+      "fusion": "flat",
+      "grid_scales": [
+        1
+      ],
+      "source_map": {
+        "b12": "b12"
+      }
+    },
+    "EF2": {
+      "name": "EF2",
+      "reference": "F2",
+      "base": "original",
+      "inputs": "frozen_features",
+      "architecture": "cnn",
+      "output": "additive",
+      "loss": "abs_rel",
+      "branches": [
+        "b04",
+        "b12"
+      ],
+      "widths": [
+        8,
+        8
+      ],
+      "drop_rgb": false,
+      "extra_inputs": [],
+      "fusion": "flat",
+      "grid_scales": [
+        1,
+        1
+      ],
+      "source_map": {
+        "b04": "b04",
+        "b12": "b12"
+      }
+    },
+    "EF3": {
+      "name": "EF3",
+      "reference": "F3",
+      "base": "original",
+      "inputs": "frozen_features",
+      "architecture": "cnn",
+      "output": "additive",
+      "loss": "abs_rel",
+      "branches": [
+        "b04",
+        "b08",
+        "b12"
+      ],
+      "widths": [
+        6,
+        5,
+        5
+      ],
+      "drop_rgb": false,
+      "extra_inputs": [],
+      "fusion": "flat",
+      "grid_scales": [
+        1,
+        1,
+        1
+      ],
+      "source_map": {
+        "b04": "b04",
+        "b08": "b08",
+        "b12": "b12"
+      }
+    },
+    "EP2": {
+      "name": "EP2",
+      "reference": "P2",
+      "base": "original",
+      "inputs": "frozen_features",
+      "architecture": "cnn",
+      "output": "additive",
+      "loss": "abs_rel",
+      "branches": [
+        "b04",
+        "b12"
+      ],
+      "widths": [
+        8,
+        8
+      ],
+      "drop_rgb": false,
+      "extra_inputs": [],
+      "fusion": "progressive",
+      "grid_scales": [
+        1,
+        8
+      ],
+      "source_map": {
+        "b04": "b04",
+        "b12": "b12"
+      }
+    },
+    "EP3": {
+      "name": "EP3",
+      "reference": "P3",
+      "base": "original",
+      "inputs": "frozen_features",
+      "architecture": "cnn",
+      "output": "additive",
+      "loss": "abs_rel",
+      "branches": [
+        "b04",
+        "b08",
+        "b12"
+      ],
+      "widths": [
+        6,
+        5,
+        5
+      ],
+      "drop_rgb": false,
+      "extra_inputs": [],
+      "fusion": "progressive",
+      "grid_scales": [
+        1,
+        4,
+        8
+      ],
+      "source_map": {
+        "b04": "b04",
+        "b08": "b08",
+        "b12": "b12"
+      }
+    },
+    "ESS1": {
+      "name": "ESS1",
+      "reference": "SS1",
+      "fusion": "stylesketch",
+      "output": "additive",
+      "loss": "abs_rel",
+      "start_width": 32,
+      "widths": [
+        32,
+        24,
+        16
+      ],
+      "pairs": [
+        [
+          "b03",
+          "b04"
+        ],
+        [
+          "b07",
+          "b08"
+        ],
+        [
+          "b11",
+          "b12"
+        ]
+      ],
+      "channels": {
+        "init": 384,
+        "b03": 384,
+        "b04": 384,
+        "b07": 384,
+        "b08": 384,
+        "b11": 384,
+        "b12": 384
+      },
+      "source_map": {
+        "init": "b02",
+        "b03": "b03",
+        "b04": "b04",
+        "b07": "b07",
+        "b08": "b08",
+        "b11": "b11",
+        "b12": "b12"
+      }
+    }
+  }
+}
