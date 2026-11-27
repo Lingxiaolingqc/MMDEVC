@@ -316,6 +316,57 @@ def render_fixed(out, study, complete, cfg):
     finally: pack.close()
 
 
+def render_incremental(out, study, complete, cfg):
+    """Compare adjacent completed data counts using the fixed first seed and saved arrays."""
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    from p3_depth.sample_efficiency.data import Pack
+    pack = Pack(ROOT)
+    destination = out / 'incremental_cases'; destination.mkdir(exist_ok=True)
+    seed = cfg['seeds'][0]
+    meta = {'seed': seed, 'selection': 'predeclared samples and first seed; adjacent sorted completed counts',
+            'checkpoint': 'best', 'files': [], 'prediction_sources': {}}
+    try:
+        for method in METHODS:
+            counts = sorted(n for n in cfg['counts'] if f'{method}_n{n}_seed{seed}' in complete)
+            for lower, higher in zip(counts, counts[1:]):
+                paths = {n: study/'runs'/f'{method}_n{n}_seed{seed}'/'best_validation'/'fixed_predictions.npz'
+                         for n in [lower, higher]}
+                predictions = {n: np.load(path) for n, path in paths.items()}
+                meta['prediction_sources'].update({path.relative_to(study).as_posix(): sha(path) for path in paths.values()})
+                try:
+                    for sample in cfg['fixed_visual_ids']:
+                        i = pack.positions([sample-1])[0]
+                        truth, mask = pack['truth'][i], pack['mask'][i]
+                        rgb = pack.file['images'][sample-1].transpose(2, 1, 0)
+                        methods = {'B0': pack['original'][i],
+                                   **{f'{method} n={n}': predictions[n][str(sample)] for n in [lower, higher]}}
+                        fig, axes = plt.subplots(2, 4, figsize=(12, 5.2), layout='constrained')
+                        axes[0, 0].imshow(rgb); axes[0, 0].set_title('RGB')
+                        axes[1, 0].imshow(np.ma.array(truth, mask=~mask), vmin=.001, vmax=10, cmap='viridis')
+                        axes[1, 0].set_title('GT depth [m]')
+                        for col, (label, pred) in enumerate(methods.items(), 1):
+                            pred = np.clip(pred, .001, 10)
+                            axes[0, col].imshow(pred, vmin=.001, vmax=10, cmap='viridis'); axes[0, col].set_title(label)
+                            error = np.abs(pred-truth) / np.maximum(truth, .001)
+                            axes[1, col].imshow(np.ma.array(error, mask=~mask), vmin=0, vmax=.5, cmap='magma')
+                            axes[1, col].set_title(f'AbsRel={error[mask].mean():.4f}')
+                        for ax in axes.flat: ax.axis('off')
+                        title = f'NYUv2 {sample:04d}; {method} {lower} to {higher} images; seed={seed}, best'
+                        fig.suptitle(title+'; depth 0-10m, relative error 0-0.5')
+                        filename = f'{method}_n{lower}_to_n{higher}_nyuv2_{sample:04d}.png'
+                        fig.savefig(destination/filename, dpi=150); plt.close(fig); meta['files'].append(filename)
+                        edge_filename = filename.replace('.png', '_edges.png')
+                        render_boundary_case(destination/edge_filename, rgb, truth, mask, methods, title)
+                        meta['files'].append(edge_filename)
+                finally:
+                    for prediction in predictions.values(): prediction.close()
+        write_json(destination/'index.json', meta)
+    finally:
+        pack.close()
+
+
 def render_boundary_case(path, rgb, truth, mask, methods, title):
     """Saved predictions only; exact same boundary definition as numerical scoring."""
     import matplotlib.pyplot as plt
@@ -395,7 +446,7 @@ def export_records(study, complete):
                  'command_failures.jsonl', 'environment.json', 'queue.json', 'queue_failures.jsonl',
                  'failures.jsonl', 'analysis_implementation_checks.json', 'resource_recording_update.json', 'shared_cache_costs.json', 'baseline/identity.json', 'baseline/metrics.json', 'baseline/per_image.csv',
                  'analysis/summary.json', 'analysis/per_seed.csv', 'analysis/paired_comparisons.json',
-                 'analysis/incremental_gains.json']
+                 'analysis/incremental_gains.json', 'analysis/incremental_cases/index.json']
     for label in complete:
         relatives += [f'runs/{label}/{f}' for f in ['result.json', 'config.json', 'history.json',
                       'attempts.jsonl', 'events.jsonl', 'startup_resources.jsonl', 'best_validation/metrics.json', 'best_validation/per_image.csv',
@@ -526,9 +577,12 @@ def render_test_cases(out, study, complete, cfg, frozen):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--render', action='store_true', help='Render fixed samples and curves from saved outputs (no inference)')
+    parser.add_argument('--render-increments', action='store_true', help='Render adjacent data-count comparisons of the same fixed samples/seed (no inference)')
     parser.add_argument('--export-records', action='store_true', help='Copy verified compact records to results/ for version control')
     parser.add_argument('--test', action='store_true', help='Analyze frozen 654-image test outputs; never run inference or choose checkpoints')
     args = parser.parse_args()
+    if args.test and args.render_increments:
+        parser.error('--render-increments currently renders development validation only')
     cfg = load(ROOT); check_freeze(ROOT); study = outdir(ROOT)
     if args.test:
         analyze_test(study,cfg,args.render,args.export_records)
@@ -581,6 +635,8 @@ def main():
     write_json(out / 'paired_comparisons.json', paired); write_json(out / 'incremental_gains.json', increments)
     if args.render:
         plots(out, complete, rows, baseline, cfg); convergence_plots(out,rows,baseline,cfg); render_fixed(out, study, complete, cfg)
+    if args.render_increments:
+        render_incremental(out, study, complete, cfg)
     if args.export_records:
         export_records(study, complete)
     print(json.dumps({'completed': len(complete), 'required': 72, 'output': str(out)}))
