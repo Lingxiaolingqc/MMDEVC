@@ -391,12 +391,12 @@ def export_records(study, complete):
     destination.mkdir(exist_ok=True)
     relatives = ['frozen.json', 'source.zip', 'subsets.json', 'data_audit.json', 'preflight.json',
                  'command_failures.jsonl', 'environment.json', 'queue.json', 'queue_failures.jsonl',
-                 'failures.jsonl', 'analysis_implementation_checks.json', 'baseline/identity.json', 'baseline/metrics.json', 'baseline/per_image.csv',
+                 'failures.jsonl', 'analysis_implementation_checks.json', 'resource_recording_update.json', 'baseline/identity.json', 'baseline/metrics.json', 'baseline/per_image.csv',
                  'analysis/summary.json', 'analysis/per_seed.csv', 'analysis/paired_comparisons.json',
                  'analysis/incremental_gains.json']
     for label in complete:
         relatives += [f'runs/{label}/{f}' for f in ['result.json', 'config.json', 'history.json',
-                      'attempts.jsonl', 'events.jsonl', 'best_validation/metrics.json', 'best_validation/per_image.csv',
+                      'attempts.jsonl', 'events.jsonl', 'startup_resources.jsonl', 'best_validation/metrics.json', 'best_validation/per_image.csv',
                       'final_validation/metrics.json', 'final_validation/per_image.csv']]
     relatives += [p.relative_to(study).as_posix() for p in (study/'analysis/visual_reviews').glob('*.json')]
     for relative in relatives:

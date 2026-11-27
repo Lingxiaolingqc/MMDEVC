@@ -9,7 +9,7 @@ import time
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'src'))
 from p3_depth.sample_efficiency.protocol import load,outdir,jobs,name,prepare,check_freeze,freeze
-from p3_depth.residual.records import write_json,append_json,now
+from p3_depth.residual.records import write_json,append_json,now,sha
 from p3_depth.residual.locking import study_lock
 
 def memory():
@@ -20,6 +20,29 @@ def memory():
     m=M();m.length=ctypes.sizeof(m)
     assert ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(m))
     return {'load_percent':m.load,'physical_available_gib':m.avail_phys/2**30,'commit_available_gib':m.avail_page/2**30}
+
+def record_startup_resources(job):
+    """Observational storage estimate only; never changes the frozen training recipe."""
+    import shutil
+    out=outdir(ROOT);cfg=load(ROOT);completed=[]
+    for result_path in (out/'runs').glob('*/result.json'):
+        result=json.loads(result_path.read_text())
+        if result['status']!='complete':continue
+        size=sum(p.stat().st_size for p in result_path.parent.rglob('*') if p.is_file())
+        completed.append({'job':name(result['job']),'method':result['job']['method'],'bytes':size})
+    same=[x['bytes'] for x in completed if x['method']==job['method']]
+    observed=max(same or [x['bytes'] for x in completed] or [0])
+    # A conservative planning allowance, not a claim about final file sizes.
+    allowance=max(256*2**20,2*observed)
+    remaining=len(jobs(cfg))-len(completed)
+    run=out/'runs'/name(job);run.mkdir(parents=True,exist_ok=True)
+    append_json(run/'startup_resources.jsonl',{
+        'at':now(),'job':name(job),'phase':'before_training_process_setup',
+        'process_id':os.getpid(),'memory':memory(),'free_disk_bytes':shutil.disk_usage(ROOT).free,
+        'estimated_new_job_allowance_bytes':allowance,
+        'remaining_incomplete_stages':remaining,'remaining_storage_allowance_bytes':allowance*remaining,
+        'estimate_basis':'max(256 MiB, twice largest completed same-method run, or any method if none); raw datasets and shared caches already resident; fixed previews only, no full prediction archive',
+        'completed_observed_bytes':completed,'runner_source_sha256':sha(Path(__file__))})
 
 def queue():
     import shutil
@@ -78,7 +101,9 @@ def main():
         job=dict(method=args.method,count=args.count,seed=args.seed)
         assert job in jobs(load(ROOT)),'Unknown frozen job'
         # Queue parent holds its own lock; child lock prevents direct duplicate workers.
-        with study_lock(out/'gpu_worker'):print(json.dumps(train(ROOT,job)),flush=True)
+        with study_lock(out/'gpu_worker'):
+            record_startup_resources(job)
+            print(json.dumps(train(ROOT,job)),flush=True)
     else:queue()
 
 if __name__=='__main__':
