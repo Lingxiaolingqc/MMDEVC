@@ -1,0 +1,843 @@
+{
+  "status": "reviewed_complete_group",
+  "at": "2026-11-27T08:46:03.657370+00:00",
+  "reviewer": "assistant directly inspected four updated plots; fixed image and checkpoint observations referenced separately",
+  "scope": "L200 all three seeds; full218 validation; matched L100 and R200, shared B0",
+  "files_reviewed": {
+    "analysis/visual_reviews/L_n200_three_seed/curves_n200.png": "0d87aa48dc7f5d889f363b573a7301892201c453883387987820c8e1fe103f71",
+    "analysis/visual_reviews/L_n200_three_seed/sample_efficiency.png": "7847f79338d301f9944a2c550077aa519efc14d5a213df6fd8d8939d98dece27",
+    "analysis/visual_reviews/L_n200_three_seed/convergence_steps.png": "e2a98c73b6f19c168fcdfe6140532e42510e4496adf962a72caf2d428552b0b7",
+    "analysis/visual_reviews/L_n200_three_seed/stopping_performance.png": "28ac170b4048d6a7665796bd1f2ec2c40727575775e4934820b88744c760d331"
+  },
+  "fixed_image_review": "analysis/visual_reviews/L_n200_seed320112.json",
+  "group": {
+    "count": 200,
+    "method": "L",
+    "completed_seeds": 3,
+    "complete_three_seeds": true,
+    "stable_seeds": 0,
+    "stable_final_metrics": {
+      "abs_rel": {
+        "n": 0,
+        "mean": null,
+        "sd": null
+      },
+      "rmse_m": {
+        "n": 0,
+        "mean": null,
+        "sd": null
+      },
+      "delta1": {
+        "n": 0,
+        "mean": null,
+        "sd": null
+      },
+      "boundary_f1": {
+        "n": 0,
+        "mean": null,
+        "sd": null
+      },
+      "boundary_band_abs_rel": {
+        "n": 0,
+        "mean": null,
+        "sd": null
+      }
+    },
+    "statistics": {
+      "parameters": {
+        "n": 3,
+        "mean": 73728.0,
+        "sd": 0.0
+      },
+      "best_step": {
+        "n": 3,
+        "mean": 933.3333333333334,
+        "sd": 493.28828623162474
+      },
+      "stop_step": {
+        "n": 3,
+        "mean": 1933.3333333333333,
+        "sd": 493.28828623162474
+      },
+      "stable_step": {
+        "n": 0,
+        "mean": null,
+        "sd": null
+      },
+      "target_0_10_step": {
+        "n": 3,
+        "mean": 166.66666666666666,
+        "sd": 115.47005383792515
+      },
+      "target_0_09_step": {
+        "n": 0,
+        "mean": null,
+        "sd": null
+      },
+      "exposures": {
+        "n": 3,
+        "mean": 15466.666666666666,
+        "sd": 3946.306289852998
+      },
+      "effective_epochs": {
+        "n": 3,
+        "mean": 77.33333333333333,
+        "sd": 19.73153144926499
+      },
+      "successful_updates": {
+        "n": 3,
+        "mean": 1931.3333333333333,
+        "sd": 494.0003373818011
+      },
+      "amp_skips": {
+        "n": 3,
+        "mean": 2.0,
+        "sd": 1.7320508075688772
+      },
+      "best_seconds": {
+        "n": 3,
+        "mean": 456.30596833326854,
+        "sd": 237.13844120342927
+      },
+      "stable_seconds": {
+        "n": 0,
+        "mean": null,
+        "sd": null
+      },
+      "stop_seconds": {
+        "n": 3,
+        "mean": 924.1444883665536,
+        "sd": 236.7302122862661
+      },
+      "total_seconds": {
+        "n": 3,
+        "mean": 968.5798327999655,
+        "sd": 237.47418320156916
+      },
+      "parent_lora_seconds": {
+        "n": 3,
+        "mean": 0.0,
+        "sd": 0.0
+      },
+      "total_with_parent_seconds": {
+        "n": 3,
+        "mean": 968.5798327999655,
+        "sd": 237.47418320156916
+      },
+      "parent_lora_steps": {
+        "n": 3,
+        "mean": 0.0,
+        "sd": 0.0
+      },
+      "total_with_parent_steps": {
+        "n": 3,
+        "mean": 1933.3333333333333,
+        "sd": 493.28828623162474
+      },
+      "best_with_parent_steps": {
+        "n": 3,
+        "mean": 933.3333333333334,
+        "sd": 493.28828623162474
+      },
+      "best_with_parent_seconds": {
+        "n": 3,
+        "mean": 456.30596833326854,
+        "sd": 237.13844120342927
+      },
+      "stable_with_parent_steps": {
+        "n": 0,
+        "mean": null,
+        "sd": null
+      },
+      "stable_with_parent_seconds": {
+        "n": 0,
+        "mean": null,
+        "sd": null
+      },
+      "pure_train_seconds": {
+        "n": 3,
+        "mean": 733.0927805022802,
+        "sd": 189.20068781849358
+      },
+      "selection_validation_seconds": {
+        "n": 3,
+        "mean": 190.3326705332535,
+        "sd": 47.42130395151412
+      },
+      "detailed_scoring_seconds": {
+        "n": 3,
+        "mean": 44.25794150005095,
+        "sd": 0.9687787889441297
+      },
+      "peak_allocated_mib": {
+        "n": 3,
+        "mean": 4019.6923828125,
+        "sd": 0.0
+      },
+      "best_abs_rel": {
+        "n": 3,
+        "mean": 0.093500144192853,
+        "sd": 0.001976613724749866
+      },
+      "best_rmse_m": {
+        "n": 3,
+        "mean": 0.4187114121962447,
+        "sd": 0.006864052623273852
+      },
+      "best_delta1": {
+        "n": 3,
+        "mean": 0.9189671925538963,
+        "sd": 0.005458428048529969
+      },
+      "best_boundary_f1": {
+        "n": 3,
+        "mean": 0.4704378158576891,
+        "sd": 0.00240709060782316
+      },
+      "best_boundary_band_abs_rel": {
+        "n": 3,
+        "mean": 0.15162067239219232,
+        "sd": 0.002563124288213851
+      },
+      "final_abs_rel": {
+        "n": 3,
+        "mean": 0.09414373290592067,
+        "sd": 0.00203083906797511
+      },
+      "final_rmse_m": {
+        "n": 3,
+        "mean": 0.419176444622051,
+        "sd": 0.008776441127768809
+      },
+      "final_delta1": {
+        "n": 3,
+        "mean": 0.9195645521959485,
+        "sd": 0.0029554721894605182
+      },
+      "final_boundary_f1": {
+        "n": 3,
+        "mean": 0.4190745511052137,
+        "sd": 0.07869429474311423
+      },
+      "final_boundary_band_abs_rel": {
+        "n": 3,
+        "mean": 0.15026765498154002,
+        "sd": 0.002252225754152281
+      },
+      "final_minus_best_abs_rel": {
+        "n": 3,
+        "mean": 0.0006435887130676841,
+        "sd": 0.00013668443310481298
+      },
+      "final_relative_degradation": {
+        "n": 3,
+        "mean": 0.006877561248175418,
+        "sd": 0.0014102686879300425
+      },
+      "post_best_evaluations": {
+        "n": 3,
+        "mean": 10.0,
+        "sd": 0.0
+      },
+      "post_best_max_abs_rel": {
+        "n": 3,
+        "mean": 0.09653927213057567,
+        "sd": 0.0021984553237628683
+      },
+      "late_loss_down_val_up_indicator": {
+        "n": 3,
+        "mean": 0.0,
+        "sd": 0.0
+      },
+      "recorded_attempt_wall_seconds": {
+        "n": 3,
+        "mean": 979.569005,
+        "sd": 236.34562076727167
+      },
+      "attempts_started": {
+        "n": 3,
+        "mean": 1.0,
+        "sd": 0.0
+      },
+      "attempts_with_recorded_end": {
+        "n": 3,
+        "mean": 1.0,
+        "sd": 0.0
+      },
+      "attempt_wall_time_complete": {
+        "n": 3,
+        "mean": 1.0,
+        "sd": 0.0
+      },
+      "target_0_10_confirmed_step": {
+        "n": 3,
+        "mean": 366.6666666666667,
+        "sd": 115.47005383792515
+      },
+      "target_0_10_confirmed_seconds": {
+        "n": 3,
+        "mean": 186.66859380000582,
+        "sd": 53.3790272874016
+      },
+      "target_0_09_confirmed_step": {
+        "n": 0,
+        "mean": null,
+        "sd": null
+      },
+      "target_0_09_confirmed_seconds": {
+        "n": 0,
+        "mean": null,
+        "sd": null
+      },
+      "inference_adaptation_parameters": {
+        "n": 3,
+        "mean": 73728.0,
+        "sd": 0.0
+      },
+      "attempt_wall_with_parent_seconds": {
+        "n": 3,
+        "mean": 979.569005,
+        "sd": 236.34562076727167
+      },
+      "attempt_wall_with_parent_complete": {
+        "n": 3,
+        "mean": 1.0,
+        "sd": 0.0
+      }
+    }
+  },
+  "increments": [
+    {
+      "method": "L",
+      "lower_count": 100,
+      "higher_count": 200,
+      "checkpoint": "best",
+      "seed_ids": [
+        320112,
+        320113,
+        320114
+      ],
+      "metrics": {
+        "abs_rel": {
+          "difference": -0.001776543087879366,
+          "seed_differences": [
+            -0.003746608167198493,
+            -0.003884263798397268,
+            0.0023012427019576632
+          ],
+          "scene_ci": [
+            -0.0047123291694684405,
+            0.0013331797308324396
+          ]
+        },
+        "rmse_m": {
+          "difference": 0.0023176522979812516,
+          "seed_differences": [
+            -0.006007970382830376,
+            -0.0034440242709983327,
+            0.016404951547772464
+          ],
+          "scene_ci": [
+            -0.010662559589591794,
+            0.015826553804662125
+          ]
+        },
+        "delta1": {
+          "difference": 0.007137787222827278,
+          "seed_differences": [
+            0.011366594059771471,
+            0.01339512610833195,
+            -0.0033483584996215872
+          ],
+          "scene_ci": [
+            -0.002174287901453314,
+            0.015164954734651058
+          ]
+        },
+        "boundary_f1": {
+          "difference": 0.010091562399554183,
+          "seed_differences": [
+            0.015523922180747463,
+            0.0033534330058300026,
+            0.011397332012085084
+          ],
+          "scene_ci": [
+            0.00490096627222083,
+            0.01520137940225935
+          ]
+        },
+        "boundary_band_abs_rel": {
+          "difference": 0.00011996351277301639,
+          "seed_differences": [
+            -0.00026673293919453523,
+            -0.003348690367424231,
+            0.003975313844937815
+          ],
+          "scene_ci": [
+            -0.0028595447285609536,
+            0.0034601553037815172
+          ]
+        }
+      }
+    },
+    {
+      "method": "L",
+      "lower_count": 100,
+      "higher_count": 200,
+      "checkpoint": "final",
+      "seed_ids": [
+        320112,
+        320113,
+        320114
+      ],
+      "metrics": {
+        "abs_rel": {
+          "difference": -0.0015441881421436466,
+          "seed_differences": [
+            -0.003689133184078813,
+            -0.0036574718826922607,
+            0.002714040640340136
+          ],
+          "scene_ci": [
+            -0.005072426132940672,
+            0.0019652233473375605
+          ]
+        },
+        "rmse_m": {
+          "difference": 0.0019471051359882562,
+          "seed_differences": [
+            -0.00418425653814019,
+            -0.005135280835698215,
+            0.015160852781803175
+          ],
+          "scene_ci": [
+            -0.011209426325921465,
+            0.015570391107019748
+          ]
+        },
+        "delta1": {
+          "difference": 0.008358855990171407,
+          "seed_differences": [
+            0.014722951624117799,
+            0.009889055279690369,
+            0.0004645610667060509
+          ],
+          "scene_ci": [
+            -0.00292963753142589,
+            0.020194123751586687
+          ]
+        },
+        "boundary_f1": {
+          "difference": -0.044840599907214125,
+          "seed_differences": [
+            -0.13148031816229458,
+            -0.00483848766080311,
+            0.0017970061014553184
+          ],
+          "scene_ci": [
+            -0.051223753104053645,
+            -0.039045284368331996
+          ]
+        },
+        "boundary_band_abs_rel": {
+          "difference": -0.0018750865023462824,
+          "seed_differences": [
+            -0.00456495207464475,
+            -0.0036787110669092363,
+            0.0026184036345151393
+          ],
+          "scene_ci": [
+            -0.004268895154279252,
+            0.000743182440778408
+          ]
+        }
+      }
+    }
+  ],
+  "paired": [
+    {
+      "count": 200,
+      "candidate": "L",
+      "reference": "B0",
+      "checkpoint": "best",
+      "seed_ids": [
+        320112,
+        320113,
+        320114
+      ],
+      "metrics": {
+        "abs_rel": {
+          "difference": -0.027345451927950914,
+          "seed_differences": [
+            -0.026706590244543384,
+            -0.02956248484305541,
+            -0.02576728069625393
+          ],
+          "scene_ci": [
+            -0.03959680692489798,
+            -0.015544873110090212
+          ]
+        },
+        "rmse_m": {
+          "difference": -0.056975781854122234,
+          "seed_differences": [
+            -0.055553379383147965,
+            -0.0644395971629144,
+            -0.050934369016304305
+          ],
+          "scene_ci": [
+            -0.10804069931272696,
+            -0.01467927998578665
+          ]
+        },
+        "delta1": {
+          "difference": 0.054151540230167966,
+          "seed_differences": [
+            0.05114505842393812,
+            0.06045220097342464,
+            0.05085736129314111
+          ],
+          "scene_ci": [
+            0.024971500441649776,
+            0.08400981467508753
+          ]
+        },
+        "boundary_f1": {
+          "difference": 0.019283036218248985,
+          "seed_differences": [
+            0.0198212216833749,
+            0.016652407439356035,
+            0.02137547953201602
+          ],
+          "scene_ci": [
+            0.01075187123244542,
+            0.02879649915613009
+          ]
+        },
+        "boundary_band_abs_rel": {
+          "difference": -0.03142641649437338,
+          "seed_differences": [
+            -0.03136198481310743,
+            -0.03402114917117908,
+            -0.028896115498833627
+          ],
+          "scene_ci": [
+            -0.042682752035757776,
+            -0.020406101813028984
+          ]
+        }
+      }
+    },
+    {
+      "count": 200,
+      "candidate": "L",
+      "reference": "B0",
+      "checkpoint": "final",
+      "seed_ids": [
+        320112,
+        320113,
+        320114
+      ],
+      "metrics": {
+        "abs_rel": {
+          "difference": -0.02670186321488322,
+          "seed_differences": [
+            -0.025905849784016038,
+            -0.029010126270032334,
+            -0.025189613590601307
+          ],
+          "scene_ci": [
+            -0.03986857764769243,
+            -0.013590145070364091
+          ]
+        },
+        "rmse_m": {
+          "difference": -0.05651074942831582,
+          "seed_differences": [
+            -0.051773040997711114,
+            -0.06663792227519834,
+            -0.05112128501203794
+          ],
+          "scene_ci": [
+            -0.11116526026721398,
+            -0.010531438661227938
+          ]
+        },
+        "delta1": {
+          "difference": 0.054748899872220064,
+          "seed_differences": [
+            0.0524975156750903,
+            0.058095688042628844,
+            0.05365349589894104
+          ],
+          "scene_ci": [
+            0.02052942977329241,
+            0.08840865274230024
+          ]
+        },
+        "boundary_f1": {
+          "difference": -0.032080228534226395,
+          "seed_differences": [
+            -0.12294857161216648,
+            0.013367900743686944,
+            0.013339985265800335
+          ],
+          "scene_ci": [
+            -0.04041100810516937,
+            -0.023342048998276195
+          ]
+        },
+        "boundary_band_abs_rel": {
+          "difference": -0.03277943390502569,
+          "seed_differences": [
+            -0.03446218419957018,
+            -0.03365526125959317,
+            -0.03022085625591373
+          ],
+          "scene_ci": [
+            -0.044034051264104486,
+            -0.020910297863644355
+          ]
+        }
+      }
+    },
+    {
+      "count": 200,
+      "candidate": "L",
+      "reference": "R",
+      "checkpoint": "best",
+      "seed_ids": [
+        320112,
+        320113,
+        320114
+      ],
+      "metrics": {
+        "abs_rel": {
+          "difference": -0.004195854723876237,
+          "seed_differences": [
+            -0.002935135227542779,
+            -0.006485636575508578,
+            -0.003166792368577357
+          ],
+          "scene_ci": [
+            -0.011263715597404548,
+            0.00264263254818332
+          ]
+        },
+        "rmse_m": {
+          "difference": -0.009965082989684857,
+          "seed_differences": [
+            -0.005586152445614687,
+            -0.019498204333842823,
+            -0.004810892189597059
+          ],
+          "scene_ci": [
+            -0.033918900452959005,
+            0.013584325208369018
+          ]
+        },
+        "delta1": {
+          "difference": -0.0013305944228059487,
+          "seed_differences": [
+            -0.006240001169094072,
+            0.005443786572646893,
+            -0.003195568671970665
+          ],
+          "scene_ci": [
+            -0.01372818621882546,
+            0.010799502917029748
+          ]
+        },
+        "boundary_f1": {
+          "difference": 0.010951831160950616,
+          "seed_differences": [
+            0.01001243036989332,
+            0.010468360439643424,
+            0.012374702673315105
+          ],
+          "scene_ci": [
+            0.003458408875108351,
+            0.01913798981787163
+          ]
+        },
+        "boundary_band_abs_rel": {
+          "difference": -0.0063761011558572875,
+          "seed_differences": [
+            -0.007090386834818889,
+            -0.007944698908036976,
+            -0.004093217724715996
+          ],
+          "scene_ci": [
+            -0.011435669244093786,
+            -0.0016855349256616077
+          ]
+        }
+      }
+    },
+    {
+      "count": 200,
+      "candidate": "L",
+      "reference": "R",
+      "checkpoint": "final",
+      "seed_ids": [
+        320112,
+        320113,
+        320114
+      ],
+      "metrics": {
+        "abs_rel": {
+          "difference": -0.004166345296032897,
+          "seed_differences": [
+            -0.0022076485330480003,
+            -0.0075696255175524635,
+            -0.0027217618374982266
+          ],
+          "scene_ci": [
+            -0.011231330526107657,
+            0.0028120050714240644
+          ]
+        },
+        "rmse_m": {
+          "difference": -0.01358254939250212,
+          "seed_differences": [
+            -0.003067777746035944,
+            -0.030056828027482906,
+            -0.007623042403987496
+          ],
+          "scene_ci": [
+            -0.03645683822774023,
+            0.01101507021388636
+          ]
+        },
+        "delta1": {
+          "difference": 0.0011123443002561757,
+          "seed_differences": [
+            -0.002715086389899027,
+            0.006657317759769627,
+            -0.0006051984691020734
+          ],
+          "scene_ci": [
+            -0.013479867665963095,
+            0.014357598806466386
+          ]
+        },
+        "boundary_f1": {
+          "difference": -0.03697516346586453,
+          "seed_differences": [
+            -0.12895546026938018,
+            0.011344679336877564,
+            0.006685290534909035
+          ],
+          "scene_ci": [
+            -0.04559702794988067,
+            -0.028700768954572985
+          ]
+        },
+        "boundary_band_abs_rel": {
+          "difference": -0.007120336555724737,
+          "seed_differences": [
+            -0.008820285467994413,
+            -0.00763874173277676,
+            -0.004901982466403037
+          ],
+          "scene_ci": [
+            -0.01216142507273176,
+            -0.0021525530272751177
+          ]
+        }
+      }
+    }
+  ],
+  "endpoint_drift": [
+    {
+      "count": 200,
+      "method": "L",
+      "seed_ids": [
+        320112,
+        320113,
+        320114
+      ],
+      "candidate": "final",
+      "reference": "best",
+      "metrics": {
+        "abs_rel": {
+          "difference": 0.0006435887130676838,
+          "seed_differences": [
+            0.0008007404605273445,
+            0.0005523585730230833,
+            0.0005776671056526242
+          ],
+          "scene_ci": [
+            -0.00102052244611028,
+            0.0024165026422386694
+          ]
+        },
+        "rmse_m": {
+          "difference": 0.00046503242580642277,
+          "seed_differences": [
+            0.003780338385436848,
+            -0.0021983251122839422,
+            -0.00018691599573363726
+          ],
+          "scene_ci": [
+            -0.005550708084096458,
+            0.007066178320434675
+          ]
+        },
+        "delta1": {
+          "difference": 0.0005973596420521071,
+          "seed_differences": [
+            0.0013524572511521731,
+            -0.002356512930795789,
+            0.0027961346057999398
+          ],
+          "scene_ci": [
+            -0.005949668539207475,
+            0.007318410266439532
+          ]
+        },
+        "boundary_f1": {
+          "difference": -0.05136326475247538,
+          "seed_differences": [
+            -0.14276979329554138,
+            -0.003284506695669093,
+            -0.008035494266215686
+          ],
+          "scene_ci": [
+            -0.05836360460467041,
+            -0.04495845312481194
+          ]
+        },
+        "boundary_band_abs_rel": {
+          "difference": -0.001353017410652312,
+          "seed_differences": [
+            -0.003100199386462754,
+            0.0003658879115859175,
+            -0.0013247407570800985
+          ],
+          "scene_ci": [
+            -0.003292097004691178,
+            0.0007114534013369062
+          ]
+        }
+      }
+    }
+  ],
+  "result_sources": {
+    "runs/L_n200_seed320112/result.json": "c1f08261c4fc470512cb5305ce383ce99ba342721a69a0b68450401228d7b369",
+    "runs/L_n200_seed320113/result.json": "965be8824ea653fce81c70040278b447ff23503464a824ddc02d779fd0f9c797",
+    "runs/L_n200_seed320114/result.json": "4c04165b92f2f61fd2e71926e69aea6e5d8edbbce3b5626f5a3cc3945a9506b8"
+  },
+  "conclusions": [
+    "L200 best AbsRel .093500 +/- .001977 versus L100 .095277 +/- .002556. Two matched seeds improve, third worsens by .002301. The pooled paired count change -.001777 has scene CI[-.004712,.001333]; evidence for an overall gain is inconclusive after the third seed. The earlier two-seed negative-only interval is explicitly superseded by this complete group.",
+    "Best boundary F1 improves in all three seeds: mean .470438 +/- .002407; L100-to200 change +.010092, scene CI[.004901,.015201]. Best boundary-band AbsRel is essentially unchanged on average (.151621 versus .151501), with opposite seed directions. Boundary detection and boundary-region depth accuracy are distinct outcomes.",
+    "Against matched R200, L200 best F1 is higher by .010952 and boundary-band AbsRel lower by .006376; their scene intervals exclude zero. Overall AbsRel is lower in all three seeds but its scene interval crosses zero; do not claim unqualified superiority.",
+    "Third seed320114 best .095078 at600, final .095656 at1600; F1 .472530 to .464495. Severe endpoint boundary degradation remains concentrated in seed320112 (.470976 to .328206), whereas seed320113/114 changes are smaller. All three results are retained; final-F1 mean .419075 +/- .078694 exposes this variability.",
+    "Validation curves plateau at different levels while training loss continues decreasing. All three early-stop without meeting the frozen terminal-stability criterion. None confirms .09; .10 confirmation steps are300,300,500. Faster threshold attainment or earlier stopping does not imply stable convergence.",
+    "Mean actual training-and-scoring time968.58seconds, mean1933.33 attempted updates, best-step mean933.33. LoRA uses4019.69MiB allocated GPU memory and73728 trainable parameters. Cached R timing excludes separately recorded shared extraction cost; these are observed runs, not isolated timing benchmarks.",
+    "The actual first-seed fixed images show mixed local gains and retained difficult branches; some scenes regress with more data. Its best/final edge disappearance was verified from raw predictions in the referenced review. No per-image visual claim is made for seeds320113/320114.",
+    "Scene intervals are conditional on the three trained seeds and descriptive without multiplicity correction; seed SD is reported separately.100-to200 also expands scene coverage100-to187. These are validation-stage observations, not new official test results."
+  ],
+  "completed_stages": 15,
+  "required_stages": 72
+}
