@@ -116,6 +116,15 @@ def flatten(result):
     row['attempts_started'] = sum(e['event'] == 'started' for e in events)
     row['attempts_with_recorded_end'] = len(durations)
     row['attempt_wall_time_complete'] = row['attempts_started'] == len(durations)
+    # A three-point target window starts before it can be confirmed online.
+    for threshold, prefix in [('0.1','target_0_10'),('0.09','target_0_09')]:
+        first = cv['targets'][threshold]
+        confirm = None
+        if first is not None:
+            index = next(i for i,h in enumerate(history) if h['step']==first)
+            confirm = history[index+2]['step']
+        row[prefix+'_confirmed_step'] = confirm
+        row[prefix+'_confirmed_seconds'] = time_at(history,confirm)
     return row
 
 
@@ -146,6 +155,16 @@ def pair_stats(candidate, reference, bootstrap=2000):
                           'paired_seed_differences': differences.mean(axis=1).tolist(),
                           'paired_seed_summary': mean_sd(differences.mean(axis=1).tolist()),
                           'scene_bootstrap_95_ci': np.quantile(samples, [.025, .975]).tolist()}
+        lower_is_better = metric not in ['delta1','boundary_f1']
+        improvement = -average if lower_is_better else average
+        result[metric]['paired_image_distribution'] = {
+            'images_improved':int((improvement>0).sum()), 'images_worsened':int((improvement<0).sum()),
+            'images_exactly_tied':int((improvement==0).sum()), 'median_signed_difference':float(np.median(average)),
+            'selection_rule':'rank paired image-macro differences averaged across matched seeds; descriptive, never used for training',
+            'largest_improvement_cases':[{'sample_id':ids[i],'scene':candidate[0][ids[i]]['scene'],'signed_difference':float(average[i])}
+                                         for i in [i for i in np.argsort(-improvement) if improvement[i]>0][:3]],
+            'largest_regression_cases':[{'sample_id':ids[i],'scene':candidate[0][ids[i]]['scene'],'signed_difference':float(average[i])}
+                                        for i in [i for i in np.argsort(improvement) if improvement[i]<0][:3]]}
     return {'seeds': len(candidate), 'scenes': len(groups), 'images': len(ids), 'metrics': result,
             'bootstrap': {'replicates': bootstrap, 'seed': 320119,
                           'estimand': 'image-macro paired difference, averaged across available paired training seeds',
@@ -287,10 +306,38 @@ def render_fixed(out, study, complete, cfg):
                     fig.suptitle(f'NYUv2 {sample:04d}; n={count}, seed={seed}, best; depth 0–10m, relative error 0–0.5')
                     filename = f'n{count}_{"".join(available)}_nyuv2_{sample:04d}.png'
                     fig.savefig(destination / filename, dpi=150); plt.close(fig); meta['files'].append(filename)
+                    edge_filename = filename.replace('.png','_edges.png')
+                    render_boundary_case(destination/edge_filename, rgb, truth, mask, methods,
+                                         f'NYUv2 {sample:04d}; n={count}, seed={seed}, best')
+                    meta['files'].append(edge_filename)
             finally:
                 for value in predictions.values(): value.close()
         write_json(destination / 'index.json', meta)
     finally: pack.close()
+
+
+def render_boundary_case(path, rgb, truth, mask, methods, title):
+    """Saved predictions only; exact same boundary definition as numerical scoring."""
+    import matplotlib.pyplot as plt
+    from p3_depth.evaluation.boundary import boundary_masks, evaluate_boundary
+    from p3_depth.evaluation.rgb_depth_edges import near_edges
+    _,_,gt_edges,_=boundary_masks(truth,truth,mask,mask)
+    background=rgb.astype(np.float32)/255*.4
+    fig,axes=plt.subplots(1,len(methods)+1,figsize=(3*(len(methods)+1),3.5),layout='constrained')
+    gt_view=background.copy();gt_view[gt_edges]=[1,1,1]
+    axes[0].imshow(gt_view);axes[0].set_title('GT discontinuities (white)')
+    for ax,(method,pred) in zip(axes[1:],methods.items()):
+        clipped=np.clip(pred,.001,10);valid=np.isfinite(clipped)&(clipped>0)
+        _,_,gt,pred_edges=boundary_masks(clipped,truth,mask,valid)
+        matched=pred_edges&near_edges(gt,2)
+        missed=gt&~near_edges(pred_edges,2)
+        wrong=pred_edges&~near_edges(gt,2)
+        display=background.copy();display[missed]=[1,.15,.15];display[matched]=[0,1,1];display[wrong]=[1,.85,0]
+        score=evaluate_boundary(clipped,truth,mask,valid)['f1']
+        ax.imshow(display);ax.set_title(method+f' F1={score:.3f}' if score is not None else method+' F1 undefined')
+    for ax in axes:ax.axis('off')
+    fig.suptitle(title+'\nRed: missed GT; cyan: matched prediction; yellow: unmatched prediction (2px tolerance)',fontsize=10)
+    fig.savefig(path,dpi=180);plt.close(fig)
 
 
 def convergence_plots(out, rows, baseline, cfg):
@@ -522,6 +569,7 @@ def main():
                         'Elapsed times on this laptop are observational; not isolated speed benchmarks.',
                         'Recorded attempt wall time includes ended failures and setup; missing end events are explicitly flagged. Resumed training-clock totals can omit work lost after the last checkpoint.',
                         'Targets/stability are predefined operational criteria, not mathematical convergence.',
+                        'target_*_step is the start of the first qualifying three-evaluation window; target_*_confirmed_step is when its third evaluation finishes.',
                         '100 to 200 images increases scene coverage from 100 to 187 scenes as well as image count.',
                         'This file contains no new official test evaluation.']}
     write_json(out / 'summary.json', report); save_csv(out / 'per_seed.csv', rows)
