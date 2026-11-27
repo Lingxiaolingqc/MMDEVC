@@ -514,6 +514,9 @@ def export_records(study, complete):
                       'final_validation/metrics.json', 'final_validation/per_image.csv']]
     relatives += [p.relative_to(study).as_posix() for p in (study/'analysis/visual_reviews').glob('*.json')]
     relatives += [p.relative_to(study).as_posix() for p in (study/'analysis/checkpoint_cases').glob('*/index.json')]
+    # Keep compact recovery evidence even while its resumed run is unfinished.
+    # Checkpoint backups and raw logs remain local.
+    relatives += [p.relative_to(study).as_posix() for p in (study/'runs').glob('*/recovery_*/recovery.json')]
     for relative in relatives:
         source = study/relative
         if not source.exists(): continue

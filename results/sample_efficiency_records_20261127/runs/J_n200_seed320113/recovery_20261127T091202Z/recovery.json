@@ -1,0 +1,39 @@
+{
+  "at": "2026-11-27T09:12:02.368146+00:00",
+  "reason": "WinError5 on atomic history mirror replacement; process exited",
+  "cause": "File replacement denied; owning lock not identified. OneDrive or reader sharing are possible, not established.",
+  "job": {
+    "method": "J",
+    "count": 200,
+    "seed": 320113
+  },
+  "authoritative_resume_step": 1000,
+  "old_history_step": 900,
+  "best_step": 1000,
+  "best_abs_rel": 0.0934877972130148,
+  "resume_contains_all_required_state": true,
+  "pending_history_equals_checkpoint_history": true,
+  "freeze_verified": true,
+  "backup_files": {
+    "resume.pt": "0e27e3479ffc327b6815401a61a66c0a31402c3be88428924d2f35b740f9cf07",
+    "best.pt": "63a05e46ea1d9a99c51a8d96c21941a3066ab4920ad84cc1fe43c019521d63e3",
+    "status.json": "74c6cd05037469a91af1180dd7f4efd38019b9fb0237a469a127e3fe413375fe",
+    "history.json": "19e7276d89911f39cbd1602d78cb18b5f3fd5c207a9b061727a9863cc31a3ad5",
+    "history.json.pending": "4b8414604385d07e72de67842a524d261e4cd09f5008250a4697bebff61ba714",
+    "epochs.jsonl": "f65640043d0fd043e7e5c6bfd0a4c8107d6bac88b009e31a21c5470d5a4a7c19",
+    "attempts.jsonl": "8dd82b3404b81dcccfc49ea4533d8dd20084a090078a71196be7fb1dc6993ff9"
+  },
+  "action": "Preserve failure and checkpoints; repair history mirror from matching pending snapshot; restart unchanged queue from authoritative resume. No numerical recipe changes.",
+  "observer_update": {
+    "scope": "assistant live polling only, outside numerical source and frozen training process",
+    "file_share": "ReadWrite | Delete",
+    "reason": "Permit atomic history/progress/queue replacements while monitoring; previous reader sharing might have interfered but cause is not proven"
+  },
+  "restart": {
+    "queue_launcher_pid": 92028,
+    "run_launcher_pid": 42468,
+    "recorded_resume_event": "2026-11-27T09:12:55.438348+00:00",
+    "completed_step": 1000,
+    "training_configuration_changed": false
+  }
+}
