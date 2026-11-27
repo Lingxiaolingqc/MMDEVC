@@ -218,6 +218,23 @@ def comparisons(complete, baseline, cfg):
     return output, increments
 
 
+def checkpoint_drift(complete, cfg):
+    """Paired descriptive differences at stopping, relative to the AbsRel-selected best."""
+    output = []
+    for count in cfg['counts']:
+        for method in METHODS:
+            seeds = [seed for seed in cfg['seeds'] if f'{method}_n{count}_seed{seed}' in complete]
+            if not seeds:
+                continue
+            selected = [complete[f'{method}_n{count}_seed{seed}'] for seed in seeds]
+            output.append({'count': count, 'method': method, 'seed_ids': seeds,
+                           'complete_three_seeds': len(seeds) == 3,
+                           'candidate': 'final', 'reference': 'best',
+                           'interpretation': 'Validation-selected best; descriptive endpoint drift, not an independent estimate of checkpoint-selection benefit. No boundary metrics were monitored between these endpoints.',
+                           **pair_stats([r['rows']['final'] for r in selected], [r['rows']['best'] for r in selected])})
+    return output
+
+
 def plots(out, complete, rows, baseline, cfg, phase='Validation'):
     import matplotlib
     matplotlib.use('Agg')
@@ -367,6 +384,50 @@ def render_incremental(out, study, complete, cfg):
         pack.close()
 
 
+def render_checkpoints(out, study, complete, cfg, label):
+    """Inspect a completed run's predeclared best/final outputs without inference."""
+    if label not in complete:
+        raise ValueError(f'Checkpoint comparison requires a completed study run: {label}')
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    from p3_depth.sample_efficiency.data import Pack
+    pack = Pack(ROOT)
+    destination = out/'checkpoint_cases'/label; destination.mkdir(parents=True, exist_ok=True)
+    paths = {k: study/'runs'/label/(k+'_validation')/'fixed_predictions.npz' for k in ['best', 'final']}
+    predictions = {k: np.load(path) for k, path in paths.items()}
+    meta = {'job': complete[label]['job'], 'selection': 'predeclared fixed sample IDs; both saved best and final',
+            'files': [], 'prediction_sources': {p.relative_to(study).as_posix(): sha(p) for p in paths.values()}}
+    try:
+        for sample in cfg['fixed_visual_ids']:
+            i = pack.positions([sample-1])[0]
+            truth, mask = pack['truth'][i], pack['mask'][i]
+            rgb = pack.file['images'][sample-1].transpose(2, 1, 0)
+            methods = {'B0': pack['original'][i], **{k: v[str(sample)] for k, v in predictions.items()}}
+            fig, axes = plt.subplots(2, 4, figsize=(12, 5.2), layout='constrained')
+            axes[0, 0].imshow(rgb); axes[0, 0].set_title('RGB')
+            axes[1, 0].imshow(np.ma.array(truth, mask=~mask), vmin=.001, vmax=10, cmap='viridis')
+            axes[1, 0].set_title('GT depth [m]')
+            for col, (checkpoint, pred) in enumerate(methods.items(), 1):
+                pred = np.clip(pred, .001, 10)
+                axes[0, col].imshow(pred, vmin=.001, vmax=10, cmap='viridis'); axes[0, col].set_title(checkpoint)
+                error = np.abs(pred-truth) / np.maximum(truth, .001)
+                axes[1, col].imshow(np.ma.array(error, mask=~mask), vmin=0, vmax=.5, cmap='magma')
+                axes[1, col].set_title(f'AbsRel={error[mask].mean():.4f}')
+            for ax in axes.flat: ax.axis('off')
+            title = f'NYUv2 {sample:04d}; {label}; best versus final'
+            fig.suptitle(title+'; depth 0-10m, relative error 0-0.5')
+            filename = f'nyuv2_{sample:04d}.png'
+            fig.savefig(destination/filename, dpi=150); plt.close(fig); meta['files'].append(filename)
+            edge_filename = filename.replace('.png', '_edges.png')
+            render_boundary_case(destination/edge_filename, rgb, truth, mask, methods, title)
+            meta['files'].append(edge_filename)
+        write_json(destination/'index.json', meta)
+    finally:
+        for prediction in predictions.values(): prediction.close()
+        pack.close()
+
+
 def render_boundary_case(path, rgb, truth, mask, methods, title):
     """Saved predictions only; exact same boundary definition as numerical scoring."""
     import matplotlib.pyplot as plt
@@ -446,12 +507,13 @@ def export_records(study, complete):
                  'command_failures.jsonl', 'environment.json', 'queue.json', 'queue_failures.jsonl',
                  'failures.jsonl', 'analysis_implementation_checks.json', 'resource_recording_update.json', 'shared_cache_costs.json', 'baseline/identity.json', 'baseline/metrics.json', 'baseline/per_image.csv',
                  'analysis/summary.json', 'analysis/per_seed.csv', 'analysis/paired_comparisons.json',
-                 'analysis/incremental_gains.json', 'analysis/incremental_cases/index.json']
+                 'analysis/incremental_gains.json', 'analysis/checkpoint_drift.json', 'analysis/incremental_cases/index.json']
     for label in complete:
         relatives += [f'runs/{label}/{f}' for f in ['result.json', 'config.json', 'history.json',
                       'attempts.jsonl', 'events.jsonl', 'startup_resources.jsonl', 'best_validation/metrics.json', 'best_validation/per_image.csv',
                       'final_validation/metrics.json', 'final_validation/per_image.csv']]
     relatives += [p.relative_to(study).as_posix() for p in (study/'analysis/visual_reviews').glob('*.json')]
+    relatives += [p.relative_to(study).as_posix() for p in (study/'analysis/checkpoint_cases').glob('*/index.json')]
     for relative in relatives:
         source = study/relative
         if not source.exists(): continue
@@ -578,11 +640,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--render', action='store_true', help='Render fixed samples and curves from saved outputs (no inference)')
     parser.add_argument('--render-increments', action='store_true', help='Render adjacent data-count comparisons of the same fixed samples/seed (no inference)')
+    parser.add_argument('--render-checkpoints', metavar='RUN_LABEL', help='Render saved best/final fixed samples for one completed development run (no inference)')
     parser.add_argument('--export-records', action='store_true', help='Copy verified compact records to results/ for version control')
     parser.add_argument('--test', action='store_true', help='Analyze frozen 654-image test outputs; never run inference or choose checkpoints')
     args = parser.parse_args()
-    if args.test and args.render_increments:
-        parser.error('--render-increments currently renders development validation only')
+    if args.test and (args.render_increments or args.render_checkpoints):
+        parser.error('--render-increments and --render-checkpoints currently render development validation only')
     cfg = load(ROOT); check_freeze(ROOT); study = outdir(ROOT)
     if args.test:
         analyze_test(study,cfg,args.render,args.export_records)
@@ -633,10 +696,13 @@ def main():
                         'This file contains no new official test evaluation.']}
     write_json(out / 'summary.json', report); save_csv(out / 'per_seed.csv', rows)
     write_json(out / 'paired_comparisons.json', paired); write_json(out / 'incremental_gains.json', increments)
+    write_json(out / 'checkpoint_drift.json', checkpoint_drift(complete, cfg))
     if args.render:
         plots(out, complete, rows, baseline, cfg); convergence_plots(out,rows,baseline,cfg); render_fixed(out, study, complete, cfg)
     if args.render_increments:
         render_incremental(out, study, complete, cfg)
+    if args.render_checkpoints:
+        render_checkpoints(out, study, complete, cfg, args.render_checkpoints)
     if args.export_records:
         export_records(study, complete)
     print(json.dumps({'completed': len(complete), 'required': 72, 'output': str(out)}))
