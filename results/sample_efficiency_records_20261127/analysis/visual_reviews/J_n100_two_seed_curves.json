@@ -1,0 +1,221 @@
+{
+  "status": "reviewed_partial_group",
+  "at": "2026-11-27T06:32:39.564903+00:00",
+  "reviewer": "assistant directly inspected the updated two-seed Joint training/validation curves",
+  "scope": "100 fitting images; two completed J seeds320112/320113; full218 validation; paired comparisons use the same two seeds of R/L",
+  "files_reviewed": {
+    "analysis/visual_reviews/J_n100_two_seed_curves/curves_n100.png": "576a3460026e396fd462f16e71147633cedc3aaaf8d5ce67a5083e8612b36fcb"
+  },
+  "fixed_image_review": "analysis/visual_reviews/J_n100_seed320112.json",
+  "result_sources": {
+    "runs/J_n100_seed320112/result.json": "37f53d0c02732258cfb3e241a000aecc6cf9e80a0cee158f7da377aff6e9cc07",
+    "runs/J_n100_seed320113/result.json": "a851daf733d20db8754a0d1520755ec2927d83cf674e7bf7716cd54c078688d1"
+  },
+  "group_metrics": {
+    "best_abs_rel": {
+      "n": 2,
+      "mean": 0.09857128409223892,
+      "sd": 0.0005826200681630868
+    },
+    "best_rmse_m": {
+      "n": 2,
+      "mean": 0.4269334997219597,
+      "sd": 0.001588815655735293
+    },
+    "best_delta1": {
+      "n": 2,
+      "mean": 0.9046062883416708,
+      "sd": 0.005661957875864224
+    },
+    "best_boundary_f1": {
+      "n": 2,
+      "mean": 0.4540175006200121,
+      "sd": 0.0014016661149680956
+    },
+    "best_boundary_band_abs_rel": {
+      "n": 2,
+      "mean": 0.15431264756226992,
+      "sd": 0.0030097963355403957
+    },
+    "final_abs_rel": {
+      "n": 2,
+      "mean": 0.09883971946499223,
+      "sd": 0.0002471021451974755
+    },
+    "final_boundary_f1": {
+      "n": 2,
+      "mean": 0.4444023074829132,
+      "sd": 0.009885358564705298
+    }
+  },
+  "convergence": [
+    {
+      "seed": "320112",
+      "best_step": "1300",
+      "stop_step": "2300",
+      "stable_step": "",
+      "target_0_10_step": "500",
+      "target_0_10_confirmed_step": "700",
+      "amp_skips": "2",
+      "total_seconds": "1287.4484231998213"
+    },
+    {
+      "seed": "320113",
+      "best_step": "800",
+      "stop_step": "1800",
+      "stable_step": "",
+      "target_0_10_step": "1600",
+      "target_0_10_confirmed_step": "1800",
+      "amp_skips": "1",
+      "total_seconds": "996.3790042998735"
+    }
+  ],
+  "paired_best": [
+    {
+      "candidate": "J",
+      "reference": "B0",
+      "seed_ids": [
+        320112,
+        320113
+      ],
+      "metrics": {
+        "abs_rel": {
+          "difference": -0.02227431202856498,
+          "scene_ci": [
+            -0.03389577642305966,
+            -0.01166665669307033
+          ]
+        },
+        "rmse_m": {
+          "difference": -0.048753694328407204,
+          "scene_ci": [
+            -0.09948385600577773,
+            -0.007665097756131098
+          ]
+        },
+        "delta1": {
+          "difference": 0.03979063601794252,
+          "scene_ci": [
+            0.016454799609043332,
+            0.0632234177735281
+          ]
+        },
+        "boundary_f1": {
+          "difference": 0.002862720980572026,
+          "scene_ci": [
+            -0.006889986967094727,
+            0.012716466755956259
+          ]
+        },
+        "boundary_band_abs_rel": {
+          "difference": -0.02873444132429578,
+          "scene_ci": [
+            -0.03848292962057761,
+            -0.018882853092575334
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "J",
+      "reference": "R",
+      "seed_ids": [
+        320112,
+        320113
+      ],
+      "metrics": {
+        "abs_rel": {
+          "difference": -0.0021795352660195382,
+          "scene_ci": [
+            -0.008909390150451177,
+            0.004473030159621476
+          ]
+        },
+        "rmse_m": {
+          "difference": -0.017253877784055925,
+          "scene_ci": [
+            -0.03864389891719734,
+            0.006146353862130779
+          ]
+        },
+        "delta1": {
+          "difference": -0.00966660052055452,
+          "scene_ci": [
+            -0.024171819525848265,
+            0.006484364380598711
+          ]
+        },
+        "boundary_f1": {
+          "difference": -0.00468939752308159,
+          "scene_ci": [
+            -0.014056717327089617,
+            0.004856594929205757
+          ]
+        },
+        "boundary_band_abs_rel": {
+          "difference": -0.005471965919428467,
+          "scene_ci": [
+            -0.010023316276979713,
+            -0.0012568840996334293
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "J",
+      "reference": "L",
+      "seed_ids": [
+        320112,
+        320113
+      ],
+      "metrics": {
+        "abs_rel": {
+          "difference": 0.002044789532436536,
+          "scene_ci": [
+            -7.849292796839412e-05,
+            0.0041935067300393715
+          ]
+        },
+        "rmse_m": {
+          "difference": 0.006516796617709626,
+          "scene_ci": [
+            -0.0013171938014109102,
+            0.014136011039138648
+          ]
+        },
+        "delta1": {
+          "difference": -0.0036271335966871565,
+          "scene_ci": [
+            -0.01112418671821381,
+            0.004024774265921999
+          ]
+        },
+        "boundary_f1": {
+          "difference": -0.005935415987504708,
+          "scene_ci": [
+            -0.011633530163869883,
+            -0.0005669886194747631
+          ]
+        },
+        "boundary_band_abs_rel": {
+          "difference": 0.002149414014538091,
+          "scene_ci": [
+            -0.0003041480997942342,
+            0.004394290600756544
+          ]
+        }
+      }
+    }
+  ],
+  "conclusions": [
+    "Joint seed320113 best AbsRel .098983 is worse than matched L .095167, as is its macro boundary F1 .453026 versus .464454. The first Joint seed was also slightly worse in these metrics. No additive benefit over L is demonstrated by the first two seeds.",
+    "For the matched two-seed mean, J-L AbsRel +.002045 has a descriptive scene interval that narrowly crosses zero. J-L macro boundary F1 -.005935 has an interval below zero. Neither statement is a completed three-seed conclusion.",
+    "Both Joint curves show decreasing training loss with an oscillating validation plateau. This supports recording a generalization gap, not attributing it to a specific gradient conflict without an experiment.",
+    "Seed320113 raw best occurs800; significant-improvement patience ends1800. Despite final AbsRel remaining close to best (.099014 versus .098983), final boundary F1 degrades from.453026 to.437412 and is below B0 .451155. Early-stop/best selection monitors AbsRel, not F1.",
+    "The .10 target for seed320113 is first sustained at1600/1700/1800 and confirmed1800. Its earlier single best does not count as target attainment. Stable-at-end remains unmet for both J seeds.",
+    "These are outcomes of the frozen common recipe, not a claim that jointly training these modules can never help. No learning rate, architecture or early-stop rule is retuned based on these results.",
+    "Predeclared fixed-image observations remain those of seed320112; no new image inspection of seed320113 is claimed. Stage, other sample counts and official test remain pending."
+  ],
+  "completed_stages": 8,
+  "required_stages": 72
+}
