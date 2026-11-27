@@ -391,7 +391,7 @@ def export_records(study, complete):
     destination.mkdir(exist_ok=True)
     relatives = ['frozen.json', 'source.zip', 'subsets.json', 'data_audit.json', 'preflight.json',
                  'command_failures.jsonl', 'environment.json', 'queue.json', 'queue_failures.jsonl',
-                 'failures.jsonl', 'analysis_implementation_checks.json', 'resource_recording_update.json', 'baseline/identity.json', 'baseline/metrics.json', 'baseline/per_image.csv',
+                 'failures.jsonl', 'analysis_implementation_checks.json', 'resource_recording_update.json', 'shared_cache_costs.json', 'baseline/identity.json', 'baseline/metrics.json', 'baseline/per_image.csv',
                  'analysis/summary.json', 'analysis/per_seed.csv', 'analysis/paired_comparisons.json',
                  'analysis/incremental_gains.json']
     for label in complete:
@@ -556,11 +556,14 @@ def main():
     base_rows = {r['sample_id']: r for r in csv_rows(study / 'baseline' / 'per_image.csv')}
     paired, increments = comparisons(complete, base_rows, cfg)
     feature_metadata = read(ROOT / cfg['features'] / 'metadata.json')
+    cache_cost_record = study/'shared_cache_costs.json'
     report = {'at': now(), 'phase': 'development_validation', 'completed': len(complete), 'required': 72,
               'pending': pending, 'baseline': baseline, 'groups': groups,
               'freeze_sha256': sha(study / 'frozen.json'), 'analysis_script_sha256': sha(Path(__file__)),
               'shared_cache_cost': {'feature_extraction_seconds': feature_metadata['elapsed_seconds'],
                                     'scope': 'Historical shared 795-image seven-feature extraction; includes more branches than F3 and is not a dedicated R benchmark',
+                                    'detailed_cost_record': 'shared_cache_costs.json' if cache_cost_record.exists() else None,
+                                    'detailed_cost_record_sha256': sha(cache_cost_record) if cache_cost_record.exists() else None,
                                     'metadata_sha256': sha(ROOT / cfg['features'] / 'metadata.json')},
               'notes': ['Only completed runs enter summaries; no extrapolation to missing seeds.',
                         'Scene bootstrap uses seed-averaged image differences; seed SD is separate.',

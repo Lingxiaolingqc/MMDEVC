@@ -1,0 +1,28 @@
+{
+  "at": "2026-11-27T05:23:14.851901+00:00",
+  "status": "historical_cache_costs_verified",
+  "scope": "Shared pre-existing preprocessing, not new sample-efficiency training or a per-size speed benchmark",
+  "provenance": {
+    "outputs/part3_improvement/stylesketch_20261120/features/metadata.json": "f590c24c5081a05de39e00d026aadd787568c7b38ddae5121c301dd31e13d531",
+    "outputs/part3_improvement/stylesketch_20261120/disk_inputs/metadata.json": "7646ac5dc158c6d8f5ff21cf7b86baf06d6cdc698a75111ce561ab70c8e41af5",
+    "outputs/part3_improvement/residual_study_20261118/cache/development/metadata.json": "338cbbef58ae0f1d6ecab460e4c7c6d2cc8fc1dcf6eb04453aeed6c63affb728"
+  },
+  "source_predictions_sha256": "339b1238bcc17c16ea6bf5aad9a1fa14da46ac0089b28102cd3bc01e1fd66ac2",
+  "development_images": 795,
+  "original_foundation_inference_sum_seconds": 20.592416100145783,
+  "unused_flip_inference_sum_seconds": 20.166410600359086,
+  "legacy_timing_scope": "synchronized original/flip inference separately; excludes load and IO; three warmups",
+  "all_seven_feature_branches_extraction_wall_seconds": 261.16072579997126,
+  "feature_extraction_peak_allocated_mib": 364.1953125,
+  "three_used_feature_bytes": 12933696384,
+  "shared_input_arrays_bytes": 3419136640,
+  "limitations": [
+    "Historical timings are not a new isolated benchmark.",
+    "261-second extraction includes all seven old feature branches, whereas F3 reads only init/mid/late.",
+    "Original/flip inference timing excludes IO; disk input conversion wall time is unrecorded, so complete end-to-end preparation cost is unknown.",
+    "Do not sum these records and label the result as full preprocessing cost, and do not add the full shared setup repeatedly to each seed.",
+    "R training time excludes preparation. L/J/S compute their backbone features live and do not use cached internal feature values. All methods share data/GT preprocessing."
+  ],
+  "new_foundation_feature_cache_generation_seconds": 0,
+  "complete_preparation_wall_seconds": null
+}

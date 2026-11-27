@@ -1,0 +1,108 @@
+{
+  "status": "reviewed_partial_group",
+  "at": "2026-11-27T05:27:15.026008+00:00",
+  "reviewer": "assistant directly inspected the updated two-LoRA-seed curves; fixed-image review uses the predefined first seed",
+  "files_reviewed": {
+    "analysis/visual_reviews/L_n100_two_seed_curves/curves_n100.png": "e75a482550a9bd19cb908869fed2b9dc813e57dae902d78adcf1b10bb1642981"
+  },
+  "fixed_image_review": "analysis/visual_reviews/L_n100_seed320112.json",
+  "result_sources": {
+    "runs/L_n100_seed320112/result.json": "6b8638597a534617f71b02a8642a8d0349cd397bf77a330e5f28d88cea6a2598",
+    "runs/L_n100_seed320113/result.json": "e56beffdbdc25487a5c9baab9d03a80ceadfd280aec17dfa5b6e66fcaa87f636"
+  },
+  "quantitative": {
+    "best_abs_rel": {
+      "n": 2,
+      "mean": 0.09652649455980239,
+      "sd": 0.0019220852066727208
+    },
+    "best_rmse_m": {
+      "n": 2,
+      "mean": 0.42041670310425006,
+      "sd": 0.008096488533446631
+    },
+    "best_delta1": {
+      "n": 2,
+      "mean": 0.9082334219383581,
+      "sd": 0.0051467548428204175
+    },
+    "best_boundary_f1": {
+      "n": 2,
+      "mean": 0.4599529166075169,
+      "sd": 0.006365145385675343
+    },
+    "best_boundary_band_abs_rel": {
+      "n": 2,
+      "mean": 0.1521632335477318,
+      "sd": 0.000298959846947457
+    },
+    "final_abs_rel": {
+      "n": 2,
+      "mean": 0.09706091062716526,
+      "sd": 0.0022174428748516876
+    }
+  },
+  "paired_with_R": {
+    "seed_ids": [
+      320112,
+      320113
+    ],
+    "metrics": {
+      "abs_rel": {
+        "difference": -0.0042243247984560745,
+        "scene_ci": [
+          -0.011574418340399179,
+          0.0029397494186887063
+        ]
+      },
+      "rmse_m": {
+        "difference": -0.02377067440176555,
+        "scene_ci": [
+          -0.05001662080696134,
+          0.0038327054532657804
+        ]
+      },
+      "delta1": {
+        "difference": -0.006039466923867361,
+        "scene_ci": [
+          -0.022435555405456296,
+          0.010176228973358055
+        ]
+      },
+      "boundary_f1": {
+        "difference": 0.0012460184644231182,
+        "scene_ci": [
+          -0.007675560401338237,
+          0.010177638366637631
+        ]
+      },
+      "boundary_band_abs_rel": {
+        "difference": -0.007621379933966557,
+        "scene_ci": [
+          -0.012814503728271549,
+          -0.0025386564294069473
+        ]
+      }
+    }
+  },
+  "conclusions": [
+    "Both LoRA seeds have lower validation-selected AbsRel than their corresponding R seed. The LoRA mean here is based on two seeds, while the overall R mean has three; formal paired comparisons use the two shared seeds only.",
+    "Seed320113 drops below .10 at step100 and confirms three consecutive qualifying validations at300. Best at1900, early stop2400; raw improvements after the significant-improvement anchor do not necessarily reset patience.",
+    "Both LoRA training losses continue down while validation levels off. Seed320113 visually has a flatter late curve than the earlier R curves, but strict stable-at-end is not satisfied because a late point exceeds 1.01 times its best.",
+    "LoRA seed320113 final has slightly worse AbsRel than best (.09549 vs .09517), yet better boundary F1 (.46936 vs .46445) and delta1. Best is validation-AbsRel-selected, not the best possible checkpoint for each metric.",
+    "The matched-seed mean boundary F1 difference now changes sign versus R; its scene interval crosses zero. This illustrates why the earlier one-seed boundary difference was not a general method conclusion.",
+    "Boundary-band AbsRel remains lower for L, with a negative descriptive paired scene interval. AbsRel/RMSE/delta1/F1 intervals cross zero; training-seed evidence is still incomplete.",
+    "No new qualitative claim about seed320113 individual images: the preregistered fixed-image rule uses seed320112 only. No J/S, other sample count or official test result is inferred."
+  ],
+  "stable_check_seed320113": {
+    "threshold": 0.09611904882690722,
+    "violations_in_last_500_step_window": [
+      {
+        "step": 2000,
+        "abs_rel": 0.09617111198488618
+      }
+    ]
+  },
+  "completed_training_stages": 5,
+  "required": 72
+}
