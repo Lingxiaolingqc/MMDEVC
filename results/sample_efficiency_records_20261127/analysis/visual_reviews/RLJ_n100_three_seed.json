@@ -1,0 +1,1310 @@
+{
+  "status": "reviewed_complete_main_method_group",
+  "at": "2026-11-27T07:03:49.074032+00:00",
+  "reviewer": "assistant directly inspected all three current curve/convergence/stopping charts; fixed-image review references point to prior actual image inspections",
+  "scope": "100 fitting images; R/L/J three seeds each; all218 validation; S100 remains pending",
+  "files_reviewed": {
+    "analysis/visual_reviews/RLJ_n100_three_seed/curves_n100.png": "4107b0fa5760f99d409f2d6057b34d305b450e8b00b2cbf992df7bc2617bc560",
+    "analysis/visual_reviews/RLJ_n100_three_seed/convergence_steps.png": "ea513297f9d4f8fe7d240bbd1efd16e5d3104a728bb5fe3ae7230bbcd33b2e0e",
+    "analysis/visual_reviews/RLJ_n100_three_seed/stopping_performance.png": "434ed4466b143756b2211d4c6c98cd1715814272cc7e2457437f087e077caf88"
+  },
+  "fixed_image_reviews": [
+    "analysis/visual_reviews/R_n100_seed320112.json",
+    "analysis/visual_reviews/L_n100_seed320112.json",
+    "analysis/visual_reviews/J_n100_seed320112.json"
+  ],
+  "result_sources": {
+    "runs/R_n100_seed320112/result.json": "65a7c0e0efd23910db2e83fe807dbc82c2bd41a73145aa7d90ea8d35eec4cd28",
+    "runs/R_n100_seed320113/result.json": "dade5ea9ea487c09b187dcd9050bf55c78d45dd9a10115d27d530c08abc47f04",
+    "runs/R_n100_seed320114/result.json": "236574796ab4bd9d882e8b69ab3d3b700435403f09fb72d965c0e99bf1679ae7",
+    "runs/L_n100_seed320112/result.json": "6b8638597a534617f71b02a8642a8d0349cd397bf77a330e5f28d88cea6a2598",
+    "runs/L_n100_seed320113/result.json": "e56beffdbdc25487a5c9baab9d03a80ceadfd280aec17dfa5b6e66fcaa87f636",
+    "runs/L_n100_seed320114/result.json": "9781c16fd65b6512736b29f8895ed1611f0bc441472934419a2a59d3689fbb0a",
+    "runs/J_n100_seed320112/result.json": "37f53d0c02732258cfb3e241a000aecc6cf9e80a0cee158f7da377aff6e9cc07",
+    "runs/J_n100_seed320113/result.json": "a851daf733d20db8754a0d1520755ec2927d83cf674e7bf7716cd54c078688d1",
+    "runs/J_n100_seed320114/result.json": "1db2b4a22fd70f525237598527e66bff22a4e4a911f4b42f002888db9bf7adb0"
+  },
+  "groups": [
+    {
+      "count": 100,
+      "method": "R",
+      "completed_seeds": 3,
+      "complete_three_seeds": true,
+      "stable_seeds": 0,
+      "stable_final_metrics": {
+        "abs_rel": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        },
+        "rmse_m": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        },
+        "delta1": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        },
+        "boundary_f1": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        },
+        "boundary_band_abs_rel": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        }
+      },
+      "statistics": {
+        "parameters": {
+          "n": 3,
+          "mean": 27089.0,
+          "sd": 0.0
+        },
+        "best_step": {
+          "n": 3,
+          "mean": 1633.3333333333333,
+          "sd": 702.3769168568493
+        },
+        "stop_step": {
+          "n": 3,
+          "mean": 2466.6666666666665,
+          "sd": 493.28828623162474
+        },
+        "stable_step": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        },
+        "target_0_10_step": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        },
+        "target_0_09_step": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        },
+        "exposures": {
+          "n": 3,
+          "mean": 19733.333333333332,
+          "sd": 3946.306289852998
+        },
+        "effective_epochs": {
+          "n": 3,
+          "mean": 197.33333333333334,
+          "sd": 39.46306289852998
+        },
+        "successful_updates": {
+          "n": 3,
+          "mean": 2466.6666666666665,
+          "sd": 493.28828623162474
+        },
+        "amp_skips": {
+          "n": 3,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "best_seconds": {
+          "n": 3,
+          "mean": 393.02189596664783,
+          "sd": 160.82497604332931
+        },
+        "stable_seconds": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        },
+        "stop_seconds": {
+          "n": 3,
+          "mean": 586.6509897333259,
+          "sd": 111.45944826933821
+        },
+        "total_seconds": {
+          "n": 3,
+          "mean": 624.7655594999281,
+          "sd": 111.59909834549775
+        },
+        "parent_lora_seconds": {
+          "n": 3,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "total_with_parent_seconds": {
+          "n": 3,
+          "mean": 624.7655594999281,
+          "sd": 111.59909834549775
+        },
+        "parent_lora_steps": {
+          "n": 3,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "total_with_parent_steps": {
+          "n": 3,
+          "mean": 2466.6666666666665,
+          "sd": 493.28828623162474
+        },
+        "best_with_parent_steps": {
+          "n": 3,
+          "mean": 1633.3333333333333,
+          "sd": 702.3769168568493
+        },
+        "best_with_parent_seconds": {
+          "n": 3,
+          "mean": 393.02189596664783,
+          "sd": 160.82497604332931
+        },
+        "stable_with_parent_steps": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        },
+        "stable_with_parent_seconds": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        },
+        "pure_train_seconds": {
+          "n": 3,
+          "mean": 424.7583860311036,
+          "sd": 82.00774753074428
+        },
+        "selection_validation_seconds": {
+          "n": 3,
+          "mean": 160.99219326651655,
+          "sd": 29.332570306317702
+        },
+        "detailed_scoring_seconds": {
+          "n": 3,
+          "mean": 38.089276166710384,
+          "sd": 2.0133683318239735
+        },
+        "peak_allocated_mib": {
+          "n": 3,
+          "mean": 768.7060546875,
+          "sd": 0.0
+        },
+        "best_abs_rel": {
+          "n": 3,
+          "mean": 0.10061487449817309,
+          "sd": 0.0007614509768107215
+        },
+        "best_rmse_m": {
+          "n": 3,
+          "mean": 0.4442672708563083,
+          "sd": 0.006457854000077371
+        },
+        "best_delta1": {
+          "n": 3,
+          "mean": 0.913829139464719,
+          "sd": 0.0015132603338758356
+        },
+        "best_boundary_f1": {
+          "n": 3,
+          "mean": 0.45842114804336237,
+          "sd": 0.0005354725040337211
+        },
+        "best_boundary_band_abs_rel": {
+          "n": 3,
+          "mean": 0.15968135879034057,
+          "sd": 0.0009089898899146997
+        },
+        "final_abs_rel": {
+          "n": 3,
+          "mean": 0.10279779563523496,
+          "sd": 0.0004455184404994424
+        },
+        "final_rmse_m": {
+          "n": 3,
+          "mean": 0.4625045288800334,
+          "sd": 0.0061952045254629875
+        },
+        "final_delta1": {
+          "n": 3,
+          "mean": 0.9061623948584473,
+          "sd": 0.0032196387232438376
+        },
+        "final_boundary_f1": {
+          "n": 3,
+          "mean": 0.45698040800577816,
+          "sd": 0.0031368674697243026
+        },
+        "final_boundary_band_abs_rel": {
+          "n": 3,
+          "mean": 0.15886431775301488,
+          "sd": 0.0012040781249619723
+        },
+        "final_minus_best_abs_rel": {
+          "n": 3,
+          "mean": 0.0021829211370618753,
+          "sd": 0.0009083797026800109
+        },
+        "final_relative_degradation": {
+          "n": 3,
+          "mean": 0.021736279643273692,
+          "sd": 0.009174840719395219
+        },
+        "post_best_evaluations": {
+          "n": 3,
+          "mean": 8.333333333333334,
+          "sd": 2.8867513459481287
+        },
+        "post_best_max_abs_rel": {
+          "n": 3,
+          "mean": 0.10655464196504243,
+          "sd": 0.003144059346099209
+        },
+        "late_loss_down_val_up_indicator": {
+          "n": 3,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "recorded_attempt_wall_seconds": {
+          "n": 3,
+          "mean": 627.594831,
+          "sd": 111.61941612903706
+        },
+        "attempts_started": {
+          "n": 3,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "attempts_with_recorded_end": {
+          "n": 3,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "attempt_wall_time_complete": {
+          "n": 3,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "target_0_10_confirmed_step": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        },
+        "target_0_10_confirmed_seconds": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        },
+        "target_0_09_confirmed_step": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        },
+        "target_0_09_confirmed_seconds": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        },
+        "inference_adaptation_parameters": {
+          "n": 3,
+          "mean": 27089.0,
+          "sd": 0.0
+        },
+        "attempt_wall_with_parent_seconds": {
+          "n": 3,
+          "mean": 627.594831,
+          "sd": 111.61941612903706
+        },
+        "attempt_wall_with_parent_complete": {
+          "n": 3,
+          "mean": 1.0,
+          "sd": 0.0
+        }
+      }
+    },
+    {
+      "count": 100,
+      "method": "L",
+      "completed_seeds": 3,
+      "complete_three_seeds": true,
+      "stable_seeds": 1,
+      "stable_final_metrics": {
+        "abs_rel": {
+          "n": 1,
+          "mean": 0.09294194188986248,
+          "sd": null
+        },
+        "rmse_m": {
+          "n": 1,
+          "mean": 0.40940505625652573,
+          "sd": null
+        },
+        "delta1": {
+          "n": 1,
+          "mean": 0.9180045871559633,
+          "sd": null
+        },
+        "boundary_f1": {
+          "n": 1,
+          "mean": 0.4626977588037851,
+          "sd": null
+        },
+        "boundary_band_abs_rel": {
+          "n": 1,
+          "mean": 0.15020782899613686,
+          "sd": null
+        }
+      },
+      "statistics": {
+        "parameters": {
+          "n": 3,
+          "mean": 73728.0,
+          "sd": 0.0
+        },
+        "best_step": {
+          "n": 3,
+          "mean": 2133.3333333333335,
+          "sd": 321.4550253664318
+        },
+        "stop_step": {
+          "n": 3,
+          "mean": 2966.6666666666665,
+          "sd": 550.7570547286102
+        },
+        "stable_step": {
+          "n": 1,
+          "mean": 1700.0,
+          "sd": null
+        },
+        "target_0_10_step": {
+          "n": 3,
+          "mean": 266.6666666666667,
+          "sd": 288.67513459481285
+        },
+        "target_0_09_step": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        },
+        "exposures": {
+          "n": 3,
+          "mean": 23733.333333333332,
+          "sd": 4406.056437828882
+        },
+        "effective_epochs": {
+          "n": 3,
+          "mean": 237.33333333333334,
+          "sd": 44.06056437828882
+        },
+        "successful_updates": {
+          "n": 3,
+          "mean": 2965.3333333333335,
+          "sd": 550.2729625679725
+        },
+        "amp_skips": {
+          "n": 3,
+          "mean": 1.3333333333333333,
+          "sd": 0.5773502691896257
+        },
+        "best_seconds": {
+          "n": 3,
+          "mean": 1041.8603288333397,
+          "sd": 144.37523622249785
+        },
+        "stable_seconds": {
+          "n": 1,
+          "mean": 847.6183877000585,
+          "sd": null
+        },
+        "stop_seconds": {
+          "n": 3,
+          "mean": 1432.6782089333672,
+          "sd": 270.7640920088713
+        },
+        "total_seconds": {
+          "n": 3,
+          "mean": 1480.3507024999708,
+          "sd": 272.1347614016085
+        },
+        "parent_lora_seconds": {
+          "n": 3,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "total_with_parent_seconds": {
+          "n": 3,
+          "mean": 1480.3507024999708,
+          "sd": 272.1347614016085
+        },
+        "parent_lora_steps": {
+          "n": 3,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "total_with_parent_steps": {
+          "n": 3,
+          "mean": 2966.6666666666665,
+          "sd": 550.7570547286102
+        },
+        "best_with_parent_steps": {
+          "n": 3,
+          "mean": 2133.3333333333335,
+          "sd": 321.4550253664318
+        },
+        "best_with_parent_seconds": {
+          "n": 3,
+          "mean": 1041.8603288333397,
+          "sd": 144.37523622249785
+        },
+        "stable_with_parent_steps": {
+          "n": 1,
+          "mean": 1700.0,
+          "sd": null
+        },
+        "stable_with_parent_seconds": {
+          "n": 1,
+          "mean": 847.6183877000585,
+          "sd": null
+        },
+        "pure_train_seconds": {
+          "n": 3,
+          "mean": 1132.622370332169,
+          "sd": 215.71473857568967
+        },
+        "selection_validation_seconds": {
+          "n": 3,
+          "mean": 298.8345626660933,
+          "sd": 57.71631755120397
+        },
+        "detailed_scoring_seconds": {
+          "n": 3,
+          "mean": 47.491255400003865,
+          "sd": 1.3595645385927235
+        },
+        "peak_allocated_mib": {
+          "n": 3,
+          "mean": 4019.6923828125,
+          "sd": 0.0
+        },
+        "best_abs_rel": {
+          "n": 3,
+          "mean": 0.09527668728073237,
+          "sd": 0.002556024349513181
+        },
+        "best_rmse_m": {
+          "n": 3,
+          "mean": 0.4163937598982634,
+          "sd": 0.009018247024887871
+        },
+        "best_delta1": {
+          "n": 3,
+          "mean": 0.911829405331069,
+          "sd": 0.0072137252781074804
+        },
+        "best_boundary_f1": {
+          "n": 3,
+          "mean": 0.460346253458135,
+          "sd": 0.004552107152138935
+        },
+        "best_boundary_band_abs_rel": {
+          "n": 3,
+          "mean": 0.15150070887941927,
+          "sd": 0.0011668355939939785
+        },
+        "final_abs_rel": {
+          "n": 3,
+          "mean": 0.09568792104806434,
+          "sd": 0.0028484781207821315
+        },
+        "final_rmse_m": {
+          "n": 3,
+          "mean": 0.41722933948606283,
+          "sd": 0.009711509154425617
+        },
+        "final_delta1": {
+          "n": 3,
+          "mean": 0.911205696205777,
+          "sd": 0.00786611104785519
+        },
+        "final_boundary_f1": {
+          "n": 3,
+          "mean": 0.4639151510124278,
+          "sd": 0.0049508793759080105
+        },
+        "final_boundary_band_abs_rel": {
+          "n": 3,
+          "mean": 0.1521427414838863,
+          "sd": 0.0016761526154872633
+        },
+        "final_minus_best_abs_rel": {
+          "n": 3,
+          "mean": 0.0004112337673319588,
+          "sd": 0.00029856274583205
+        },
+        "final_relative_degradation": {
+          "n": 3,
+          "mean": 0.0042637470217613506,
+          "sd": 0.00299826661604896
+        },
+        "post_best_evaluations": {
+          "n": 3,
+          "mean": 8.333333333333334,
+          "sd": 2.8867513459481287
+        },
+        "post_best_max_abs_rel": {
+          "n": 3,
+          "mean": 0.09633523753199578,
+          "sd": 0.0027838460478492033
+        },
+        "late_loss_down_val_up_indicator": {
+          "n": 3,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "recorded_attempt_wall_seconds": {
+          "n": 3,
+          "mean": 1490.2602689999997,
+          "sd": 271.9315617781437
+        },
+        "attempts_started": {
+          "n": 3,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "attempts_with_recorded_end": {
+          "n": 3,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "attempt_wall_time_complete": {
+          "n": 3,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "target_0_10_confirmed_step": {
+          "n": 3,
+          "mean": 466.6666666666667,
+          "sd": 288.67513459481285
+        },
+        "target_0_10_confirmed_seconds": {
+          "n": 3,
+          "mean": 229.6698890000116,
+          "sd": 141.59915873983167
+        },
+        "target_0_09_confirmed_step": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        },
+        "target_0_09_confirmed_seconds": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        },
+        "inference_adaptation_parameters": {
+          "n": 3,
+          "mean": 73728.0,
+          "sd": 0.0
+        },
+        "attempt_wall_with_parent_seconds": {
+          "n": 3,
+          "mean": 1490.2602689999997,
+          "sd": 271.9315617781437
+        },
+        "attempt_wall_with_parent_complete": {
+          "n": 3,
+          "mean": 1.0,
+          "sd": 0.0
+        }
+      }
+    },
+    {
+      "count": 100,
+      "method": "J",
+      "completed_seeds": 3,
+      "complete_three_seeds": true,
+      "stable_seeds": 1,
+      "stable_final_metrics": {
+        "abs_rel": {
+          "n": 1,
+          "mean": 0.09545395306296671,
+          "sd": null
+        },
+        "rmse_m": {
+          "n": 1,
+          "mean": 0.4143923125908535,
+          "sd": null
+        },
+        "delta1": {
+          "n": 1,
+          "mean": 0.9123190019320819,
+          "sd": null
+        },
+        "boundary_f1": {
+          "n": 1,
+          "mean": 0.45506469055869536,
+          "sd": null
+        },
+        "boundary_band_abs_rel": {
+          "n": 1,
+          "mean": 0.15213278635496963,
+          "sd": null
+        }
+      },
+      "statistics": {
+        "parameters": {
+          "n": 3,
+          "mean": 100817.0,
+          "sd": 0.0
+        },
+        "best_step": {
+          "n": 3,
+          "mean": 1666.6666666666667,
+          "sd": 1096.965511460289
+        },
+        "stop_step": {
+          "n": 3,
+          "mean": 2433.3333333333335,
+          "sd": 709.4598884597588
+        },
+        "stable_step": {
+          "n": 1,
+          "mean": 2100.0,
+          "sd": null
+        },
+        "target_0_10_step": {
+          "n": 3,
+          "mean": 966.6666666666666,
+          "sd": 568.6240703077327
+        },
+        "target_0_09_step": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        },
+        "exposures": {
+          "n": 3,
+          "mean": 19466.666666666668,
+          "sd": 5675.67910767807
+        },
+        "effective_epochs": {
+          "n": 3,
+          "mean": 194.66666666666666,
+          "sd": 56.7567910767807
+        },
+        "successful_updates": {
+          "n": 3,
+          "mean": 2432.0,
+          "sd": 709.5540853240153
+        },
+        "amp_skips": {
+          "n": 3,
+          "mean": 1.3333333333333333,
+          "sd": 0.5773502691896257
+        },
+        "best_seconds": {
+          "n": 3,
+          "mean": 849.6512827999735,
+          "sd": 530.064102462743
+        },
+        "stable_seconds": {
+          "n": 1,
+          "mean": 1061.4504668000154,
+          "sd": null
+        },
+        "stop_seconds": {
+          "n": 3,
+          "mean": 1260.5082050332956,
+          "sd": 318.18462985327807
+        },
+        "total_seconds": {
+          "n": 3,
+          "mean": 1306.618125799888,
+          "sd": 320.2545576583371
+        },
+        "parent_lora_seconds": {
+          "n": 3,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "total_with_parent_seconds": {
+          "n": 3,
+          "mean": 1306.618125799888,
+          "sd": 320.2545576583371
+        },
+        "parent_lora_steps": {
+          "n": 3,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "total_with_parent_steps": {
+          "n": 3,
+          "mean": 2433.3333333333335,
+          "sd": 709.4598884597588
+        },
+        "best_with_parent_steps": {
+          "n": 3,
+          "mean": 1666.6666666666667,
+          "sd": 1096.965511460289
+        },
+        "best_with_parent_seconds": {
+          "n": 3,
+          "mean": 849.6512827999735,
+          "sd": 530.064102462743
+        },
+        "stable_with_parent_steps": {
+          "n": 1,
+          "mean": 2100.0,
+          "sd": null
+        },
+        "stable_with_parent_seconds": {
+          "n": 1,
+          "mean": 1061.4504668000154,
+          "sd": null
+        },
+        "pure_train_seconds": {
+          "n": 3,
+          "mean": 1010.7412337684073,
+          "sd": 263.0176055471787
+        },
+        "selection_validation_seconds": {
+          "n": 3,
+          "mean": 248.44318763368452,
+          "sd": 57.12459492835914
+        },
+        "detailed_scoring_seconds": {
+          "n": 3,
+          "mean": 45.92475606664084,
+          "sd": 2.353696844328631
+        },
+        "peak_allocated_mib": {
+          "n": 3,
+          "mean": 4166.5185546875,
+          "sd": 0.0
+        },
+        "best_abs_rel": {
+          "n": 3,
+          "mean": 0.097308181150922,
+          "sd": 0.002226209826814069
+        },
+        "best_rmse_m": {
+          "n": 3,
+          "mean": 0.4222377426593185,
+          "sd": 0.008210515864912976
+        },
+        "best_delta1": {
+          "n": 3,
+          "mean": 0.9077233918290579,
+          "sd": 0.0067214496908980376
+        },
+        "best_boundary_f1": {
+          "n": 3,
+          "mean": 0.4544552141947699,
+          "sd": 0.0012478435276534739
+        },
+        "best_boundary_band_abs_rel": {
+          "n": 3,
+          "mean": 0.15342243219784987,
+          "sd": 0.002628095731868383
+        },
+        "final_abs_rel": {
+          "n": 3,
+          "mean": 0.09771113066431707,
+          "sd": 0.001962566630234211
+        },
+        "final_rmse_m": {
+          "n": 3,
+          "mean": 0.4231020162943433,
+          "sd": 0.007649585571965389
+        },
+        "final_delta1": {
+          "n": 3,
+          "mean": 0.9041263060011445,
+          "sd": 0.007415643003092435
+        },
+        "final_boundary_f1": {
+          "n": 3,
+          "mean": 0.44795643517484063,
+          "sd": 0.009314270123201884
+        },
+        "final_boundary_band_abs_rel": {
+          "n": 3,
+          "mean": 0.15370457743292765,
+          "sd": 0.002811892117290863
+        },
+        "final_minus_best_abs_rel": {
+          "n": 3,
+          "mean": 0.00040294951339504376,
+          "sd": 0.00033251812042855815
+        },
+        "final_relative_degradation": {
+          "n": 3,
+          "mean": 0.004185486121738379,
+          "sd": 0.0034891288882467823
+        },
+        "post_best_evaluations": {
+          "n": 3,
+          "mean": 7.666666666666667,
+          "sd": 4.041451884327381
+        },
+        "post_best_max_abs_rel": {
+          "n": 3,
+          "mean": 0.09868905403037981,
+          "sd": 0.002834071388573181
+        },
+        "late_loss_down_val_up_indicator": {
+          "n": 3,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "recorded_attempt_wall_seconds": {
+          "n": 3,
+          "mean": 1316.1099346666667,
+          "sd": 320.3871780807757
+        },
+        "attempts_started": {
+          "n": 3,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "attempts_with_recorded_end": {
+          "n": 3,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "attempt_wall_time_complete": {
+          "n": 3,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "target_0_10_confirmed_step": {
+          "n": 3,
+          "mean": 1166.6666666666667,
+          "sd": 568.6240703077327
+        },
+        "target_0_10_confirmed_seconds": {
+          "n": 3,
+          "mean": 616.920465966609,
+          "sd": 300.7412514576787
+        },
+        "target_0_09_confirmed_step": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        },
+        "target_0_09_confirmed_seconds": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        },
+        "inference_adaptation_parameters": {
+          "n": 3,
+          "mean": 100817.0,
+          "sd": 0.0
+        },
+        "attempt_wall_with_parent_seconds": {
+          "n": 3,
+          "mean": 1316.1099346666667,
+          "sd": 320.3871780807757
+        },
+        "attempt_wall_with_parent_complete": {
+          "n": 3,
+          "mean": 1.0,
+          "sd": 0.0
+        }
+      }
+    }
+  ],
+  "convergence": [
+    {
+      "method": "R",
+      "seed": "320112",
+      "best_step": "900",
+      "stop_step": "1900",
+      "stable_step": "",
+      "target_0_10_step": "",
+      "target_0_10_confirmed_step": "",
+      "amp_skips": "0",
+      "total_seconds": "498.197117799893"
+    },
+    {
+      "method": "R",
+      "seed": "320113",
+      "best_step": "1700",
+      "stop_step": "2700",
+      "stable_step": "",
+      "target_0_10_step": "",
+      "target_0_10_confirmed_step": "",
+      "amp_skips": "0",
+      "total_seconds": "667.0812103999779"
+    },
+    {
+      "method": "R",
+      "seed": "320114",
+      "best_step": "2300",
+      "stop_step": "2800",
+      "stable_step": "",
+      "target_0_10_step": "",
+      "target_0_10_confirmed_step": "",
+      "amp_skips": "0",
+      "total_seconds": "709.0183502999134"
+    },
+    {
+      "method": "L",
+      "seed": "320112",
+      "best_step": "2500",
+      "stop_step": "3500",
+      "stable_step": "",
+      "target_0_10_step": "600",
+      "target_0_10_confirmed_step": "800",
+      "amp_skips": "2",
+      "total_seconds": "1729.039655199973"
+    },
+    {
+      "method": "L",
+      "seed": "320113",
+      "best_step": "1900",
+      "stop_step": "2400",
+      "stable_step": "",
+      "target_0_10_step": "100",
+      "target_0_10_confirmed_step": "300",
+      "amp_skips": "1",
+      "total_seconds": "1189.6551457000896"
+    },
+    {
+      "method": "L",
+      "seed": "320114",
+      "best_step": "2000",
+      "stop_step": "3000",
+      "stable_step": "1700",
+      "target_0_10_step": "100",
+      "target_0_10_confirmed_step": "300",
+      "amp_skips": "1",
+      "total_seconds": "1522.3573065998498"
+    },
+    {
+      "method": "J",
+      "seed": "320112",
+      "best_step": "1300",
+      "stop_step": "2300",
+      "stable_step": "",
+      "target_0_10_step": "500",
+      "target_0_10_confirmed_step": "700",
+      "amp_skips": "2",
+      "total_seconds": "1287.4484231998213"
+    },
+    {
+      "method": "J",
+      "seed": "320113",
+      "best_step": "800",
+      "stop_step": "1800",
+      "stable_step": "",
+      "target_0_10_step": "1600",
+      "target_0_10_confirmed_step": "1800",
+      "amp_skips": "1",
+      "total_seconds": "996.3790042998735"
+    },
+    {
+      "method": "J",
+      "seed": "320114",
+      "best_step": "2900",
+      "stop_step": "3200",
+      "stable_step": "2100",
+      "target_0_10_step": "800",
+      "target_0_10_confirmed_step": "1000",
+      "amp_skips": "1",
+      "total_seconds": "1636.0269498999696"
+    }
+  ],
+  "paired_best": [
+    {
+      "candidate": "R",
+      "reference": "B0",
+      "seed_ids": [
+        320112,
+        320113,
+        320114
+      ],
+      "metrics": {
+        "abs_rel": {
+          "difference": -0.02023072162263082,
+          "scene_ci": [
+            -0.028510574429483744,
+            -0.010722299301877543
+          ]
+        },
+        "rmse_m": {
+          "difference": -0.03141992319405861,
+          "scene_ci": [
+            -0.06921506622533377,
+            0.0024845575653506327
+          ]
+        },
+        "delta1": {
+          "difference": 0.04901348714099069,
+          "scene_ci": [
+            0.024560701173155237,
+            0.07261597072054951
+          ]
+        },
+        "boundary_f1": {
+          "difference": 0.007266368403922219,
+          "scene_ci": [
+            0.003800560850657444,
+            0.010987463103576279
+          ]
+        },
+        "boundary_band_abs_rel": {
+          "difference": -0.023365730096225133,
+          "scene_ci": [
+            -0.031274725294083115,
+            -0.014848788579839445
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "L",
+      "reference": "B0",
+      "seed_ids": [
+        320112,
+        320113,
+        320114
+      ],
+      "metrics": {
+        "abs_rel": {
+          "difference": -0.025568908840071538,
+          "scene_ci": [
+            -0.038356273576773715,
+            -0.013469185990528045
+          ]
+        },
+        "rmse_m": {
+          "difference": -0.05929343415210348,
+          "scene_ci": [
+            -0.11430404755828746,
+            -0.014373716558146118
+          ]
+        },
+        "delta1": {
+          "difference": 0.047013753007340675,
+          "scene_ci": [
+            0.017098843647001503,
+            0.07605921790547257
+          ]
+        },
+        "boundary_f1": {
+          "difference": 0.009191473818694802,
+          "scene_ci": [
+            -5.1021573462784276e-05,
+            0.018654474067567945
+          ]
+        },
+        "boundary_band_abs_rel": {
+          "difference": -0.0315463800071464,
+          "scene_ci": [
+            -0.041901650874064535,
+            -0.020694841896458684
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "J",
+      "reference": "B0",
+      "seed_ids": [
+        320112,
+        320113,
+        320114
+      ],
+      "metrics": {
+        "abs_rel": {
+          "difference": -0.023537414969881897,
+          "scene_ci": [
+            -0.035894565468175765,
+            -0.012559536810184005
+          ]
+        },
+        "rmse_m": {
+          "difference": -0.05344945139104837,
+          "scene_ci": [
+            -0.10702403160492287,
+            -0.010286174540708846
+          ]
+        },
+        "delta1": {
+          "difference": 0.042907739505329626,
+          "scene_ci": [
+            0.017741756967459957,
+            0.06787362281682689
+          ]
+        },
+        "boundary_f1": {
+          "difference": 0.0033004345553298313,
+          "scene_ci": [
+            -0.006146803533044687,
+            0.012750405789015583
+          ]
+        },
+        "boundary_band_abs_rel": {
+          "difference": -0.029624656688715837,
+          "scene_ci": [
+            -0.03953998622336812,
+            -0.01975544584612867
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "L",
+      "reference": "R",
+      "seed_ids": [
+        320112,
+        320113,
+        320114
+      ],
+      "metrics": {
+        "abs_rel": {
+          "difference": -0.005338187217440725,
+          "scene_ci": [
+            -0.012539430490833123,
+            0.0017147633455669004
+          ]
+        },
+        "rmse_m": {
+          "difference": -0.02787351095804487,
+          "scene_ci": [
+            -0.054544992740230454,
+            0.0006956678293497019
+          ]
+        },
+        "delta1": {
+          "difference": -0.0019997341336500116,
+          "scene_ci": [
+            -0.01909863308225852,
+            0.013384931987759885
+          ]
+        },
+        "boundary_f1": {
+          "difference": 0.001925105414772582,
+          "scene_ci": [
+            -0.006733304686815433,
+            0.010547653237690795
+          ]
+        },
+        "boundary_band_abs_rel": {
+          "difference": -0.008180649910921264,
+          "scene_ci": [
+            -0.013201500347624809,
+            -0.0031467750312053344
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "J",
+      "reference": "R",
+      "seed_ids": [
+        320112,
+        320113,
+        320114
+      ],
+      "metrics": {
+        "abs_rel": {
+          "difference": -0.0033066933472510793,
+          "scene_ci": [
+            -0.010164713230644561,
+            0.0035441090164641783
+          ]
+        },
+        "rmse_m": {
+          "difference": -0.022029528196989747,
+          "scene_ci": [
+            -0.04596716618169946,
+            0.0034489426904888974
+          ]
+        },
+        "delta1": {
+          "difference": -0.006105747635661062,
+          "scene_ci": [
+            -0.021192278384555074,
+            0.00919681767211675
+          ]
+        },
+        "boundary_f1": {
+          "difference": -0.003965933848592388,
+          "scene_ci": [
+            -0.013142383285817863,
+            0.005010186390843484
+          ]
+        },
+        "boundary_band_abs_rel": {
+          "difference": -0.0062589265924907055,
+          "scene_ci": [
+            -0.010918994953262586,
+            -0.0020225795865129264
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "J",
+      "reference": "L",
+      "seed_ids": [
+        320112,
+        320113,
+        320114
+      ],
+      "metrics": {
+        "abs_rel": {
+          "difference": 0.0020314938701896444,
+          "scene_ci": [
+            0.00032242236275043364,
+            0.0036233846150262013
+          ]
+        },
+        "rmse_m": {
+          "difference": 0.00584398276105512,
+          "scene_ci": [
+            0.00031327082281850917,
+            0.010764783140416909
+          ]
+        },
+        "delta1": {
+          "difference": -0.004106013502011049,
+          "scene_ci": [
+            -0.010276982490504627,
+            0.002350002404420813
+          ]
+        },
+        "boundary_f1": {
+          "difference": -0.005891039263364969,
+          "scene_ci": [
+            -0.011285671673923574,
+            -0.0008316163346071077
+          ]
+        },
+        "boundary_band_abs_rel": {
+          "difference": 0.0019217233184305564,
+          "scene_ci": [
+            -0.00042378496423368413,
+            0.003961752295139565
+          ]
+        }
+      }
+    }
+  ],
+  "conclusions": [
+    "With this frozen recipe, all three matched J runs have worse best validation AbsRel than L. J mean .097308 versus L .095277; paired J-L +.002031 has a descriptive scene bootstrap interval [.000322,.003623]. This is conditional on the fixed nested subset and validation scenes, not a new held-out test result.",
+    "J best boundary F1 .454455 is also below L .460346; paired difference -.005891 has interval [-.011286,-.000832]. J versus R AbsRel and F1 scene intervals cross zero, while boundary-band error is lower. These outcomes do not establish that joint training can never help.",
+    "All three methods improve mean overall and boundary-band errors over B0. Higher global accuracy does not imply uniform per-image or boundary detection gains; the fixed seed320112 cases contain improvements and regressions. No new image review of seeds320113/320114 is claimed.",
+    "The Joint curves show decreasing training loss and different validation plateaus; seed320114 continues improving around2100-2200 and has raw best2900. This is observed generalization behavior, not proof of gradient conflict or of a particular causal mechanism.",
+    "Best is selected by AbsRel. Final mean boundary F1 is R .456980, L .463915, J .447956 versus B0 .451155; J final boundary performance can degrade despite modest best-to-final AbsRel changes. Preserve both checkpoints.",
+    "Only one of three L and one of three J runs meet the predefined terminal stable rule; R has zero. Stable-subset means describe these single qualifying seeds, not the entire method. None reaches the .09 target.",
+    "The .10 target is confirmed at L800/300/300 and J700/1800/1000 attempted updates; R does not attain it. J shorter mean total runtime than L reflects different stopping trajectories and is not evidence of faster per-update computation or faster attainment of the common accuracy target.",
+    "Raw-best steps, significant-improvement anchors and stopping steps differ: J seed320114 best2900 did not improve the2200 anchor by .2%, so patience stopped3200. This follows the frozen rule rather than stopping as soon as a new best appears.",
+    "Observed means are R10.41,L24.67,J21.78 minutes; peak allocated GPU memory is approximately769/4020/4167MiB. R uses reused feature caches, whose historical shared preparation costs and incomplete end-to-end timing are separately recorded; these are not isolated hardware benchmark estimates.",
+    "Only the100-label main routes are complete. Keep the same architecture/learning-rate/early-stop rules for200,400,300,500,577 and the staged S controls; do not retune to rescue these outcomes."
+  ],
+  "completed_stages": 9,
+  "required_stages": 72
+}
