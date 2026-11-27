@@ -171,6 +171,16 @@ def comparisons(complete, baseline, cfg):
                                **pair_stats(a, b)})
     # Marginal gain uses adjacent nested subset sizes, irrespective of execution order.
     increments = []
+    first = cfg['counts'][0]
+    for method in METHODS:
+        seeds = [s for s in cfg['seeds'] if f'{method}_n{first}_seed{s}' in complete]
+        if not seeds: continue
+        for checkpoint in ['best','final']:
+            a = [complete[f'{method}_n{first}_seed{s}']['rows'][checkpoint] for s in seeds]
+            increments.append({'method':method, 'lower_count':0, 'higher_count':first,
+                               'checkpoint':checkpoint, 'seed_ids':seeds, 'additional_images':first,
+                               'zero_shot_reference':'one shared baseline, not independent seed measurements',
+                               **pair_stats(a,[baseline]*len(seeds))})
     for low, high in zip(cfg['counts'], cfg['counts'][1:]):
         for method in METHODS:
             seeds = [s for s in cfg['seeds'] if f'{method}_n{low}_seed{s}' in complete and f'{method}_n{high}_seed{s}' in complete]
@@ -182,10 +192,14 @@ def comparisons(complete, baseline, cfg):
                 increments.append({'method': method, 'lower_count': low, 'higher_count': high,
                                    'checkpoint': checkpoint, 'seed_ids': seeds, 'additional_images': high-low,
                                    **pair_stats(a, b)})
+    for entry in increments:
+        for metric, statistic in entry['metrics'].items():
+            if 'candidate_minus_reference' in statistic:
+                statistic['signed_change_per_100_added_images'] = statistic['candidate_minus_reference'] * 100 / entry['additional_images']
     return output, increments
 
 
-def plots(out, complete, rows, baseline, cfg):
+def plots(out, complete, rows, baseline, cfg, phase='Validation'):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
@@ -209,7 +223,7 @@ def plots(out, complete, rows, baseline, cfg):
             ax.axhline(baseline[metric], color='black', ls='--', lw=.8, label='B0 (shared)')
         ax.set_title(metric); ax.set_xlabel('Unique fitting images'); ax.grid(alpha=.2)
     axes.flat[0].legend(fontsize=8)
-    fig.suptitle('Validation: available completed seeds (labels = n); bars = sample SD. R timing excludes shared feature cache.')
+    fig.suptitle(phase+': available completed seeds (labels = n); bars = sample SD. R timing excludes shared feature cache.')
     fig.savefig(out / 'sample_efficiency.png', dpi=160); plt.close(fig)
     for count in cfg['counts']:
         selected = [r for r in complete.values() if r['job']['count'] == count]
@@ -279,13 +293,58 @@ def render_fixed(out, study, complete, cfg):
     finally: pack.close()
 
 
+def convergence_plots(out, rows, baseline, cfg):
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    colors = dict(zip(METHODS,['#2171b5','#d95f0e','#238b45','#756bb1']))
+    fig,axes=plt.subplots(2,3,figsize=(14,8),layout='constrained')
+    items=[('best_step','Validation best'),('stop_step','Actual stop'),('stable_step','Stable at end'),
+           ('target_0_10_step','AbsRel <= 0.10 for three evaluations'),('target_0_09_step','AbsRel <= 0.09 for three evaluations'),
+           ('total_with_parent_steps','Total updates including parent L')]
+    for ax,(key,title) in zip(axes.flat,items):
+        plotted=False
+        for method in METHODS:
+            points=[]
+            for count in cfg['counts']:
+                selected=[r for r in rows if r['count']==count and r['method']==method]
+                observed=[r[key] for r in selected if r[key] is not None]
+                if not observed: continue
+                s=mean_sd(observed);points.append((count,s['mean'],s['sd'] or 0))
+                ax.annotate(f'{len(observed)}/{len(selected)}',(count,s['mean']),xytext=(0,6),textcoords='offset points',fontsize=7)
+            if points:
+                x,y,error=zip(*points);ax.errorbar(x,y,yerr=error,marker='o',label=method,color=colors[method],capsize=3);plotted=True
+        ax.set_title(title);ax.set_xlabel('Unique fitting images');ax.set_ylabel('Attempted updates');ax.grid(alpha=.2)
+        if plotted:ax.legend(fontsize=7)
+        else:
+            ax.text(.5,.5,'Not observed in completed runs',ha='center',va='center',transform=ax.transAxes)
+            ax.set_axis_off()
+    fig.suptitle('Operational convergence: labels = attained/completed seeds; missing targets are not zero. S own-stage steps unless total is stated.')
+    fig.savefig(out/'convergence_steps.png',dpi=150);plt.close(fig)
+    fig,axes=plt.subplots(1,3,figsize=(13,4),layout='constrained')
+    for ax,metric in zip(axes,['abs_rel','boundary_f1','boundary_band_abs_rel']):
+        for method in METHODS:
+            for only_stable in [False,True]:
+                points=[]
+                for count in cfg['counts']:
+                    selected=[r for r in rows if r['count']==count and r['method']==method and (not only_stable or r['stable_step'] is not None)]
+                    if selected:
+                        values=[r['final_'+metric] for r in selected];points.append((count,float(np.mean(values))))
+                if points:
+                    x,y=zip(*points);ax.plot(x,y,marker='s' if only_stable else 'o',ls='--' if only_stable else '-',color=colors[method],
+                                           label=method+(' stable subset' if only_stable else ' all final'))
+        ax.axhline(baseline[metric],color='black',ls=':',lw=.8,label='B0');ax.set_title(metric);ax.set_xlabel('Unique fitting images');ax.grid(alpha=.2)
+    axes[0].legend(fontsize=7);fig.suptitle('Stopping-model performance; stable subset is conditional and may be empty')
+    fig.savefig(out/'stopping_performance.png',dpi=150);plt.close(fig)
+
+
 def export_records(study, complete):
     """Publish compact numerical evidence; leave weights, arrays and logs local."""
     destination = ROOT / 'results/sample_efficiency_records_20261127'
     destination.mkdir(exist_ok=True)
     relatives = ['frozen.json', 'source.zip', 'subsets.json', 'data_audit.json', 'preflight.json',
                  'command_failures.jsonl', 'environment.json', 'queue.json', 'queue_failures.jsonl',
-                 'failures.jsonl', 'baseline/identity.json', 'baseline/metrics.json', 'baseline/per_image.csv',
+                 'failures.jsonl', 'analysis_implementation_checks.json', 'baseline/identity.json', 'baseline/metrics.json', 'baseline/per_image.csv',
                  'analysis/summary.json', 'analysis/per_seed.csv', 'analysis/paired_comparisons.json',
                  'analysis/incremental_gains.json']
     for label in complete:
@@ -305,15 +364,132 @@ def export_records(study, complete):
                         if p.is_file() and p.name!='manifest.json'}})
 
 
+def analyze_test(study, cfg, render=False, export=False):
+    """Test results retain validation-selected identity; never select by test score."""
+    frozen = read(study/'test_frozen.json')
+    assert frozen['source_freeze_sha256'] == sha(study/'frozen.json')
+    expected_ids = set(frozen['test_ids']); assert len(expected_ids) == 654
+    development, _ = load_completed(study, cfg); assert len(development) == 72
+
+    def result(label, checkpoint):
+        folder = study/'final_test'/label/checkpoint
+        saved = read(folder/'result.json')
+        assert saved['status'] == 'complete' and saved['identity']['test_freeze_sha256'] == sha(study/'test_frozen.json')
+        assert saved['identity']['checkpoint'] == checkpoint
+        for filename, digest in saved['files'].items(): assert sha(folder/filename) == digest
+        rows = csv_rows(folder/'per_image.csv')
+        assert len(rows) == 654 and {int(r['source_index']) for r in rows} == expected_ids
+        for metric in METRICS:
+            values = [float(r[metric]) for r in rows if r[metric] != '']
+            assert abs(np.mean(values)-saved['metrics'][metric]) < 1e-10
+        return saved, {r['sample_id']:r for r in rows}
+
+    base, base_rows = result('B0', 'original')
+    complete, rows, pending = {}, [], []
+    for job in jobs(cfg):
+        label = name(job)
+        if not all((study/'final_test'/label/c/'result.json').exists() for c in ['best','final']):
+            pending.append(label); continue
+        saved = {c:result(label,c) for c in ['best','final']}
+        dev = development[label]
+        for checkpoint,(record,_) in saved.items():
+            assert record['identity']['job'] == job
+            assert record['identity']['checkpoint_sha256'] == dev['checkpoint_sha256'][checkpoint+'.pt']
+        complete[label] = {'job':job, 'rows':{c:v[1] for c,v in saved.items()}}
+        row = {**job, 'validation_selected_best_step':dev['convergence']['best_step'],
+               'stopping_step':dev['convergence']['stop_step'],
+               'parameters':dev['parameters'],
+               'total_with_parent_seconds':dev['elapsed_seconds']+dev['parent_lora_seconds']}
+        row.update({c+'_'+metric:saved[c][0]['metrics'][metric] for c in saved for metric in METRICS})
+        row['stopping_minus_validation_selected_test_abs_rel'] = row['final_abs_rel']-row['best_abs_rel']
+        rows.append(row)
+    groups = []
+    for count in cfg['counts']:
+        for method in METHODS:
+            selected = [r for r in rows if r['count']==count and r['method']==method]
+            groups.append({'count':count, 'method':method, 'completed_seeds':len(selected),
+                           'statistics':{c+'_'+k:mean_sd([r[c+'_'+k] for r in selected]) for c in ['best','final'] for k in METRICS}
+                                        if selected else {}})
+    paired, increments = comparisons(complete, base_rows, cfg)
+    out = study/'test_analysis'; out.mkdir(exist_ok=True)
+    report = {'at':now(), 'phase':'official_654_test', 'complete_training_jobs_evaluated':len(complete),
+              'required':72, 'pending':pending, 'baseline':base['metrics'], 'groups':groups,
+              'test_freeze_sha256':sha(study/'test_frozen.json'), 'analysis_script_sha256':sha(Path(__file__)),
+              'selection':'best means selected on validation; final means actual stopping state. Test never selects a checkpoint.',
+              'test_history':frozen['test_history'],
+              'scope':'All samples are from each declared fitting subset; no training on validation or all795 refit.'}
+    write_json(out/'summary.json',report); save_csv(out/'per_seed.csv',rows)
+    write_json(out/'paired_comparisons.json',paired); write_json(out/'incremental_gains.json',increments)
+    if render:
+        plots(out, {}, rows, base['metrics'], cfg, phase='Official test (validation-selected best)')
+        render_test_cases(out, study, complete, cfg, frozen)
+    if export:
+        destination = ROOT/'results/sample_efficiency_records_20261127'
+        relatives = ['test_frozen.json','test_complete.json','live_bridge.json']
+        relatives += [p.relative_to(study).as_posix() for p in out.glob('*.json')]
+        relatives += [p.relative_to(study).as_posix() for p in out.glob('*.csv')]
+        for label in ['B0']+list(complete):
+            for checkpoint in (['original'] if label=='B0' else ['best','final']):
+                relatives += [f'final_test/{label}/{checkpoint}/{f}' for f in ['result.json','metrics.json','per_image.csv']]
+        for relative in relatives:
+            source = study/relative
+            if source.exists():
+                target=destination/relative; target.parent.mkdir(parents=True,exist_ok=True); target.write_bytes(source.read_bytes())
+        export_records(study, development)
+    print(json.dumps({'test_jobs_completed':len(complete),'required':72,'output':str(out)}))
+
+
+def render_test_cases(out, study, complete, cfg, frozen):
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    from p3_depth.data.nyuv2 import NYUv2Labeled
+    seed=cfg['seeds'][0]; destination=out/'fixed_cases'; destination.mkdir(exist_ok=True)
+    entries=[]
+    with NYUv2Labeled(ROOT/cfg['data']) as data, np.load(study/'final_test/B0/original/fixed_predictions.npz') as baseline:
+        for count in cfg['counts']:
+            available=[m for m in METHODS if f'{m}_n{count}_seed{seed}' in complete]
+            if not available: continue
+            for checkpoint in ['best','final']:
+                predictions={m:np.load(study/'final_test'/f'{m}_n{count}_seed{seed}'/checkpoint/'fixed_predictions.npz') for m in available}
+                try:
+                    for sample_id in frozen['fixed_test_preview_ids']:
+                        sample=data.load(sample_id); mask=sample.valid_gt; truth=sample.depth_m
+                        methods={'B0':baseline[str(sample_id)],**{m:predictions[m][str(sample_id)] for m in available}}
+                        fig,axes=plt.subplots(2,len(methods)+1,figsize=(3*(len(methods)+1),5.2),layout='constrained')
+                        axes[0,0].imshow(sample.rgb);axes[0,0].set_title('RGB')
+                        axes[1,0].imshow(np.ma.array(truth,mask=~mask),vmin=.001,vmax=10,cmap='viridis');axes[1,0].set_title('GT depth [m]')
+                        for col,(method,prediction) in enumerate(methods.items(),1):
+                            pred=np.clip(prediction,.001,10); error=np.abs(pred-truth)/np.maximum(truth,.001)
+                            axes[0,col].imshow(pred,vmin=.001,vmax=10,cmap='viridis');axes[0,col].set_title(method+' depth [m]')
+                            axes[1,col].imshow(np.ma.array(error,mask=~mask),vmin=0,vmax=.5,cmap='magma');axes[1,col].set_title(f'AbsRel={error[mask].mean():.4f}')
+                        for ax in axes.flat:ax.axis('off')
+                        fig.suptitle(f'Official test NYUv2 {sample_id:04d}; n={count}, seed={seed}, {checkpoint}; depth 0–10m, error 0–0.5')
+                        filename=f'n{count}_{"".join(available)}_{checkpoint}_nyuv2_{sample_id:04d}.png'
+                        fig.savefig(destination/filename,dpi=150);plt.close(fig);entries.append(filename)
+                finally:
+                    for value in predictions.values():value.close()
+    write_json(destination/'index.json',{'fixed_seed':seed,'sample_ids':frozen['fixed_test_preview_ids'],
+                                      'selection':'Frozen first/middle/last official test IDs; first predefined seed; both checkpoint types',
+                                      'files':entries})
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--render', action='store_true', help='Render fixed samples and curves from saved outputs (no inference)')
     parser.add_argument('--export-records', action='store_true', help='Copy verified compact records to results/ for version control')
+    parser.add_argument('--test', action='store_true', help='Analyze frozen 654-image test outputs; never run inference or choose checkpoints')
     args = parser.parse_args()
     cfg = load(ROOT); check_freeze(ROOT); study = outdir(ROOT)
+    if args.test:
+        analyze_test(study,cfg,args.render,args.export_records)
+        return
     out = study / 'analysis'; out.mkdir(exist_ok=True)
     complete, pending = load_completed(study, cfg)
     rows = [flatten(r) for r in complete.values()]
+    lora_parameters = read(study/'preflight.json')['methods']['L']['trainable_parameters']
+    for row in rows:
+        row['inference_adaptation_parameters'] = row['parameters'] + (lora_parameters if row['method']=='S' else 0)
     by_job = {(r['method'], r['count'], r['seed']):r for r in rows}
     for row in rows:
         parent = by_job[('L',row['count'],row['seed'])] if row['method']=='S' else None
@@ -326,6 +502,7 @@ def main():
             groups.append({'count': count, 'method': method, 'completed_seeds': len(selected),
                            'complete_three_seeds': len(selected) == 3,
                            'stable_seeds': sum(r['stable_step'] is not None for r in selected),
+                           'stable_final_metrics':{k:mean_sd([r['final_'+k] for r in selected if r['stable_step'] is not None]) for k in METRICS},
                            'statistics': {key: mean_sd([r[key] for r in selected]) for key in rows[0]
                                           if key not in ['method', 'count', 'seed', 'stop_reason']} if selected else {}})
     baseline = read(study / 'baseline' / 'metrics.json')
@@ -345,11 +522,12 @@ def main():
                         'Elapsed times on this laptop are observational; not isolated speed benchmarks.',
                         'Recorded attempt wall time includes ended failures and setup; missing end events are explicitly flagged. Resumed training-clock totals can omit work lost after the last checkpoint.',
                         'Targets/stability are predefined operational criteria, not mathematical convergence.',
+                        '100 to 200 images increases scene coverage from 100 to 187 scenes as well as image count.',
                         'This file contains no new official test evaluation.']}
     write_json(out / 'summary.json', report); save_csv(out / 'per_seed.csv', rows)
     write_json(out / 'paired_comparisons.json', paired); write_json(out / 'incremental_gains.json', increments)
     if args.render:
-        plots(out, complete, rows, baseline, cfg); render_fixed(out, study, complete, cfg)
+        plots(out, complete, rows, baseline, cfg); convergence_plots(out,rows,baseline,cfg); render_fixed(out, study, complete, cfg)
     if args.export_records:
         export_records(study, complete)
     print(json.dumps({'completed': len(complete), 'required': 72, 'output': str(out)}))

@@ -22,4 +22,6 @@ The queue resumes saved jobs and refuses a second concurrent worker. Analysis re
 
 After all 72 development stages and actual visual review, evaluate_sample_efficiency.py provides bridge → freeze → queue. The bridge must confirm cached/live inference parity on validation before test. The final test list contains B0 plus best/final for every predeclared run; it does not use test results to select a candidate. This later GPU path has not yet been runtime-validated or executed. The official test was examined in prior project experiments, so it cannot be described as a previously unseen blind test.
 
+Once frozen test outputs exist, analyze_sample_efficiency.py --test --render --export-records builds separate test tables and fixed first/middle/last test examples. In those tables, best always means the checkpoint selected on validation, even when final happens to have a better test score.
+
 Visual review records explicitly name the inspected files and scope; rendering a figure alone does not count as review. Negative examples, post-best deterioration and failed attempts are retained.

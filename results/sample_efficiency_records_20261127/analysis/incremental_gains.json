@@ -1,1 +1,220 @@
-[]
+[
+  {
+    "method": "R",
+    "lower_count": 0,
+    "higher_count": 100,
+    "checkpoint": "best",
+    "seed_ids": [
+      320112,
+      320113
+    ],
+    "additional_images": 100,
+    "zero_shot_reference": "one shared baseline, not independent seed measurements",
+    "seeds": 2,
+    "scenes": 62,
+    "images": 218,
+    "metrics": {
+      "abs_rel": {
+        "candidate_minus_reference": -0.02009477676254544,
+        "paired_seed_differences": [
+          -0.019370646542809303,
+          -0.02081890698228158
+        ],
+        "paired_seed_summary": {
+          "n": 2,
+          "mean": -0.02009477676254544,
+          "sd": 0.001024074777675057
+        },
+        "scene_bootstrap_95_ci": [
+          -0.02849703396415129,
+          -0.010396573530697438
+        ],
+        "signed_change_per_100_added_images": -0.02009477676254544
+      },
+      "rmse_m": {
+        "candidate_minus_reference": -0.03149981654435128,
+        "paired_seed_differences": [
+          -0.02504344531555316,
+          -0.0379561877731494
+        ],
+        "paired_seed_summary": {
+          "n": 2,
+          "mean": -0.03149981654435128,
+          "sd": 0.009130687755481747
+        },
+        "scene_bootstrap_95_ci": [
+          -0.06826400103842122,
+          0.0017351178177855372
+        ],
+        "signed_change_per_100_added_images": -0.03149981654435128
+      },
+      "delta1": {
+        "candidate_minus_reference": 0.04945723653849703,
+        "paired_seed_differences": [
+          0.0481536966447,
+          0.050760776432294076
+        ],
+        "paired_seed_summary": {
+          "n": 2,
+          "mean": 0.04945723653849704,
+          "sd": 0.001843483796902157
+        },
+        "scene_bootstrap_95_ci": [
+          0.024286685330939126,
+          0.0734437865068008
+        ],
+        "signed_change_per_100_added_images": 0.04945723653849703
+      },
+      "boundary_f1": {
+        "candidate_minus_reference": 0.007552118503653616,
+        "paired_seed_differences": [
+          0.007347737868351243,
+          0.00775649913895599
+        ],
+        "paired_seed_summary": {
+          "n": 2,
+          "mean": 0.007552118503653617,
+          "sd": 0.0002890378663310457
+        },
+        "scene_bootstrap_95_ci": [
+          0.004229146597271068,
+          0.01105388539407202
+        ],
+        "signed_change_per_100_added_images": 0.007552118503653616
+      },
+      "boundary_band_abs_rel": {
+        "candidate_minus_reference": -0.023262475404867318,
+        "paired_seed_differences": [
+          -0.02237125263467743,
+          -0.024153698175057203
+        ],
+        "paired_seed_summary": {
+          "n": 2,
+          "mean": -0.023262475404867318,
+          "sd": 0.0012603793286982575
+        },
+        "scene_bootstrap_95_ci": [
+          -0.03119880898424964,
+          -0.014913677577870555
+        ],
+        "signed_change_per_100_added_images": -0.023262475404867318
+      }
+    },
+    "bootstrap": {
+      "replicates": 2000,
+      "seed": 320119,
+      "estimand": "image-macro paired difference, averaged across available paired training seeds",
+      "uncertainty": "conditional scene sampling; training-seed variability reported separately",
+      "multiplicity": "descriptive intervals, no multiple-comparison correction"
+    }
+  },
+  {
+    "method": "R",
+    "lower_count": 0,
+    "higher_count": 100,
+    "checkpoint": "final",
+    "seed_ids": [
+      320112,
+      320113
+    ],
+    "additional_images": 100,
+    "zero_shot_reference": "one shared baseline, not independent seed measurements",
+    "seeds": 2,
+    "scenes": 62,
+    "images": 218,
+    "metrics": {
+      "abs_rel": {
+        "candidate_minus_reference": -0.017809264903322145,
+        "paired_seed_differences": [
+          -0.017975965259745263,
+          -0.01764256454689902
+        ],
+        "paired_seed_summary": {
+          "n": 2,
+          "mean": -0.01780926490332214,
+          "sd": 0.00023574990490600865
+        },
+        "scene_bootstrap_95_ci": [
+          -0.0291199774255237,
+          -0.00580436064459485
+        ],
+        "signed_change_per_100_added_images": -0.017809264903322145
+      },
+      "rmse_m": {
+        "candidate_minus_reference": -0.014704650656872023,
+        "paired_seed_differences": [
+          -0.02031100773153424,
+          -0.009098293582209812
+        ],
+        "paired_seed_summary": {
+          "n": 2,
+          "mean": -0.014704650656872025,
+          "sd": 0.007928586210493653
+        },
+        "scene_bootstrap_95_ci": [
+          -0.06579493834940853,
+          0.033175711402882266
+        ],
+        "signed_change_per_100_added_images": -0.014704650656872022
+      },
+      "delta1": {
+        "candidate_minus_reference": 0.040809497658735296,
+        "paired_seed_differences": [
+          0.04389173342809148,
+          0.03772726188937909
+        ],
+        "paired_seed_summary": {
+          "n": 2,
+          "mean": 0.04080949765873529,
+          "sd": 0.004358939627455003
+        },
+        "scene_bootstrap_95_ci": [
+          0.0166078314028076,
+          0.06423988538661413
+        ],
+        "signed_change_per_100_added_images": 0.040809497658735296
+      },
+      "boundary_f1": {
+        "candidate_minus_reference": 0.004747286548833381,
+        "paired_seed_differences": [
+          0.007267499693882243,
+          0.0022270734037845206
+        ],
+        "paired_seed_summary": {
+          "n": 2,
+          "mean": 0.004747286548833381,
+          "sd": 0.0035641196097990517
+        },
+        "scene_bootstrap_95_ci": [
+          0.00045934836648356506,
+          0.009412993511365528
+        ],
+        "signed_change_per_100_added_images": 0.004747286548833381
+      },
+      "boundary_band_abs_rel": {
+        "candidate_minus_reference": -0.024649773275145743,
+        "paired_seed_differences": [
+          -0.025541698793476293,
+          -0.023757847756815203
+        ],
+        "paired_seed_summary": {
+          "n": 2,
+          "mean": -0.024649773275145746,
+          "sd": 0.0012613731646497095
+        },
+        "scene_bootstrap_95_ci": [
+          -0.03498622818016572,
+          -0.013864506820152665
+        ],
+        "signed_change_per_100_added_images": -0.024649773275145743
+      }
+    },
+    "bootstrap": {
+      "replicates": 2000,
+      "seed": 320119,
+      "estimand": "image-macro paired difference, averaged across available paired training seeds",
+      "uncertainty": "conditional scene sampling; training-seed variability reported separately",
+      "multiplicity": "descriptive intervals, no multiple-comparison correction"
+    }
+  }
+]
