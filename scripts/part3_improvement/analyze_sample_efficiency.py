@@ -347,7 +347,7 @@ def convergence_plots(out, rows, baseline, cfg):
     colors = dict(zip(METHODS,['#2171b5','#d95f0e','#238b45','#756bb1']))
     fig,axes=plt.subplots(2,3,figsize=(14,8),layout='constrained')
     items=[('best_step','Validation best'),('stop_step','Actual stop'),('stable_step','Stable at end'),
-           ('target_0_10_step','AbsRel <= 0.10 for three evaluations'),('target_0_09_step','AbsRel <= 0.09 for three evaluations'),
+           ('target_0_10_confirmed_step','AbsRel <= 0.10: third qualifying evaluation'),('target_0_09_confirmed_step','AbsRel <= 0.09: third qualifying evaluation'),
            ('total_with_parent_steps','Total updates including parent L')]
     for ax,(key,title) in zip(axes.flat,items):
         plotted=False
@@ -362,7 +362,9 @@ def convergence_plots(out, rows, baseline, cfg):
             if points:
                 x,y,error=zip(*points);ax.errorbar(x,y,yerr=error,marker='o',label=method,color=colors[method],capsize=3);plotted=True
         ax.set_title(title);ax.set_xlabel('Unique fitting images');ax.set_ylabel('Attempted updates');ax.grid(alpha=.2)
-        if plotted:ax.legend(fontsize=7)
+        if plotted:
+            ax.legend(fontsize=7)
+            ax.set_ylim(bottom=0)
         else:
             ax.text(.5,.5,'Not observed in completed runs',ha='center',va='center',transform=ax.transAxes)
             ax.set_axis_off()

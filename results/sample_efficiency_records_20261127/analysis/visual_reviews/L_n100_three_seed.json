@@ -1,0 +1,284 @@
+{
+  "status": "reviewed_group",
+  "at": "2026-11-27T05:54:37.121046+00:00",
+  "reviewer": "assistant directly inspected the complete three-seed learning curves, stopping-performance chart and corrected threshold-confirmation chart",
+  "scope": "100 fitting images, full218 validation; all three predefined seeds of R and L complete; J/S and later sizes still pending",
+  "files_reviewed": {
+    "analysis/visual_reviews/L_n100_three_seed/curves_n100.png": "7604c87a00a0e6b9c7c194c5b82d3a7dc79b682537b5238bd86ede17a8f234b0",
+    "analysis/visual_reviews/L_n100_three_seed/stopping_performance.png": "1461d09fe4a89a850610d18f6877f518b9cf7fa5cc30e5ebce7a20927da476fa",
+    "analysis/visual_reviews/L_n100_three_seed/convergence_steps.png": "30234053c24edbbd9e3efe2157b76e144bfdf67342dbb3f0e64717002f78fd6b"
+  },
+  "fixed_image_review": "analysis/visual_reviews/L_n100_seed320112.json",
+  "result_sources": {
+    "runs/L_n100_seed320112/result.json": "6b8638597a534617f71b02a8642a8d0349cd397bf77a330e5f28d88cea6a2598",
+    "runs/L_n100_seed320113/result.json": "e56beffdbdc25487a5c9baab9d03a80ceadfd280aec17dfa5b6e66fcaa87f636",
+    "runs/L_n100_seed320114/result.json": "9781c16fd65b6512736b29f8895ed1611f0bc441472934419a2a59d3689fbb0a"
+  },
+  "groups": [
+    {
+      "method": "R",
+      "completed_seeds": 3,
+      "stable_seeds": 0,
+      "statistics": {
+        "best_abs_rel": {
+          "n": 3,
+          "mean": 0.10061487449817309,
+          "sd": 0.0007614509768107215
+        },
+        "best_rmse_m": {
+          "n": 3,
+          "mean": 0.4442672708563083,
+          "sd": 0.006457854000077371
+        },
+        "best_delta1": {
+          "n": 3,
+          "mean": 0.913829139464719,
+          "sd": 0.0015132603338758356
+        },
+        "best_boundary_f1": {
+          "n": 3,
+          "mean": 0.45842114804336237,
+          "sd": 0.0005354725040337211
+        },
+        "best_boundary_band_abs_rel": {
+          "n": 3,
+          "mean": 0.15968135879034057,
+          "sd": 0.0009089898899146997
+        },
+        "final_abs_rel": {
+          "n": 3,
+          "mean": 0.10279779563523496,
+          "sd": 0.0004455184404994424
+        },
+        "final_boundary_f1": {
+          "n": 3,
+          "mean": 0.45698040800577816,
+          "sd": 0.0031368674697243026
+        },
+        "total_seconds": {
+          "n": 3,
+          "mean": 624.7655594999281,
+          "sd": 111.59909834549775
+        },
+        "peak_allocated_mib": {
+          "n": 3,
+          "mean": 768.7060546875,
+          "sd": 0.0
+        },
+        "parameters": {
+          "n": 3,
+          "mean": 27089.0,
+          "sd": 0.0
+        }
+      }
+    },
+    {
+      "method": "L",
+      "completed_seeds": 3,
+      "stable_seeds": 1,
+      "statistics": {
+        "best_abs_rel": {
+          "n": 3,
+          "mean": 0.09527668728073237,
+          "sd": 0.002556024349513181
+        },
+        "best_rmse_m": {
+          "n": 3,
+          "mean": 0.4163937598982634,
+          "sd": 0.009018247024887871
+        },
+        "best_delta1": {
+          "n": 3,
+          "mean": 0.911829405331069,
+          "sd": 0.0072137252781074804
+        },
+        "best_boundary_f1": {
+          "n": 3,
+          "mean": 0.460346253458135,
+          "sd": 0.004552107152138935
+        },
+        "best_boundary_band_abs_rel": {
+          "n": 3,
+          "mean": 0.15150070887941927,
+          "sd": 0.0011668355939939785
+        },
+        "final_abs_rel": {
+          "n": 3,
+          "mean": 0.09568792104806434,
+          "sd": 0.0028484781207821315
+        },
+        "final_boundary_f1": {
+          "n": 3,
+          "mean": 0.4639151510124278,
+          "sd": 0.0049508793759080105
+        },
+        "total_seconds": {
+          "n": 3,
+          "mean": 1480.3507024999708,
+          "sd": 272.1347614016085
+        },
+        "peak_allocated_mib": {
+          "n": 3,
+          "mean": 4019.6923828125,
+          "sd": 0.0
+        },
+        "parameters": {
+          "n": 3,
+          "mean": 73728.0,
+          "sd": 0.0
+        }
+      }
+    }
+  ],
+  "per_seed_convergence": [
+    {
+      "seed": "320112",
+      "best_step": "2500",
+      "stop_step": "3500",
+      "stable_step": "",
+      "target_0_10_step": "600",
+      "target_0_10_confirmed_step": "800",
+      "target_0_09_confirmed_step": "",
+      "amp_skips": "2"
+    },
+    {
+      "seed": "320113",
+      "best_step": "1900",
+      "stop_step": "2400",
+      "stable_step": "",
+      "target_0_10_step": "100",
+      "target_0_10_confirmed_step": "300",
+      "target_0_09_confirmed_step": "",
+      "amp_skips": "1"
+    },
+    {
+      "seed": "320114",
+      "best_step": "2000",
+      "stop_step": "3000",
+      "stable_step": "1700",
+      "target_0_10_step": "100",
+      "target_0_10_confirmed_step": "300",
+      "target_0_09_confirmed_step": "",
+      "amp_skips": "1"
+    }
+  ],
+  "paired_best": [
+    {
+      "candidate": "L",
+      "reference": "B0",
+      "seed_ids": [
+        320112,
+        320113,
+        320114
+      ],
+      "metrics": {
+        "abs_rel": {
+          "difference": -0.025568908840071538,
+          "paired_seed_sd": 0.0025560243495131845,
+          "scene_ci": [
+            -0.038356273576773715,
+            -0.013469185990528045
+          ]
+        },
+        "rmse_m": {
+          "difference": -0.05929343415210348,
+          "paired_seed_sd": 0.009018247024887864,
+          "scene_ci": [
+            -0.11430404755828746,
+            -0.014373716558146118
+          ]
+        },
+        "delta1": {
+          "difference": 0.047013753007340675,
+          "paired_seed_sd": 0.007213725278107546,
+          "scene_ci": [
+            0.017098843647001503,
+            0.07605921790547257
+          ]
+        },
+        "boundary_f1": {
+          "difference": 0.009191473818694802,
+          "paired_seed_sd": 0.00455210715213894,
+          "scene_ci": [
+            -5.1021573462784276e-05,
+            0.018654474067567945
+          ]
+        },
+        "boundary_band_abs_rel": {
+          "difference": -0.0315463800071464,
+          "paired_seed_sd": 0.0011668355939939742,
+          "scene_ci": [
+            -0.041901650874064535,
+            -0.020694841896458684
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "L",
+      "reference": "R",
+      "seed_ids": [
+        320112,
+        320113,
+        320114
+      ],
+      "metrics": {
+        "abs_rel": {
+          "difference": -0.005338187217440725,
+          "paired_seed_sd": 0.0020310784895156775,
+          "scene_ci": [
+            -0.012539430490833123,
+            0.0017147633455669004
+          ]
+        },
+        "rmse_m": {
+          "difference": -0.02787351095804487,
+          "paired_seed_sd": 0.007143849623141208,
+          "scene_ci": [
+            -0.054544992740230454,
+            0.0006956678293497019
+          ]
+        },
+        "delta1": {
+          "difference": -0.0019997341336500116,
+          "paired_seed_sd": 0.007376592902585362,
+          "scene_ci": [
+            -0.01909863308225852,
+            0.013384931987759885
+          ]
+        },
+        "boundary_f1": {
+          "difference": 0.001925105414772582,
+          "paired_seed_sd": 0.004454550319810181,
+          "scene_ci": [
+            -0.006733304686815433,
+            0.010547653237690795
+          ]
+        },
+        "boundary_band_abs_rel": {
+          "difference": -0.008180649910921264,
+          "paired_seed_sd": 0.0014676914027548327,
+          "scene_ci": [
+            -0.013201500347624809,
+            -0.0031467750312053344
+          ]
+        }
+      }
+    }
+  ],
+  "conclusions": [
+    "All three L seeds improve validation-selected AbsRel over corresponding R seeds. L mean .09528 versus R .10061 is about5.31% lower; the paired scene interval still crosses zero, so this is not a scene-robust superiority claim.",
+    "Versus B0, L improves AbsRel by about21.16% on this validation set. Descriptive scene intervals support lower AbsRel/RMSE/boundary-band AbsRel and higher delta1, while the boundary-F1 interval barely crosses zero. No test inference is implied.",
+    "L mean boundary-band AbsRel is .15150 versus R .15968. Its paired scene interval remains negative. Macro F1 .46035 versus .45842 is a much smaller and uncertain difference; depth accuracy near edges and recovery of edge locations are distinct.",
+    "LoRA training loss decreases similarly across seeds, while validation plateaus at different levels. Between-seed standard deviation of L best AbsRel (.00256) exceeds R (.00076). Individual curves look flatter later than R, but strict terminal stability holds for only1/3 LoRA seeds and0/3 R seeds.",
+    "LoRA seed320114 is stable from1700 through3000 by the frozen definition, despite its raw best being2000. That definition is retrospective, not an online stopping rule.",
+    "The .10 target is confirmed at800/300/300 updates for L; the qualifying windows start600/100/100. R attains neither target and no L seed attains .09. The plot now uses confirmation steps explicitly; raw start steps are retained in tables.",
+    "L best steps2500/1900/2000 differ from stops3500/2400/3000. For every L seed, stopping-final boundary F1 exceeds AbsRel-selected-best F1, even though final AbsRel worsens slightly. No metric-specific checkpoint selection is added.",
+    "Mean recorded training-run elapsed L24.67minutes versus cached R10.41minutes. L uses4019.69MiB peak allocated memory versus cached R768.71MiB and73728 versus27089 trainable parameters. These are observed run costs, not isolated/end-to-end benchmarks; shared cache preparation is recorded separately.",
+    "The stable-only stopping point is a conditional subset of one seed and must not be presented as the three-seed LoRA outcome.",
+    "Individual-image conclusions retain the predefined first-seed six-case review, including clear regressions and persistent thin/complex-boundary failures. This three-seed curve review does not claim new visual inspection of other seed images."
+  ],
+  "completed_stages": 6,
+  "required_stages": 72,
+  "chart_correction": "threshold panels show third qualifying evaluation rather than first window step; attempted-update axes start atzero; numerical metrics and training remain unchanged"
+}
