@@ -1,0 +1,46 @@
+{
+  "status": "reviewed_subset",
+  "at": "2026-11-27T04:17:00.326909+00:00",
+  "reviewer": "assistant directly inspected rendered PNGs",
+  "job": "R_n100_seed320112",
+  "checkpoint": "best",
+  "checkpoint_sha256": "ac597dfa9e6c79efab9a711740714f2ebeffabd9bfcb838c6f3789d50c251fce",
+  "files_reviewed": {
+    "analysis/visual_reviews/R_n100_seed320112/curves_n100.png": "529d925fa7ee1af2cad4a610cf104955e3a0c08f7cb261ca390b998ed504cca9",
+    "analysis/visual_reviews/R_n100_seed320112/n100_nyuv2_0005.png": "6602e8af55692cc575d3b6f03c289f3ee8259a55e49b890c2964e509efffdcf5",
+    "analysis/visual_reviews/R_n100_seed320112/n100_nyuv2_0080.png": "64ea1ac661b05b7bb7aafb4df81b68a07608971a077e4773edbc9dd318ce3d2c",
+    "analysis/visual_reviews/R_n100_seed320112/n100_nyuv2_0226.png": "3ed28c5a3630af83a6d62a89eb3ba43f0a97f469055390daa2cf89c8092ce535",
+    "analysis/visual_reviews/R_n100_seed320112/n100_nyuv2_0246.png": "572c4a95ba39b8cd2a7dead942bcb0c44cc7b1dc587853e020ed7d513bb9893f",
+    "analysis/visual_reviews/R_n100_seed320112/n100_nyuv2_0598.png": "702381d1255f3204f5ee798d3e13e15c75a29bfc1ee37eae5b98266463927f09",
+    "analysis/visual_reviews/R_n100_seed320112/n100_nyuv2_1440.png": "0d16f930de24f70f550b6da22af2801a2b92cf047adf39dbbd931668b13e7f6b"
+  },
+  "scope": "First completed seed only; not the study final visual review",
+  "observations": [
+    {
+      "sample_id": 5,
+      "observation": "Table and whiteboard regions show lower broad-area relative error, while chair rims and occlusion edges remain bright. Wall error map gains RGB-texture-like variations; no general boundary-sharpness improvement established."
+    },
+    {
+      "sample_id": 598,
+      "observation": "Overall relative error worsens from about .0481 to .0574. Coffee-table surface and back-wall regions become brighter in the error map; table-leg detail remains incomplete."
+    },
+    {
+      "sample_id": 1440,
+      "observation": "Overall error worsens from about .0882 to .1195. Chair and right counter remain high-error areas; flat-wall error becomes more textured. The correction has not repaired the missing/thin geometry."
+    },
+    {
+      "sample_id": 226,
+      "observation": "Large improvement from about .5841 to .4031, especially background wall and person region, but substantial errors remain on foreground furniture and left branches. This is a scale/value correction benefit with persistent hard geometry."
+    },
+    {
+      "sample_id": 246,
+      "observation": "Broad wall/floor error decreases (.1129 to .0945); narrow shelf and foreground contours retain local error. Ceiling/right background saturated errors remain."
+    },
+    {
+      "sample_id": 80,
+      "observation": "Near unchanged overall error (.0986 to .0996). Shelf region changes locally; curtain/wall error becomes textured. No clear net geometry benefit."
+    }
+  ],
+  "curve_review": "Validation improves to best at step900, then fluctuates higher until patience stop1900 while online train loss continues to fall. This is consistent with a generalization/overfitting warning, not proof of its cause. The predefined stable-at-end criterion is not met.",
+  "quantitative_context": "Validation AbsRel .1208456 -> .1014749; macro boundary F1 .4511548 -> .4585025; boundary-band AbsRel .1830471 -> .1606758. One seed does not establish seed-stable gains."
+}
