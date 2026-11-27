@@ -1,0 +1,285 @@
+{
+  "at": "2026-11-27T04:01:47.129730+00:00",
+  "config": {
+    "study_id": "sample_efficiency_20261127",
+    "output": "outputs/part3_improvement/sample_efficiency_20261127",
+    "plan": "docs/sample_efficiency_plan_20261127.md",
+    "split": "configs/edge_association_split.json",
+    "data": "data/nyuv2/nyu_depth_v2_labeled.mat",
+    "disk_inputs": "outputs/part3_improvement/stylesketch_20261120/disk_inputs",
+    "features": "outputs/part3_improvement/stylesketch_20261120/features",
+    "subset_seed": 320118,
+    "counts": [
+      100,
+      200,
+      300,
+      400,
+      500,
+      577
+    ],
+    "seeds": [
+      320112,
+      320113,
+      320114
+    ],
+    "primary_order": [
+      100,
+      200,
+      400,
+      300,
+      500
+    ],
+    "stage_first": [
+      100,
+      400
+    ],
+    "stage_last": [
+      200,
+      300,
+      500,
+      577
+    ],
+    "methods": [
+      "R",
+      "L",
+      "J"
+    ],
+    "refiner": {
+      "branches": [
+        "init",
+        "mid",
+        "late"
+      ],
+      "widths": [
+        6,
+        5,
+        5
+      ],
+      "fusion": "flat",
+      "output": "additive",
+      "drop_rgb": false,
+      "extra_inputs": []
+    },
+    "lora": {
+      "target": "encoder_last4_attention",
+      "rank": 8,
+      "alpha": 8,
+      "dropout": 0
+    },
+    "feature_hw": [
+      240,
+      320
+    ],
+    "training": {
+      "max_steps": 6000,
+      "batch_size": 8,
+      "microbatch": 8,
+      "evaluate_every_steps": 100,
+      "minimum_steps": 1000,
+      "patience_evaluations": 10,
+      "significant_relative_improvement": 0.002,
+      "learning_rate": 0.0003,
+      "minimum_learning_rate": 1e-05,
+      "weight_decay": 0.001,
+      "clip_gradient_norm": 1,
+      "initial_amp_scale": 128,
+      "loss": "abs_rel",
+      "augmentation": "none"
+    },
+    "diagnostics": {
+      "stable_relative_tolerance": 0.01,
+      "stable_span_steps": 500,
+      "targets": [
+        0.1,
+        0.09
+      ],
+      "target_consecutive_evaluations": 3
+    },
+    "fixed_visual_ids": [
+      5,
+      598,
+      1440,
+      226,
+      246,
+      80
+    ],
+    "resource": {
+      "minimum_available_commit_gib": 9,
+      "minimum_free_disk_gib": 10
+    },
+    "scope": "72 training stages; validation selection then one frozen test evaluation; no all795 refit"
+  },
+  "subsets_sha256": "706ed4ede581381f7e1fa20b98a05399c7226ec1602955eea2e99f366da62d33",
+  "data_audit_sha256": "58eaaa27f7b0a4f12f4b44124d7d82deb7b77349db17453a7995bc91cd3deae6",
+  "preflight": {
+    "status": "pass",
+    "protocol": {
+      "nested": true,
+      "disjoint": true,
+      "batch_repeatable": true,
+      "early_stop_and_raw_best_separate": true,
+      "stable_diagnostic": true
+    },
+    "methods": {
+      "R": {
+        "zero_delta": 0.0,
+        "trainable_parameters": 27089,
+        "all_trainable_received_gradients": true,
+        "resume_parameters_bitwise_equal": true,
+        "resume_next_update_bitwise_equal": true,
+        "resume_next_update_max_abs_delta": 0.0,
+        "resume_next_update_tolerance": {
+          "atol": 1e-07,
+          "rtol": 0.0001
+        },
+        "validation_buffers_unchanged": true,
+        "frozen_foundation_unchanged": true,
+        "amp_skips": 0,
+        "amp_scale": 128.0,
+        "peak_allocated_mib": 771.953125,
+        "f3_to_lora_live_feature_gradient": false
+      },
+      "L": {
+        "zero_delta": 0.0,
+        "trainable_parameters": 73728,
+        "all_trainable_received_gradients": true,
+        "resume_parameters_bitwise_equal": true,
+        "resume_next_update_bitwise_equal": false,
+        "resume_next_update_max_abs_delta": 9.566792869009078e-08,
+        "resume_next_update_tolerance": {
+          "atol": 1e-07,
+          "rtol": 0.0001
+        },
+        "validation_buffers_unchanged": true,
+        "frozen_foundation_unchanged": true,
+        "amp_skips": 0,
+        "amp_scale": 128.0,
+        "peak_allocated_mib": 4025.5439453125,
+        "f3_to_lora_live_feature_gradient": false
+      },
+      "J": {
+        "zero_delta": 0.0,
+        "trainable_parameters": 100817,
+        "all_trainable_received_gradients": true,
+        "resume_parameters_bitwise_equal": true,
+        "resume_next_update_bitwise_equal": false,
+        "resume_next_update_max_abs_delta": 9.487848728895187e-08,
+        "resume_next_update_tolerance": {
+          "atol": 1e-07,
+          "rtol": 0.0001
+        },
+        "validation_buffers_unchanged": true,
+        "frozen_foundation_unchanged": true,
+        "amp_skips": 0,
+        "amp_scale": 128.0,
+        "peak_allocated_mib": 4174.8935546875,
+        "f3_to_lora_live_feature_gradient": true
+      },
+      "S": {
+        "zero_delta": 0.0,
+        "trainable_parameters": 27089,
+        "all_trainable_received_gradients": true,
+        "resume_parameters_bitwise_equal": true,
+        "resume_next_update_bitwise_equal": false,
+        "resume_next_update_max_abs_delta": 8.940696716308594e-08,
+        "resume_next_update_tolerance": {
+          "atol": 1e-07,
+          "rtol": 0.0001
+        },
+        "validation_buffers_unchanged": true,
+        "frozen_foundation_unchanged": true,
+        "amp_skips": 0,
+        "amp_scale": 128.0,
+        "peak_allocated_mib": 1735.11376953125,
+        "f3_to_lora_live_feature_gradient": false
+      }
+    },
+    "fitting_only_updates_per_method": 22,
+    "engineering_weights_excluded": true,
+    "microbatch": 8
+  },
+  "sources": {
+    "configs/sample_efficiency_20261127.json": "af9047c842acb3a20be7b0318af5e4a4c59bbc62799a0f08d14ad6e321130f66",
+    "docs/sample_efficiency_plan_20261127.md": "9abab5c7de2222cba71a4d66104f7ce33cd423ab3f7cec59821b98226ca6c68c",
+    "src/p3_depth/__init__.py": "7b71caaebb8a32ef5f450a0eb64777c6a1d9440b72f445ed8d044a8e475f53ed",
+    "src/p3_depth/adaptation_study/__init__.py": "0a317e4add05abdefe74ac1bd75b0c05811afa30f3cf4b22417fc3773f37f960",
+    "src/p3_depth/adaptation_study/common.py": "4c43df7286cfcf1190ac9f69efe3cd678e4ff4d161cbb6228d9f8fb4b4be9b92",
+    "src/p3_depth/adaptation_study/data.py": "69f7b770a8a0034f9fb7fad89c17b63b29d9c98d43f5c91662ea2580a963d177",
+    "src/p3_depth/adaptation_study/lora.py": "b10b9d6624db2f628252a4a57db6f285a8186d732ecf74f0eb94bd11cd346b55",
+    "src/p3_depth/adaptation_study/lora_numerics.py": "29f40e22194bd079635a448c8faa974b38df0e20ba10164dfb9b58db4a36f940",
+    "src/p3_depth/adaptation_study/lora_training.py": "93dd672b2acb5d46859336cce8c0f356a062da235aaf8b2497e38f48ce68e999",
+    "src/p3_depth/adaptation_study/model.py": "e980b98e1f3761f5274d92822dfc69bce89a46527c5fc943f562feefcc27eddd",
+    "src/p3_depth/adaptation_study/residual_training.py": "3cb4594e963daf6653a0a19319f26747484d2a5b7b980997a82ffbd1618f2cb2",
+    "src/p3_depth/application.py": "a2b7de8971ca5c0bf8d4dbff69e085d088538b9bc4f7280c55d2b326c8605f65",
+    "src/p3_depth/data/__init__.py": "0c1a5225256b49e2d167f203432052b7f7923adacefcb69dce888f112731d941",
+    "src/p3_depth/data/middlebury.py": "5ae8e511c623d6a35ac8dcfd8d20bb82d23fbc04dac2bf37a75297814487fdc1",
+    "src/p3_depth/data/nyuv2.py": "712d14614738689ca3333d297894c620e27fb779e32f98ab282b228fac83f8c6",
+    "src/p3_depth/data/video.py": "ef1d6ded914bca94d2f51db5f0b3eeccc7b57582bcdde9a282833164ede41651",
+    "src/p3_depth/encoder_residual/__init__.py": "52fd01f008831243b2ce88dc530cb875e1c51cec660d2f5fbfe2101056a282e2",
+    "src/p3_depth/encoder_residual/common.py": "e86462d0f92c67e5159de8057dea7e359ef31f7c58e50e9a728dbf203f14dc0a",
+    "src/p3_depth/encoder_residual/data.py": "816301fdb8e2763fec22d679e9f3cf56bd88f28ad10f2258d10d5ed701a2469b",
+    "src/p3_depth/encoder_residual/model.py": "d9b00b2a96ca6310be557295663c3bbc2bee236a91c1142a5bcf0b6eee9b44da",
+    "src/p3_depth/encoder_residual/preflight.py": "acc3dafbcd4574ca61a958c91ba037e63a535844428a60f427dee47d8426dc3b",
+    "src/p3_depth/encoder_residual/training.py": "4401c8040aaad27470c591e8e2556eff059173f776962b830ec73e2618b05730",
+    "src/p3_depth/evaluation/__init__.py": "e1e48562c5d08b398a801b2ec52ba71bb5be4c3c26ff6b47c50f33dc96759810",
+    "src/p3_depth/evaluation/benchmark.py": "10a8b1657b76c06e8daea09fe6bf88277387294739e01c6326928df81b624193",
+    "src/p3_depth/evaluation/boundary.py": "760c87008a82971de1b3de3e5b40d792b55b455749642994f32b72c71713ec08",
+    "src/p3_depth/evaluation/course.py": "dae680a3446415548b53c7a74f5424f2d22097ea40f72ee03898fae3df11ebaf",
+    "src/p3_depth/evaluation/depth.py": "e2c0c1b533680f67077dd3dbcd9b00cd1cbdec8cf41b6fc0ce0b5ff3000f0433",
+    "src/p3_depth/evaluation/depth_edge_detectors.py": "0f48aeb368e487da0453e0b794444450345650641b8de3eb39b4a56c7391a4ea",
+    "src/p3_depth/evaluation/rgb_depth_edges.py": "1d67b1ed441005c29fe3878deed62fe6d7b37655459f0dc40288eab585e74e17",
+    "src/p3_depth/evaluation/stereo.py": "25179c54b6c0abf0a0e5f5371f908c4b7d7e91622a70aabb4f0e8c7511d258cc",
+    "src/p3_depth/evaluation/temporal.py": "10a1402d124a457173ae3ce62f2b66fc7c4c6042f056f636d7c54b87a53a27ee",
+    "src/p3_depth/models/__init__.py": "6c0e857b625a7915028f94c67cd345c23e7479401bdea0f3c1ddaff0a0ba7b07",
+    "src/p3_depth/models/runtime.py": "2d93b6074a2b524e5c3a96cb0034d7fd5cd26599d7b9d1b2d34860381325eb99",
+    "src/p3_depth/models/stereo_sgbm.py": "39684705097ad8c5fa9dfde7bec663579ee57d6556d9987b409f73712a5dba46",
+    "src/p3_depth/models/streaming.py": "1ac6a8c295b98e9e4a5c4b357d335c98141d136e0351416327eb790a12cf678b",
+    "src/p3_depth/models/video.py": "bfa6cfe29c7ba591867d302e70f1325603f388edeb7c91c14f5d9e35f330f879",
+    "src/p3_depth/residual/__init__.py": "9a25f87fe0e69c0a353ecb858b8d9ffa08eeecd0b4a3dcc916870861e97bdaf6",
+    "src/p3_depth/residual/cache.py": "5af86d22282b99f86ab67af62ab71cb0d59c297b170b8cc21b18167bd99d5efd",
+    "src/p3_depth/residual/data.py": "d671f329e6148211c9b6e6f193a4284b6a7d2f4d1d17c9a8b41c293dc2709feb",
+    "src/p3_depth/residual/deployment.py": "0c424b006c03e339bcc7a0b2be824540e3eced2dda668bbb9b02adf7e88884d4",
+    "src/p3_depth/residual/edges.py": "b7d8853b656275bb72284d2b17af53cd33c8ac34ae621d978b247e0566b39ef0",
+    "src/p3_depth/residual/evaluation.py": "55015617f65dd2de8cdc95e5c7ba92569b7f5bde1217c2e4966d3fe986fdc27e",
+    "src/p3_depth/residual/final_evaluation.py": "842db143a6d08b5ac71dc4fc9c8c236c6ba86502ce446f46bb4772e4903eeb6d",
+    "src/p3_depth/residual/followup.py": "cfc4dce63c2f612f009a658cbcb4fbac22c073ba6224dbd138fa27cb0101fe19",
+    "src/p3_depth/residual/job_inputs.py": "ba6e5a99ddb26801943b9f521f3340e026a2eb5055d007a1365e16ea8596d811",
+    "src/p3_depth/residual/job_schedule.py": "d3c48eb7219bb7bf86cf3e3e7c735764af3f9278866c60ac210355b4fb9e4ec3",
+    "src/p3_depth/residual/jobs.py": "411e7cd9cc677489c0a1aebd12613c01ede87f729389bac8ea51ee462aa12937",
+    "src/p3_depth/residual/locking.py": "8745b86a25a2c10be806b3a248b77324739b239878f0ef6d8db45659d3811943",
+    "src/p3_depth/residual/model.py": "c4942301aa5c8b0a731b85f1452128cdec6a633bfd8f9ae2f93b5fa5e74ee828",
+    "src/p3_depth/residual/records.py": "4b86fbce54efa2ce916b9ad382b6256d6b3ce4bcc03e3e19604f1fa0138118ce",
+    "src/p3_depth/residual/selection.py": "cfe3325ebb9b9c3a57aa2fd4e5ece356a0ac5e322506cc1327dfbe2c8be5664a",
+    "src/p3_depth/residual/size_controls.py": "ecfc88c3915bdca9c571b9f6b248e2455856c0920f803a363d0efa520d3e4f09",
+    "src/p3_depth/residual/training.py": "521eeac82e072680f39f78221d4b2eed23daadb9022e7b1f386325af1720f36b",
+    "src/p3_depth/residual_inputs/__init__.py": "9bb9dbffcf50dd640efb58f6dc4b3cb9e78bba737ee6b33028f2f3252f40197d",
+    "src/p3_depth/residual_inputs/common.py": "77d9d6df3821bdd8c00eefd9d6b42ad5d1a62474e6a7df8575278d8bd620af37",
+    "src/p3_depth/residual_inputs/data.py": "b471d2ced6ced09434282a95abce9dca3fd3dd5e89f1efb698c6f36f1ca8a3cb",
+    "src/p3_depth/residual_inputs/evaluation.py": "c48694c890fc9beb448ba05908ad130f20ffacfa36d9a0039c1a440ba7cd00d9",
+    "src/p3_depth/residual_inputs/features.py": "f76695f769d7894648665a9640169739544ebaaecc1ef714ed613deb74b7ba49",
+    "src/p3_depth/residual_inputs/final.py": "ceb67cf7f535609b54cf4420e44dbe6b719ce91d196791af1b8855ecc00f24e0",
+    "src/p3_depth/residual_inputs/model.py": "ddd4288c79d57238426f7b7dce1cb12e416c73edbacebeddcc8880cd32423fd7",
+    "src/p3_depth/residual_inputs/parity.py": "435d787c0aa18d32b40ae002a9b16e1b829a2f667bdf4eaab71599ac2e919b06",
+    "src/p3_depth/residual_inputs/training.py": "1175986dd96eff6e71f53226f95c00bdc16dfe1bffa84debe07a49099015710c",
+    "src/p3_depth/sample_efficiency/__init__.py": "c846202b9ac0d50f77e94db465600269cb2af11d441a192537fc7e780a979050",
+    "src/p3_depth/sample_efficiency/data.py": "b01573c4798f323e7b61a5e725fba56d90b4785819a7ce6e1ed0dd82680fdeab",
+    "src/p3_depth/sample_efficiency/model.py": "a74542584b6374cb155fc5a47b63958a3772edc1d2f54e49431c636899a8fd09",
+    "src/p3_depth/sample_efficiency/preflight.py": "d69d43ef608fe633948bb5941803425c4e81a3352c9e3928e6c8d45a795d4532",
+    "src/p3_depth/sample_efficiency/protocol.py": "cd712bc18721e9e913c3ce703ce230ed2dca6a4c057b014ce1dae09dcf5a4d63",
+    "src/p3_depth/sample_efficiency/training.py": "a13766103d7b03efb1714d4cd1e03e2c1681b3fe4937d96ec8ac84706558876b",
+    "src/p3_depth/stylesketch_residual/__init__.py": "5e8a86fa9eb371fa0b0fa81edf8d889672f45ab4952fb30413ff590dddf307a0",
+    "src/p3_depth/stylesketch_residual/common.py": "f908a617e72dcb4bc48c5b67c7ec0f6055e940a1dbf43b0cc488ff3a8f80cb03",
+    "src/p3_depth/stylesketch_residual/data.py": "27b5bc6d851f4da79f08e4b8c0d73c1b886065b35200748348f2da0f3e9c7fda",
+    "src/p3_depth/stylesketch_residual/low_memory.py": "e52e97a465ffcfc98793737862a162d32409b7a3578cd12ec7be9d6a3d746585",
+    "src/p3_depth/stylesketch_residual/model.py": "c9e2abb0ef55eef782624a0a6a256805c722c6a45a4b3e5a3af32cacf874f01a",
+    "src/p3_depth/stylesketch_residual/preflight.py": "56aacc9f51c8f003b22a6a4e7e3ab5832a1720012be0b9b0104c79fa9e36cac9",
+    "src/p3_depth/stylesketch_residual/training.py": "2b2dfe305ff45bcb39e0df6f1f50aaa35a41fe03617be66012b549d55321b17f",
+    "src/p3_depth/temporal/__init__.py": "e6a3cc6ce6eb292fc0b1438f69eed524a6bd43b70de0d2d80e7e90fa4e12a487",
+    "src/p3_depth/temporal/flow.py": "b0e77104ae524031db548bf6c3bcc3a83c789a41713bc443a7433e4d501006cd",
+    "src/p3_depth/temporal/fusion.py": "98a2a1ca28c2f1e4cfb49c58a43af7d1ef8128ecb2ac52c20cabc20c13f66beb",
+    "src/p3_depth/temporal/refinement.py": "a48b19c98b396dec0012f32f0ba13b41219a48afe457723a22a29c5e68dba4cb",
+    "src/p3_depth/temporal/selection.py": "12ed4ef16b779657d11e19712af12c43ef342b9915308c30ba7b04bd4c3a9cbf",
+    "src/p3_depth/visualization/__init__.py": "ee0c08bc1675a14183d02b5dc8b0e835e308e526dd12c1659f59fe2e55d832bf",
+    "src/p3_depth/visualization/stereo.py": "3abe07b869f203788880e2d52610f92e31235713780fc37d1bb74d4255181981"
+  }
+}

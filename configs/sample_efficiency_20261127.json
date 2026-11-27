@@ -1,0 +1,109 @@
+{
+  "study_id": "sample_efficiency_20261127",
+  "output": "outputs/part3_improvement/sample_efficiency_20261127",
+  "plan": "docs/sample_efficiency_plan_20261127.md",
+  "split": "configs/edge_association_split.json",
+  "data": "data/nyuv2/nyu_depth_v2_labeled.mat",
+  "disk_inputs": "outputs/part3_improvement/stylesketch_20261120/disk_inputs",
+  "features": "outputs/part3_improvement/stylesketch_20261120/features",
+  "subset_seed": 320118,
+  "counts": [
+    100,
+    200,
+    300,
+    400,
+    500,
+    577
+  ],
+  "seeds": [
+    320112,
+    320113,
+    320114
+  ],
+  "primary_order": [
+    100,
+    200,
+    400,
+    300,
+    500
+  ],
+  "stage_first": [
+    100,
+    400
+  ],
+  "stage_last": [
+    200,
+    300,
+    500,
+    577
+  ],
+  "methods": [
+    "R",
+    "L",
+    "J"
+  ],
+  "refiner": {
+    "branches": [
+      "init",
+      "mid",
+      "late"
+    ],
+    "widths": [
+      6,
+      5,
+      5
+    ],
+    "fusion": "flat",
+    "output": "additive",
+    "drop_rgb": false,
+    "extra_inputs": []
+  },
+  "lora": {
+    "target": "encoder_last4_attention",
+    "rank": 8,
+    "alpha": 8,
+    "dropout": 0
+  },
+  "feature_hw": [
+    240,
+    320
+  ],
+  "training": {
+    "max_steps": 6000,
+    "batch_size": 8,
+    "microbatch": 8,
+    "evaluate_every_steps": 100,
+    "minimum_steps": 1000,
+    "patience_evaluations": 10,
+    "significant_relative_improvement": 0.002,
+    "learning_rate": 0.0003,
+    "minimum_learning_rate": 0.00001,
+    "weight_decay": 0.001,
+    "clip_gradient_norm": 1,
+    "initial_amp_scale": 128,
+    "loss": "abs_rel",
+    "augmentation": "none"
+  },
+  "diagnostics": {
+    "stable_relative_tolerance": 0.01,
+    "stable_span_steps": 500,
+    "targets": [
+      0.1,
+      0.09
+    ],
+    "target_consecutive_evaluations": 3
+  },
+  "fixed_visual_ids": [
+    5,
+    598,
+    1440,
+    226,
+    246,
+    80
+  ],
+  "resource": {
+    "minimum_available_commit_gib": 9,
+    "minimum_free_disk_gib": 10
+  },
+  "scope": "72 training stages; validation selection then one frozen test evaluation; no all795 refit"
+}
