@@ -612,6 +612,8 @@ def analyze_test(study, cfg, render=False, export=False):
     assert frozen['source_freeze_sha256'] == sha(study/'frozen.json')
     expected_ids = set(frozen['test_ids']); assert len(expected_ids) == 654
     development, _ = load_completed(study, cfg); assert len(development) == 72
+    lora_parameters = read(study/'preflight.json')['methods']['L']['trainable_parameters']
+    inference_keys = ['elapsed_seconds', 'mean_infer_seconds', 'peak_allocated_mib']
 
     def result(label, checkpoint):
         folder = study/'final_test'/label/checkpoint
@@ -640,16 +642,26 @@ def analyze_test(study, cfg, render=False, export=False):
         complete[label] = {'job':job, 'rows':{c:v[1] for c,v in saved.items()}}
         row = {**job, 'validation_selected_best_step':dev['convergence']['best_step'],
                'stopping_step':dev['convergence']['stop_step'],
+               'validation_stable_step':dev['convergence']['stable_step'],
                'parameters':dev['parameters'],
+               'inference_adaptation_parameters':dev['parameters'] + (lora_parameters if job['method']=='S' else 0),
                'total_with_parent_seconds':dev['elapsed_seconds']+dev['parent_lora_seconds']}
         row.update({c+'_'+metric:saved[c][0]['metrics'][metric] for c in saved for metric in METRICS})
+        row.update({c+'_'+key:saved[c][0][key] for c in saved for key in inference_keys})
+        assert all(saved[c][0]['timing_scope'] == base['timing_scope'] for c in saved)
         row['stopping_minus_validation_selected_test_abs_rel'] = row['final_abs_rel']-row['best_abs_rel']
         rows.append(row)
     groups = []
     for count in cfg['counts']:
         for method in METHODS:
             selected = [r for r in rows if r['count']==count and r['method']==method]
+            stable = [r for r in selected if r['validation_stable_step'] is not None]
             groups.append({'count':count, 'method':method, 'completed_seeds':len(selected),
+                           'complete_three_seeds':len(selected)==3,
+                           'stable_seeds':len(stable), 'stable_seed_ids':[r['seed'] for r in stable],
+                           'stable_final_metrics':{k:mean_sd([r['final_'+k] for r in stable]) for k in METRICS},
+                           'inference_cost_statistics':{c+'_'+k:mean_sd([r[c+'_'+k] for r in selected])
+                                                        for c in ['best','final'] for k in inference_keys},
                            'statistics':{c+'_'+k:mean_sd([r[c+'_'+k] for r in selected]) for c in ['best','final'] for k in METRICS}
                                         if selected else {}})
     paired, increments = comparisons(complete, base_rows, cfg)
@@ -658,19 +670,25 @@ def analyze_test(study, cfg, render=False, export=False):
               'required':72, 'pending':pending, 'baseline':base['metrics'], 'groups':groups,
               'test_freeze_sha256':sha(study/'test_frozen.json'), 'analysis_script_sha256':sha(Path(__file__)),
               'selection':'best means selected on validation; final means actual stopping state. Test never selects a checkpoint.',
+              'stability_scope':'Stable membership comes exclusively from the frozen development convergence record. Report these conditional final metrics alongside all-seed final metrics; an empty subset is null, never zero. Stage step0 inherits parent training.',
+              'inference_cost_scope':base['timing_scope'],
+              'baseline_inference_cost':{k:base[k] for k in inference_keys},
+              'cost_notes':'Inference uses one image at a time and reports allocated CUDA memory, not total device reservation. Timings include the recorded input/output conversion scope and are observational, not isolated benchmarks. Training costs and shared-cache limitations remain in the frozen development analysis.',
               'test_history':frozen['test_history'],
               'scope':'All samples are from each declared fitting subset; no training on validation or all795 refit.'}
     write_json(out/'summary.json',report); save_csv(out/'per_seed.csv',rows)
     write_json(out/'paired_comparisons.json',paired); write_json(out/'incremental_gains.json',increments)
     write_json(out/'stage_parent_comparisons.json',stage_parent_comparisons(complete,cfg))
+    write_json(out/'checkpoint_drift.json',checkpoint_drift(complete,cfg))
     if render:
         plots(out, {}, rows, base['metrics'], cfg, phase='Official test (validation-selected best)')
         render_test_cases(out, study, complete, cfg, frozen)
     if export:
         destination = ROOT/'results/sample_efficiency_records_20261127'
-        relatives = ['test_frozen.json','test_complete.json','live_bridge.json']
+        relatives = ['test_frozen.json','test_complete.json','live_bridge.json','test_failures.jsonl','test_queue_launch.json']
         relatives += [p.relative_to(study).as_posix() for p in out.glob('*.json')]
         relatives += [p.relative_to(study).as_posix() for p in out.glob('*.csv')]
+        relatives += ['test_analysis/fixed_cases/index.json']
         for label in ['B0']+list(complete):
             for checkpoint in (['original'] if label=='B0' else ['best','final']):
                 relatives += [f'final_test/{label}/{checkpoint}/{f}' for f in ['result.json','metrics.json','per_image.csv']]
@@ -689,12 +707,17 @@ def render_test_cases(out, study, complete, cfg, frozen):
     from p3_depth.data.nyuv2 import NYUv2Labeled
     seed=cfg['seeds'][0]; destination=out/'fixed_cases'; destination.mkdir(exist_ok=True)
     entries=[]
+    baseline_path=study/'final_test/B0/original/fixed_predictions.npz'
+    sources={baseline_path.relative_to(study).as_posix():sha(baseline_path)}
     with NYUv2Labeled(ROOT/cfg['data']) as data, np.load(study/'final_test/B0/original/fixed_predictions.npz') as baseline:
         for count in cfg['counts']:
             available=[m for m in METHODS if f'{m}_n{count}_seed{seed}' in complete]
             if not available: continue
             for checkpoint in ['best','final']:
                 predictions={m:np.load(study/'final_test'/f'{m}_n{count}_seed{seed}'/checkpoint/'fixed_predictions.npz') for m in available}
+                for method in available:
+                    source=study/'final_test'/f'{method}_n{count}_seed{seed}'/checkpoint/'fixed_predictions.npz'
+                    sources[source.relative_to(study).as_posix()]=sha(source)
                 try:
                     for sample_id in frozen['fixed_test_preview_ids']:
                         sample=data.load(sample_id); mask=sample.valid_gt; truth=sample.depth_m
@@ -710,10 +733,16 @@ def render_test_cases(out, study, complete, cfg, frozen):
                         fig.suptitle(f'Official test NYUv2 {sample_id:04d}; n={count}, seed={seed}, {checkpoint}; depth 0–10m, error 0–0.5')
                         filename=f'n{count}_{"".join(available)}_{checkpoint}_nyuv2_{sample_id:04d}.png'
                         fig.savefig(destination/filename,dpi=150);plt.close(fig);entries.append(filename)
+                        edge_filename=Path(filename).stem+'_edges.png'
+                        render_boundary_case(destination/edge_filename,sample.rgb,truth,mask,methods,
+                                             f'Official test NYUv2 {sample_id:04d}; n={count}, seed={seed}, {checkpoint}')
+                        entries.append(edge_filename)
                 finally:
                     for value in predictions.values():value.close()
     write_json(destination/'index.json',{'fixed_seed':seed,'sample_ids':frozen['fixed_test_preview_ids'],
                                       'selection':'Frozen first/middle/last official test IDs; first predefined seed; both checkpoint types',
+                                      'prediction_sources':sources,
+                                      'boundary_definition':'Same clipped depth discontinuities and 2px tolerance as saved numerical scores; no new threshold selection.',
                                       'files':entries})
 
 
