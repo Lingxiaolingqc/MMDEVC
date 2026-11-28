@@ -67,6 +67,14 @@ def load_completed(study, cfg):
                 values = [float(r[metric]) for r in rows if r[metric] != '']
                 assert abs(float(np.mean(values)) - result[checkpoint][metric]) < 1e-10
         complete[name(job)] = result
+    for label, result in complete.items():
+        if result['job']['method'] != 'S':
+            continue
+        parent = complete[name({**result['job'], 'method': 'L'})]
+        configuration = read(study / 'runs' / label / 'config.json')
+        assert configuration['parent_lora_sha256'] == parent['checkpoint_sha256']['best.pt']
+        assert result['parent_lora_seconds'] == parent['elapsed_seconds']
+        assert result['parent_lora_attempted_updates'] == parent['attempted_updates']
     return complete, pending
 
 
@@ -216,6 +224,25 @@ def comparisons(complete, baseline, cfg):
             if 'candidate_minus_reference' in statistic:
                 statistic['signed_change_per_100_added_images'] = statistic['candidate_minus_reference'] * 100 / entry['additional_images']
     return output, increments
+
+
+def stage_parent_comparisons(complete, cfg):
+    """Measure added-stage gain against the LoRA best actually used by S."""
+    output = []
+    for count in cfg['counts']:
+        seeds = [seed for seed in cfg['seeds']
+                 if f'S_n{count}_seed{seed}' in complete and f'L_n{count}_seed{seed}' in complete]
+        if not seeds:
+            continue
+        parent = [complete[f'L_n{count}_seed{s}']['rows']['best'] for s in seeds]
+        for checkpoint in ['best', 'final']:
+            candidate = [complete[f'S_n{count}_seed{s}']['rows'][checkpoint] for s in seeds]
+            output.append({'count': count, 'candidate': 'S', 'reference': 'L',
+                           'candidate_checkpoint': checkpoint, 'reference_checkpoint': 'best',
+                           'seed_ids': seeds, 'complete_three_seeds': len(seeds) == 3,
+                           'interpretation': 'Added residual-stage change relative to its same-count, same-seed frozen LoRA best parent. Separate from the same-endpoint method comparisons; costs include the entire parent training and selection run.',
+                           **pair_stats(candidate, parent)})
+    return output
 
 
 def checkpoint_drift(complete, cfg):
@@ -507,7 +534,8 @@ def export_records(study, complete):
                  'command_failures.jsonl', 'environment.json', 'queue.json', 'queue_failures.jsonl',
                  'failures.jsonl', 'analysis_implementation_checks.json', 'resource_recording_update.json', 'shared_cache_costs.json', 'baseline/identity.json', 'baseline/metrics.json', 'baseline/per_image.csv',
                  'analysis/summary.json', 'analysis/per_seed.csv', 'analysis/paired_comparisons.json',
-                 'analysis/incremental_gains.json', 'analysis/checkpoint_drift.json', 'analysis/incremental_cases/index.json']
+                 'analysis/incremental_gains.json', 'analysis/checkpoint_drift.json', 'analysis/stage_parent_comparisons.json',
+                 'analysis/stage_parent_analysis_checks.json', 'analysis/incremental_cases/index.json']
     for label in complete:
         relatives += [f'runs/{label}/{f}' for f in ['result.json', 'config.json', 'history.json',
                       'attempts.jsonl', 'events.jsonl', 'startup_resources.jsonl', 'best_validation/metrics.json', 'best_validation/per_image.csv',
@@ -585,6 +613,7 @@ def analyze_test(study, cfg, render=False, export=False):
               'scope':'All samples are from each declared fitting subset; no training on validation or all795 refit.'}
     write_json(out/'summary.json',report); save_csv(out/'per_seed.csv',rows)
     write_json(out/'paired_comparisons.json',paired); write_json(out/'incremental_gains.json',increments)
+    write_json(out/'stage_parent_comparisons.json',stage_parent_comparisons(complete,cfg))
     if render:
         plots(out, {}, rows, base['metrics'], cfg, phase='Official test (validation-selected best)')
         render_test_cases(out, study, complete, cfg, frozen)
@@ -696,10 +725,12 @@ def main():
                         'Targets/stability are predefined operational criteria, not mathematical convergence.',
                         'target_*_step is the start of the first qualifying three-evaluation window; target_*_confirmed_step is when its third evaluation finishes.',
                         '100 to 200 images increases scene coverage from 100 to 187 scenes as well as image count.',
+                        'stage_parent_comparisons.json compares both S endpoints against their frozen L best parents; paired_comparisons.json retains same-endpoint method comparisons.',
                         'This file contains no new official test evaluation.']}
     write_json(out / 'summary.json', report); save_csv(out / 'per_seed.csv', rows)
     write_json(out / 'paired_comparisons.json', paired); write_json(out / 'incremental_gains.json', increments)
     write_json(out / 'checkpoint_drift.json', checkpoint_drift(complete, cfg))
+    write_json(out / 'stage_parent_comparisons.json', stage_parent_comparisons(complete, cfg))
     if args.render:
         plots(out, complete, rows, baseline, cfg); convergence_plots(out,rows,baseline,cfg); render_fixed(out, study, complete, cfg)
     if args.render_increments:
