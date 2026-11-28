@@ -4093,292 +4093,298 @@
     "count": 400,
     "method": "S",
     "seed_ids": [
-      320112
+      320112,
+      320113
     ],
     "complete_three_seeds": false,
     "candidate": "final",
     "reference": "best",
     "interpretation": "Validation-selected best; descriptive endpoint drift, not an independent estimate of checkpoint-selection benefit. No boundary metrics were monitored between these endpoints.",
-    "seeds": 1,
+    "seeds": 2,
     "scenes": 62,
     "images": 218,
     "metrics": {
       "abs_rel": {
-        "candidate_minus_reference": 3.7652911464675265e-05,
+        "candidate_minus_reference": 5.847686995585956e-05,
         "paired_seed_differences": [
-          3.7652911464675265e-05
+          3.7652911464675265e-05,
+          7.930082844704385e-05
         ],
         "paired_seed_summary": {
-          "n": 1,
-          "mean": 3.7652911464675265e-05,
-          "sd": null
+          "n": 2,
+          "mean": 5.847686995585956e-05,
+          "sd": 2.9449524520527203e-05
         },
         "scene_bootstrap_95_ci": [
-          -0.00015863491190742295,
-          0.00021896560922998382
+          -9.863887625047206e-05,
+          0.00019813246792192113
         ],
         "paired_image_distribution": {
-          "images_improved": 120,
-          "images_worsened": 98,
+          "images_improved": 97,
+          "images_worsened": 121,
           "images_exactly_tied": 0,
-          "median_signed_difference": -7.427447272207247e-05,
+          "median_signed_difference": 7.524147570026063e-05,
           "selection_rule": "rank paired image-macro differences averaged across matched seeds; descriptive, never used for training",
           "largest_improvement_cases": [
             {
-              "sample_id": "nyuv2_0251",
-              "scene": "kitchen_0016",
-              "signed_difference": -0.002039746274168336
-            },
-            {
-              "sample_id": "nyuv2_0863",
-              "scene": "kitchen_0045",
-              "signed_difference": -0.0019448090959832687
-            },
-            {
               "sample_id": "nyuv2_0054",
               "scene": "living_room_0000",
-              "signed_difference": -0.0019075568920195463
+              "signed_difference": -0.0018396493046639872
+            },
+            {
+              "sample_id": "nyuv2_1050",
+              "scene": "bedroom_0074",
+              "signed_difference": -0.001803243994861578
+            },
+            {
+              "sample_id": "nyuv2_0251",
+              "scene": "kitchen_0016",
+              "signed_difference": -0.001741724774255382
             }
           ],
           "largest_regression_cases": [
             {
               "sample_id": "nyuv2_0226",
               "scene": "furniture_store_0001",
-              "signed_difference": 0.00580048923577145
+              "signed_difference": 0.003107095190174533
             },
             {
               "sample_id": "nyuv2_0230",
               "scene": "furniture_store_0001",
-              "signed_difference": 0.004809611717953799
+              "signed_difference": 0.00210177833763292
             },
             {
-              "sample_id": "nyuv2_1051",
-              "scene": "bedroom_0074",
-              "signed_difference": 0.003668258898642529
+              "sample_id": "nyuv2_0266",
+              "scene": "living_room_0022",
+              "signed_difference": 0.001704428598398991
             }
           ]
         }
       },
       "rmse_m": {
-        "candidate_minus_reference": -0.0009952676470550497,
+        "candidate_minus_reference": -0.00021229382941987754,
         "paired_seed_differences": [
-          -0.0009952676470550497
+          -0.0009952676470550497,
+          0.0005706799882152946
         ],
         "paired_seed_summary": {
-          "n": 1,
-          "mean": -0.0009952676470550497,
-          "sd": null
+          "n": 2,
+          "mean": -0.00021229382941987757,
+          "sd": 0.001107292191882699
         },
         "scene_bootstrap_95_ci": [
-          -0.0017067674054219034,
-          -0.00023500162467077353
+          -0.0007176635903627689,
+          0.00023137744419334368
         ],
         "paired_image_distribution": {
-          "images_improved": 133,
-          "images_worsened": 85,
+          "images_improved": 113,
+          "images_worsened": 105,
           "images_exactly_tied": 0,
-          "median_signed_difference": -0.001046667819177699,
+          "median_signed_difference": -0.00010833767128570065,
           "selection_rule": "rank paired image-macro differences averaged across matched seeds; descriptive, never used for training",
           "largest_improvement_cases": [
             {
               "sample_id": "nyuv2_0232",
               "scene": "furniture_store_0001",
-              "signed_difference": -0.031392571130535396
-            },
-            {
-              "sample_id": "nyuv2_0233",
-              "scene": "furniture_store_0001",
-              "signed_difference": -0.021968195114098754
+              "signed_difference": -0.014742826455876878
             },
             {
               "sample_id": "nyuv2_0864",
               "scene": "kitchen_0045",
-              "signed_difference": -0.016032241304120204
+              "signed_difference": -0.011000271101532358
+            },
+            {
+              "sample_id": "nyuv2_1357",
+              "scene": "dining_room_0007",
+              "signed_difference": -0.00982691899695376
             }
           ],
           "largest_regression_cases": [
             {
-              "sample_id": "nyuv2_0234",
-              "scene": "furniture_store_0001",
-              "signed_difference": 0.032263185558745744
-            },
-            {
               "sample_id": "nyuv2_0238",
               "scene": "furniture_store_0001",
-              "signed_difference": 0.028884016958815373
+              "signed_difference": 0.011644116180985153
             },
             {
-              "sample_id": "nyuv2_0249",
+              "sample_id": "nyuv2_0268",
+              "scene": "living_room_0022",
+              "signed_difference": 0.010994539282407484
+            },
+            {
+              "sample_id": "nyuv2_0244",
               "scene": "furniture_store_0002",
-              "signed_difference": 0.02669215315341389
+              "signed_difference": 0.006953294941544175
             }
           ]
         }
       },
       "delta1": {
-        "candidate_minus_reference": 0.00039943406617072536,
+        "candidate_minus_reference": 2.725642847913122e-05,
         "paired_seed_differences": [
-          0.00039943406617072536
+          0.00039943406617072536,
+          -0.00034492120921246293
         ],
         "paired_seed_summary": {
-          "n": 1,
-          "mean": 0.00039943406617072536,
-          "sd": null
+          "n": 2,
+          "mean": 2.7256428479131216e-05,
+          "sd": 0.0005263386628354325
         },
         "scene_bootstrap_95_ci": [
-          -1.8993096232119508e-05,
-          0.0008137879285661542
+          -0.00029945225488150947,
+          0.0003506224113810489
         ],
         "paired_image_distribution": {
-          "images_improved": 138,
-          "images_worsened": 78,
-          "images_exactly_tied": 2,
-          "median_signed_difference": 0.00018024815560024887,
+          "images_improved": 119,
+          "images_worsened": 98,
+          "images_exactly_tied": 1,
+          "median_signed_difference": 2.8294768611658583e-05,
           "selection_rule": "rank paired image-macro differences averaged across matched seeds; descriptive, never used for training",
           "largest_improvement_cases": [
             {
-              "sample_id": "nyuv2_0722",
-              "scene": "bathroom_0042",
-              "signed_difference": 0.013019785378940218
+              "sample_id": "nyuv2_1050",
+              "scene": "bedroom_0074",
+              "signed_difference": 0.01012114352783372
             },
             {
               "sample_id": "nyuv2_1225",
               "scene": "living_room_0033",
-              "signed_difference": 0.012290409121395007
+              "signed_difference": 0.006549714956405106
             },
             {
-              "sample_id": "nyuv2_0233",
-              "scene": "furniture_store_0001",
-              "signed_difference": 0.010127431254191799
+              "sample_id": "nyuv2_0054",
+              "scene": "living_room_0000",
+              "signed_difference": 0.005914654594232072
             }
           ],
           "largest_regression_cases": [
             {
               "sample_id": "nyuv2_0867",
               "scene": "kitchen_0045",
-              "signed_difference": -0.0209381287726359
+              "signed_difference": -0.010194500335345469
+            },
+            {
+              "sample_id": "nyuv2_0124",
+              "scene": "cafe_0001",
+              "signed_difference": -0.009785798122065703
             },
             {
               "sample_id": "nyuv2_0120",
               "scene": "cafe_0001",
-              "signed_difference": -0.011632293762575463
-            },
-            {
-              "sample_id": "nyuv2_0083",
-              "scene": "bedroom_0019",
-              "signed_difference": -0.011556841046277633
+              "signed_difference": -0.0055918846411804335
             }
           ]
         }
       },
       "boundary_f1": {
-        "candidate_minus_reference": 0.008221427686855007,
+        "candidate_minus_reference": 0.0013691390384641484,
         "paired_seed_differences": [
-          0.008221427686855007
+          0.008221427686855007,
+          -0.005483149609926712
         ],
         "paired_seed_summary": {
-          "n": 1,
-          "mean": 0.008221427686855007,
-          "sd": null
+          "n": 2,
+          "mean": 0.0013691390384641474,
+          "sd": 0.009690599539849559
         },
         "scene_bootstrap_95_ci": [
-          0.005197703816233153,
-          0.011217426172478697
+          -0.0006778510175876737,
+          0.003382200510884726
         ],
         "paired_image_distribution": {
-          "images_improved": 167,
-          "images_worsened": 38,
-          "images_exactly_tied": 13,
-          "median_signed_difference": 0.006489710017942241,
+          "images_improved": 124,
+          "images_worsened": 85,
+          "images_exactly_tied": 9,
+          "median_signed_difference": 0.001448630327712641,
           "selection_rule": "rank paired image-macro differences averaged across matched seeds; descriptive, never used for training",
           "largest_improvement_cases": [
             {
               "sample_id": "nyuv2_1060",
               "scene": "bedroom_0078",
-              "signed_difference": 0.07495774392424703
+              "signed_difference": 0.0622695155620569
             },
             {
               "sample_id": "nyuv2_0590",
               "scene": "living_room_0083",
-              "signed_difference": 0.04717639895430237
+              "signed_difference": 0.032248222856222156
             },
             {
-              "sample_id": "nyuv2_1026",
-              "scene": "bedroom_0065",
-              "signed_difference": 0.04711100277332214
+              "sample_id": "nyuv2_0232",
+              "scene": "furniture_store_0001",
+              "signed_difference": 0.02988669955887918
             }
           ],
           "largest_regression_cases": [
             {
-              "sample_id": "nyuv2_0755",
-              "scene": "kitchen_0019",
-              "signed_difference": -0.11126945565660212
-            },
-            {
-              "sample_id": "nyuv2_0723",
-              "scene": "bathroom_0042",
-              "signed_difference": -0.05657033098285269
+              "sample_id": "nyuv2_1438",
+              "scene": "dining_room_0034",
+              "signed_difference": -0.04084914228702344
             },
             {
               "sample_id": "nyuv2_1050",
               "scene": "bedroom_0074",
-              "signed_difference": -0.03863507224034379
+              "signed_difference": -0.040340997626274966
+            },
+            {
+              "sample_id": "nyuv2_0080",
+              "scene": "bedroom_0019",
+              "signed_difference": -0.03841239407267799
             }
           ]
         }
       },
       "boundary_band_abs_rel": {
-        "candidate_minus_reference": -0.0009711361641287859,
+        "candidate_minus_reference": -0.00038535663570336056,
         "paired_seed_differences": [
-          -0.0009711361641287859
+          -0.0009711361641287859,
+          0.0002004228927220646
         ],
         "paired_seed_summary": {
-          "n": 1,
-          "mean": -0.0009711361641287859,
-          "sd": null
+          "n": 2,
+          "mean": -0.00038535663570336067,
+          "sd": 0.0008284173536597523
         },
         "scene_bootstrap_95_ci": [
-          -0.0017250232498935104,
-          -0.00014568441051892109
+          -0.0008064964790659053,
+          4.78684382899711e-05
         ],
         "paired_image_distribution": {
-          "images_improved": 137,
-          "images_worsened": 81,
+          "images_improved": 125,
+          "images_worsened": 93,
           "images_exactly_tied": 0,
-          "median_signed_difference": -0.000816743276731785,
+          "median_signed_difference": -0.00030138238341571866,
           "selection_rule": "rank paired image-macro differences averaged across matched seeds; descriptive, never used for training",
           "largest_improvement_cases": [
             {
-              "sample_id": "nyuv2_0863",
-              "scene": "kitchen_0045",
-              "signed_difference": -0.017245471853601396
-            },
-            {
               "sample_id": "nyuv2_0864",
               "scene": "kitchen_0045",
-              "signed_difference": -0.01666258581767993
+              "signed_difference": -0.014830990287857337
             },
             {
-              "sample_id": "nyuv2_0232",
-              "scene": "furniture_store_0001",
-              "signed_difference": -0.014721256852933018
+              "sample_id": "nyuv2_1026",
+              "scene": "bedroom_0065",
+              "signed_difference": -0.007870566397893242
+            },
+            {
+              "sample_id": "nyuv2_0863",
+              "scene": "kitchen_0045",
+              "signed_difference": -0.007191499316338057
             }
           ],
           "largest_regression_cases": [
             {
-              "sample_id": "nyuv2_1050",
-              "scene": "bedroom_0074",
-              "signed_difference": 0.02816807751288114
-            },
-            {
               "sample_id": "nyuv2_0957",
               "scene": "bedroom_0041",
-              "signed_difference": 0.023018205459676755
+              "signed_difference": 0.015410852520565538
             },
             {
-              "sample_id": "nyuv2_0722",
-              "scene": "bathroom_0042",
-              "signed_difference": 0.016062276694318145
+              "sample_id": "nyuv2_1050",
+              "scene": "bedroom_0074",
+              "signed_difference": 0.01487602210653767
+            },
+            {
+              "sample_id": "nyuv2_0265",
+              "scene": "living_room_0022",
+              "signed_difference": 0.004637142139622685
             }
           ]
         }
