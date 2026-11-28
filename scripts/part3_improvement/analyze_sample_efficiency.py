@@ -58,6 +58,11 @@ def load_completed(study, cfg):
             assert sha(run / filename) == digest, (run, filename)
         result['history'] = read(run / 'history.json')
         result['attempt_events'] = [json.loads(line) for line in (run / 'attempts.jsonl').read_text(encoding='utf8').splitlines() if line]
+        result['recovery_records'] = [read(p) for p in sorted(run.glob('recovery_*/recovery.json'))]
+        for recovery in result['recovery_records']:
+            assert recovery['job'] == job
+            if 'source_freeze_sha256' in recovery:
+                assert recovery['source_freeze_sha256'] == result['freeze_sha256']
         result['rows'] = {}
         for checkpoint in ['best', 'final']:
             rows = csv_rows(run / (checkpoint + '_validation') / 'per_image.csv')
@@ -124,6 +129,26 @@ def flatten(result):
     row['attempts_started'] = sum(e['event'] == 'started' for e in events)
     row['attempts_with_recorded_end'] = len(durations)
     row['attempt_wall_time_complete'] = row['attempts_started'] == len(durations)
+    row['failed_process_attempts'] = sum(e['event'] == 'failed' for e in events)
+    # A restored counter omits work discarded after the previous full checkpoint.
+    # Unknown recovery work is missing evidence, never an assumed zero.
+    recoveries = result.get('recovery_records', [])
+    counters = {'attempted_updates': 'discarded_attempted_updates_after_checkpoint',
+                'successful_updates': 'discarded_successful_updates',
+                'exposures': 'discarded_exposures'}
+    known = (row['attempt_wall_time_complete'] and row['attempts_started'] >= 1
+             and len(recoveries) == row['attempts_started'] - 1
+             and all(isinstance(r.get(key), int) and r[key] >= 0
+                     for r in recoveries for key in counters.values()))
+    row['physical_work_accounting_complete'] = known
+    for key, recorded_key in counters.items():
+        lost = sum(r[recorded_key] for r in recoveries) if known else None
+        row['discarded_' + key] = lost
+        row['physical_' + key] = result[key] + lost if known else None
+    row['physical_effective_epochs'] = row['physical_exposures'] / result['job']['count'] if known else None
+    # CUDA peak counters reset on process restart; failed-attempt peaks were not saved.
+    row['whole_attempt_peak_known'] = row['attempts_started'] == 1 and row['attempt_wall_time_complete']
+    row['whole_attempt_peak_allocated_mib'] = result['peak_allocated_mib'] if row['whole_attempt_peak_known'] else None
     # A three-point target window starts before it can be confirmed online.
     for threshold, prefix in [('0.1','target_0_10'),('0.09','target_0_09')]:
         first = cv['targets'][threshold]
@@ -535,7 +560,8 @@ def export_records(study, complete):
                  'failures.jsonl', 'analysis_implementation_checks.json', 'resource_recording_update.json', 'shared_cache_costs.json', 'baseline/identity.json', 'baseline/metrics.json', 'baseline/per_image.csv',
                  'analysis/summary.json', 'analysis/per_seed.csv', 'analysis/paired_comparisons.json',
                  'analysis/incremental_gains.json', 'analysis/checkpoint_drift.json', 'analysis/stage_parent_comparisons.json',
-                 'analysis/stage_parent_analysis_checks.json', 'analysis/incremental_cases/index.json']
+                 'analysis/stage_parent_analysis_checks.json', 'analysis/recovery_cost_analysis_checks.json',
+                 'analysis/incremental_cases/index.json']
     for label in complete:
         relatives += [f'runs/{label}/{f}' for f in ['result.json', 'config.json', 'history.json',
                       'attempts.jsonl', 'events.jsonl', 'startup_resources.jsonl', 'best_validation/metrics.json', 'best_validation/per_image.csv',
@@ -693,6 +719,12 @@ def main():
         parent = by_job[('L',row['count'],row['seed'])] if row['method']=='S' else None
         row['attempt_wall_with_parent_seconds'] = row['recorded_attempt_wall_seconds'] + (parent['recorded_attempt_wall_seconds'] if parent else 0)
         row['attempt_wall_with_parent_complete'] = row['attempt_wall_time_complete'] and (parent['attempt_wall_time_complete'] if parent else True)
+        row['physical_work_with_parent_complete'] = row['physical_work_accounting_complete'] and (parent['physical_work_accounting_complete'] if parent else True)
+        for key in ['physical_attempted_updates', 'physical_successful_updates', 'physical_exposures']:
+            row[key + '_with_parent'] = (row[key] + (parent[key] if parent else 0)) if row['physical_work_with_parent_complete'] else None
+        row['whole_route_peak_known'] = row['whole_attempt_peak_known'] and (parent['whole_attempt_peak_known'] if parent else True)
+        row['whole_route_peak_allocated_mib'] = (max(row['whole_attempt_peak_allocated_mib'], parent['whole_attempt_peak_allocated_mib'])
+                                                if parent else row['whole_attempt_peak_allocated_mib']) if row['whole_route_peak_known'] else None
     groups = []
     for count in cfg['counts']:
         for method in METHODS:
@@ -722,6 +754,8 @@ def main():
                         'R uses cached frozen foundation features; R step timing excludes precomputation, unlike online L/J/S.',
                         'Elapsed times on this laptop are observational; not isolated speed benchmarks.',
                         'Recorded attempt wall time includes ended failures and setup; missing end events are explicitly flagged. Resumed training-clock totals can omit work lost after the last checkpoint.',
+                        'Iteration/convergence counters describe the retained trajectory. physical_* counters additionally include audited discarded work; missing recovery evidence yields null, not zero. S physical totals include its full L parent.',
+                        'peak_allocated_mib is the final process attempt peak. whole_attempt/whole_route peak fields are null after a restart because failed-attempt CUDA peaks were not persisted. S route peak uses max(parent,stage), not their sum.',
                         'Targets/stability are predefined operational criteria, not mathematical convergence.',
                         'target_*_step is the start of the first qualifying three-evaluation window; target_*_confirmed_step is when its third evaluation finishes.',
                         '100 to 200 images increases scene coverage from 100 to 187 scenes as well as image count.',
