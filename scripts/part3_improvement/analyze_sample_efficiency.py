@@ -436,26 +436,47 @@ def render_incremental(out, study, complete, cfg):
         pack.close()
 
 
-def render_checkpoints(out, study, complete, cfg, label):
-    """Inspect a completed run's predeclared best/final outputs without inference."""
+def render_checkpoints(out, study, complete, cfg, label, stage_parent=False):
+    """Inspect saved endpoints against B0, or S endpoints against their L best parent."""
     if label not in complete:
         raise ValueError(f'Checkpoint comparison requires a completed study run: {label}')
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     from p3_depth.sample_efficiency.data import Pack
+    if stage_parent:
+        job = complete[label]['job']
+        if job['method'] != 'S':
+            raise ValueError('A frozen LoRA parent comparison requires an S run')
+        parent_label = name({**job, 'method': 'L'})
+        parent = complete[parent_label]
+        assert read(study/'runs'/label/'config.json')['parent_lora_sha256'] == parent['checkpoint_sha256']['best.pt']
     pack = Pack(ROOT)
-    destination = out/'checkpoint_cases'/label; destination.mkdir(parents=True, exist_ok=True)
+    destination = out/('stage_parent_cases' if stage_parent else 'checkpoint_cases')/label
+    destination.mkdir(parents=True, exist_ok=True)
     paths = {k: study/'runs'/label/(k+'_validation')/'fixed_predictions.npz' for k in ['best', 'final']}
+    if stage_parent:
+        paths = {'L best (frozen parent)': study/'runs'/parent_label/'best_validation/fixed_predictions.npz', **paths}
     predictions = {k: np.load(path) for k, path in paths.items()}
     meta = {'job': complete[label]['job'], 'selection': 'predeclared fixed sample IDs; both saved best and final',
             'files': [], 'prediction_sources': {p.relative_to(study).as_posix(): sha(p) for p in paths.values()}}
+    if stage_parent:
+        meta.update(parent_job=parent['job'], parent_checkpoint_sha256=parent['checkpoint_sha256']['best.pt'],
+                    selection='Predeclared fixed sample IDs; both S endpoints against their actual frozen L best parent',
+                    parent_prediction_changes={})
     try:
         for sample in cfg['fixed_visual_ids']:
             i = pack.positions([sample-1])[0]
             truth, mask = pack['truth'][i], pack['mask'][i]
             rgb = pack.file['images'][sample-1].transpose(2, 1, 0)
-            methods = {'B0': pack['original'][i], **{k: v[str(sample)] for k, v in predictions.items()}}
+            methods = {**({} if stage_parent else {'B0': pack['original'][i]}),
+                       **{k: v[str(sample)] for k, v in predictions.items()}}
+            if stage_parent:
+                reference = methods['L best (frozen parent)']
+                meta['parent_prediction_changes'][str(sample)] = {
+                    k: {'raw_mean_absolute_change_m': float(np.abs(methods[k]-reference).mean()),
+                        'raw_max_absolute_change_m': float(np.abs(methods[k]-reference).max())}
+                    for k in ['best', 'final']}
             fig, axes = plt.subplots(2, 4, figsize=(12, 5.2), layout='constrained')
             axes[0, 0].imshow(rgb); axes[0, 0].set_title('RGB')
             axes[1, 0].imshow(np.ma.array(truth, mask=~mask), vmin=.001, vmax=10, cmap='viridis')
@@ -467,7 +488,8 @@ def render_checkpoints(out, study, complete, cfg, label):
                 axes[1, col].imshow(np.ma.array(error, mask=~mask), vmin=0, vmax=.5, cmap='magma')
                 axes[1, col].set_title(f'AbsRel={error[mask].mean():.4f}')
             for ax in axes.flat: ax.axis('off')
-            title = f'NYUv2 {sample:04d}; {label}; best versus final'
+            comparison = 'L best parent versus S best/final' if stage_parent else 'best versus final'
+            title = f'NYUv2 {sample:04d}; {label}; {comparison}'
             fig.suptitle(title+'; depth 0-10m, relative error 0-0.5')
             filename = f'nyuv2_{sample:04d}.png'
             fig.savefig(destination/filename, dpi=150); plt.close(fig); meta['files'].append(filename)
@@ -560,7 +582,7 @@ def export_records(study, complete):
                  'failures.jsonl', 'analysis_implementation_checks.json', 'resource_recording_update.json', 'shared_cache_costs.json', 'baseline/identity.json', 'baseline/metrics.json', 'baseline/per_image.csv',
                  'analysis/summary.json', 'analysis/per_seed.csv', 'analysis/paired_comparisons.json',
                  'analysis/incremental_gains.json', 'analysis/checkpoint_drift.json', 'analysis/stage_parent_comparisons.json',
-                 'analysis/stage_parent_analysis_checks.json', 'analysis/recovery_cost_analysis_checks.json',
+                 'analysis/stage_parent_analysis_checks.json', 'analysis/stage_parent_rendering_checks.json', 'analysis/recovery_cost_analysis_checks.json',
                  'analysis/incremental_cases/index.json']
     for label in complete:
         relatives += [f'runs/{label}/{f}' for f in ['result.json', 'config.json', 'history.json',
@@ -568,6 +590,7 @@ def export_records(study, complete):
                       'final_validation/metrics.json', 'final_validation/per_image.csv']]
     relatives += [p.relative_to(study).as_posix() for p in (study/'analysis/visual_reviews').glob('*.json')]
     relatives += [p.relative_to(study).as_posix() for p in (study/'analysis/checkpoint_cases').glob('*/index.json')]
+    relatives += [p.relative_to(study).as_posix() for p in (study/'analysis/stage_parent_cases').glob('*/index.json')]
     # Keep compact recovery evidence even while its resumed run is unfinished.
     # Checkpoint backups and raw logs remain local.
     relatives += [p.relative_to(study).as_posix() for p in (study/'runs').glob('*/recovery_*/recovery.json')]
@@ -699,11 +722,12 @@ def main():
     parser.add_argument('--render', action='store_true', help='Render fixed samples and curves from saved outputs (no inference)')
     parser.add_argument('--render-increments', action='store_true', help='Render adjacent data-count comparisons of the same fixed samples/seed (no inference)')
     parser.add_argument('--render-checkpoints', metavar='RUN_LABEL', help='Render saved best/final fixed samples for one completed development run (no inference)')
+    parser.add_argument('--render-stage-parent', metavar='S_RUN_LABEL', help='Compare saved S best/final with their frozen L best parent (no inference)')
     parser.add_argument('--export-records', action='store_true', help='Copy verified compact records to results/ for version control')
     parser.add_argument('--test', action='store_true', help='Analyze frozen 654-image test outputs; never run inference or choose checkpoints')
     args = parser.parse_args()
-    if args.test and (args.render_increments or args.render_checkpoints):
-        parser.error('--render-increments and --render-checkpoints currently render development validation only')
+    if args.test and (args.render_increments or args.render_checkpoints or args.render_stage_parent):
+        parser.error('Increment, checkpoint and stage-parent panels currently render development validation only')
     cfg = load(ROOT); check_freeze(ROOT); study = outdir(ROOT)
     if args.test:
         analyze_test(study,cfg,args.render,args.export_records)
@@ -771,6 +795,8 @@ def main():
         render_incremental(out, study, complete, cfg)
     if args.render_checkpoints:
         render_checkpoints(out, study, complete, cfg, args.render_checkpoints)
+    if args.render_stage_parent:
+        render_checkpoints(out, study, complete, cfg, args.render_stage_parent, stage_parent=True)
     if args.export_records:
         export_records(study, complete)
     print(json.dumps({'completed': len(complete), 'required': 72, 'output': str(out)}))

@@ -1,12 +1,9 @@
 {
-  "at": "2026-11-28T08:34:39.950749+00:00",
+  "at": "2026-11-28T09:06:00.331679+00:00",
   "phase": "development_validation",
-  "completed": 60,
+  "completed": 63,
   "required": 72,
   "pending": [
-    "S_n200_seed320112",
-    "S_n200_seed320113",
-    "S_n200_seed320114",
     "S_n300_seed320112",
     "S_n300_seed320113",
     "S_n300_seed320114",
@@ -2720,37 +2717,383 @@
     {
       "count": 200,
       "method": "S",
-      "completed_seeds": 0,
-      "complete_three_seeds": false,
-      "stable_seeds": 0,
+      "completed_seeds": 3,
+      "complete_three_seeds": true,
+      "stable_seeds": 3,
       "stable_final_metrics": {
         "abs_rel": {
-          "n": 0,
-          "mean": null,
-          "sd": null
+          "n": 3,
+          "mean": 0.09341287593479093,
+          "sd": 0.0020119380955076955
         },
         "rmse_m": {
-          "n": 0,
-          "mean": null,
-          "sd": null
+          "n": 3,
+          "mean": 0.4190818592182275,
+          "sd": 0.007285913318645847
         },
         "delta1": {
-          "n": 0,
-          "mean": null,
-          "sd": null
+          "n": 3,
+          "mean": 0.9179643674995949,
+          "sd": 0.006039592948780321
         },
         "boundary_f1": {
+          "n": 3,
+          "mean": 0.46077699806519784,
+          "sd": 0.009555762162795642
+        },
+        "boundary_band_abs_rel": {
+          "n": 3,
+          "mean": 0.14892570067273303,
+          "sd": 0.0021396333820702202
+        }
+      },
+      "statistics": {
+        "parameters": {
+          "n": 3,
+          "mean": 27089.0,
+          "sd": 0.0
+        },
+        "best_step": {
+          "n": 3,
+          "mean": 1033.3333333333333,
+          "sd": 665.8328118479393
+        },
+        "stop_step": {
+          "n": 3,
+          "mean": 1300.0,
+          "sd": 519.6152422706632
+        },
+        "stable_step": {
+          "n": 3,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "target_0_10_step": {
+          "n": 3,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "target_0_09_step": {
           "n": 0,
           "mean": null,
           "sd": null
         },
-        "boundary_band_abs_rel": {
+        "exposures": {
+          "n": 3,
+          "mean": 10400.0,
+          "sd": 4156.921938165306
+        },
+        "effective_epochs": {
+          "n": 3,
+          "mean": 52.0,
+          "sd": 20.784609690826528
+        },
+        "successful_updates": {
+          "n": 3,
+          "mean": 1300.0,
+          "sd": 519.6152422706632
+        },
+        "amp_skips": {
+          "n": 3,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "best_seconds": {
+          "n": 3,
+          "mean": 374.8963277999622,
+          "sd": 249.8958484519304
+        },
+        "stable_seconds": {
+          "n": 3,
+          "mean": 9.526730999971429,
+          "sd": 0.1286594923333691
+        },
+        "stop_seconds": {
+          "n": 3,
+          "mean": 468.10637550001655,
+          "sd": 196.3455577678715
+        },
+        "total_seconds": {
+          "n": 3,
+          "mean": 522.4604479666644,
+          "sd": 190.09008259555554
+        },
+        "parent_lora_seconds": {
+          "n": 3,
+          "mean": 968.5798327999655,
+          "sd": 237.47418320156916
+        },
+        "total_with_parent_seconds": {
+          "n": 3,
+          "mean": 1491.0402807666298,
+          "sd": 261.1646070141295
+        },
+        "parent_lora_steps": {
+          "n": 3,
+          "mean": 1933.3333333333333,
+          "sd": 493.28828623162474
+        },
+        "total_with_parent_steps": {
+          "n": 3,
+          "mean": 3233.3333333333335,
+          "sd": 550.7570547286102
+        },
+        "best_with_parent_steps": {
+          "n": 3,
+          "mean": 2966.6666666666665,
+          "sd": 680.6859285554045
+        },
+        "best_with_parent_seconds": {
+          "n": 3,
+          "mean": 1343.4761605999277,
+          "sd": 287.51361233514154
+        },
+        "stable_with_parent_steps": {
+          "n": 3,
+          "mean": 1933.3333333333333,
+          "sd": 493.28828623162474
+        },
+        "stable_with_parent_seconds": {
+          "n": 3,
+          "mean": 978.1065637999369,
+          "sd": 237.5522373100626
+        },
+        "pure_train_seconds": {
+          "n": 3,
+          "mean": 318.71417209816474,
+          "sd": 132.67455060284868
+        },
+        "selection_validation_seconds": {
+          "n": 3,
+          "mean": 148.7486281330542,
+          "sd": 64.02977374924806
+        },
+        "detailed_scoring_seconds": {
+          "n": 3,
+          "mean": 54.16344403328063,
+          "sd": 11.539220784268231
+        },
+        "peak_allocated_mib": {
+          "n": 3,
+          "mean": 1720.45849609375,
+          "sd": 0.0
+        },
+        "best_abs_rel": {
+          "n": 3,
+          "mean": 0.09328665745582426,
+          "sd": 0.0019550339854719446
+        },
+        "best_rmse_m": {
+          "n": 3,
+          "mean": 0.41876121577715547,
+          "sd": 0.006814513875876498
+        },
+        "best_delta1": {
+          "n": 3,
+          "mean": 0.918174567281364,
+          "sd": 0.005761676303850565
+        },
+        "best_boundary_f1": {
+          "n": 3,
+          "mean": 0.45791705187106513,
+          "sd": 0.00995596374453203
+        },
+        "best_boundary_band_abs_rel": {
+          "n": 3,
+          "mean": 0.14886213609454269,
+          "sd": 0.0023792571392627156
+        },
+        "final_abs_rel": {
+          "n": 3,
+          "mean": 0.09341287593479093,
+          "sd": 0.0020119380955076955
+        },
+        "final_rmse_m": {
+          "n": 3,
+          "mean": 0.4190818592182275,
+          "sd": 0.007285913318645847
+        },
+        "final_delta1": {
+          "n": 3,
+          "mean": 0.9179643674995949,
+          "sd": 0.006039592948780321
+        },
+        "final_boundary_f1": {
+          "n": 3,
+          "mean": 0.46077699806519784,
+          "sd": 0.009555762162795642
+        },
+        "final_boundary_band_abs_rel": {
+          "n": 3,
+          "mean": 0.14892570067273303,
+          "sd": 0.0021396333820702202
+        },
+        "final_minus_best_abs_rel": {
+          "n": 3,
+          "mean": 0.0001262184789666554,
+          "sd": 5.9646331066295564e-05
+        },
+        "final_relative_degradation": {
+          "n": 3,
+          "mean": 0.0013448099039833799,
+          "sd": 0.0006199598048311508
+        },
+        "post_best_evaluations": {
+          "n": 3,
+          "mean": 2.6666666666666665,
+          "sd": 1.5275252316519465
+        },
+        "post_best_max_abs_rel": {
+          "n": 3,
+          "mean": 0.09346826959637838,
+          "sd": 0.0019393315257447625
+        },
+        "late_loss_down_val_up_indicator": {
+          "n": 3,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "recorded_attempt_wall_seconds": {
+          "n": 3,
+          "mean": 532.5884676666667,
+          "sd": 191.73627459353776
+        },
+        "attempts_started": {
+          "n": 3,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "attempts_with_recorded_end": {
+          "n": 3,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "attempt_wall_time_complete": {
+          "n": 3,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "failed_process_attempts": {
+          "n": 3,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "physical_work_accounting_complete": {
+          "n": 3,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "discarded_attempted_updates": {
+          "n": 3,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "physical_attempted_updates": {
+          "n": 3,
+          "mean": 1300.0,
+          "sd": 519.6152422706632
+        },
+        "discarded_successful_updates": {
+          "n": 3,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "physical_successful_updates": {
+          "n": 3,
+          "mean": 1300.0,
+          "sd": 519.6152422706632
+        },
+        "discarded_exposures": {
+          "n": 3,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "physical_exposures": {
+          "n": 3,
+          "mean": 10400.0,
+          "sd": 4156.921938165306
+        },
+        "physical_effective_epochs": {
+          "n": 3,
+          "mean": 52.0,
+          "sd": 20.784609690826528
+        },
+        "whole_attempt_peak_known": {
+          "n": 3,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "whole_attempt_peak_allocated_mib": {
+          "n": 3,
+          "mean": 1720.45849609375,
+          "sd": 0.0
+        },
+        "target_0_10_confirmed_step": {
+          "n": 3,
+          "mean": 200.0,
+          "sd": 0.0
+        },
+        "target_0_10_confirmed_seconds": {
+          "n": 3,
+          "mean": 74.82434849992084,
+          "sd": 0.4440288890682642
+        },
+        "target_0_09_confirmed_step": {
           "n": 0,
           "mean": null,
           "sd": null
+        },
+        "target_0_09_confirmed_seconds": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        },
+        "inference_adaptation_parameters": {
+          "n": 3,
+          "mean": 100817.0,
+          "sd": 0.0
+        },
+        "attempt_wall_with_parent_seconds": {
+          "n": 3,
+          "mean": 1512.1574726666665,
+          "sd": 262.5157293721289
+        },
+        "attempt_wall_with_parent_complete": {
+          "n": 3,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "physical_work_with_parent_complete": {
+          "n": 3,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "physical_attempted_updates_with_parent": {
+          "n": 3,
+          "mean": 3233.3333333333335,
+          "sd": 550.7570547286102
+        },
+        "physical_successful_updates_with_parent": {
+          "n": 3,
+          "mean": 3231.3333333333335,
+          "sd": 549.760250776039
+        },
+        "physical_exposures_with_parent": {
+          "n": 3,
+          "mean": 25866.666666666668,
+          "sd": 4406.056437828882
+        },
+        "whole_route_peak_known": {
+          "n": 3,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "whole_route_peak_allocated_mib": {
+          "n": 3,
+          "mean": 4019.6923828125,
+          "sd": 0.0
         }
-      },
-      "statistics": {}
+      }
     },
     {
       "count": 300,
@@ -7812,7 +8155,7 @@
     }
   ],
   "freeze_sha256": "25cb51cd462a232942757fb5761d5306cbbd0fc6199f4d52f2f98fbd92ac574c",
-  "analysis_script_sha256": "930aac127e9b01d78a5a2e1e107e134f2b23066b685cb7c13c7a8dcd3bebf955",
+  "analysis_script_sha256": "7377813a74ddfcd54771a768d93ba78d054ad5d42bf4236ed6dd15f9d042af26",
   "shared_cache_cost": {
     "feature_extraction_seconds": 261.16072579997126,
     "scope": "Historical shared 795-image seven-feature extraction; includes more branches than F3 and is not a dedicated R benchmark",
