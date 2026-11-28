@@ -1,0 +1,134 @@
+{
+  "at": "2026-11-28T20:15:49.081170+08:00",
+  "status": "actual_test_failure_endpoint_review_complete; main first-seed400 group panels pending",
+  "scope": {
+    "label": "J_n400_seed320114",
+    "test_ids": [
+      1,
+      770,
+      1449
+    ],
+    "panels_viewed": 6,
+    "selection": "This run already had severe validation endpoint degradation before test freeze; inspect the same predeclared test IDs using saved arrays. Both endpoints shown, no additional inference."
+  },
+  "viewed_image_sha256": {
+    "test_analysis/visual_snapshots/J_n400_seed320114/nyuv2_0001.png": "bf8dee77020e5d6f56e76bbe02f9b24369282bc40c2bdc9b56fdfac88f39a964",
+    "test_analysis/visual_snapshots/J_n400_seed320114/nyuv2_0001_edges.png": "85aed56c8a33e3a7aa69f6992de793b80794bd72c64c0233f83634f89c79a343",
+    "test_analysis/visual_snapshots/J_n400_seed320114/nyuv2_0770.png": "d0de13dcd181d0c6546a32ce3f1ca8b399b7c303f28e39b6b44cc223038a43fe",
+    "test_analysis/visual_snapshots/J_n400_seed320114/nyuv2_0770_edges.png": "af35da648c18702d46173a4239e7aead1e1bb7ec364d19d5ab1d01995631db31",
+    "test_analysis/visual_snapshots/J_n400_seed320114/nyuv2_1449.png": "328af36c2fc0fa6a7c64650efd6354e497603db40ff09ad3dbedf11d18656e7d",
+    "test_analysis/visual_snapshots/J_n400_seed320114/nyuv2_1449_edges.png": "04e4f1acff3ad479d23b58ae64f85c1bd500254dc194be15a7f7116e576ff5dd"
+  },
+  "per_image_source_sha256": {
+    "final_test/B0/original/per_image.csv": "12d381497e54d511459773d0305061f1036e96e1caee406d0d1403843e51514a",
+    "final_test/J_n400_seed320114/best/per_image.csv": "7e39308c0032cb002eef2a63e013c1058e02dad33d75501ff1a41110fd0545de",
+    "final_test/J_n400_seed320114/final/per_image.csv": "b93eae70cb3950846223bcdfc8b1be02838d088056ee68d0ee2177f0c1a8499b"
+  },
+  "fixed_sample_metrics": {
+    "B0": {
+      "nyuv2_0001": {
+        "abs_rel": 0.09333719675387604,
+        "rmse_m": 0.2824600731027049,
+        "delta1": 0.9980927230046949,
+        "boundary_f1": 0.08624587028342896,
+        "boundary_band_abs_rel": 0.1186122035447828,
+        "boundary_prediction_edge_pixels": 33.0
+      },
+      "nyuv2_0770": {
+        "abs_rel": 0.024301082324507506,
+        "rmse_m": 0.06993807714219558,
+        "delta1": 0.9998365191146882,
+        "boundary_f1": 0.10479573712255771,
+        "boundary_band_abs_rel": 0.062052477258568876,
+        "boundary_prediction_edge_pixels": 64.0
+      },
+      "nyuv2_1449": {
+        "abs_rel": 0.093532553082465,
+        "rmse_m": 0.3542008626345366,
+        "delta1": 0.9298625083836352,
+        "boundary_f1": 0.6617822880195448,
+        "boundary_band_abs_rel": 0.1711259009194815,
+        "boundary_prediction_edge_pixels": 5452.0
+      }
+    },
+    "best": {
+      "nyuv2_0001": {
+        "abs_rel": 0.019023733345744583,
+        "rmse_m": 0.0809788337738429,
+        "delta1": 0.9978244466800805,
+        "boundary_f1": 0.17000377786173024,
+        "boundary_band_abs_rel": 0.0812742319230934,
+        "boundary_prediction_edge_pixels": 103.0
+      },
+      "nyuv2_0770": {
+        "abs_rel": 0.04965732634939071,
+        "rmse_m": 0.11033548686271166,
+        "delta1": 0.9892228370221328,
+        "boundary_f1": 0.14159740289641515,
+        "boundary_band_abs_rel": 0.06086388279234988,
+        "boundary_prediction_edge_pixels": 88.0
+      },
+      "nyuv2_1449": {
+        "abs_rel": 0.08562183451091916,
+        "rmse_m": 0.39209140357824523,
+        "delta1": 0.9620305164319248,
+        "boundary_f1": 0.6615174837840682,
+        "boundary_band_abs_rel": 0.14077860551337978,
+        "boundary_prediction_edge_pixels": 5236.0
+      }
+    },
+    "final": {
+      "nyuv2_0001": {
+        "abs_rel": 0.1182879594859631,
+        "rmse_m": 0.390572661039508,
+        "delta1": 0.9890258215962441,
+        "boundary_f1": 0.0,
+        "boundary_band_abs_rel": 0.13271263200022201,
+        "boundary_prediction_edge_pixels": 0.0
+      },
+      "nyuv2_0770": {
+        "abs_rel": 0.09913380047600906,
+        "rmse_m": 0.2391356389299635,
+        "delta1": 0.9673834674714956,
+        "boundary_f1": 0.0,
+        "boundary_band_abs_rel": 0.11301572810992444,
+        "boundary_prediction_edge_pixels": 0.0
+      },
+      "nyuv2_1449": {
+        "abs_rel": 0.22752771765630128,
+        "rmse_m": 0.9205163668177956,
+        "delta1": 0.4254988262910798,
+        "boundary_f1": 0.0,
+        "boundary_band_abs_rel": 0.24106446639457246,
+        "boundary_prediction_edge_pixels": 0.0
+      }
+    }
+  },
+  "rendering_command": "python scripts/part3_improvement/analyze_sample_efficiency.py --test --render-test-checkpoints J_n400_seed320114",
+  "prediction_source_sha256": {
+    "final_test/B0/original/fixed_predictions.npz": "168e30e22145d5c5c8ecefe0f06c161598be330860b9336ba9e6d3e7412abbc5",
+    "final_test/J_n400_seed320114/best/fixed_predictions.npz": "75cdaa934e986b50beedf68d446da6931b3bab3e5376417ec90941e53841424c",
+    "final_test/J_n400_seed320114/final/fixed_predictions.npz": "910ba79babef7bce28cdee4b02ff3198564d4fdb310f9a579d5e0ea924e581c5"
+  },
+  "raw_parity_check_sha256": "ebd27b765ef54741422d824c64ba7e908a9f3bc80b3f7a01ee473faa2c63a679",
+  "observations": {
+    "nyuv2_0001": [
+      "Best shows recognizable cabinet/chair separation and very low broad-region error. Final becomes visibly smoother, with weak cabinet/chair transitions and much larger wall/counter error.",
+      "The few matched cyan best boundaries disappear in final; fixed-image F1 falls0.1700 to0 and AbsRel rises0.0190 to0.1183. Final is also worse than B0 AbsRel0.0933."
+    ],
+    "nyuv2_0770": [
+      "Final blurs the upper-cabinet, stove and counter depth transitions. Relative error expands across cabinets and the middle worktop. Best itself already has higher overall error than B0, which is retained as a counterexample.",
+      "Best retains a short cyan left-counter segment; final has no matched thresholded edges. AbsRel rises0.0497 to0.0991 and F1 falls0.1416 to0."
+    ],
+    "nyuv2_1449": [
+      "Best preserves many chair-back outlines. Final visibly softens and merges chair/table/background transitions; large error regions cover the foreground chair, table and back wall.",
+      "The cyan chair outlines disappear and the final edge map is almost entirely red missed GT. AbsRel rises0.0856 to0.2275; F1 falls0.6615 to0."
+    ]
+  },
+  "limits": [
+    "Only3 fixed test images were visually reviewed here. Full654-image counts are in the associated numerical record.",
+    "All9 saved B0/best/final raw arrays are finite and positive, nonconstant, and independently reproduce saved AbsRel/F1 exactly. Therefore this is not a missing-array or rescaling/display artifact.",
+    "This is a specific seed endpoint failure, not evidence that every jointly trained model collapses. No causal module-level diagnosis is established.",
+    "Boundary threshold and display scales are unchanged. The saturated error display caps at0.5, but reported AbsRel uses uncapped pixel errors under the course depth-clipping protocol."
+  ]
+}

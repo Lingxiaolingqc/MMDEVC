@@ -689,6 +689,7 @@ def analyze_test(study, cfg, render=False, export=False):
         relatives += [p.relative_to(study).as_posix() for p in out.glob('*.json')]
         relatives += [p.relative_to(study).as_posix() for p in out.glob('*.csv')]
         relatives += ['test_analysis/fixed_cases/index.json']
+        relatives += [p.relative_to(study).as_posix() for p in (out/'checkpoint_cases').glob('*/index.json')]
         for label in ['B0']+list(complete):
             for checkpoint in (['original'] if label=='B0' else ['best','final']):
                 relatives += [f'final_test/{label}/{checkpoint}/{f}' for f in ['result.json','metrics.json','per_image.csv']]
@@ -746,6 +747,54 @@ def render_test_cases(out, study, complete, cfg, frozen):
                                       'files':entries})
 
 
+def render_test_checkpoints(study, cfg, label):
+    """Inspect one frozen test run's saved endpoints without additional inference."""
+    selected = [job for job in jobs(cfg) if name(job) == label]
+    if len(selected) != 1:
+        raise ValueError(f'Unknown study run: {label}')
+    job = selected[0]; frozen = read(study/'test_frozen.json')
+    dev = read(study/'runs'/label/'result.json')
+    paths = {'B0': study/'final_test/B0/original/fixed_predictions.npz',
+             **{c:study/'final_test'/label/c/'fixed_predictions.npz' for c in ['best','final']}}
+    for checkpoint, path in paths.items():
+        result = read(path.parent/'result.json')
+        assert result['status'] == 'complete' and result['identity']['test_freeze_sha256'] == sha(study/'test_frozen.json')
+        for filename, digest in result['files'].items(): assert sha(path.parent/filename) == digest
+        if checkpoint != 'B0':
+            assert result['identity']['job'] == job and result['identity']['checkpoint'] == checkpoint
+            assert result['identity']['checkpoint_sha256'] == dev['checkpoint_sha256'][checkpoint+'.pt']
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    from p3_depth.data.nyuv2 import NYUv2Labeled
+    destination = study/'test_analysis/checkpoint_cases'/label; destination.mkdir(parents=True, exist_ok=True)
+    predictions = {k:np.load(p) for k,p in paths.items()}; files = []
+    try:
+        with NYUv2Labeled(ROOT/cfg['data']) as data:
+            for sample_id in frozen['fixed_test_preview_ids']:
+                sample = data.load(sample_id); truth = sample.depth_m; mask = sample.valid_gt
+                methods = {k:v[str(sample_id)] for k,v in predictions.items()}
+                fig, axes = plt.subplots(2,4,figsize=(12,5.2),layout='constrained')
+                axes[0,0].imshow(sample.rgb); axes[0,0].set_title('RGB')
+                axes[1,0].imshow(np.ma.array(truth,mask=~mask),vmin=.001,vmax=10,cmap='viridis'); axes[1,0].set_title('GT depth [m]')
+                for col,(checkpoint,prediction) in enumerate(methods.items(),1):
+                    pred = np.clip(prediction,.001,10); error = np.abs(pred-truth)/np.maximum(truth,.001)
+                    axes[0,col].imshow(pred,vmin=.001,vmax=10,cmap='viridis'); axes[0,col].set_title(checkpoint)
+                    axes[1,col].imshow(np.ma.array(error,mask=~mask),vmin=0,vmax=.5,cmap='magma'); axes[1,col].set_title(f'AbsRel={error[mask].mean():.4f}')
+                for ax in axes.flat: ax.axis('off')
+                title = f'Official test NYUv2 {sample_id:04d}; {label}; validation best versus actual final'
+                fig.suptitle(title+'; depth 0-10m, relative error 0-0.5')
+                filename = f'nyuv2_{sample_id:04d}.png'; fig.savefig(destination/filename,dpi=150); plt.close(fig); files.append(filename)
+                edge_filename = f'nyuv2_{sample_id:04d}_edges.png'
+                render_boundary_case(destination/edge_filename,sample.rgb,truth,mask,methods,title); files.append(edge_filename)
+    finally:
+        for value in predictions.values(): value.close()
+    write_json(destination/'index.json',{'job':job,'sample_ids':frozen['fixed_test_preview_ids'],
+        'selection':'Descriptive inspection of requested run; fixed test image IDs and both checkpoint identities predeclared before test. No new inference or checkpoint selection.',
+        'prediction_sources':{p.relative_to(study).as_posix():sha(p) for p in paths.values()},'files':files,
+        'test_freeze_sha256':sha(study/'test_frozen.json'),'analysis_script_sha256':sha(Path(__file__))})
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--render', action='store_true', help='Render fixed samples and curves from saved outputs (no inference)')
@@ -754,11 +803,15 @@ def main():
     parser.add_argument('--render-stage-parent', metavar='S_RUN_LABEL', help='Compare saved S best/final with their frozen L best parent (no inference)')
     parser.add_argument('--export-records', action='store_true', help='Copy verified compact records to results/ for version control')
     parser.add_argument('--test', action='store_true', help='Analyze frozen 654-image test outputs; never run inference or choose checkpoints')
+    parser.add_argument('--render-test-checkpoints', metavar='RUN_LABEL', help='With --test, render saved B0/best/final fixed test images for one run (no inference)')
     args = parser.parse_args()
     if args.test and (args.render_increments or args.render_checkpoints or args.render_stage_parent):
         parser.error('Increment, checkpoint and stage-parent panels currently render development validation only')
+    if args.render_test_checkpoints and not args.test:
+        parser.error('--render-test-checkpoints requires --test')
     cfg = load(ROOT); check_freeze(ROOT); study = outdir(ROOT)
     if args.test:
+        if args.render_test_checkpoints: render_test_checkpoints(study,cfg,args.render_test_checkpoints)
         analyze_test(study,cfg,args.render,args.export_records)
         return
     out = study / 'analysis'; out.mkdir(exist_ok=True)
