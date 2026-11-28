@@ -580,7 +580,7 @@ def export_records(study, complete):
     relatives = ['frozen.json', 'source.zip', 'subsets.json', 'data_audit.json', 'preflight.json',
                  'command_failures.jsonl', 'environment.json', 'queue.json', 'queue_failures.jsonl',
                  'failures.jsonl', 'analysis_implementation_checks.json', 'resource_recording_update.json', 'shared_cache_costs.json', 'baseline/identity.json', 'baseline/metrics.json', 'baseline/per_image.csv',
-                 'analysis/summary.json', 'analysis/per_seed.csv', 'analysis/paired_comparisons.json',
+                 'analysis/summary.json', 'analysis/visual_review.json', 'analysis/per_seed.csv', 'analysis/paired_comparisons.json',
                  'analysis/incremental_gains.json', 'analysis/checkpoint_drift.json', 'analysis/stage_parent_comparisons.json',
                  'analysis/stage_parent_analysis_checks.json', 'analysis/stage_parent_rendering_checks.json', 'analysis/recovery_cost_analysis_checks.json',
                  'analysis/incremental_cases/index.json']
