@@ -1,0 +1,59 @@
+{
+  "at": "2026-11-28T22:57:24.733333+08:00",
+  "status": "all_planned_experiments_analysis_and_local_delivery_complete",
+  "plan": "docs/sample_efficiency_plan_20261127.md",
+  "plan_sha256": "9abab5c7de2222cba71a4d66104f7ce33cd423ab3f7cec59821b98226ca6c68c",
+  "training_stages": 72,
+  "test_checkpoint_identities": 145,
+  "test_images_each": 654,
+  "test_rows": 94830,
+  "training_artifacts_rechecked": 504,
+  "development_actual_review_records": 73,
+  "development_reviewed_images": 1230,
+  "test_main_panels_actually_reviewed": 72,
+  "test_additional_early_or_failure_panels": 36,
+  "test_raw_predictions_independently_recomputed": 435,
+  "raw_metric_max_abs_difference": 0,
+  "test_numeric_review_records": 12,
+  "test_three_seed_groups": 24,
+  "stable_training_stages": 31,
+  "test_recovery_original83_completed_result_hashes_unchanged": true,
+  "source_artifact_sha256": {
+    "frozen.json": "25cb51cd462a232942757fb5761d5306cbbd0fc6199f4d52f2f98fbd92ac574c",
+    "test_frozen.json": "17d91070624666a7c7754d275bffaf20e53bdff912efa4cc5bfc1f6e1a28788a",
+    "test_complete.json": "4cfc304280b00481168fda1221f13771608853589bc2f7e029718c3705b596e4",
+    "live_bridge.json": "23ba944bf4f7c92a2fa87a02d246c8f0fee8f910c67bc9e123e43d0eb38324fc",
+    "analysis/summary.json": "c77a8c935c22cf2dbed0c613a739a676e1051a4bc1a52856c15dc45b8f3cab25",
+    "analysis/visual_review.json": "e3a79ea393d56020c7aaaed78e1d931716449d4348f66d0ceaee28233a2be17b",
+    "test_analysis/summary.json": "5344c3fc18775177ab6baec3c48bd873b787ee295b89b44400c79e437ab85010",
+    "test_analysis/per_seed.csv": "566142ae846b2213b1272545c4a439fede0c3bae4b57b1683ea99a7fc39c46b6",
+    "test_analysis/development_completion_audit.json": "c1dec707fb4da782b480a09fd97e62fa5fea79229d948cacc9e03e718246226d",
+    "test_analysis/final_protected_artifact_checks.json": "fac7572be07781ebaa747b03f07e22ba005eeecea671fb1c36cffd66a8b6856c",
+    "test_analysis/all_fixed_test_predictions_audit.json": "a33a0f0c694270833355672ec0fb2137ac02cd7c9280cc63dded9930ed65313c",
+    "test_analysis/visual_review.json": "022cef01fcabefbe6200a05f2bc7e977c11160b4e79fbe8cdca3b58d3b944842",
+    "test_analysis/aggregation_extension_checks.json": "96cf5914a601474723d581ea148e7f3929a667836c31b38eb8e1ad6e8a9b7f2b",
+    "test_analysis/test_recovery_20261128T125749Z.json": "9c2df3f596c550451c664d82d6b979ca2cda7bd6ad5ccf38146f6b34222efa17",
+    "test_analysis/final_review.json": "08de0799faaae36ae656e657e638fd350b5eff2b2ffbc04a85f8570682abafac",
+    "test_analysis/final_report.md": "36f0e9364810c4ac91158d415cf6a7a9cf50741a39ab31f3161000bea4f9b7df"
+  },
+  "unrelated_worktree_files_sha256": {
+    "README.md": "8d630ff90f625fd5e56531e926bbb402d92d314d072cf586e6139e245ecfbd6e",
+    "results/stereo_week1.md": "ada0bb14a826a941274067b6c8a8a539a8fb2580adc1797da0795b7a05b2ca42"
+  },
+  "completion_scope": "This predeclared72-stage sample-efficiency study, not every requirement of the entire course project. No795refit or new architecture search.",
+  "history_notes": [
+    "Earlier audit/progress/recovery snapshots retain their at-time pending status; this final record and test_complete.json establish current completion.",
+    "All best/final/resume weights, configuration, source freeze and detailed failure records remain local. Git exports compact numerical evidence, not large checkpoints.",
+    "No training or test worker is needed after completion. Commit/push synchronization is verified separately by the delivered Git commit."
+  ],
+  "limits": [
+    "577 fitting与218 validation场景不重叠；100张覆盖100个场景，200张开始覆盖全部187个fitting场景。100到200同时改变场景覆盖和图像数。",
+    "同一nested subset用于三个种子；种子改变训练随机性，不改变样本名单。没有训练或早停使用validation梯度/统计更新。",
+    "场景bootstrap为215 test场景、2000次，条件于三个训练种子；种子SD单列。未做多重比较校正，不将微小区间排零包装为普适结论。",
+    "官方654 test此前在项目中被查看，不能称全新盲测；本轮所有145身份在test推理前冻结，未依据test改参数或权重。",
+    "训练耗时为实测过程而非隔离benchmark，受系统状态影响；R不含共享特征缓存预计算。S包括完整L过程，重复使用的父过程不重复计入研究总耗时。",
+    "分阶段的总峰值显存继承LoRA阶段；单图推理峰值不等于训练需求。两次失败训练的未记录峰值仍为未知。",
+    "全145身份的654逐图记录与冻结身份核验；435张保存raw预测独立复算。未保留所有完整test raw数组，未声称独立复算全部94830张原始预测。",
+    "best/final边界指标只在两个端点计算；未记录整个训练过程的连续边界曲线。不能精确定位边界退化开始的iteration。"
+  ]
+}
