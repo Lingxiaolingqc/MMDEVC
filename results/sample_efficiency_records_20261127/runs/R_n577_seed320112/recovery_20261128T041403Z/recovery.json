@@ -1,0 +1,72 @@
+{
+  "status": "resumed_verified",
+  "at": "2026-11-28T04:14:10.724546+00:00",
+  "job": {
+    "method": "R",
+    "count": 577,
+    "seed": 320112
+  },
+  "failure": "PermissionError WinError 5 replacing progress.json.pending with progress.json; progress write after the step4800 update, before validation4800.",
+  "lock_owner": "Unknown. No claim that OneDrive or the monitor caused it; monitor used FileShare.ReadWrite|Delete and disposed handles.",
+  "process_check": "Queue92028 and worker13992/25576 exited; CIM scan found no training process, and both OS study locks acquired for this audit.",
+  "source_freeze_sha256": "25cb51cd462a232942757fb5761d5306cbbd0fc6199f4d52f2f98fbd92ac574c",
+  "backup_sha256": {
+    "config.json": "848e21f7b4e9a6fc4b8fbe26b409207b569765a5d0eda773bff960aa7f095ab9",
+    "history.json": "81868edd7c0c800dca2819067720a7a0b5928abb50342653f3a43b1af594195b",
+    "progress.json": "d6f9c39319806afe11fc4fdf72d0ef99eec108a37ca2ec4071a352824ad5c648",
+    "progress.json.pending": "692a87bebde8f37032c85e9af1502c26bfacdd09e50ff3dafa34821dbef5b5e8",
+    "resume.pt": "2c2a5bdd4a815b06af5e5e90ce3fa75bb4cf877ce40ae9ebe8a0f1ba959d735a",
+    "best.pt": "9c5d6414f7ddbd918120d4d4713a717ffa5a403192c0fd2b6acfb0e5f877f8f2",
+    "status.json": "1ba202d5ef05f6810f3f84a6afaae801bdac2582099feb5145a7bb5f0b9b9867",
+    "attempts.jsonl": "6851f92ba5e4d8019136371c9a18e5865bad3f3e33149288f99f4914585ed18e",
+    "epochs.jsonl": "6e978a90d3d4c8fa0869ccfd900c2b2a9a55c85ee0f231ad32f27e89183dbd43",
+    "startup_resources.jsonl": "5b7c9e8218bec72a1e9c15a3d9e2f02a87343f8773edd3958b07dd0958decf63",
+    "queue.json": "251bfaec7850c5cded2b47205deb726246a6b1bc2c7bf36d3decfa2e4bc966b7",
+    "queue_failures.jsonl": "c0e3f46c4eed8aa14806587fc3b2629e5350461892b53f746f7e54c732412e12",
+    "failures.jsonl": "5f2138447deb9d53e8b9ecacf25d107363337d48f5b5978b15928dc009f2d7eb",
+    "command_failures.jsonl": "cab219aea0f47e7c6914e321ae8a4a9b57125b450c01dc35a587735778cd2d9e",
+    "R_n577_seed320112_1795835591123688600.stdout.log": "220b2e374d9a10e6ee9394e437c7f021ec92d9e4fe7eb29df3608cf79197e763",
+    "R_n577_seed320112_1795835591123688600.stderr.log": "79e3c7068235e41ca649f71582869188ad8d6fc0f350b2b20fd16ae7b43b605c"
+  },
+  "resume_step": 4700,
+  "best_step": 4600,
+  "history_exactly_matches_resume": true,
+  "discarded_attempted_updates_after_checkpoint": 100,
+  "discarded_successful_updates": 100,
+  "discarded_exposures": 800,
+  "failed_attempt_wall_seconds": 3456.342924,
+  "checkpoint_elapsed_seconds": 3394.1352309000213,
+  "timing_scope": "The failed attempt includes actual work through update4800; original history/checkpoint elapsed covers only through4700. Restart will replay4701-4800. attempts.jsonl retains full wall cost; do not count replayed work as independent observations or silently omit its cost.",
+  "restore_checks": {
+    "pipeline_bitwise": true,
+    "optimizer_exact": true,
+    "scheduler_exact": true,
+    "scaler_exact": true,
+    "rng_cpu_exact": true,
+    "rng_cuda_exact": true,
+    "rng_numpy_exact": true,
+    "rng_python_exact": true
+  },
+  "state_file_bytes_unchanged_after_audit": true,
+  "action": "Restore from4700 with original model/optimizer/scheduler/scaler/RNG/order and frozen settings; retain all failure evidence. Do not promote progress4800 to a full checkpoint.",
+  "test_not_accessed": true,
+  "training_code_config_unchanged": true,
+  "progress_reset": {
+    "at": "2026-11-28T04:15:14.085889+00:00",
+    "step": 4700,
+    "pending4800_preserved_in_backup": true
+  },
+  "restart": {
+    "at": "2026-11-28T04:16:23.054733+00:00",
+    "parent_queue_pid": 93676,
+    "launcher_pid": 59856,
+    "event": {
+      "recorded_at": "2026-11-28T04:15:34.913763+00:00",
+      "event": "resume",
+      "completed_step": 4700
+    },
+    "stdout": "worker_stdout_03.log",
+    "stderr": "worker_stderr_03.log",
+    "same_frozen_training_configuration": true
+  }
+}
